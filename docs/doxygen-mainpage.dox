@@ -1,0 +1,90 @@
+/// @mainpage SHAD : Scalable High Performance Algorithms and Data Structures for High Performance Data Analytics.
+/// @authors Vito Giovanni Castellana, vitogiovanni.castellana@pnnl.gov
+/// @authors Marco Minutoli, marco.minutoli@pnnl.gov
+/// @section Introduction
+///
+/// Emerging data analytics applications aim at processing unprecedented amount
+/// of data, posing novel challenges to the developers. One obviously desired
+/// feature when working with big data is scalability: intuitively, if the data
+/// does not fit in a single machine memory, then the application should be able
+/// to process data on multiple nodes of a cluster. When working at large scale,
+/// applications should also provide high-performance. In this context, since
+/// algorithms time and space complexity may grow exponentially with the size of
+/// the input data, performance does not necessarily mean fast, but may
+/// represent the difference between achievable or not. A typical approach to
+/// tackle these challenges is to highly customize a specific application
+/// implementation targeting a specific machine or architecture. An even more
+/// aggressive solution is based on hardware-software co-design which tailors
+/// not only the software implementation but also the actual target hardware, to
+/// solve a specific class of problems. Clearly, both of these approaches are
+/// characterized by significant development/design effort, high
+/// time-to-solution, and low portability/flexibility of both software and
+/// hardware. In order to address these issues, we propose SHAD: Scalable High
+/// Performance Algorithms and Data Structures for High Performance Data
+/// Analytics. SHAD is a software library, designed to achieve flexibility and
+/// portability, while providing scalability and high performance. Unlike other
+/// high performance data analytics frameworks, SHAD can support a variety of
+/// applications in several domains, including, but not limited to, graph
+/// processing, machine learning, and, data mining.
+///
+/// @section Goals Design Goals
+///
+/// SHAD is designed to offer several unique features:
+/// @li <b>flexibility</b>: SHAD components can be used to implement a variety
+/// of data analytics applications, without focusing on a specific domain. SHAD
+/// data structures support both applications that perform mostly read only
+/// operations, and, applications which perform frequent updates (e.g. streaming
+/// applications).
+/// @li <b>scalability and performance</b>: SHAD provides scalable and efficient
+/// data structures, that can store, update and process TB-scale data.
+/// @li <b>productivity</b>: SHAD data structures offer user friendly, STL-like
+/// interfaces, improving developers productivity and possibly facilitating
+/// their adoption in already existing code bases.
+/// @li <b>portability</b>: SHAD hides the low-level details of the underlaying
+/// architecture, so applications developed using SHAD data structures can run
+/// either on a single machine or on distributed systems.
+///
+/// @section Overview SHAD Design
+///
+/// SHAD is designed as a software stack, whose core components are: an Abstract
+/// Runtime API (AR API), a collection of general purpose algorithms and
+/// data-structures, and, domain specific libraries.
+///
+/// @subsection ARAPI Abstract Runtime API
+///
+/// The AR API expose a set of primitives for managing tasks execution and
+/// concurrency, and, data-movements on both clusters and single-node machines,
+/// with the purpose of hiding low level details of the underlying runtime
+/// systems and architectures. Also, this level of abstraction allow supporting
+/// multiple runtimes and architectures with relatively limited effort,
+/// consisting in mapping the AR API to the specific lower-level
+/// infrastructures.
+///
+/// @subsection algorithms General purpose algorithms and data structures
+///
+/// On top of the AR API, we define the main SHAD data structures layer, which
+/// includes a multitude of general purpose data structures such as sets, maps,
+/// and, vectors. Such data-structures expose STL-like interfaces, improving
+/// developers productivity and possibility facilitating their adoption in
+/// already existing code bases. SHAD data structures and algorithms are
+/// designed to store and process significant amount of data; given the nature
+/// of the problem, to achieve high performance it is required to support
+/// concurrent access to the data as well as concurrent data updates. Also, the
+/// SHAD library is flexible enough to allow exploring interesting features in
+/// novel HPDA applications, in particular streaming and reliability
+/// capabilities. For streaming, data-structures need to support dynamic
+/// allocations and updates, while still providing high-performance and
+/// scalability. For reliability, SHAD aims at tolerating faults, by preserving
+/// data-integrity, with limited time/space complexity and memory overhead.
+///
+/// @subsection extension SHAD extension
+///
+/// The basic SHAD components themselves offer enough features to implement a
+/// wide variety of applications, and they represent the building blocks for
+/// SHAD extensions. Extensions are domain specific libraries, built on top of
+/// the SHAD main data structures. Examples of such libraries are a Table
+/// library, implementing for examople data structures and operations typical of relational
+/// databases (e.g. join, sort, etc), and a graph library, implementing
+/// graph data structures, access methods (e.g. forEachEdge,
+/// forEachNeighbor) and algorithms (e.g. community detection, page rank).  Extensions can be developed as layered libraries, and can
+/// share and use multiple lower-level libraries.

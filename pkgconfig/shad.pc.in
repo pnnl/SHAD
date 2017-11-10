@@ -1,0 +1,10 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+
+Name: @CMAKE_PROJECT_NAME@
+Description: SHAD - Scalable and High-Performance Algorithms and Data-Structures.
+Version: @PACKAGE_VERSION@
+Cflags: @CMAKE_CXX_FLAGS@ -I${includedir}
+Libs: -L${libdir} -Wl,-rpath,${libdir} -lruntime -lutils @LINK_FLAGS@
