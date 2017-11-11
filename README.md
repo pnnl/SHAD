@@ -62,6 +62,9 @@ Once the documentation is build, you can open with your favorite web browser the
 ```
 open docs/doxygen/html/index.html  # From your build directory
 ```
+## Authors
+Vito Giovanni Castellana <vitogiovanni.castellana@pnnl.gov>
+Marco Minutoli <marco.minutoli@pnnl.gov>
 
 ## Acknowledgments
 This work was supported in part by the High Performance Data Analytics (HPDA) Program at Pacific Northwest National Laboratory.
