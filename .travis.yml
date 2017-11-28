@@ -2,6 +2,9 @@ language: cpp
 
 matrix:
   include:
+    - os: osx
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
     - os: linux
       addons:
         apt:
