@@ -1,0 +1,100 @@
+language: cpp
+
+matrix:
+  include:
+    - os: osx
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env:
+        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+
+      env:
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-3.9
+          packages:
+            - g++-7
+            - clang-3.9
+      env:
+        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-4.0
+          packages:
+            - g++-7
+            - clang-4.0
+      env:
+        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - g++-7
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
+  - git clone https://github.com/google/googletest.git
+  - cd googletest && mkdir build
+  - cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$HOME/gtest-root -Bbuild -H.
+  - cmake --build build -- -j 2
+  - cmake --build build --target install
+  - cd ..
+  - git clone https://github.com/01org/tbb.git
+  - cd tbb
+  - make work_dir=$(pwd)/build-tbb tbb_root=$(pwd)
+  - mkdir $HOME/tbb-root && cp -r include $HOME/tbb-root/
+  - mkdir $HOME/tbb-root/lib && cp $(pwd)/build-tbb_release/libtbb* $HOME/tbb-root/lib/
+  - cd ..
+
+script:
+  - mkdir build-release
+  - cmake -DCMAKE_BUILD_TYPE=Release -DGTEST_ROOT=$HOME/gtest-root -DTBB_ROOT=$HOME/tbb-root -Bbuild-release -H.
+  - cmake --build build-release -- -j 2
+  - cmake --build build-release --target test -- ARGS="--output-on-failure"
