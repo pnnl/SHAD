@@ -1,7 +1,6 @@
 if (HAVE_TBB)
   set(sources
-    tbb_mapping/tbb_main.cc
-    tbb_mapping/tbb_mapping.cc)
+    tbb_mapping/tbb_main.cc)
 endif()
 
 add_library(runtime STATIC ${sources})
