@@ -36,10 +36,6 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g")
 set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELEASE} ${CMAKE_C_FLAGS_DEBUG}")
 
 # CXX compiler flags:
-check_cxx_compiler_flag("-pthread" CXX_SUPPORT_PTHREAD_FLAG)
-if (CXX_SUPPORT_PTHREAD_FLAG)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-endif()
 
 ## CXX Release Build flags:
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
@@ -60,9 +56,13 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS
 # library checks:
 if (SHAD_RUNTIME_SYSTEM STREQUAL "TBB")
   message(STATUS "Using Intel Threading Building Blocks (TBB) as backend of the Abstract Runtime API.")
+
+  find_package(Threads REQUIRED)
+  include_directories(${THREADS_PTHREADS_INCLUDE_DIR})
+
   find_package(TBB REQUIRED)
   set(HAVE_TBB 1)
-  set(SHAD_RUNTIME_LIB ${TBB_LIBRARIES})
+  set(SHAD_RUNTIME_LIB ${TBB_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 else()
   message(FATAL_ERROR "${SHAD_RUNTIME_SYSTEM} is not a supported runtime system.")
 endif()
