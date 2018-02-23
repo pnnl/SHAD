@@ -10,11 +10,8 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - george-edison55/cmake-3.x
           packages:
             - g++-4.9
-            - cmake
-            - cmake-data
       env:
         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
     - os: linux
@@ -22,11 +19,8 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - george-edison55/cmake-3.x
           packages:
             - g++-5
-            - cmake
-            - cmake-data
 
       env:
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
@@ -35,11 +29,8 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - george-edison55/cmake-3.x
           packages:
             - g++-6
-            - cmake
-            - cmake-data
 
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
@@ -48,11 +39,8 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - george-edison55/cmake-3.x
           packages:
             - g++-7
-            - cmake
-            - cmake-data
 
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
@@ -60,42 +48,33 @@ matrix:
       addons:
         apt:
           sources:
-            - george-edison55/cmake-3.x
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-3.9
           packages:
             - g++-7
             - clang-3.9
-            - cmake
-            - cmake-data
       env:
         - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
     - os: linux
       addons:
         apt:
           sources:
-            - george-edison55/cmake-3.x
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-4.0
           packages:
             - g++-7
             - clang-4.0
-            - cmake
-            - cmake-data
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
     - os: linux
       addons:
         apt:
           sources:
-            - george-edison55/cmake-3.x
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-5.0
           packages:
             - g++-7
             - clang-5.0
-            - cmake
-            - cmake-data
       env:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
