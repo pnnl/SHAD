@@ -35,6 +35,20 @@ make && make install
 
 where $GTESTROOT is the directory where you want the library to be installed.
 
+#### Google Benchmark
+
+The Google Benchmark framework is only required if you want to run the performance benchmarks.  You can install it following these instructions:
+
+```
+git clone https://github.com/google/benchmark.git
+cd benchmark
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=RELEASE
+make
+sudo make install
+```
+
 ### Build SHAD
 
 Before attempting to build SHAD, please take a look at the requirements in [Install Dependencies](#install-dependencies).  In this first release, SHAD has full support only for the TBB run-time system.  Future releases will provide additional backends.
