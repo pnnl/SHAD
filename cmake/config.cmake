@@ -115,6 +115,7 @@ endif()
 
 if (SHAD_ENABLE_PERFORMANCE_TEST)
   find_package(benchmark REQUIRED)
+  find_package(Threads REQUIRED)
 endif()
 
 # tools:
