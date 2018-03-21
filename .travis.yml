@@ -92,9 +92,16 @@ before_install:
   - mkdir $HOME/tbb-root && cp -r include $HOME/tbb-root/
   - mkdir $HOME/tbb-root/lib && cp $(pwd)/build-tbb_release/libtbb* $HOME/tbb-root/lib/
   - cd ..
+  - git clone https://github.com/google/benchmark.git
+  - cd benchmark
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$HOME/benchmark-root
+  - make
+  - make install
 
 script:
   - mkdir build-release
-  - cmake -DCMAKE_BUILD_TYPE=Release -DGTEST_ROOT=$HOME/gtest-root -DTBB_ROOT=$HOME/tbb-root -Bbuild-release -H.
+  - cmake -DCMAKE_BUILD_TYPE=Release -DGTEST_ROOT=$HOME/gtest-root -DTBB_ROOT=$HOME/tbb-root -Dbenchmark_ROOT=$HOME/benchmark-root -Bbuild-release -H.
   - cmake --build build-release -- -j 2
   - cmake --build build-release --target test -- ARGS="--output-on-failure"

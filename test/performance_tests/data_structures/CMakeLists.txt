@@ -6,5 +6,5 @@ set(tests array_perf
 
 foreach(t ${tests})
   add_executable(${t} ${t}.cc)
-  target_link_libraries(${t} ${SHAD_RUNTIME_LIB} runtime benchmark)
+  target_link_libraries(${t} ${SHAD_RUNTIME_LIB} runtime ${benchmark_LIBRARIES})
 endforeach(t)
