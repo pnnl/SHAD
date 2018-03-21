@@ -99,6 +99,7 @@ before_install:
   - cmake .. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$HOME/benchmark-root
   - make
   - make install
+  - cd ../..
 
 script:
   - mkdir build-release
