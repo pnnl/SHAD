@@ -96,7 +96,7 @@ before_install:
   - cd benchmark
   - mkdir build
   - cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$HOME/benchmark-root
+  - cmake .. -DBENCHMARK_ENABLE_GTEST_TESTS=OFF -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$HOME/benchmark-root
   - make
   - make install
   - cd ../..
