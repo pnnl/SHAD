@@ -20,7 +20,7 @@ find_program(
   DOC "Path to clang-format executable")
 
 if (CLANG_FORMAT_EXE)
-  message(STATUS "ClangTidy found: ${CLANG_FORMAT_EXE}")
+  message(STATUS "ClangFormat found: ${CLANG_FORMAT_EXE}")
   if (NOT CMAKE_EXPORT_COMPILE_COMMANDS)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
   endif()
