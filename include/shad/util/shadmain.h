@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_UTIL_SHADMAIN_H_
 #define INCLUDE_SHAD_UTIL_SHADMAIN_H_
 
@@ -33,7 +32,7 @@ namespace shad {
 ///
 /// The main within the shad namespace is called after the rest of the SHAD
 /// stack is initialized.
-int main(int argc, char * argv[]);
+int main(int argc, char* argv[]);
 
 }  // namespace shad
 

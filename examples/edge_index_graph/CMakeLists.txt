@@ -1,6 +1,8 @@
 set(program
 ei-triangle-count
 ei-page-rank
+ei-sssp
+ei-vertex_nomination
 )
 
 

@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_DATA_STRUCTURES_LOCAL_SET_H_
 #define INCLUDE_SHAD_DATA_STRUCTURES_LOCAL_SET_H_
 
@@ -39,7 +38,7 @@
 namespace shad {
 
 namespace constants {
-    constexpr size_t kSetDefaultNumEntriesPerBucket = 16;
+constexpr size_t kSetDefaultNumEntriesPerBucket = 16;
 }
 
 /// @brief The LocalSet data structure.
@@ -51,23 +50,22 @@ namespace constants {
 /// @tparam ELEM_COMPARE key comparison function; default is MemCmp<T>.
 template <typename T, typename ELEM_COMPARE = MemCmp<T>>
 class LocalSet {
-  template<typename, typename> friend class Set;
-  template<typename, typename, typename> friend class LocalEdgeIndex;
-  template<typename, typename> friend class AttrEdgesPair;
+  template <typename, typename>
+  friend class Set;
+  template <typename, typename, typename>
+  friend class LocalEdgeIndex;
+  template <typename, typename>
+  friend class AttrEdgesPair;
+
  public:
   /// @brief Constructor.
   /// @param numInitBuckets initial number of Buckets.
   explicit LocalSet(const size_t numInitBuckets = 16)
-      : numBuckets_(numInitBuckets)
-      , buckets_array_(numInitBuckets)
-      , size_(0)
-  { }
+      : numBuckets_(numInitBuckets), buckets_array_(numInitBuckets), size_(0) {}
 
   /// @brief Size of the set (number of entries).
   /// @return the size of the set.
-  size_t Size() const {
-    return size_.load();
-  }
+  size_t Size() const { return size_.load(); }
 
   /// @brief Insert an element in the set.
   /// @param[in] element the element to insert.
@@ -97,14 +95,14 @@ class LocalSet {
   void Clear() {
     size_ = 0;
     buckets_array_.clear();
-//     buckets_array_(numBuckets_);
+    //     buckets_array_(numBuckets_);
   }
 
   /// @brief Clear the content of the set.
   void Reset(size_t expectedEntries) {
     size_ = 0;
     buckets_array_.clear();
-    numBuckets_ = std::max(1lu, expectedEntries/16);
+    numBuckets_ = std::max(1lu, expectedEntries / 16);
     buckets_array_ = std::vector<Bucket>(numBuckets_);
   }
   /// @brief Check if the set contains a given element.
@@ -130,9 +128,8 @@ class LocalSet {
   /// @tparam ...Args Types of the function arguments.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void ForEachElement(ApplyFunT &&function, Args&... args);
-
+  template <typename ApplyFunT, typename... Args>
+  void ForEachElement(ApplyFunT&& function, Args&... args);
 
   /// @brief Asynchronously apply a user-defined function
   /// to each element in the set.
@@ -148,9 +145,9 @@ class LocalSet {
   /// to be used to wait for completion.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void AsyncForEachElement(rt::Handle &handle, ApplyFunT &&function,
-                         Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void AsyncForEachElement(rt::Handle& handle, ApplyFunT&& function,
+                           Args&... args);
 
   /// @brief Print all the entries in the set.
   /// @warning std::ostream & operator<< must be defined for T.
@@ -158,44 +155,38 @@ class LocalSet {
 
  private:
   static const size_t kNumEntriesPerBucket =
-                            constants::kSetDefaultNumEntriesPerBucket;
+      constants::kSetDefaultNumEntriesPerBucket;
   static const size_t kAllocPending = 0x1;
-  static const uint32_t kKeyWords =
-      sizeof(T) > sizeof(uint64_t) ? sizeof(T)/sizeof(uint64_t) : 1;
+  static const uint32_t kKeyWords = sizeof(T) > sizeof(uint64_t)
+                                        ? sizeof(T) / sizeof(uint64_t)
+                                        : 1;
   static const uint8_t kHashSeed = 0;
   typedef ELEM_COMPARE ElemCompare;
 
-  enum State {
-    EMPTY,
-    USED,
-    PENDING_INSERT
-  };
+  enum State { EMPTY, USED, PENDING_INSERT };
 
   struct Entry {
     T element;
     volatile State state;
-    Entry() : state(EMPTY){}
+    Entry() : state(EMPTY) {}
   };
 
   struct Bucket {
     std::shared_ptr<Bucket> next;
     bool isNextAllocated;
 
-    explicit Bucket(size_t bsize = kNumEntriesPerBucket) :
-                    next(nullptr),
-                    isNextAllocated(false),
-                    entries(nullptr),
-                    bucketSize_(bsize) {
-    }
+    explicit Bucket(size_t bsize = kNumEntriesPerBucket)
+        : next(nullptr),
+          isNextAllocated(false),
+          entries(nullptr),
+          bucketSize_(bsize) {}
 
-    Entry & getEntry(size_t i) {
+    Entry& getEntry(size_t i) {
       if (!entries) {
         std::lock_guard<rt::Lock> _(_entriesLock);
         if (!entries) {
-          entries =
-              std::move(std::shared_ptr<Entry>(
-                  new Entry[bucketSize_],
-                  std::default_delete<Entry[]>()));
+          entries = std::move(std::shared_ptr<Entry>(
+              new Entry[bucketSize_], std::default_delete<Entry[]>()));
         }
       }
       return entries.get()[i];
@@ -213,96 +204,91 @@ class LocalSet {
   std::vector<Bucket> buckets_array_;
   std::atomic<size_t> size_;
 
-  template <typename ApplyFunT, typename ...Args, std::size_t... is>
-  static void AsyncCallForEachElementFun(rt::Handle & handle,
-                                         const size_t i,
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void AsyncCallForEachElementFun(rt::Handle& handle, const size_t i,
                                          LocalSet<T>* setPtr,
                                          ApplyFunT function,
-                                         std::tuple<Args...> & args,
+                                         std::tuple<Args...>& args,
                                          std::index_sequence<is...>) {
-    Bucket * bucket = &setPtr->buckets_array_[i];
+    Bucket* bucket = &setPtr->buckets_array_[i];
     while (bucket != nullptr) {
       Bucket* next_bucket = bucket->next.get();
       uint64_t j;
       for (j = 0; j < bucket->BucketSize(); ++j) {
-        Entry *entry = &bucket->getEntry(j);
+        Entry* entry = &bucket->getEntry(j);
         if (entry->state == USED) {
           function(handle, entry->element, std::get<is>(args)...);
         } else if (entry->state != EMPTY) {
-            printf("Entry in PENDING state"
-                " while iterating over entries\n");
+          printf(
+              "Entry in PENDING state"
+              " while iterating over entries\n");
         }
       }
       bucket = next_bucket;
     }
   }
 
-  template <typename Tuple, typename ...Args>
-  static void AsyncForEachElementFunWrapper(rt::Handle & handle,
-                                            const Tuple & args,
-                                            size_t i) {
+  template <typename Tuple, typename... Args>
+  static void AsyncForEachElementFunWrapper(rt::Handle& handle,
+                                            const Tuple& args, size_t i) {
     constexpr auto Size = std::tuple_size<
-          typename std::decay<decltype(std::get<2>(args))>::type>::value;
-    Tuple & tuple = const_cast<Tuple &>(args);
-    AsyncCallForEachElementFun(handle, i,
-                               std::get<0>(tuple),
-                               std::get<1>(tuple),
-                               std::get<2>(tuple),
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
+    Tuple& tuple = const_cast<Tuple&>(args);
+    AsyncCallForEachElementFun(handle, i, std::get<0>(tuple),
+                               std::get<1>(tuple), std::get<2>(tuple),
                                std::make_index_sequence<Size>{});
   }
 
-  template <typename ApplyFunT, typename ...Args, std::size_t... is>
-  static void CallForEachElementFun(const size_t i,
-                                    LocalSet<T>* setPtr,
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void CallForEachElementFun(const size_t i, LocalSet<T>* setPtr,
                                     ApplyFunT function,
-                                    std::tuple<Args...> & args,
+                                    std::tuple<Args...>& args,
                                     std::index_sequence<is...>) {
-    Bucket *bucket = &setPtr->buckets_array_.data()[i];
+    Bucket* bucket = &setPtr->buckets_array_.data()[i];
     while (bucket != nullptr) {
       Bucket* next_bucket = bucket->next.get();
       uint64_t j;
       for (j = 0; j < bucket->BucketSize(); ++j) {
-        Entry *entry = &bucket->getEntry(j);
+        Entry* entry = &bucket->getEntry(j);
         if (entry->state == USED) {
           function(entry->element, std::get<is>(args)...);
         } else if (entry->state != EMPTY) {
-            printf("Entry in PENDING state"
-                " while iterating over entries\n");
+          printf(
+              "Entry in PENDING state"
+              " while iterating over entries\n");
         }
       }
       bucket = next_bucket;
     }
   }
 
-  template <typename Tuple, typename ...Args>
-  static void ForEachElementFunWrapper(const Tuple & args, size_t i) {
+  template <typename Tuple, typename... Args>
+  static void ForEachElementFunWrapper(const Tuple& args, size_t i) {
     constexpr auto Size = std::tuple_size<
-          typename std::decay<decltype(std::get<2>(args))>::type>::value;
-    Tuple & tuple = const_cast<Tuple &>(args);
-    CallForEachElementFun(
-        i, std::get<0>(tuple), std::get<1>(tuple), std::get<2>(tuple),
-        std::make_index_sequence<Size>{});
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
+    Tuple& tuple = const_cast<Tuple&>(args);
+    CallForEachElementFun(i, std::get<0>(tuple), std::get<1>(tuple),
+                          std::get<2>(tuple), std::make_index_sequence<Size>{});
   }
 
  protected:
   // Custom ForEach for the Local Edge Index
-  template<typename ApplyFunT, typename SrcT, typename ...Args>
-  void AsyncForEachNeighbor(rt::Handle & handle,
-                         ApplyFunT &&function,
-                         SrcT src,
-                         Args... args) {
-      for (auto & curr_bucket : buckets_array_) {
-      Bucket * bucket = &curr_bucket;
+  template <typename ApplyFunT, typename SrcT, typename... Args>
+  void AsyncForEachNeighbor(rt::Handle& handle, ApplyFunT&& function, SrcT src,
+                            Args... args) {
+    for (auto& curr_bucket : buckets_array_) {
+      Bucket* bucket = &curr_bucket;
       while (bucket != nullptr) {
         Bucket* next_bucket = bucket->next.get();
         uint64_t j;
         for (j = 0; j < bucket->BucketSize(); ++j) {
-          Entry *entry = &bucket->getEntry(j);
+          Entry* entry = &bucket->getEntry(j);
           if (entry->state == USED) {
             function(handle, src, entry->element, args...);
           } else if (entry->state != EMPTY) {
-              printf("Entry in PENDING state"
-                  " while iterating over entries\n");
+            printf(
+                "Entry in PENDING state"
+                " while iterating over entries\n");
           }
         }
         bucket = next_bucket;
@@ -310,22 +296,21 @@ class LocalSet {
     }
   }
   // Custom ForEach for the Local Edge Index
-  template<typename ApplyFunT, typename SrcT, typename ...Args>
-  void ForEachNeighbor(ApplyFunT &&function,
-                    SrcT src,
-                    Args... args) {
-      for (auto & curr_bucket : buckets_array_) {
-      Bucket * bucket = &curr_bucket;
+  template <typename ApplyFunT, typename SrcT, typename... Args>
+  void ForEachNeighbor(ApplyFunT&& function, SrcT src, Args... args) {
+    for (auto& curr_bucket : buckets_array_) {
+      Bucket* bucket = &curr_bucket;
       while (bucket != nullptr) {
         Bucket* next_bucket = bucket->next.get();
         uint64_t j;
         for (j = 0; j < bucket->BucketSize(); ++j) {
-          Entry *entry = &bucket->getEntry(j);
+          Entry* entry = &bucket->getEntry(j);
           if (entry->state == USED) {
             function(src, entry->element, args...);
           } else if (entry->state != EMPTY) {
-              printf("Entry in PENDING state"
-                  " while iterating over entries\n");
+            printf(
+                "Entry in PENDING state"
+                " while iterating over entries\n");
           }
         }
         bucket = next_bucket;
@@ -335,14 +320,13 @@ class LocalSet {
 };
 
 template <typename T, typename ELEM_COMPARE>
-bool LocalSet<T, ELEM_COMPARE>::
-Find(const T& element) {
+bool LocalSet<T, ELEM_COMPARE>::Find(const T& element) {
   uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
+  Bucket* bucket = &(buckets_array_[bucketIdx]);
 
   while (bucket != nullptr) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry * entry = &bucket->getEntry(i);
+      Entry* entry = &bucket->getEntry(i);
       // Stop at the first empty entry.
       if (entry->state == EMPTY) return false;
       // Yield on pending entries.
@@ -358,15 +342,14 @@ Find(const T& element) {
 }
 
 template <typename T, typename ELEM_COMPARE>
-void LocalSet<T, ELEM_COMPARE>::
-PrintAllElements() {
+void LocalSet<T, ELEM_COMPARE>::PrintAllElements() {
   for (size_t bucketIdx = 0; bucketIdx < numBuckets_; bucketIdx++) {
     size_t pos = 0;
-    Bucket * bucket = &(buckets_array_[bucketIdx]);
+    Bucket* bucket = &(buckets_array_[bucketIdx]);
     std::cout << "Bucket: " << bucketIdx << std::endl;
     while (bucket != nullptr) {
       for (size_t i = 0; i < bucket->BucketSize(); ++i, ++pos) {
-        Entry * entry = &bucket->getEntry(i);
+        Entry* entry = &bucket->getEntry(i);
         // Stop at the first empty entry.
         if (entry->state == EMPTY) break;
         // Yield on pending entries.
@@ -379,21 +362,21 @@ PrintAllElements() {
 }
 
 template <typename T, typename ELEM_COMPARE>
-void LocalSet<T, ELEM_COMPARE>::
-Erase(const T& element) {
+void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
   uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
-  Entry * prevEntry = nullptr;
-  Entry * toDelete = nullptr;
-  Entry * lastEntry = nullptr;
+  Bucket* bucket = &(buckets_array_[bucketIdx]);
+  Entry* prevEntry = nullptr;
+  Entry* toDelete = nullptr;
+  Entry* lastEntry = nullptr;
   for (;;) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry * entry = &bucket->getEntry(i);
+      Entry* entry = &bucket->getEntry(i);
       // 1. Key not found, returning
       if (entry->state == EMPTY) {
         if (toDelete != nullptr)
-          throw std::logic_error("A problem occured with"
-                                       "the set erase operation");
+          throw std::logic_error(
+              "A problem occured with"
+              "the set erase operation");
         return;
       }
       while (entry->state == PENDING_INSERT) {
@@ -401,8 +384,8 @@ Erase(const T& element) {
       }
       if (ElemComp_(&entry->element, &element) == 0) {
         // 2. Key found, try to acquire a lock on it
-        if (!__sync_bool_compare_and_swap(
-                    &entry->state, USED, PENDING_INSERT)) {
+        if (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                          PENDING_INSERT)) {
           Erase(element);
           return;
         }
@@ -417,8 +400,8 @@ Erase(const T& element) {
         for (;;) {
           for (; j < bucket->BucketSize(); ++j) {
             lastEntry = &bucket->getEntry(j);
-            if (__sync_bool_compare_and_swap(&lastEntry->state,
-                                             EMPTY, PENDING_INSERT)) {
+            if (__sync_bool_compare_and_swap(&lastEntry->state, EMPTY,
+                                             PENDING_INSERT)) {
               // 3. Last entry found (EMPTY->PENDING)
               if (prevEntry == toDelete) {  // just set it to EMPTY and return;
                 lastEntry->state = EMPTY;
@@ -430,8 +413,8 @@ Erase(const T& element) {
               // lastEntry found and status is PENDING_INSERT
               // need to find prevEntry
 
-              if (!__sync_bool_compare_and_swap(
-                    &prevEntry->state, USED, PENDING_INSERT)) {
+              if (!__sync_bool_compare_and_swap(&prevEntry->state, USED,
+                                                PENDING_INSERT)) {
                 rt::impl::yield();
                 lastEntry->state = EMPTY;
                 toDelete->state = USED;
@@ -466,12 +449,11 @@ Erase(const T& element) {
             if (lastEntry == nullptr) {
               // toDelete has not been found or
               // it is the last entry at the end of the last bucket
-              if (toDelete != nullptr)
-                toDelete->state = EMPTY;
+              if (toDelete != nullptr) toDelete->state = EMPTY;
               return;
             }
-            if (!__sync_bool_compare_and_swap(
-                    &lastEntry->state, USED, PENDING_INSERT)) {
+            if (!__sync_bool_compare_and_swap(&lastEntry->state, USED,
+                                              PENDING_INSERT)) {
               toDelete->state = USED;
               size_++;
               Erase(element);
@@ -498,8 +480,8 @@ Erase(const T& element) {
                 return;
               } else {
                 // Need to lock prev entry as well
-                while (!__sync_bool_compare_and_swap(
-                      &prevEntry->state, USED, PENDING_INSERT)) {
+                while (!__sync_bool_compare_and_swap(&prevEntry->state, USED,
+                                                     PENDING_INSERT)) {
                   rt::impl::yield();
                 }
                 lastEntry->state = EMPTY;
@@ -523,26 +505,25 @@ Erase(const T& element) {
 }
 
 template <typename T, typename ELEM_COMPARE>
-void LocalSet<T, ELEM_COMPARE>::
-AsyncErase(rt::Handle& handle, const T& element) {
+void LocalSet<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
+                                           const T& element) {
   auto args = std::tuple<LocalSet<T, ELEM_COMPARE>*, T>(this, element);
-  auto eraseLambda = [] (rt::Handle&,
-                         const std::tuple<LocalSet<T, ELEM_COMPARE>*, T>& t) {
+  auto eraseLambda = [](rt::Handle&,
+                        const std::tuple<LocalSet<T, ELEM_COMPARE>*, T>& t) {
     (std::get<0>(t))->Erase(std::get<1>(t));
   };
   rt::asyncExecuteAt(handle, rt::thisLocality(), eraseLambda, args);
 }
 
 template <typename T, typename ELEM_COMPARE>
-void LocalSet<T, ELEM_COMPARE>::
-Insert(const T& element) {
+void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
   uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
+  Bucket* bucket = &(buckets_array_[bucketIdx]);
 
   // Forever or until we find an insertion point.
   for (;;) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry * entry = &bucket->getEntry(i);
+      Entry* entry = &bucket->getEntry(i);
 
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         entry->element = std::move(element);
@@ -559,10 +540,9 @@ Insert(const T& element) {
 
     if (bucket->next == nullptr) {
       // We need to allocate a new buffer
-      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated,
-          false, true)) {
+      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
         // Allocate the bucket
-        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize()*2));
+        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize() * 2));
         bucket->next.swap(newBucket);
       } else {
         // Wait for the allocation to happen
@@ -575,59 +555,58 @@ Insert(const T& element) {
 }
 
 template <typename T, typename ELEM_COMPARE>
-void LocalSet<T, ELEM_COMPARE>::
-AsyncInsert(rt::Handle& handle, const T& element) {
+void LocalSet<T, ELEM_COMPARE>::AsyncInsert(rt::Handle& handle,
+                                            const T& element) {
   auto args = std::tuple<LocalSet<T, ELEM_COMPARE>*, T>(this, element);
-  auto insertLambda = [] (rt::Handle&,
-                          const std::tuple<LocalSet<T, ELEM_COMPARE>*, T>& t) {
+  auto insertLambda = [](rt::Handle&,
+                         const std::tuple<LocalSet<T, ELEM_COMPARE>*, T>& t) {
     (std::get<0>(t))->Insert(std::get<1>(t));
   };
   rt::asyncExecuteAt(handle, rt::thisLocality(), insertLambda, args);
 }
 
 template <typename T, typename ELEM_COMPARE>
-void LocalSet<T, ELEM_COMPARE>::AsyncFind(rt::Handle& handle,
-                                          const T& element,
+void LocalSet<T, ELEM_COMPARE>::AsyncFind(rt::Handle& handle, const T& element,
                                           bool* found) {
   auto args =
-     std::tuple<LocalSet<T, ELEM_COMPARE>*, T, bool*>(this, element, found);
-  auto findLambda = [] (rt::Handle&,
-                        const std::tuple<LocalSet<T, ELEM_COMPARE>*,
-                                         T, bool*>& t) {
-    *std::get<2>(t) = (std::get<0>(t))->Find(std::get<1>(t));
-  };
+      std::tuple<LocalSet<T, ELEM_COMPARE>*, T, bool*>(this, element, found);
+  auto findLambda =
+      [](rt::Handle&,
+         const std::tuple<LocalSet<T, ELEM_COMPARE>*, T, bool*>& t) {
+        *std::get<2>(t) = (std::get<0>(t))->Find(std::get<1>(t));
+      };
   rt::asyncExecuteAt(handle, rt::thisLocality(), findLambda, args);
 }
 
 template <typename T, typename ELEM_COMPARE>
-template<typename ApplyFunT, typename ...Args>
-void LocalSet<T, ELEM_COMPARE>::
-ForEachElement(ApplyFunT &&function, Args&... args) {
-  using FunctionTy = void(*)(const T&, Args&...);
+template <typename ApplyFunT, typename... Args>
+void LocalSet<T, ELEM_COMPARE>::ForEachElement(ApplyFunT&& function,
+                                               Args&... args) {
+  using FunctionTy = void (*)(const T&, Args&...);
   FunctionTy fn = std::forward<decltype(function)>(function);
-  using ArgsTuple = std::tuple<LocalSet<T, ELEM_COMPARE>*,
-                               FunctionTy, std::tuple<Args...>>;
+  using ArgsTuple =
+      std::tuple<LocalSet<T, ELEM_COMPARE>*, FunctionTy, std::tuple<Args...>>;
   ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
   // FIXME for "small" sizes it may be better to go serially
   rt::forEachAt(rt::thisLocality(),
-                ForEachElementFunWrapper<ArgsTuple, Args...>,
-                argsTuple, numBuckets_);
+                ForEachElementFunWrapper<ArgsTuple, Args...>, argsTuple,
+                numBuckets_);
 }
 
 template <typename T, typename ELEM_COMPARE>
-template<typename ApplyFunT, typename ...Args>
-void LocalSet<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle & handle,
-                                                    ApplyFunT &&function,
+template <typename ApplyFunT, typename... Args>
+void LocalSet<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
+                                                    ApplyFunT&& function,
                                                     Args&... args) {
-  using FunctionTy = void(*)(rt::Handle &, const T&, Args&...);
+  using FunctionTy = void (*)(rt::Handle&, const T&, Args&...);
   FunctionTy fn = std::forward<decltype(function)>(function);
-  using ArgsTuple = std::tuple<LocalSet<T, ELEM_COMPARE>*,
-                               FunctionTy, std::tuple<Args...>>;
+  using ArgsTuple =
+      std::tuple<LocalSet<T, ELEM_COMPARE>*, FunctionTy, std::tuple<Args...>>;
   ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
   // FIXME for "small" sizes it may be better to go serially
   rt::asyncForEachAt(handle, rt::thisLocality(),
-        AsyncForEachElementFunWrapper<ArgsTuple, Args...>,
-                                 argsTuple, numBuckets_);
+                     AsyncForEachElementFunWrapper<ArgsTuple, Args...>,
+                     argsTuple, numBuckets_);
 }
 
 }  // namespace shad
