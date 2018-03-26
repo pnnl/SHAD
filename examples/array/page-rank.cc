@@ -204,9 +204,7 @@ int main(int argc, char **argv) {
       [&]() { CSR = loadGraph(argv[1], argv[2]); });
 
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\n"
-               "Let's compute PageRanks..."
-            << std::endl;
+            << " seconds\nLet's compute PageRanks..." << std::endl;
 
   auto duration = shad::measure<std::chrono::seconds>::duration(
       [&]() { PageRank(CSR, 20, 1e-4); });

@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_RUNTIME_HANDLE_H_
 #define INCLUDE_SHAD_RUNTIME_HANDLE_H_
 
@@ -30,19 +29,19 @@
 
 #include "shad/config/config.h"
 #include "shad/runtime/mapping_traits.h"
-#if  defined HAVE_TBB
-#  include "shad/runtime/tbb/tbb_traits_mapping.h"
+#if defined HAVE_TBB
+#include "shad/runtime/tbb/tbb_traits_mapping.h"
 #else
-#  error Unsupported Runtime System
+#error Unsupported Runtime System
 #endif
-
 
 namespace shad {
 
 namespace rt {
 
 namespace impl {
-template <typename TargetSystemTag> class AsynchronousInterface;
+template <typename TargetSystemTag>
+class AsynchronousInterface;
 }
 
 /// @brief Handle.
@@ -62,31 +61,30 @@ class Handle {
   /// @brief Constructor.
   /// Initialize the newly created object with a specific Handle ID.
   /// @param id The Handle ID to be assigned.
-  explicit Handle(
-      typename impl::HandleTrait<TargetSystemTag>::HandleTy id) {
+  explicit Handle(typename impl::HandleTrait<TargetSystemTag>::HandleTy id) {
     impl::HandleTrait<TargetSystemTag>::Init(id_, id);
   }
 
   /// @brief Copy-Constructor.
   /// @param rhs The right-hand side of the operator.
-  Handle(const Handle & rhs) = default;
+  Handle(const Handle &rhs) = default;
 
   /// @brief Move-Constructor.
-  Handle(Handle && rhs) = default;
+  Handle(Handle &&rhs) = default;
 
   /// @brief Copy-Assigment.
-  Handle & operator=(const Handle & rhs) = default;
+  Handle &operator=(const Handle &rhs) = default;
 
   /// @brief Move-Assigment.
-  Handle & operator=(Handle && rhs) = default;
+  Handle &operator=(Handle &&rhs) = default;
 
   /// @brief Operator equal.
-  friend bool operator==(const Handle & lhs, const Handle & rhs) {
+  friend bool operator==(const Handle &lhs, const Handle &rhs) {
     return impl::HandleTrait<TargetSystemTag>::Equal(lhs.id_, rhs.id_);
   }
 
   /// @brief Coverson operator to uint64_t.
-  explicit operator uint64_t () const {
+  explicit operator uint64_t() const {
     return impl::HandleTrait<TargetSystemTag>::toUnsignedInt(id_);
   }
 

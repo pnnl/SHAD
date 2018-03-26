@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_RUNTIME_ASYNCHRONOUS_INTERFACE_H_
 #define INCLUDE_SHAD_RUNTIME_ASYNCHRONOUS_INTERFACE_H_
 
@@ -38,79 +37,67 @@ namespace rt {
 
 namespace impl {
 
-template<typename TargetSystemTag>
+template <typename TargetSystemTag>
 struct AsynchronousInterface {
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteAt(Handle & handle, const Locality & loc, FunT && func,
-                 const InArgsT & args);
+  static void asyncExecuteAt(Handle &handle, const Locality &loc, FunT &&func,
+                             const InArgsT &args);
 
   template <typename FunT>
-  static void
-  asyncExecuteAt(
-      Handle & handle, const Locality & loc, FunT && func,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize);
+  static void asyncExecuteAt(Handle &handle, const Locality &loc, FunT &&func,
+                             const std::shared_ptr<uint8_t> &argsBuffer,
+                             const uint32_t bufferSize);
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteAtWithRetBuff(
-      Handle & handle, const Locality & loc, FunT && func, const InArgsT & args,
-      uint8_t * resultBuffer, uint32_t * resultSize);
+  static void asyncExecuteAtWithRetBuff(Handle &handle, const Locality &loc,
+                                        FunT &&func, const InArgsT &args,
+                                        uint8_t *resultBuffer,
+                                        uint32_t *resultSize);
 
   template <typename FunT>
   static void asyncExecuteAtWithRetBuff(
-      Handle & handle, const Locality &loc, FunT && func,
+      Handle &handle, const Locality &loc, FunT &&func,
       const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      uint8_t * resultBuffer, uint32_t * resultSize);
+      uint8_t *resultBuffer, uint32_t *resultSize);
 
   template <typename FunT, typename InArgsT, typename ResT>
-  static void
-  asyncExecuteAtWithRet(
-      Handle & handle, const Locality &loc, FunT && func, const InArgsT & args,
-      ResT * result);
+  static void asyncExecuteAtWithRet(Handle &handle, const Locality &loc,
+                                    FunT &&func, const InArgsT &args,
+                                    ResT *result);
 
   template <typename FunT, typename ResT>
-  static void
-  asyncExecuteAtWithRet(
-      Handle & handle, const Locality & loc, FunT && func,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      ResT * result);
+  static void asyncExecuteAtWithRet(Handle &handle, const Locality &loc,
+                                    FunT &&func,
+                                    const std::shared_ptr<uint8_t> &argsBuffer,
+                                    const uint32_t bufferSize, ResT *result);
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteOnAll(Handle & handle, FunT && func, const InArgsT & args);
+  static void asyncExecuteOnAll(Handle &handle, FunT &&func,
+                                const InArgsT &args);
 
   template <typename FunT>
-  static void
-  asyncExecuteOnAll(
-      Handle & handle, FunT && func,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize);
+  static void asyncExecuteOnAll(Handle &handle, FunT &&func,
+                                const std::shared_ptr<uint8_t> &argsBuffer,
+                                const uint32_t bufferSize);
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncForEachAt(
-      Handle & handle, const Locality & loc, FunT && func, const InArgsT & args,
-      const size_t numIters);
+  static void asyncForEachAt(Handle &handle, const Locality &loc, FunT &&func,
+                             const InArgsT &args, const size_t numIters);
 
   template <typename FunT>
-  static void
-  asyncForEachAt(
-      Handle & handle, const Locality & loc, FunT && func,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      const size_t numIters);
+  static void asyncForEachAt(Handle &handle, const Locality &loc, FunT &&func,
+                             const std::shared_ptr<uint8_t> &argsBuffer,
+                             const uint32_t bufferSize, const size_t numIters);
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncForEachOnAll(
-      Handle & handle,
-      FunT && func, const InArgsT & args, const size_t numIters);
+  static void asyncForEachOnAll(Handle &handle, FunT &&func,
+                                const InArgsT &args, const size_t numIters);
 
   template <typename FunT>
-  static void
-  asyncForEachOnAll(
-      Handle & handle, FunT && func,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      const size_t numIters);
+  static void asyncForEachOnAll(Handle &handle, FunT &&func,
+                                const std::shared_ptr<uint8_t> &argsBuffer,
+                                const uint32_t bufferSize,
+                                const size_t numIters);
 };
 
 }  // namespace impl

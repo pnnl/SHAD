@@ -31,68 +31,11 @@
 #include <utility>
 
 #include "shad/data_structures/array.h"
+#include "shad/data_structures/set.h"
+#include "shad/extensions/graph_library/algorithms/sssp.h"
 #include "shad/extensions/graph_library/edge_index.h"
 #include "shad/runtime/runtime.h"
 #include "shad/util/measure.h"
-
-// This is one for each Locality.
-static std::atomic<size_t> TriangleCounter(0);
-
-size_t TriangleCount(shad::EdgeIndex<size_t, size_t>::ObjectID &eid) {
-  using ELObjectID = shad::EdgeIndex<size_t, size_t>::ObjectID;
-  using SrcT = shad::EdgeIndex<size_t, size_t>::SrcType;
-  using DestT = shad::EdgeIndex<size_t, size_t>::DestType;
-
-  // Triangle counting loops:
-  // 1 - For each vertex in the graph i
-  shad::rt::Handle handle;
-  auto elPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(eid);
-  elPtr->AsyncForEachEdge(
-      handle,
-      [](shad::rt::Handle &handle, const SrcT &i, const DestT &j,
-         ELObjectID &eid) {
-        auto GraphPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(eid);
-        // 3 - Visit all the neighbors k of j such that k < j
-        GraphPtr->AsyncForEachNeighbor(
-            handle, j,
-            [](shad::rt::Handle &handle, const SrcT &j, const DestT &k,
-               ELObjectID &eid, const SrcT &v) {
-              auto GraphPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(eid);
-
-              // 4 - Visit all the neighbors w of k and if w == i
-              //     increment the counter.
-              GraphPtr->AsyncForEachNeighbor(
-                  handle, v,
-                  [](shad::rt::Handle &handle, const SrcT &i, const DestT &w,
-                     const SrcT &k) {
-                    if (w != k) return;
-                    TriangleCounter++;
-                  },
-                  k);
-            },
-            eid, i);
-      },
-      eid);
-  shad::rt::waitForCompletion(handle);
-
-  // This performs a reduction into a single counter.
-  std::vector<size_t> reducer(shad::rt::numLocalities());
-
-  for (auto &locality : shad::rt::allLocalities()) {
-    shad::rt::asyncExecuteAtWithRet(
-        handle, locality,
-        [](shad::rt::Handle &, const size_t &, size_t *value) {
-          *value = TriangleCounter.load();
-        },
-        size_t(0), &reducer[static_cast<uint32_t>(locality)]);
-  }
-  shad::rt::waitForCompletion(handle);
-
-  size_t counter = 0;
-  for (size_t i : reducer) counter += i;
-
-  return counter;
-}
 
 // The GraphReader expects an input file in METIS dump format
 shad::EdgeIndex<size_t, size_t>::ObjectID GraphReader(std::ifstream &GFS) {
@@ -118,7 +61,6 @@ shad::EdgeIndex<size_t, size_t>::ObjectID GraphReader(std::ifstream &GFS) {
     while (!lineStream.eof()) {
       lineStream >> destination;
       destination--;
-      if (destination >= i) continue;
       edges.push_back(destination);
     }
     eiGraph->AsyncInsertEdgeList(handle, i, edges.data(), edges.size());
@@ -127,10 +69,18 @@ shad::EdgeIndex<size_t, size_t>::ObjectID GraphReader(std::ifstream &GFS) {
   return eiGraph->GetGlobalID();
 }
 
+void printHelp(const std::string programName) {
+  std::cerr << "Usage: " << programName << " FILENAME SourceID DestinationID"
+            << std::endl;
+}
+
 namespace shad {
 
 int main(int argc, char **argv) {
-  if (argc != 2) return -1;
+  if (argc != 4) {
+    printHelp(argv[0]);
+    return -1;
+  }
 
   shad::EdgeIndex<size_t, size_t>::ObjectID OID(-1);
   auto loadingTime = shad::measure<std::chrono::seconds>::duration([&]() {
@@ -139,18 +89,30 @@ int main(int argc, char **argv) {
     inputFile.open(argv[1], std::ifstream::in);
     OID = GraphReader(inputFile);
   });
-
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\nLet's find some triangles..." << std::endl;
+            << " seconds\nLet's find some paths..." << std::endl;
   auto eiPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(OID);
-  std::cout << "NumVertices: " << eiPtr->Size()
-            << " Num Edges: " << eiPtr->NumEdges() << std::endl;
-  size_t TC = 0;
-  auto duration = shad::measure<std::chrono::seconds>::duration(
-      [&]() { TC = TriangleCount(OID); });
 
-  std::cout << "I Found : " << TC << " unique triangles in " << duration.count()
-            << " seconds" << std::endl;
+  size_t num_vertices = eiPtr->Size();
+  std::cout << "NumVertices: " << num_vertices
+            << " Num Edges: " << eiPtr->NumEdges() << std::endl;
+
+  size_t path_length = 0;
+  size_t src = std::stoul(argv[2], nullptr, 0);
+  size_t target = std::stoul(argv[3], nullptr, 0);
+  auto duration = shad::measure<std::chrono::seconds>::duration([&]() {
+    path_length =
+        sssp_length<shad::EdgeIndex<size_t, size_t>, size_t>(OID, src, target);
+  });
+
+  if (path_length != std::numeric_limits<size_t>::max()) {
+    std::cout << "Found a path between " << src << " and " << target << " in "
+              << path_length << " hops in " << duration.count() << " seconds"
+              << std::endl;
+  } else {
+    std::cout << "Couldn't find a path between " << src << " and " << target
+              << " in " << duration.count() << " seconds" << std::endl;
+  }
   shad::EdgeIndex<size_t, size_t>::Destroy(OID);
   return 0;
 }

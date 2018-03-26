@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_RUNTIME_MAPPING_TRAITS_H_
 #define INCLUDE_SHAD_RUNTIME_MAPPING_TRAITS_H_
 
@@ -58,14 +57,13 @@ struct LockTrait {
   /// @brief The type of Handle
   using LockTy = typename TargetSystemTag::UndefinedLockTypeError;
 
-  static void lock(LockTy & L);
-  static void unlock(LockTy & L);
+  static void lock(LockTy& L);
+  static void unlock(LockTy& L);
 };
-
 
 template <typename TargetSystemTag>
 struct RuntimeInternalsTrait {
-  static void Initialize(int argc, char * argv[]);
+  static void Initialize(int argc, char* argv[]);
   static void Finalize();
 
   static size_t Concurrency();

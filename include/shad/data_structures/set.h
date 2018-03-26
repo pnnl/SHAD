@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_DATA_STRUCTURES_SET_H_
 #define INCLUDE_SHAD_DATA_STRUCTURES_SET_H_
 
@@ -46,16 +45,15 @@ namespace shad {
 /// @tparam ELEM_COMPARE element comparison function; default is MemCmp<T>.
 /// @warning obects of type T need to be trivially copiable.
 template <typename T, typename ELEM_COMPARE = MemCmp<T>>
-class Set
-      : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
-  template<typename> friend class AbstractDataStructure;
+class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
+  template <typename>
+  friend class AbstractDataStructure;
+
  public:
   using SetT = Set<T, ELEM_COMPARE>;
   using LSetT = LocalSet<T, ELEM_COMPARE>;
-  using ObjectID =
-              typename AbstractDataStructure<SetT>::ObjectID;
-  using ShadSetPtr =
-              typename AbstractDataStructure<SetT>::SharedPtr;
+  using ObjectID = typename AbstractDataStructure<SetT>::ObjectID;
+  using ShadSetPtr = typename AbstractDataStructure<SetT>::SharedPtr;
   using BuffersVector = typename impl::BuffersVector<T, SetT>;
 
   /// @brief Create method.
@@ -70,9 +68,7 @@ class Set
   /// @brief Getter of the Global Identifier.
   ///
   /// @return The global identifier associated with the set instance.
-  ObjectID GetGlobalID() const {
-    return oid_;
-  }
+  ObjectID GetGlobalID() const { return oid_; }
 
   /// @brief Overall size of the set (number of elements).
   /// @warning Calling the size method may result in one-to-all
@@ -106,13 +102,10 @@ class Set
   /// the WaitForBufferedInsert() method, in this order.
   /// @param[in,out] handle Reference to the handle
   /// @param[in] element The element.
-  void BufferedAsyncInsert(rt::Handle &handle,
-                           const T& element);
+  void BufferedAsyncInsert(rt::Handle& handle, const T& element);
 
   /// @brief Finalize method for buffered insertions.
-  void WaitForBufferedInsert() {
-    buffers_.FlushAll();
-  }
+  void WaitForBufferedInsert() { buffers_.FlushAll(); }
   /// @brief Remove an element from the set.
   /// @param[in] element the element.
   void Erase(const T& element);
@@ -127,7 +120,7 @@ class Set
 
   /// @brief Clear the content of the set.
   void Clear() {
-    auto clearLambda = [] (const ObjectID& oid) {
+    auto clearLambda = [](const ObjectID& oid) {
       auto setPtr = SetT::GetPtr(oid);
       setPtr->localSet_.Clear();
     };
@@ -136,7 +129,7 @@ class Set
 
   /// @brief Clear the content of the set.
   void Reset(size_t numElements) {
-    auto resetLambda = [] (const std::tuple<ObjectID, size_t> &t) {
+    auto resetLambda = [](const std::tuple<ObjectID, size_t>& t) {
       auto setPtr = SetT::GetPtr(std::get<0>(t));
       setPtr->localSet_.Reset(std::get<1>(t));
     };
@@ -165,9 +158,8 @@ class Set
   /// @tparam ...Args Types of the function arguments.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void ForEachElement(ApplyFunT &&function, Args&... args);
-
+  template <typename ApplyFunT, typename... Args>
+  void ForEachElement(ApplyFunT&& function, Args&... args);
 
   /// @brief Asynchronously apply a user-defined function
   /// to each element in the set.
@@ -183,14 +175,14 @@ class Set
   /// to be used to wait for completion.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void AsyncForEachElement(rt::Handle & handle, ApplyFunT &&function,
-                         Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void AsyncForEachElement(rt::Handle& handle, ApplyFunT&& function,
+                           Args&... args);
 
   /// @brief Print all the entries in the set.
   /// @warning std::ostream & operator<< must be defined for T.
   void PrintAllElements() {
-    auto printLambda = [] (const ObjectID& oid) {
+    auto printLambda = [](const ObjectID& oid) {
       auto setPtr = SetT::GetPtr(oid);
       std::cout << "---- Locality: " << rt::thisLocality() << std::endl;
       setPtr->localSet_.PrintAllElements();
@@ -199,9 +191,7 @@ class Set
   }
 
   // FIXME it should be protected
-  void BufferEntryInsert(const T& element) {
-    localSet_.Insert(element);
-  }
+  void BufferEntryInsert(const T& element) { localSet_.Insert(element); }
 
  private:
   ObjectID oid_;
@@ -216,16 +206,16 @@ class Set
  protected:
   Set(ObjectID oid, const size_t numEntries)
       : oid_(oid),
-      localSet_(std::max(numEntries/constants::kSetDefaultNumEntriesPerBucket,
-                         1lu)),
-      buffers_(oid) { }
+        localSet_(std::max(
+            numEntries / constants::kSetDefaultNumEntriesPerBucket, 1lu)),
+        buffers_(oid) {}
 };
 
 template <typename T, typename ELEM_COMPARE>
 inline size_t Set<T, ELEM_COMPARE>::Size() const {
   size_t size = localSet_.size_;
   size_t remoteSize(0);
-  auto sizeLambda = [] (const ObjectID &oid, size_t *res) {
+  auto sizeLambda = [](const ObjectID& oid, size_t* res) {
     auto setPtr = SetT::GetPtr(oid);
     *res = setPtr->localSet_.size_;
   };
@@ -239,16 +229,14 @@ inline size_t Set<T, ELEM_COMPARE>::Size() const {
 }
 
 template <typename T, typename ELEM_COMPARE>
-inline void
-Set<T, ELEM_COMPARE>::Insert(const T& element) {
-  uint64_t targetId =
-      HashFunction<T>(element, 0) % rt::numLocalities();
+inline void Set<T, ELEM_COMPARE>::Insert(const T& element) {
+  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     localSet_.Insert(element);
   } else {
-    auto insertLambda = [] (const ExeAtArgs &args) {
+    auto insertLambda = [](const ExeAtArgs& args) {
       auto setPtr = SetT::GetPtr(args.oid);
       setPtr->localSet_.Insert(args.element);
     };
@@ -259,14 +247,13 @@ Set<T, ELEM_COMPARE>::Insert(const T& element) {
 
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::AsyncInsert(rt::Handle& handle,
-                                             const T& element) {
-  uint64_t targetId =
-      HashFunction<T>(element, 0) % rt::numLocalities();
+                                              const T& element) {
+  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.AsyncInsert(handle, element);
   } else {
-    auto insertLambda = [] (rt::Handle& handle, const ExeAtArgs &args) {
+    auto insertLambda = [](rt::Handle& handle, const ExeAtArgs& args) {
       auto setPtr = SetT::GetPtr(args.oid);
       setPtr->localSet_.AsyncInsert(handle, args.element);
     };
@@ -276,10 +263,8 @@ inline void Set<T, ELEM_COMPARE>::AsyncInsert(rt::Handle& handle,
 }
 
 template <typename T, typename ELEM_COMPARE>
-inline void
-Set<T, ELEM_COMPARE>::BufferedInsert(const T& element) {
-  uint64_t targetId =
-      HashFunction<T>(element, 0) % rt::numLocalities();
+inline void Set<T, ELEM_COMPARE>::BufferedInsert(const T& element) {
+  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.Insert(element);
@@ -289,10 +274,9 @@ Set<T, ELEM_COMPARE>::BufferedInsert(const T& element) {
 }
 
 template <typename T, typename ELEM_COMPARE>
-inline void Set<T, ELEM_COMPARE>::BufferedAsyncInsert(rt::Handle &handle,
-                                                     const T& element) {
-  uint64_t targetId =
-      HashFunction<T>(element, 0) % rt::numLocalities();
+inline void Set<T, ELEM_COMPARE>::BufferedAsyncInsert(rt::Handle& handle,
+                                                      const T& element) {
+  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.AsyncInsert(handle, element);
@@ -303,13 +287,12 @@ inline void Set<T, ELEM_COMPARE>::BufferedAsyncInsert(rt::Handle &handle,
 
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::Erase(const T& element) {
-  uint64_t targetId =
-      HashFunction<T>(element, 0) % rt::numLocalities();
+  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.Erase(element);
   } else {
-    auto eraseLambda = [] (const ExeAtArgs &args) {
+    auto eraseLambda = [](const ExeAtArgs& args) {
       auto setPtr = SetT::GetPtr(args.oid);
       setPtr->localSet_.Erase(args.element);
     };
@@ -320,14 +303,13 @@ inline void Set<T, ELEM_COMPARE>::Erase(const T& element) {
 
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
-                                            const T& element) {
-  uint64_t targetId =
-      HashFunction<T>(element, 0) % rt::numLocalities();
+                                             const T& element) {
+  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.AsyncErase(handle, element);
   } else {
-    auto eraseLambda = [] (rt::Handle& handle, const ExeAtArgs &args) {
+    auto eraseLambda = [](rt::Handle& handle, const ExeAtArgs& args) {
       auto setPtr = SetT::GetPtr(args.oid);
       setPtr->localSet_.AsyncErase(handle, args.element);
     };
@@ -338,13 +320,12 @@ inline void Set<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
 
 template <typename T, typename ELEM_COMPARE>
 inline bool Set<T, ELEM_COMPARE>::Find(const T& element) {
-  uint64_t targetId =
-      HashFunction<T>(element, 0) % rt::numLocalities();
+  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     return localSet_.Find(element);
   } else {
-    auto findLambda = [] (const ExeAtArgs &args, bool *res) {
+    auto findLambda = [](const ExeAtArgs& args, bool* res) {
       auto setPtr = SetT::GetPtr(args.oid);
       *res = setPtr->localSet_.Find(args.element);
     };
@@ -357,64 +338,60 @@ inline bool Set<T, ELEM_COMPARE>::Find(const T& element) {
 }
 
 template <typename T, typename ELEM_COMPARE>
-inline void Set<T, ELEM_COMPARE>::
-AsyncFind(rt::Handle& handle, const T& element, bool* found) {
-  uint64_t targetId =
-      HashFunction<T>(element, 0) % rt::numLocalities();
+inline void Set<T, ELEM_COMPARE>::AsyncFind(rt::Handle& handle,
+                                            const T& element, bool* found) {
+  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     localSet_.AsyncFind(handle, element, found);
   } else {
-    auto findLambda = [] (rt::Handle&, const ExeAtArgs &args, bool *res) {
+    auto findLambda = [](rt::Handle&, const ExeAtArgs& args, bool* res) {
       auto setPtr = SetT::GetPtr(args.oid);
       *res = setPtr->localSet_.Find(args.element);
     };
     ExeAtArgs args = {oid_, element};
-    rt::asyncExecuteAtWithRet(handle, targetLocality,
-                              findLambda, args, found);
+    rt::asyncExecuteAtWithRet(handle, targetLocality, findLambda, args, found);
   }
 }
 
 template <typename T, typename ELEM_COMPARE>
-template<typename ApplyFunT, typename ...Args>
-void Set<T, ELEM_COMPARE>::ForEachElement(ApplyFunT &&function, Args&... args) {
-  using FunctionTy = void(*)(const T&, Args&...);
+template <typename ApplyFunT, typename... Args>
+void Set<T, ELEM_COMPARE>::ForEachElement(ApplyFunT&& function, Args&... args) {
+  using FunctionTy = void (*)(const T&, Args&...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<LSetT*, FunctionTy, std::tuple<Args...>>;
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
-  auto feLambda = [](const feArgs &args) {
+  auto feLambda = [](const feArgs& args) {
     auto setPtr = SetT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&setPtr->localSet_,
-                        std::get<1>(args),
+    ArgsTuple argsTuple(&setPtr->localSet_, std::get<1>(args),
                         std::get<2>(args));
     rt::forEachAt(rt::thisLocality(),
-        LSetT:: template ForEachElementFunWrapper<ArgsTuple, Args...>,
-                         argsTuple, setPtr->localSet_.numBuckets_);
+                  LSetT::template ForEachElementFunWrapper<ArgsTuple, Args...>,
+                  argsTuple, setPtr->localSet_.numBuckets_);
   };
   rt::executeOnAll(feLambda, arguments);
 }
 
 template <typename T, typename ELEM_COMPARE>
-template<typename ApplyFunT, typename ...Args>
+template <typename ApplyFunT, typename... Args>
 void Set<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
-                                              ApplyFunT &&function,
-                                              Args&... args) {
-  using FunctionTy = void(*)(rt::Handle&, const T&, Args&...);
+                                               ApplyFunT&& function,
+                                               Args&... args) {
+  using FunctionTy = void (*)(rt::Handle&, const T&, Args&...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<LSetT*, FunctionTy, std::tuple<Args...>>;
   feArgs arguments{oid_, fn, std::tuple<Args...>(args...)};
-  auto feLambda = [](rt::Handle& handle, const feArgs &args) {
+  auto feLambda = [](rt::Handle& handle, const feArgs& args) {
     auto setPtr = SetT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple = std::make_tuple(&setPtr->localSet_,
-                                          std::get<1>(args),
+    ArgsTuple argsTuple = std::make_tuple(&setPtr->localSet_, std::get<1>(args),
                                           std::get<2>(args));
-    rt::asyncForEachAt(handle, rt::thisLocality(),
-        LSetT:: template AsyncForEachElementFunWrapper<ArgsTuple,
-                                                       Args...>,
-                       argsTuple, setPtr->localSet_.numBuckets_);
+    rt::asyncForEachAt(
+        handle, rt::thisLocality(),
+        LSetT::template AsyncForEachElementFunWrapper<ArgsTuple, Args...>,
+        argsTuple, setPtr->localSet_.numBuckets_);
   };
   rt::asyncExecuteOnAll(handle, feLambda, arguments);
 }

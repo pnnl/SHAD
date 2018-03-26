@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_RUNTIME_TBB_TBB_UTILITY_H_
 #define INCLUDE_SHAD_RUNTIME_TBB_TBB_UTILITY_H_
 
@@ -38,7 +37,7 @@ namespace rt {
 
 namespace impl {
 
-inline void checkLocality(const Locality & loc) {
+inline void checkLocality(const Locality& loc) {
   Locality L(0);
 
   if (loc != L) {
@@ -52,6 +51,5 @@ inline void checkLocality(const Locality & loc) {
 
 }  // namespace rt
 }  // namespace shad
-
 
 #endif  // INCLUDE_SHAD_RUNTIME_TBB_TBB_UTILITY_H_
