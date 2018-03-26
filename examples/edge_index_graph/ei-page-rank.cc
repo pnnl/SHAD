@@ -164,25 +164,24 @@ int main(int argc, char **argv) {
   if (argc != 2) return -1;
 
   shad::EdgeIndex<uint64_t, uint64_t>::ObjectID OID(-1);
-  auto loadingTime = shad::measure<std::chrono::microseconds>::duration([&]() {
+  auto loadingTime = shad::measure<std::chrono::seconds>::duration([&]() {
     std::ifstream inputFile;
     // The GraphReader expects an input file in METIS dump format
     inputFile.open(argv[1], std::ifstream::in);
     OID = GraphReader(inputFile);
   });
 
-  std::cout << "Graph loaded in " << loadingTime.count() / (double)1000000
-            << " seconds\n"
-               "Let's rank some pages..."
+  std::cout << "Graph loaded in " << loadingTime.count()
+            << " seconds\nLet's rank some pages..."
             << std::endl;
   auto eiPtr = shad::EdgeIndex<uint64_t, uint64_t>::GetPtr(OID);
   std::cout << "NumVertices: " << eiPtr->Size()
             << " Num Edges: " << eiPtr->NumEdges() << std::endl;
 
-  auto duration = shad::measure<std::chrono::microseconds>::duration(
+  auto duration = shad::measure<std::chrono::seconds>::duration(
       [&]() { PageRank(OID, 20, 1e-4); });
 
-  std::cout << "Computed PageRank in " << duration.count() / (double)1000000
+  std::cout << "Computed PageRank in " << duration.count()
             << " seconds" << std::endl;
 
   return 0;

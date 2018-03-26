@@ -27,6 +27,7 @@
 #include <atomic>
 #include <fstream>
 #include <iostream>
+#include <ratio>
 #include <sstream>
 #include <utility>
 
@@ -83,16 +84,14 @@ int main(int argc, char **argv) {
   }
 
   shad::EdgeIndex<size_t, size_t>::ObjectID OID(-1);
-  auto loadingTime = shad::measure<std::chrono::microseconds>::duration([&]() {
+  auto loadingTime = shad::measure<std::chrono::seconds>::duration([&]() {
     // The GraphReader expects an input file in METIS dump format
     std::ifstream inputFile;
     inputFile.open(argv[1], std::ifstream::in);
     OID = GraphReader(inputFile);
   });
-
-  std::cout << "Graph loaded in " << loadingTime.count() / (double)1000000
-            << " seconds\n"
-               "Let's find some paths..."
+  std::cout << "Graph loaded in " << loadingTime.count()
+            << " seconds\nLet's find some paths..."
             << std::endl;
   auto eiPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(OID);
 
@@ -103,7 +102,7 @@ int main(int argc, char **argv) {
   size_t path_length = 0;
   size_t src = std::stoul(argv[2], nullptr, 0);
   size_t target = std::stoul(argv[3], nullptr, 0);
-  auto duration = shad::measure<std::chrono::microseconds>::duration([&]() {
+  auto duration = shad::measure<std::chrono::seconds>::duration([&]() {
     path_length =
         sssp_length<shad::EdgeIndex<size_t, size_t>, size_t>(OID, src, target);
   });
@@ -111,10 +110,10 @@ int main(int argc, char **argv) {
   if (path_length != std::numeric_limits<size_t>::max()) {
     std::cout << "Found a path between " << src << " and " << target << " in "
               << path_length << " hops in "
-              << duration.count() / (double)1000000 << " seconds" << std::endl;
+              << duration.count() << " seconds" << std::endl;
   } else {
     std::cout << "Couldn't find a path between " << src << " and " << target
-              << " in " << duration.count() / (double)1000000 << " seconds"
+              << " in " << duration.count() << " seconds"
               << std::endl;
   }
   shad::EdgeIndex<size_t, size_t>::Destroy(OID);

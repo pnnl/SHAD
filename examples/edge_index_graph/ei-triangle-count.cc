@@ -133,26 +133,25 @@ int main(int argc, char **argv) {
   if (argc != 2) return -1;
 
   shad::EdgeIndex<size_t, size_t>::ObjectID OID(-1);
-  auto loadingTime = shad::measure<std::chrono::microseconds>::duration([&]() {
+  auto loadingTime = shad::measure<std::chrono::seconds>::duration([&]() {
     // The GraphReader expects an input file in METIS dump format
     std::ifstream inputFile;
     inputFile.open(argv[1], std::ifstream::in);
     OID = GraphReader(inputFile);
   });
 
-  std::cout << "Graph loaded in " << loadingTime.count() / (double)1000000
-            << " seconds\n"
-               "Let's find some triangles..."
+  std::cout << "Graph loaded in " << loadingTime.count()
+            << " seconds\nLet's find some triangles..."
             << std::endl;
   auto eiPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(OID);
   std::cout << "NumVertices: " << eiPtr->Size()
             << " Num Edges: " << eiPtr->NumEdges() << std::endl;
   size_t TC = 0;
-  auto duration = shad::measure<std::chrono::microseconds>::duration(
+  auto duration = shad::measure<std::chrono::seconds>::duration(
       [&]() { TC = TriangleCount(OID); });
 
   std::cout << "I Found : " << TC << " unique triangles in "
-            << duration.count() / (double)1000000 << " seconds" << std::endl;
+            << duration.count() << " seconds" << std::endl;
   shad::EdgeIndex<size_t, size_t>::Destroy(OID);
   return 0;
 }

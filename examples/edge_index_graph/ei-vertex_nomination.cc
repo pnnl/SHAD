@@ -158,16 +158,15 @@ int main(int argc, char **argv) {
   }
 
   shad::EdgeIndex<size_t, size_t>::ObjectID OID(-1);
-  auto loadingTime = shad::measure<std::chrono::microseconds>::duration([&]() {
+  auto loadingTime = shad::measure<std::chrono::seconds>::duration([&]() {
     // The GraphReader expects an input file in METIS dump format
     std::ifstream inputFile;
     inputFile.open(inpath.c_str(), std::ifstream::in);
     OID = GraphReader(inputFile);
   });
 
-  std::cout << "Graph loaded in " << loadingTime.count() / (double)1000000
-            << " seconds\n"
-               "Let's nominate some vertices..."
+  std::cout << "Graph loaded in " << loadingTime.count()
+            << " seconds\nLet's nominate some vertices..."
             << std::endl;
   auto eiPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(OID);
 

@@ -184,8 +184,7 @@ int main(int argc, char **argv) {
       [&]() { CSR = loadGraph(argv[1], argv[2]); });
 
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\n"
-               "Let's find some triangles..."
+            << " seconds\nLet's find some triangles..."
             << std::endl;
 
   size_t TC = 0;
