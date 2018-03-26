@@ -164,8 +164,7 @@ int main(int argc, char **argv) {
   });
 
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\nLet's nominate some vertices..."
-            << std::endl;
+            << " seconds\nLet's nominate some vertices..." << std::endl;
   auto eiPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(OID);
 
   size_t num_vertices = eiPtr->Size();

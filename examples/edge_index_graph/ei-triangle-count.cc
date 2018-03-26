@@ -141,8 +141,7 @@ int main(int argc, char **argv) {
   });
 
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\nLet's find some triangles..."
-            << std::endl;
+            << " seconds\nLet's find some triangles..." << std::endl;
   auto eiPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(OID);
   std::cout << "NumVertices: " << eiPtr->Size()
             << " Num Edges: " << eiPtr->NumEdges() << std::endl;
@@ -150,8 +149,8 @@ int main(int argc, char **argv) {
   auto duration = shad::measure<std::chrono::seconds>::duration(
       [&]() { TC = TriangleCount(OID); });
 
-  std::cout << "I Found : " << TC << " unique triangles in "
-            << duration.count() << " seconds" << std::endl;
+  std::cout << "I Found : " << TC << " unique triangles in " << duration.count()
+            << " seconds" << std::endl;
   shad::EdgeIndex<size_t, size_t>::Destroy(OID);
   return 0;
 }

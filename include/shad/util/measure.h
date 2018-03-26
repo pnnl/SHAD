@@ -57,12 +57,11 @@ struct measure {
     auto start = std::chrono::steady_clock::now();
     std::forward<decltype(function)>(function)(std::forward<Args>(args)...);
     std::chrono::duration<double, typename TimeT::period> duration =
-                   std::chrono::steady_clock::now() - start;
+        std::chrono::steady_clock::now() - start;
 
     return duration;
   }
 };
-
 
 }  // namespace shad
 

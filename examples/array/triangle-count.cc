@@ -184,8 +184,7 @@ int main(int argc, char **argv) {
       [&]() { CSR = loadGraph(argv[1], argv[2]); });
 
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\nLet's find some triangles..."
-            << std::endl;
+            << " seconds\nLet's find some triangles..." << std::endl;
 
   size_t TC = 0;
   auto duration = shad::measure<std::chrono::seconds>::duration(

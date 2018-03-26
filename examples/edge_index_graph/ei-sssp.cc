@@ -27,7 +27,6 @@
 #include <atomic>
 #include <fstream>
 #include <iostream>
-#include <ratio>
 #include <sstream>
 #include <utility>
 
@@ -91,8 +90,7 @@ int main(int argc, char **argv) {
     OID = GraphReader(inputFile);
   });
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\nLet's find some paths..."
-            << std::endl;
+            << " seconds\nLet's find some paths..." << std::endl;
   auto eiPtr = shad::EdgeIndex<size_t, size_t>::GetPtr(OID);
 
   size_t num_vertices = eiPtr->Size();
@@ -109,12 +107,11 @@ int main(int argc, char **argv) {
 
   if (path_length != std::numeric_limits<size_t>::max()) {
     std::cout << "Found a path between " << src << " and " << target << " in "
-              << path_length << " hops in "
-              << duration.count() << " seconds" << std::endl;
+              << path_length << " hops in " << duration.count() << " seconds"
+              << std::endl;
   } else {
     std::cout << "Couldn't find a path between " << src << " and " << target
-              << " in " << duration.count() << " seconds"
-              << std::endl;
+              << " in " << duration.count() << " seconds" << std::endl;
   }
   shad::EdgeIndex<size_t, size_t>::Destroy(OID);
   return 0;

@@ -172,8 +172,7 @@ int main(int argc, char **argv) {
   });
 
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\nLet's rank some pages..."
-            << std::endl;
+            << " seconds\nLet's rank some pages..." << std::endl;
   auto eiPtr = shad::EdgeIndex<uint64_t, uint64_t>::GetPtr(OID);
   std::cout << "NumVertices: " << eiPtr->Size()
             << " Num Edges: " << eiPtr->NumEdges() << std::endl;
@@ -181,8 +180,8 @@ int main(int argc, char **argv) {
   auto duration = shad::measure<std::chrono::seconds>::duration(
       [&]() { PageRank(OID, 20, 1e-4); });
 
-  std::cout << "Computed PageRank in " << duration.count()
-            << " seconds" << std::endl;
+  std::cout << "Computed PageRank in " << duration.count() << " seconds"
+            << std::endl;
 
   return 0;
 }
