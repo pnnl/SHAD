@@ -22,8 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// Simple implementation of triangle counting, through graph pattern matching
-
 #include <atomic>
 #include <fstream>
 #include <iostream>
@@ -186,7 +184,7 @@ int main(int argc, char **argv) {
     std::vector<size_t> rand_seeds;
     size_t rnd_seed = 0;
     while (rand_seeds.size() < num_seeds) {
-      rnd_seed = rand() % num_vertices + 1;
+      rnd_seed = rand() % num_vertices;
       auto it = std::find(rand_seeds.begin(), rand_seeds.end(), rnd_seed);
       if (it == rand_seeds.end()) {
         rand_seeds.push_back(rnd_seed);

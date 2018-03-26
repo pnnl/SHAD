@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// Simple implementation of triangle counting, through graph pattern matching
 
 #include <atomic>
 #include <fstream>
@@ -110,7 +109,7 @@ float getContextSimilarity<context_sim_t::min_path>(
     min_path = std::min<size_t>(min_path, path_length);
   }
 
-  return 1.0 / static_cast<float>(min_path);
+  return 1.0f / min_path;
 }
 
 template <fusion_mode_t F, context_sim_t CX, content_sim_t CN>
