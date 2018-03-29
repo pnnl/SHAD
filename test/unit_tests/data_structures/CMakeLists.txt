@@ -2,6 +2,7 @@ set(tests
   array_test
   hashmap_test
   local_hashmap_test
+  one_per_locality_test
   set_test
   local_set_test
   vector_test
