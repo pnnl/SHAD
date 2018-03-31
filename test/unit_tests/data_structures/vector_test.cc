@@ -125,6 +125,7 @@ TEST_F(VectorTest, BlockInsert) {
   for (size_t i = 0; i < 100; i++) {
     ASSERT_EQ(vectorPtr->At(i), i);
   }
+  shad::Vector<int>::Destroy(vectorPtr->GetGlobalID());
 }
 
 TEST_F(VectorTest, PushBack) {
@@ -150,6 +151,7 @@ TEST_F(VectorTest, PushBack) {
   }
   ASSERT_EQ(vectorPtr->Front(), 1);
   ASSERT_EQ(vectorPtr->Back(), 200);
+  shad::Vector<int>::Destroy(vectorPtr->GetGlobalID());
 }
 
 TEST_F(VectorTest, InsertAndAsyncAt) {
@@ -299,6 +301,7 @@ TEST_F(VectorTest, AsyncInsertSyncApplyAndAsyncGet) {
   for (size_t i = 0; i < kNumElements; i++) {
     ASSERT_EQ(values[i], i + 1 + (3 * kNumElements));
   }
+  shad::Vector<size_t>::Destroy(edsPtr->GetGlobalID());
 }
 
 static void asyncApplyFun(shad::rt::Handle & /*unused*/,
@@ -360,6 +363,7 @@ TEST_F(VectorTest, AsyncInsertAsyncApplyAndAsyncGet) {
   for (size_t i = 0; i < kNumElements; i++) {
     ASSERT_EQ(values[i], i + 1 + (3 * kNumElements));
   }
+  shad::Vector<size_t>::Destroy(edsPtr->GetGlobalID());
 }
 
 TEST_F(VectorTest, AsyncInsertSyncForEachInRangeAndAsyncGet) {
@@ -408,8 +412,10 @@ TEST_F(VectorTest, AsyncInsertAsyncForEachInRangeAndAsyncGet) {
   std::fill(std::begin(values), std::end(values), 0);
 
   edsPtr->AsyncForEachInRange(handle, 0, kNumElements, asyncApplyFunNoArgs);
+  shad::rt::waitForCompletion(handle);
   edsPtr->AsyncForEachInRange(handle, 0, kNumElements, asyncApplyFun,
                               kNumElements);
+  shad::rt::waitForCompletion(handle);
   size_t arg2 = kNumElements + 1;
   edsPtr->AsyncForEachInRange(handle, 0, kNumElements, asyncApplyFunTwoArgs,
                               kNumElements, arg2);
