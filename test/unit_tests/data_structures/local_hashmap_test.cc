@@ -271,7 +271,6 @@ TEST_F(LocalHashmapTest, Erase) {
     }
   }
   ASSERT_EQ(hmap.Size(), currSize);
-  // hmap.Print(printfun);
   for (i = 0; i < kToInsert; i++) {
     Key k;
     FillKey(&k, i);
