@@ -22,34 +22,18 @@
 //
 //===----------------------------------------------------------------------===//
 
+#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_MAPPINGS_H_
+#define INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_MAPPINGS_H_
 
-#ifndef INCLUDE_SHAD_CONFIG_H_
-#define INCLUDE_SHAD_CONFIG_H_
 
-#if defined(__cplusplus)
-
-#include <string>
-
-namespace shad {
-
-constexpr auto kShadVersion = "@PACKAGE_VERSION@";
-constexpr auto kShadVersionLong = "@PACKAGE_VERSION@";
-
-constexpr unsigned    kShadVersionMajor = @SHAD_VERSION_MAJOR@;
-constexpr unsigned    kShadVersionMinor = @SHAD_VERSION_MINOR@;
-constexpr unsigned    kShadVersionPatch = @SHAD_VERSION_PATCH@;
-
-constexpr auto kShadVersionBuild = "@PACKAGE_VERSION@";
-
-constexpr auto kShadPlatform = "@PLATFORM@";
-
-} // namespace shad
-
-#endif  // defined(__cplusplus)
-
-#define SHAD_VERSION "${PACKAGE_VERSION}"
-
-#cmakedefine HAVE_CPP_SIMPLE
-#cmakedefine HAVE_TBB
-
-#endif // INCLUDE_SHAD_CONFIG_H_
+#if defined HAVE_CPP_SIMPLE
+#include "shad/runtime/mappings/cpp_simple/cpp_simple_asynchronous_interface.h"
+#include "shad/runtime/mappings/cpp_simple/cpp_simple_synchronous_interface.h"
+#elif defined HAVE_TBB
+#include "shad/runtime/mappings/tbb/tbb_asynchronous_interface.h"
+#include "shad/runtime/mappings/tbb/tbb_synchronous_interface.h"
+#else
+#error Unsupported Runtime System
+#endif
+#include "shad/runtime/mappings/available_traits_mappings.h"
+#endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_MAPPINGS_H_

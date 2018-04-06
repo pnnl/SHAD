@@ -22,34 +22,13 @@
 //
 //===----------------------------------------------------------------------===//
 
+#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
+#define INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
 
-#ifndef INCLUDE_SHAD_CONFIG_H_
-#define INCLUDE_SHAD_CONFIG_H_
+#if defined HAVE_CPP_SIMPLE
+#include "shad/runtime/mappings/cpp_simple/cpp_simple_traits_mapping.h"
+#elif defined HAVE_TBB
+#include "shad/runtime/mappings/tbb/tbb_traits_mapping.h"
+#endif
 
-#if defined(__cplusplus)
-
-#include <string>
-
-namespace shad {
-
-constexpr auto kShadVersion = "@PACKAGE_VERSION@";
-constexpr auto kShadVersionLong = "@PACKAGE_VERSION@";
-
-constexpr unsigned    kShadVersionMajor = @SHAD_VERSION_MAJOR@;
-constexpr unsigned    kShadVersionMinor = @SHAD_VERSION_MINOR@;
-constexpr unsigned    kShadVersionPatch = @SHAD_VERSION_PATCH@;
-
-constexpr auto kShadVersionBuild = "@PACKAGE_VERSION@";
-
-constexpr auto kShadPlatform = "@PLATFORM@";
-
-} // namespace shad
-
-#endif  // defined(__cplusplus)
-
-#define SHAD_VERSION "${PACKAGE_VERSION}"
-
-#cmakedefine HAVE_CPP_SIMPLE
-#cmakedefine HAVE_TBB
-
-#endif // INCLUDE_SHAD_CONFIG_H_
+#endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_

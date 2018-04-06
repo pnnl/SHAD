@@ -77,8 +77,8 @@ option(SHAD_ENABLE_UNIT_TEST "Enable the compilation of Unit Tests" ON)
 option(SHAD_ENABLE_PERFORMANCE_TEST "Enable the compilation of the Performance Tests" ON)
 
 set(
-  SHAD_RUNTIME_SYSTEM "TBB" CACHE STRING
-  "Runtime system to be used as backend of the Abstract Runtime API (Default=TBB, Supported=TBB)")
+  SHAD_RUNTIME_SYSTEM "CPP_SIMPLE" CACHE STRING
+  "Runtime system to be used as backend of the Abstract Runtime API (Default=CPP_SIMPLE, Supported=CPP_SIMPLE | TBB)")
 
 
 include(config)
@@ -118,6 +118,9 @@ install(FILES ${SHAD_BINARY_DIR}/pkgconfig/shad.pc DESTINATION pkgconfig)
 set(SHAD_TEST_COMMAND "")
 set(SHAD_TEST_NODES 2)
 if (SHAD_RUNTIME_SYSTEM STREQUAL "TBB")
+  set(SHAD_TEST_NODES 1)
+endif()
+if (SHAD_RUNTIME_SYSTEM STREQUAL "CPP_SIMPLE")
   set(SHAD_TEST_NODES 1)
 endif()
 if (SLURM_FOUND)

@@ -54,7 +54,13 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS
 # include files checks
 
 # library checks:
-if (SHAD_RUNTIME_SYSTEM STREQUAL "TBB")
+if (SHAD_RUNTIME_SYSTEM STREQUAL "CPP_SIMPLE")
+  message(STATUS "Using the default C++ implementation of the Abstract Runtime API.")
+  find_package(Threads REQUIRED)
+  include_directories(${THREADS_PTHREADS_INCLUDE_DIR})
+  set(HAVE_CPP_SIMPLE 1)
+  set(SHAD_RUNTIME_LIB ${CMAKE_THREAD_LIBS_INIT})
+elseif (SHAD_RUNTIME_SYSTEM STREQUAL "TBB")
   message(STATUS "Using Intel Threading Building Blocks (TBB) as backend of the Abstract Runtime API.")
 
   find_package(Threads REQUIRED)
