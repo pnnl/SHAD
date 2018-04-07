@@ -44,54 +44,45 @@ struct CppHandle {};
 
 template <>
 struct HandleTrait<cpp_tag> {
-  using HandleTy    = std::shared_ptr<CppHandle>;
+  using HandleTy = std::shared_ptr<CppHandle>;
   using ParameterTy = std::shared_ptr<CppHandle> &;
   using ConstParameterTy = const std::shared_ptr<CppHandle> &;
 
   static void Init(ParameterTy H, ConstParameterTy V) {}
 
-  static HandleTy NullValue() {
-    return nullptr;
-  }
+  static HandleTy NullValue() { return nullptr; }
 
   static bool Equal(ConstParameterTy lhs, ConstParameterTy rhs) {
     return lhs == rhs;
   }
 
-  static std::string toString(ConstParameterTy H) {
-    return "";
-  }
+  static std::string toString(ConstParameterTy H) { return ""; }
 
   static uint64_t toUnsignedInt(ConstParameterTy H) {
     return reinterpret_cast<uint64_t>(H.get());
   }
 
-  static HandleTy CreateNewHandle() {
-    return std::make_shared<CppHandle>();
-  }
+  static HandleTy CreateNewHandle() { return std::make_shared<CppHandle>(); }
 
-  static void WaitFor(ParameterTy H) {
-  }
+  static void WaitFor(ParameterTy H) {}
 };
 
 template <>
 struct LockTrait<cpp_tag> {
   using LockTy = std::mutex;
 
-  static void lock(LockTy & L) { L.lock(); }
-  static void unlock(LockTy & L) { L.unlock(); }
+  static void lock(LockTy &L) { L.lock(); }
+  static void unlock(LockTy &L) { L.unlock(); }
 };
 
 template <>
 struct RuntimeInternalsTrait<cpp_tag> {
-  static void Initialize(int argc, char *argv[]) { }
+  static void Initialize(int argc, char *argv[]) {}
 
-  static void Finalize() { }
+  static void Finalize() {}
 
-  static size_t Concurrency() {
-    return 1;
-  }
-  static void Yield() { }
+  static size_t Concurrency() { return 1; }
+  static void Yield() {}
 
   static uint32_t ThisLocality() { return 0; }
   static uint32_t NullLocality() { return -1; }

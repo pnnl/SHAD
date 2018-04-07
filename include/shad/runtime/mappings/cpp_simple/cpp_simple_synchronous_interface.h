@@ -28,42 +28,41 @@
 #include <memory>
 #include <utility>
 
-#include "shad/runtime/synchronous_interface.h"
 #include "shad/runtime/locality.h"
 #include "shad/runtime/mappings/cpp_simple/cpp_simple_traits_mapping.h"
 #include "shad/runtime/mappings/cpp_simple/cpp_simple_utility.h"
+#include "shad/runtime/synchronous_interface.h"
 
 namespace shad {
 namespace rt {
 
 namespace impl {
 
-template<>
+template <>
 struct SynchronousInterface<cpp_tag> {
   template <typename FunT, typename InArgsT>
-  static void
-  executeAt(const Locality & loc, FunT && function, const InArgsT & args) {
-    using FunctionTy = void(*)(const InArgsT &);
+  static void executeAt(const Locality &loc, FunT &&function,
+                        const InArgsT &args) {
+    using FunctionTy = void (*)(const InArgsT &);
     checkLocality(loc);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(args);
   }
 
   template <typename FunT>
-  static void
-  executeAt(const Locality &loc, FunT && function,
-            const std::shared_ptr<uint8_t> & argsBuffer,
-            const uint32_t bufferSize) {
-    using FunctionTy = void(*)(const uint8_t *, const uint32_t);
+  static void executeAt(const Locality &loc, FunT &&function,
+                        const std::shared_ptr<uint8_t> &argsBuffer,
+                        const uint32_t bufferSize) {
+    using FunctionTy = void (*)(const uint8_t *, const uint32_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
     checkLocality(loc);
     fn(argsBuffer.get(), bufferSize);
   }
 
   template <typename FunT, typename InArgsT>
-  static void executeAtWithRetBuff(
-      const Locality & loc, FunT && function,
-      const InArgsT &args, uint8_t * resultBuffer, uint32_t * resultSize) {
+  static void executeAtWithRetBuff(const Locality &loc, FunT &&function,
+                                   const InArgsT &args, uint8_t *resultBuffer,
+                                   uint32_t *resultSize) {
     using FunctionTy = void (*)(const InArgsT &, uint8_t *, uint32_t *);
     FunctionTy fn = std::forward<decltype(function)>(function);
     checkLocality(loc);
@@ -71,96 +70,87 @@ struct SynchronousInterface<cpp_tag> {
   }
 
   template <typename FunT>
-  static void
-  executeAtWithRetBuff(
-      const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> & argsBuffer, const uint32_t bufferSize,
-      uint8_t * resultBuffer, uint32_t * resultSize) {
+  static void executeAtWithRetBuff(const Locality &loc, FunT &&function,
+                                   const std::shared_ptr<uint8_t> &argsBuffer,
+                                   const uint32_t bufferSize,
+                                   uint8_t *resultBuffer,
+                                   uint32_t *resultSize) {
     using FunctionTy =
-        void(*)(const uint8_t *, const uint32_t, uint8_t *, uint32_t *);
+        void (*)(const uint8_t *, const uint32_t, uint8_t *, uint32_t *);
     FunctionTy fn = std::forward<decltype(function)>(function);
     checkLocality(loc);
     fn(argsBuffer.get(), bufferSize, resultBuffer, resultSize);
   }
 
   template <typename FunT, typename InArgsT, typename ResT>
-  static void executeAtWithRet(
-      const Locality & loc,
-      FunT && function, const InArgsT & args, ResT * result) {
-    using FunctionTy = void(*)(const InArgsT &, ResT *);
+  static void executeAtWithRet(const Locality &loc, FunT &&function,
+                               const InArgsT &args, ResT *result) {
+    using FunctionTy = void (*)(const InArgsT &, ResT *);
     FunctionTy fn = std::forward<decltype(function)>(function);
     checkLocality(loc);
     fn(args, result);
   }
 
   template <typename FunT, typename ResT>
-  static void executeAtWithRet(
-      const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> & argsBuffer, const uint32_t bufferSize,
-      ResT * result) {
-    using FunctionTy =
-        void(*)(const uint8_t *, const uint32_t, ResT *);
+  static void executeAtWithRet(const Locality &loc, FunT &&function,
+                               const std::shared_ptr<uint8_t> &argsBuffer,
+                               const uint32_t bufferSize, ResT *result) {
+    using FunctionTy = void (*)(const uint8_t *, const uint32_t, ResT *);
     FunctionTy fn = std::forward<decltype(function)>(function);
     checkLocality(loc);
     fn(argsBuffer.get(), bufferSize, result);
   }
 
   template <typename FunT, typename InArgsT>
-  static void executeOnAll(FunT && function, const InArgsT & args) {
-    using FunctionTy = void(*)(const InArgsT &);
+  static void executeOnAll(FunT &&function, const InArgsT &args) {
+    using FunctionTy = void (*)(const InArgsT &);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(args);
   }
 
   template <typename FunT>
-  static void executeOnAll(
-      FunT && function, const std::shared_ptr<uint8_t> & argsBuffer,
-      const uint32_t bufferSize) {
-    using FunctionTy = void(*)(const uint8_t *, const uint32_t);
+  static void executeOnAll(FunT &&function,
+                           const std::shared_ptr<uint8_t> &argsBuffer,
+                           const uint32_t bufferSize) {
+    using FunctionTy = void (*)(const uint8_t *, const uint32_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(argsBuffer.get(), bufferSize);
   }
 
   template <typename FunT, typename InArgsT>
-  static void forEachAt(
-      const Locality & loc, FunT && function, const InArgsT & args,
-      const size_t numIters) {
-    using FunctionTy = void(*)(const InArgsT &, size_t);
+  static void forEachAt(const Locality &loc, FunT &&function,
+                        const InArgsT &args, const size_t numIters) {
+    using FunctionTy = void (*)(const InArgsT &, size_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
     checkLocality(loc);
-    for (auto i = 0; i < numIters; ++i)
-          fn(args, i);
+    for (auto i = 0; i < numIters; ++i) fn(args, i);
   }
 
   template <typename FunT>
-  static void forEachAt(
-      const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> & argsBuffer, const uint32_t bufferSize,
-      const size_t numIters) {
+  static void forEachAt(const Locality &loc, FunT &&function,
+                        const std::shared_ptr<uint8_t> &argsBuffer,
+                        const uint32_t bufferSize, const size_t numIters) {
     using FunctionTy = void (*)(const uint8_t *, const uint32_t, size_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
     checkLocality(loc);
-    for (auto i = 0; i < numIters; ++i)
-      fn(argsBuffer.get(), bufferSize, i);
+    for (auto i = 0; i < numIters; ++i) fn(argsBuffer.get(), bufferSize, i);
   }
 
   template <typename FunT, typename InArgsT>
-  static void forEachOnAll(
-      FunT && function, const InArgsT & args, const size_t numIters) {
-    using FunctionTy = void(*)(const InArgsT &, size_t);
+  static void forEachOnAll(FunT &&function, const InArgsT &args,
+                           const size_t numIters) {
+    using FunctionTy = void (*)(const InArgsT &, size_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
-    for (auto i = 0; i < numIters; ++i)
-      fn(args, i);
+    for (auto i = 0; i < numIters; ++i) fn(args, i);
   }
 
   template <typename FunT>
-  static void forEachOnAll(
-      FunT && function, const std::shared_ptr<uint8_t> &argsBuffer,
-      const uint32_t bufferSize, const size_t numIters) {
+  static void forEachOnAll(FunT &&function,
+                           const std::shared_ptr<uint8_t> &argsBuffer,
+                           const uint32_t bufferSize, const size_t numIters) {
     using FunctionTy = void (*)(const uint8_t *, const uint32_t, size_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
-    for (auto i = 0; i < numIters; ++i)
-      fn(argsBuffer.get(), bufferSize, i);
+    for (auto i = 0; i < numIters; ++i) fn(argsBuffer.get(), bufferSize, i);
   }
 };
 

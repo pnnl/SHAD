@@ -42,41 +42,40 @@ namespace rt {
 
 namespace impl {
 
-template<>
+template <>
 struct AsynchronousInterface<cpp_tag> {
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteAt(Handle & handle, const Locality & loc, FunT && function,
-                 const InArgsT & args) {
+  static void asyncExecuteAt(Handle &handle, const Locality &loc,
+                             FunT &&function, const InArgsT &args) {
     checkLocality(loc);
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
-    using FunctionTy = void(*)(Handle &, const InArgsT &);
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    using FunctionTy = void (*)(Handle &, const InArgsT &);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(handle, args);
   }
 
   template <typename FunT>
-  static void
-  asyncExecuteAt(
-      Handle & handle, const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize) {
+  static void asyncExecuteAt(Handle &handle, const Locality &loc,
+                             FunT &&function,
+                             const std::shared_ptr<uint8_t> &argsBuffer,
+                             const uint32_t bufferSize) {
     checkLocality(loc);
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
-    using FunctionTy = void(*)(Handle &, const uint8_t *, const uint32_t);
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(handle, argsBuffer.get(), bufferSize);
   }
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteAtWithRetBuff(
-      Handle & handle, const Locality & loc, FunT && function,
-      const InArgsT & args, uint8_t * resultBuffer, uint32_t * resultSize) {
+  static void asyncExecuteAtWithRetBuff(Handle &handle, const Locality &loc,
+                                        FunT &&function, const InArgsT &args,
+                                        uint8_t *resultBuffer,
+                                        uint32_t *resultSize) {
     checkLocality(loc);
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
     using FunctionTy =
         void (*)(Handle &, const InArgsT &, uint8_t *, uint32_t *);
     FunctionTy fn = std::forward<decltype(function)>(function);
@@ -85,91 +84,85 @@ struct AsynchronousInterface<cpp_tag> {
 
   template <typename FunT>
   static void asyncExecuteAtWithRetBuff(
-      Handle & handle, const Locality & loc, FunT && function,
+      Handle &handle, const Locality &loc, FunT &&function,
       const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      uint8_t * resultBuffer, uint32_t * resultSize) {
+      uint8_t *resultBuffer, uint32_t *resultSize) {
     checkLocality(loc);
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
-    using FunctionTy = void(*)(Handle &, const uint8_t *,
-                               const uint32_t, uint8_t *, uint32_t *);
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t,
+                                uint8_t *, uint32_t *);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(handle, argsBuffer.get(), bufferSize, resultBuffer, resultSize);
   }
 
   template <typename FunT, typename InArgsT, typename ResT>
-  static void
-  asyncExecuteAtWithRet(
-      Handle & handle, const Locality & loc, FunT && function,
-      const InArgsT & args, ResT * result) {
+  static void asyncExecuteAtWithRet(Handle &handle, const Locality &loc,
+                                    FunT &&function, const InArgsT &args,
+                                    ResT *result) {
     checkLocality(loc);
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
-    using FunctionTy = void(*)(Handle &, const InArgsT &, ResT *);
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    using FunctionTy = void (*)(Handle &, const InArgsT &, ResT *);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(handle, args, result);
   }
 
   template <typename FunT, typename ResT>
-  static void
-  asyncExecuteAtWithRet(
-      Handle & handle, const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      ResT * result) {
+  static void asyncExecuteAtWithRet(Handle &handle, const Locality &loc,
+                                    FunT &&function,
+                                    const std::shared_ptr<uint8_t> &argsBuffer,
+                                    const uint32_t bufferSize, ResT *result) {
     checkLocality(loc);
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
     using FunctionTy =
-        void(*)(Handle &, const uint8_t *, const uint32_t, ResT *);
+        void (*)(Handle &, const uint8_t *, const uint32_t, ResT *);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(handle, argsBuffer.get(), bufferSize, result);
   }
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteOnAll(Handle & handle, FunT && function, const InArgsT & args) {
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
-    using FunctionTy = void(*)(Handle &, const InArgsT &);
+  static void asyncExecuteOnAll(Handle &handle, FunT &&function,
+                                const InArgsT &args) {
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    using FunctionTy = void (*)(Handle &, const InArgsT &);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(handle, args);
   }
 
   template <typename FunT>
-  static void
-  asyncExecuteOnAll(
-      Handle & handle, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize) {
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
-    using FunctionTy = void(*)(Handle &, const uint8_t *, const uint32_t);
+  static void asyncExecuteOnAll(Handle &handle, FunT &&function,
+                                const std::shared_ptr<uint8_t> &argsBuffer,
+                                const uint32_t bufferSize) {
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
     fn(handle, argsBuffer.get(), bufferSize);
   }
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncForEachAt(
-      Handle & handle, const Locality & loc, FunT && function,
-      const InArgsT & args, const size_t numIters) {
+  static void asyncForEachAt(Handle &handle, const Locality &loc,
+                             FunT &&function, const InArgsT &args,
+                             const size_t numIters) {
     checkLocality(loc);
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
-    using FunctionTy = void(*)(Handle &, const InArgsT &, size_t);
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    using FunctionTy = void (*)(Handle &, const InArgsT &, size_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
-    for (auto i = 0; i < numIters; ++i)
-      fn(handle, args, i);
+    for (auto i = 0; i < numIters; ++i) fn(handle, args, i);
   }
 
   template <typename FunT>
-  static void
-  asyncForEachAt(
-      Handle & handle, const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      const size_t numIters) {
+  static void asyncForEachAt(Handle &handle, const Locality &loc,
+                             FunT &&function,
+                             const std::shared_ptr<uint8_t> &argsBuffer,
+                             const uint32_t bufferSize, const size_t numIters) {
     checkLocality(loc);
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
     using FunctionTy =
         void (*)(Handle &, const uint8_t *, const uint32_t, size_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
@@ -178,26 +171,22 @@ struct AsynchronousInterface<cpp_tag> {
   }
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncForEachOnAll(
-      Handle & handle,
-      FunT && function, const InArgsT & args, const size_t numIters) {
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
-    using FunctionTy = void(*)(Handle &, const InArgsT &, size_t);
+  static void asyncForEachOnAll(Handle &handle, FunT &&function,
+                                const InArgsT &args, const size_t numIters) {
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+    using FunctionTy = void (*)(Handle &, const InArgsT &, size_t);
     FunctionTy fn = std::forward<decltype(function)>(function);
-    for (auto i = 0; i < numIters; ++i)
-      fn(handle, args, i);
+    for (auto i = 0; i < numIters; ++i) fn(handle, args, i);
   }
 
   template <typename FunT>
-  static void
-  asyncForEachOnAll(
-      Handle & handle, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      const size_t numIters) {
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
+  static void asyncForEachOnAll(Handle &handle, FunT &&function,
+                                const std::shared_ptr<uint8_t> &argsBuffer,
+                                const uint32_t bufferSize,
+                                const size_t numIters) {
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<cpp_tag>::CreateNewHandle() : handle.id_;
     using FunctionTy =
         void (*)(Handle &, const uint8_t *, const uint32_t, size_t);
     FunctionTy fn = std::forward<decltype(function)>(function);

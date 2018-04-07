@@ -25,7 +25,6 @@
 #ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_MAPPINGS_H_
 #define INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_MAPPINGS_H_
 
-
 #if defined HAVE_CPP_SIMPLE
 #include "shad/runtime/mappings/cpp_simple/cpp_simple_asynchronous_interface.h"
 #include "shad/runtime/mappings/cpp_simple/cpp_simple_synchronous_interface.h"

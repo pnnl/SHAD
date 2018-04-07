@@ -28,10 +28,10 @@
 #include <memory>
 #include <utility>
 
-#include "shad/runtime/synchronous_interface.h"
 #include "shad/runtime/locality.h"
 #include "shad/runtime/mappings/tbb/tbb_traits_mapping.h"
 #include "shad/runtime/mappings/tbb/tbb_utility.h"
+#include "shad/runtime/synchronous_interface.h"
 
 namespace shad {
 namespace rt {
