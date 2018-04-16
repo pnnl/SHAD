@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_RUNTIME_LOCALITY_H_
 #define INCLUDE_SHAD_RUNTIME_LOCALITY_H_
 
@@ -31,9 +30,9 @@
 #include "shad/config/config.h"
 #include "shad/runtime/mapping_traits.h"
 #if defined HAVE_TBB
-#  include "shad/runtime/tbb/tbb_traits_mapping.h"
+#include "shad/runtime/tbb/tbb_traits_mapping.h"
 #else
-#  error Unsupported Runtime System
+#error Unsupported Runtime System
 #endif
 
 namespace shad {
@@ -62,34 +61,33 @@ class Locality {
   ///
   /// Initialize the newly created object to a Locality::kNullLocality.
   Locality()
-      : id_(impl::RuntimeInternalsTrait<TargetSystemTag>::NullLocality())
-  { }
+      : id_(impl::RuntimeInternalsTrait<TargetSystemTag>::NullLocality()) {}
 
   /// @brief Constructor.
   ///
   /// Initialize the newly created object with a specific locality ID.
   ///
   /// @param id The locality ID to be assigned.
-  explicit Locality(const uint32_t id) : id_(id) { }
+  explicit Locality(const uint32_t id) : id_(id) {}
 
   /// @brief Copy-Constructor.
-  Locality(const Locality & rhs) = default;
+  Locality(const Locality& rhs) = default;
 
   /// @brief Copy-Assigment.
-  Locality & operator=(const Locality & rhs) = default;
+  Locality& operator=(const Locality& rhs) = default;
 
   /// @brief Move-Constructor.
-  Locality(Locality && rhs) = default;
+  Locality(Locality&& rhs) = default;
 
   /// @brief Move-Assignment.
-  Locality & operator=(Locality && rhs) = default;
+  Locality& operator=(Locality&& rhs) = default;
 
   /// @brief Operator less than.
   ///
   /// @param lhs The left-hand side of the operator.
   /// @param rhs The right-hand side of the operator.
   /// @return true when lhs is less than rhs.
-  friend bool operator<(const Locality & lhs, const Locality & rhs) {
+  friend bool operator<(const Locality& lhs, const Locality& rhs) {
     return (lhs.id_ < rhs.id_);
   }
 
@@ -98,7 +96,7 @@ class Locality {
   /// @param lhs The left-hand side of the operator.
   /// @param rhs The right-hand side of the operator.
   /// @return true when lhs and rhs are equal.
-  friend bool operator==(const Locality & lhs, const Locality & rhs) {
+  friend bool operator==(const Locality& lhs, const Locality& rhs) {
     return (lhs.id_ == rhs.id_);
   }
 
@@ -107,7 +105,7 @@ class Locality {
   /// @param os The output stream to be used.
   /// @param rhs The right-hand side of the operator.
   /// @return A reference to the output stream used.
-  friend std::ostream & operator<<(std::ostream & os, const Locality & rhs) {
+  friend std::ostream& operator<<(std::ostream& os, const Locality& rhs) {
     return os << "Locality[" << rhs.id_ << "]";
   }
 
@@ -130,7 +128,7 @@ class Locality {
 /// @param lhs The left-hand side of the operator.
 /// @param rhs The right-hand side of the operator.
 /// @return true when lhs and rhs are not equal.
-inline bool operator!=(const Locality & lhs, const Locality & rhs) {
+inline bool operator!=(const Locality& lhs, const Locality& rhs) {
   return !(lhs == rhs);
 }
 
@@ -140,7 +138,7 @@ inline bool operator!=(const Locality & lhs, const Locality & rhs) {
 /// @param lhs The left-hand side of the operator.
 /// @param rhs The right-hand side of the operator.
 /// @return true when the lhs ID is greater than the rhs ID.
-inline bool operator>(const Locality & lhs, const Locality & rhs) {
+inline bool operator>(const Locality& lhs, const Locality& rhs) {
   return rhs < lhs;
 }
 
@@ -150,7 +148,7 @@ inline bool operator>(const Locality & lhs, const Locality & rhs) {
 /// @param lhs The left-hand side of the operator.
 /// @param rhs The right-hand side of the operator.
 /// @return true when the lhs ID is less than or equal to the rhs ID.
-inline bool operator<=(const Locality & lhs, const Locality & rhs) {
+inline bool operator<=(const Locality& lhs, const Locality& rhs) {
   return !(lhs > rhs);
 }
 
@@ -160,7 +158,7 @@ inline bool operator<=(const Locality & lhs, const Locality & rhs) {
 /// @param lhs The left-hand side of the operator.
 /// @param rhs The right-hand side of the operator.
 /// @return true when the lhs ID is greater than or equal to the rhs ID.
-inline bool operator>=(const Locality & lhs, const Locality & rhs) {
+inline bool operator>=(const Locality& lhs, const Locality& rhs) {
   return !(lhs < rhs);
 }
 

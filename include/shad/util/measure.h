@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -21,7 +21,6 @@
 // under the License.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef INCLUDE_SHAD_UTIL_MEASURE_H_
 #define INCLUDE_SHAD_UTIL_MEASURE_H_
@@ -53,12 +52,12 @@ struct measure {
   /// @param[in] function A collable object that will be measured
   /// @param[in] args The list of args forwarded to the function.
   /// @return the time spent to compute the input function.
-  template <typename F, typename ...Args>
-  static auto duration(F && function, Args... args) {
+  template <typename F, typename... Args>
+  static auto duration(F&& function, Args... args) {
     auto start = std::chrono::steady_clock::now();
     std::forward<decltype(function)>(function)(std::forward<Args>(args)...);
-    auto duration = std::chrono::duration_cast<TimeT>(
-        std::chrono::steady_clock::now() - start);
+    std::chrono::duration<double, typename TimeT::period> duration =
+        std::chrono::steady_clock::now() - start;
 
     return duration;
   }

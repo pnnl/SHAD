@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -271,7 +271,6 @@ TEST_F(LocalHashmapTest, Erase) {
     }
   }
   ASSERT_EQ(hmap.Size(), currSize);
-  // hmap.Print(printfun);
   for (i = 0; i < kToInsert; i++) {
     Key k;
     FillKey(&k, i);

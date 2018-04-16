@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -21,7 +21,6 @@
 // under the License.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef INCLUDE_SHAD_DATA_STRUCTURES_LOCAL_HASHMAP_H_
 #define INCLUDE_SHAD_DATA_STRUCTURES_LOCAL_HASHMAP_H_
@@ -39,17 +38,13 @@
 namespace shad {
 
 namespace constants {
-    constexpr size_t kDefaultNumEntriesPerBucket = 16;
+constexpr size_t kDefaultNumEntriesPerBucket = 16;
 }
 
 template <typename T>
 struct Overwriter {
-  void operator()(T * const lhs, const T & rhs) {
-    *lhs = std::move(rhs);
-  }
-  static void Insert(T * const lhs, const T & rhs) {
-    *lhs = std::move(rhs);
-  }
+  void operator()(T *const lhs, const T &rhs) { *lhs = std::move(rhs); }
+  static void Insert(T *const lhs, const T &rhs) { *lhs = std::move(rhs); }
 };
 
 /// @brief The LocalHashmap data structure.
@@ -63,36 +58,30 @@ struct Overwriter {
 /// @tparam INSERTER default is Overwriter
 /// (i.e. insertions overwrite previous values
 ///  associated to the same key, if any).
-template <
-  typename KTYPE,
-  typename VTYPE,
-  typename KEY_COMPARE = MemCmp<KTYPE>,
-  typename INSERTER = Overwriter<VTYPE>>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE = MemCmp<KTYPE>,
+          typename INSERTER = Overwriter<VTYPE>>
 class LocalHashmap {
-  template<typename, typename, typename, typename> friend class Hashmap;
+  template <typename, typename, typename, typename>
+  friend class Hashmap;
+
  public:
   /// @brief Constructor.
   /// @param numInitBuckets initial number of Buckets.
   explicit LocalHashmap(const size_t numInitBuckets)
-      : numBuckets_(numInitBuckets)
-      , buckets_array_(numInitBuckets)
-      , size_(0)
-  { }
+      : numBuckets_(numInitBuckets), buckets_array_(numInitBuckets), size_(0) {}
 
   /// @brief Size of the hashmap (number of entries).
   /// @return the size of the hashmap.
-  size_t Size() const {
-    return size_.load();
-  }
+  size_t Size() const { return size_.load(); }
 
   /// @brief Insert a key-value pair in the hashmap.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashMap.
   /// @return pointer to the inserted value;
-  VTYPE* Insert(const KTYPE &key, const VTYPE &value);
+  VTYPE *Insert(const KTYPE &key, const VTYPE &value);
 
-  template<typename ELTYPE>
-  VTYPE* Insert(const KTYPE &key, const ELTYPE &value);
+  template <typename ELTYPE>
+  VTYPE *Insert(const KTYPE &key, const ELTYPE &value);
 
   /// @brief Asynchronously Insert a key-value pair in the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -103,13 +92,13 @@ class LocalHashmap {
   /// @param[in] value the value to copy into the hashMap.
   /// @return a pointer to the value if the the key-value was inserted
   ///        or a pointer to a previously inserted value.
-  void AsyncInsert(rt::Handle& handle, const KTYPE &key, const VTYPE &value);
+  void AsyncInsert(rt::Handle &handle, const KTYPE &key, const VTYPE &value);
 
-  template<typename ELTYPE>
-  void AsyncInsert(rt::Handle& handle, const KTYPE &key, const ELTYPE &value);
+  template <typename ELTYPE>
+  void AsyncInsert(rt::Handle &handle, const KTYPE &key, const ELTYPE &value);
   /// @brief Remove a key-value pair from the hashmap.
   /// @param[in] key the key.
-  void Erase(const KTYPE & key);
+  void Erase(const KTYPE &key);
 
   /// @brief Asynchronously remove a key-value pair from the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed.
@@ -117,7 +106,7 @@ class LocalHashmap {
   /// @param[in,out] handle Reference to the handle.
   /// to be used to wait for completion.
   /// @param[in] key the key.
-  void AsyncErase(rt::Handle& handle, const KTYPE & key);
+  void AsyncErase(rt::Handle &handle, const KTYPE &key);
 
   /// @brief Clear the content of the hashmap.
   void Clear() {
@@ -130,10 +119,9 @@ class LocalHashmap {
   /// @param[out] res the address where to store the value,
   /// if the the key-value is found.
   /// @return true if the entry is found, false otherwise.
-  bool Lookup(const KTYPE &key, VTYPE* res) {
-    VTYPE * result = Lookup(key);
-    if (result != nullptr)
-      *res = *result;
+  bool Lookup(const KTYPE &key, VTYPE *res) {
+    VTYPE *result = Lookup(key);
+    if (result != nullptr) *res = *result;
     return result != nullptr;
   }
 
@@ -141,7 +129,7 @@ class LocalHashmap {
   /// @param[in] key the key.
   /// @return a pointer to the value if the the key-value is found
   ///         and nullptr if it does not exists.
-  VTYPE * Lookup(const KTYPE & key);
+  VTYPE *Lookup(const KTYPE &key);
 
   /// @brief Asynchronously get the value associated to a key.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -152,7 +140,7 @@ class LocalHashmap {
   /// @param[out] res the address where to storethe pointer to the value
   ///                 if the the key-value was found,
   ///                 or a nullptr otherwise.
-  void AsyncLookup(rt::Handle & handle, const KTYPE &key, VTYPE** res);
+  void AsyncLookup(rt::Handle &handle, const KTYPE &key, VTYPE **res);
 
   /// @brief Result for the
   /// Lookup(const KTYPE&, LookupResult*) and
@@ -167,11 +155,10 @@ class LocalHashmap {
   /// @brief Lookup method.
   /// @param[in] key The key.
   /// @param[out] res The result of the lookup operation.
-  void Lookup(const KTYPE &key, LookupResult* res)  {
+  void Lookup(const KTYPE &key, LookupResult *res) {
     VTYPE empty;
-    VTYPE * result = Lookup(key);
-    if (result != nullptr)
-      res->value = *result;
+    VTYPE *result = Lookup(key);
+    if (result != nullptr) res->value = *result;
     res->found = (result != nullptr);
   }
 
@@ -184,7 +171,7 @@ class LocalHashmap {
   /// completion.
   /// @param[in] key The key.
   /// @param[out] res The result of the lookup operation.
-  void AsyncLookup(rt::Handle & handle, const KTYPE &key, LookupResult* res);
+  void AsyncLookup(rt::Handle &handle, const KTYPE &key, LookupResult *res);
 
   /// @brief Apply a user-defined function to a key-value pair.
   ///
@@ -198,9 +185,9 @@ class LocalHashmap {
   /// @param[in] key The key.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void Apply(const KTYPE &key, ApplyFunT && function, Args&... args) {
-    VTYPE * value = Lookup(key);
+  template <typename ApplyFunT, typename... Args>
+  void Apply(const KTYPE &key, ApplyFunT &&function, Args &... args) {
+    VTYPE *value = Lookup(key);
     if (value != nullptr) {
       function(key, *value, args...);
     }
@@ -219,9 +206,9 @@ class LocalHashmap {
   /// @param[in] key The key.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void AsyncApply(rt::Handle &handle, const KTYPE &key,
-                  ApplyFunT &&function, Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
+                  Args &... args);
 
   /// @brief Apply a user-defined function to each key-value pair.
   ///
@@ -234,9 +221,8 @@ class LocalHashmap {
   ///
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void ForEachEntry(ApplyFunT &&function, Args&... args);
-
+  template <typename ApplyFunT, typename... Args>
+  void ForEachEntry(ApplyFunT &&function, Args &... args);
 
   /// @brief Asynchronously apply a user-defined function to each key-value
   /// pair.
@@ -255,9 +241,9 @@ class LocalHashmap {
   /// completion.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void AsyncForEachEntry(rt::Handle & handle, ApplyFunT &&function,
-                         Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void AsyncForEachEntry(rt::Handle &handle, ApplyFunT &&function,
+                         Args &... args);
 
   /// @brief Apply a user-defined function to each key.
   /// @tparam ApplyFunT User-defined function type.
@@ -268,8 +254,8 @@ class LocalHashmap {
   /// @tparam ...Args Types of the function arguments.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void ForEachKey(ApplyFunT &&function, Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void ForEachKey(ApplyFunT &&function, Args &... args);
 
   /// @brief Asynchronously apply a user-defined function to each key.
   /// @tparam ApplyFunT User-defined function type.
@@ -284,9 +270,9 @@ class LocalHashmap {
   /// to be used to wait for completion.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void AsyncForEachKey(rt::Handle & handle, ApplyFunT &&function,
-                       Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void AsyncForEachKey(rt::Handle &handle, ApplyFunT &&function,
+                       Args &... args);
 
   /// @brief Print all the entries in the hashmap.
   /// @warning std::ostream & operator<< must be defined for both
@@ -295,46 +281,40 @@ class LocalHashmap {
 
  private:
   static const size_t kNumEntriesPerBucket =
-                            constants::kDefaultNumEntriesPerBucket;
+      constants::kDefaultNumEntriesPerBucket;
   static const size_t kAllocPending = 0x1;
-  static const uint32_t kKeyWords =
-      sizeof(KTYPE) > sizeof(uint64_t) ? sizeof(KTYPE)/sizeof(uint64_t) : 1;
+  static const uint32_t kKeyWords = sizeof(KTYPE) > sizeof(uint64_t)
+                                        ? sizeof(KTYPE) / sizeof(uint64_t)
+                                        : 1;
   static const uint8_t kHashSeed = 0;
 
   typedef KEY_COMPARE KeyCompare;
 
-  enum State {
-    EMPTY,
-    USED,
-    PENDING_INSERT,
-    PENDING_UPDATE
-  };
+  enum State { EMPTY, USED, PENDING_INSERT, PENDING_UPDATE };
 
   struct Entry {
     KTYPE key;
     VTYPE value;
     volatile State state;
-    Entry() : state(EMPTY){}
+    Entry() : state(EMPTY) {}
   };
 
   struct Bucket {
     std::shared_ptr<Bucket> next;
     bool isNextAllocated;
 
-    explicit Bucket(size_t bsize = kNumEntriesPerBucket) :
-                    next(nullptr),
-                    isNextAllocated(false),
-                    entries(nullptr),
-                    bucketSize_(bsize) { }
+    explicit Bucket(size_t bsize = kNumEntriesPerBucket)
+        : next(nullptr),
+          isNextAllocated(false),
+          entries(nullptr),
+          bucketSize_(bsize) {}
 
-    Entry & getEntry(size_t i) {
+    Entry &getEntry(size_t i) {
       if (!entries) {
         std::lock_guard<rt::Lock> _(_entriesLock);
         if (!entries) {
-          entries =
-              std::move(std::shared_ptr<Entry>(
-                  new Entry[bucketSize_],
-                  std::default_delete<Entry[]>()));
+          entries = std::move(std::shared_ptr<Entry>(
+              new Entry[bucketSize_], std::default_delete<Entry[]>()));
         }
       }
       return entries.get()[i];
@@ -354,182 +334,155 @@ class LocalHashmap {
   std::vector<Bucket> buckets_array_;
   std::atomic<size_t> size_;
 
-  template <typename ApplyFunT, typename ...Args, std::size_t... is>
-  static void CallForEachEntryFun(const size_t i,
-                                  LocalHashmap<KTYPE, VTYPE,
-                                               KEY_COMPARE,
-                                               INSERTER>* mapPtr,
-                                  ApplyFunT function,
-                                  std::tuple<Args...>& args,
-                                  std::index_sequence<is...>) {
-    Bucket * bucket = &mapPtr->buckets_array_[i];
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void CallForEachEntryFun(
+      const size_t i, LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+      ApplyFunT function, std::tuple<Args...> &args,
+      std::index_sequence<is...>) {
+    Bucket *bucket = &mapPtr->buckets_array_[i];
     while (bucket != nullptr) {
-      Bucket* next_bucket = bucket->next.get();
+      Bucket *next_bucket = bucket->next.get();
       uint64_t j;
       for (j = 0; j < bucket->BucketSize(); ++j) {
         Entry *entry = &bucket->getEntry(j);
         if (entry->state == USED) {
           function(entry->key, entry->value, std::get<is>(args)...);
         } else if (entry->state != EMPTY) {
-            printf("Entry in PENDING state"
-                " while iterating over entries\n");
+          printf(
+              "Entry in PENDING state"
+              " while iterating over entries\n");
         }
       }
       bucket = next_bucket;
     }
   }
 
-  template <typename Tuple, typename ...Args>
-  static void ForEachEntryFunWrapper(const Tuple & args,
-                                     size_t i) {
+  template <typename Tuple, typename... Args>
+  static void ForEachEntryFunWrapper(const Tuple &args, size_t i) {
     constexpr auto Size = std::tuple_size<
-          typename std::decay<decltype(std::get<2>(args))>::type>::value;
-    Tuple & tuple = const_cast<Tuple &>(args);
-    CallForEachEntryFun(i,
-                        std::get<0>(tuple),
-                        std::get<1>(tuple),
-                        std::get<2>(tuple),
-                        std::make_index_sequence<Size>{});
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
+    Tuple &tuple = const_cast<Tuple &>(args);
+    CallForEachEntryFun(i, std::get<0>(tuple), std::get<1>(tuple),
+                        std::get<2>(tuple), std::make_index_sequence<Size>{});
   }
 
-  template <typename ApplyFunT, typename ...Args, std::size_t... is>
-  static void AsyncCallForEachEntryFun(rt::Handle & handle,
-                                       const size_t i,
-                                       LocalHashmap<KTYPE, VTYPE,
-                                                    KEY_COMPARE,
-                                                    INSERTER>* mapPtr,
-                                       ApplyFunT function,
-                                       std::tuple<Args...>& args,
-                                       std::index_sequence<is...>) {
-    Bucket * bucket = &mapPtr->buckets_array_[i];
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void AsyncCallForEachEntryFun(
+      rt::Handle &handle, const size_t i,
+      LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+      ApplyFunT function, std::tuple<Args...> &args,
+      std::index_sequence<is...>) {
+    Bucket *bucket = &mapPtr->buckets_array_[i];
     while (bucket != nullptr) {
-      Bucket* next_bucket = bucket->next.get();
+      Bucket *next_bucket = bucket->next.get();
       uint64_t j;
       for (j = 0; j < bucket->BucketSize(); ++j) {
         Entry *entry = &bucket->getEntry(j);
         if (entry->state == USED) {
           function(handle, entry->key, entry->value, std::get<is>(args)...);
         } else if (entry->state != EMPTY) {
-            printf("Entry in PENDING state"
-                " while iterating over entries\n");
+          printf(
+              "Entry in PENDING state"
+              " while iterating over entries\n");
         }
       }
       bucket = next_bucket;
     }
   }
 
-  template <typename Tuple, typename ...Args>
-  static void AsyncForEachEntryFunWrapper(rt::Handle & handle,
-                                          const Tuple & args,
+  template <typename Tuple, typename... Args>
+  static void AsyncForEachEntryFunWrapper(rt::Handle &handle, const Tuple &args,
                                           size_t i) {
     constexpr auto Size = std::tuple_size<
-          typename std::decay<decltype(std::get<2>(args))>::type>::value;
-    Tuple & tuple = const_cast<Tuple &>(args);
-    AsyncCallForEachEntryFun(handle, i,
-                             std::get<0>(tuple),
-                             std::get<1>(tuple),
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
+    Tuple &tuple = const_cast<Tuple &>(args);
+    AsyncCallForEachEntryFun(handle, i, std::get<0>(tuple), std::get<1>(tuple),
                              std::get<2>(tuple),
                              std::make_index_sequence<Size>{});
   }
 
-  template <typename ApplyFunT, typename ...Args, std::size_t... is>
-  static void CallForEachKeyFun(const size_t i,
-                                LocalHashmap<KTYPE, VTYPE,
-                                             KEY_COMPARE,
-                                             INSERTER>* mapPtr,
-                                ApplyFunT function,
-                                std::tuple<Args...>& args,
-                                std::index_sequence<is...>) {
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void CallForEachKeyFun(
+      const size_t i, LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+      ApplyFunT function, std::tuple<Args...> &args,
+      std::index_sequence<is...>) {
     Bucket *buckets_array = mapPtr->buckets_array_.data();
     Bucket *bucket = &buckets_array[i];
     size_t cnt = 0;
     while (bucket != nullptr) {
-      Bucket* next_bucket = bucket->next.get();
+      Bucket *next_bucket = bucket->next.get();
       uint64_t j;
       for (j = 0; j < bucket->BucketSize(); ++j) {
         Entry *entry = &bucket->getEntry(j);
         if (entry->state == USED) {
           function(entry->key, std::get<is>(args)...);
         } else if (entry->state != EMPTY) {
-            printf("Entry in PENDING state"
-                " while iterating over entries\n");
+          printf(
+              "Entry in PENDING state"
+              " while iterating over entries\n");
         }
       }
       bucket = next_bucket;
     }
   }
 
-  template <typename Tuple, typename ...Args>
-  static void ForEachKeyFunWrapper(const Tuple & args,
-                                   size_t i) {
+  template <typename Tuple, typename... Args>
+  static void ForEachKeyFunWrapper(const Tuple &args, size_t i) {
     constexpr auto Size = std::tuple_size<
-          typename std::decay<decltype(std::get<2>(args))>::type>::value;
-    Tuple & tuple = const_cast<Tuple &>(args);
-    CallForEachKeyFun(i,
-                      std::get<0>(tuple),
-                      std::get<1>(tuple),
-                      std::get<2>(tuple),
-                      std::make_index_sequence<Size>{});
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
+    Tuple &tuple = const_cast<Tuple &>(args);
+    CallForEachKeyFun(i, std::get<0>(tuple), std::get<1>(tuple),
+                      std::get<2>(tuple), std::make_index_sequence<Size>{});
   }
 
-  template <typename ApplyFunT, typename ...Args, std::size_t... is>
-  static void AsyncCallForEachKeyFun(rt::Handle & handle,
-                                     const size_t i,
-                                     LocalHashmap<KTYPE, VTYPE,
-                                                  KEY_COMPARE,
-                                                  INSERTER>* mapPtr,
-                                     ApplyFunT function,
-                                     std::tuple<Args...>& args,
-                                     std::index_sequence<is...>) {
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void AsyncCallForEachKeyFun(
+      rt::Handle &handle, const size_t i,
+      LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+      ApplyFunT function, std::tuple<Args...> &args,
+      std::index_sequence<is...>) {
     Bucket *buckets_array = mapPtr->buckets_array_.data();
     Bucket *bucket = &buckets_array[i];
     while (bucket != nullptr) {
-      Bucket* next_bucket = bucket->next.get();
+      Bucket *next_bucket = bucket->next.get();
       uint64_t j;
       for (j = 0; j < bucket->BucketSize(); ++j) {
         Entry *entry = &bucket->getEntry(j);
         if (entry->state == USED) {
           function(handle, entry->key, std::get<is>(args)...);
         } else if (entry->state != EMPTY) {
-            printf("Entry in PENDING state"
-                " while iterating over entries\n");
+          printf(
+              "Entry in PENDING state"
+              " while iterating over entries\n");
         }
       }
       bucket = next_bucket;
     }
   }
 
-
-  template <typename Tuple, typename ...Args>
-  static void AsyncForEachKeyFunWrapper(rt::Handle & handle,
-                                        const Tuple & args,
+  template <typename Tuple, typename... Args>
+  static void AsyncForEachKeyFunWrapper(rt::Handle &handle, const Tuple &args,
                                         size_t i) {
     constexpr auto Size = std::tuple_size<
-          typename std::decay<decltype(std::get<2>
-(args))>::type>::value;
-    Tuple & tuple = const_cast<Tuple &>(args);
-    AsyncCallForEachKeyFun(handle, i,
-                           std::get<0>(tuple),
-                           std::get<1>(tuple),
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
+    Tuple &tuple = const_cast<Tuple &>(args);
+    AsyncCallForEachKeyFun(handle, i, std::get<0>(tuple), std::get<1>(tuple),
                            std::get<2>(tuple),
                            std::make_index_sequence<Size>{});
   }
 
-  template <typename ApplyFunT, typename ...Args, std::size_t... is>
-  static void AsyncCallApplyFun(rt::Handle & handle,
-                                LocalHashmap<KTYPE, VTYPE,
-                                             KEY_COMPARE, INSERTER>* mapPtr,
-                                const KTYPE &key,
-                                ApplyFunT function,
-                                std::tuple<Args...> & args,
-                                std::index_sequence<is...>) {
-    uint64_t bucketIdx = HashFunction(key, kHashSeed) %
-                         mapPtr->numBuckets_;
-    Bucket * bucket = &(mapPtr->buckets_array_[bucketIdx]);
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void AsyncCallApplyFun(
+      rt::Handle &handle,
+      LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+      const KTYPE &key, ApplyFunT function, std::tuple<Args...> &args,
+      std::index_sequence<is...>) {
+    uint64_t bucketIdx = HashFunction(key, kHashSeed) % mapPtr->numBuckets_;
+    Bucket *bucket = &(mapPtr->buckets_array_[bucketIdx]);
 
     while (bucket != nullptr) {
       for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-        Entry * entry = &bucket->getEntry(i);
+        Entry *entry = &bucket->getEntry(i);
 
         // Stop at the first empty entry.
         if (entry->state == EMPTY) break;
@@ -551,20 +504,17 @@ class LocalHashmap {
     return;
   }
 
-  template <typename ApplyFunT, typename ...Args, std::size_t... is>
-  static void CallApplyFun(LocalHashmap<KTYPE, VTYPE,
-                           KEY_COMPARE, INSERTER>* mapPtr,
-                           const KTYPE &key,
-                           ApplyFunT function,
-                           std::tuple<Args...> & args,
-                           std::index_sequence<is...>) {
-    uint64_t bucketIdx = HashFunction(key, kHashSeed) %
-                         mapPtr->numBuckets_;
-    Bucket * bucket = &(mapPtr->buckets_array_[bucketIdx]);
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void CallApplyFun(
+      LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+      const KTYPE &key, ApplyFunT function, std::tuple<Args...> &args,
+      std::index_sequence<is...>) {
+    uint64_t bucketIdx = HashFunction(key, kHashSeed) % mapPtr->numBuckets_;
+    Bucket *bucket = &(mapPtr->buckets_array_[bucketIdx]);
 
     while (bucket != nullptr) {
       for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-        Entry * entry = &bucket->getEntry(i);
+        Entry *entry = &bucket->getEntry(i);
 
         // Stop at the first empty entry.
         if (entry->state == EMPTY) break;
@@ -586,34 +536,28 @@ class LocalHashmap {
     return;
   }
 
-  template <typename Tuple, typename ...Args>
-  static void AsyncApplyFunWrapper(rt::Handle & handle,
-                                   const Tuple & args) {
+  template <typename Tuple, typename... Args>
+  static void AsyncApplyFunWrapper(rt::Handle &handle, const Tuple &args) {
     constexpr auto Size = std::tuple_size<
-          typename std::decay<decltype(std::get<3>(args))>::type>::value;
-    Tuple & tuple = const_cast<Tuple &>(args);
-    AsyncCallApplyFun(handle,
-                      std::get<0>(tuple),
-                      std::get<1>(tuple),
-                      std::get<2>(tuple),
-                      std::get<3>(tuple),
+        typename std::decay<decltype(std::get<3>(args))>::type>::value;
+    Tuple &tuple = const_cast<Tuple &>(args);
+    AsyncCallApplyFun(handle, std::get<0>(tuple), std::get<1>(tuple),
+                      std::get<2>(tuple), std::get<3>(tuple),
                       std::make_index_sequence<Size>{});
   }
 };
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-VTYPE *
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Lookup(
-    const KTYPE & key) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Lookup(
+    const KTYPE &key) {
   uint64_t bucketIdx = HashFunction(key, kHashSeed) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
 
-  VTYPE * result = nullptr;
+  VTYPE *result = nullptr;
   while (bucket != nullptr && result == nullptr) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry * entry = &bucket->getEntry(i);
+      Entry *entry = &bucket->getEntry(i);
 
       // Stop at the first empty entry.
       if (entry->state == EMPTY) break;
@@ -634,18 +578,16 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Lookup(
   return result;
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-void
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::PrintAllEntries() {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::PrintAllEntries() {
   for (size_t bucketIdx = 0; bucketIdx < numBuckets_; bucketIdx++) {
     size_t pos = 0;
-    Bucket * bucket = &(buckets_array_[bucketIdx]);
+    Bucket *bucket = &(buckets_array_[bucketIdx]);
     std::cout << "Bucket: " << bucketIdx << std::endl;
     while (bucket != nullptr) {
       for (size_t i = 0; i < bucket->BucketSize(); ++i, ++pos) {
-        Entry * entry = &bucket->getEntry(i);
+        Entry *entry = &bucket->getEntry(i);
         // Stop at the first empty entry.
         if (entry->state == EMPTY) break;
         // Yield on pending entries.
@@ -653,44 +595,41 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::PrintAllEntries() {
                entry->state == PENDING_UPDATE) {
           rt::impl::yield();
         }
-        std::cout << pos << ": [" << entry->key << "] ["
-                  << entry->value << "]\n";
+        std::cout << pos << ": [" << entry->key << "] [" << entry->value
+                  << "]\n";
       }
       bucket = bucket->next.get();
     }
   }
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-void
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
-    const KTYPE & key) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
+    const KTYPE &key) {
   uint64_t bucketIdx = HashFunction(key, kHashSeed) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
-  Entry * prevEntry = nullptr;
-  Entry * toDelete = nullptr;
-  Entry * lastEntry = nullptr;
-  auto printEntryState = [](size_t num, Entry* todel,
-                            Entry* last, Entry* prev) {
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
+  Entry *prevEntry = nullptr;
+  Entry *toDelete = nullptr;
+  Entry *lastEntry = nullptr;
+  auto printEntryState = [](size_t num, Entry *todel, Entry *last,
+                            Entry *prev) {
     size_t tds = todel->state, ls = 42, ps = 42;
-    if (last != nullptr)
-      ls = last->state;
-    if (prev != nullptr)
-      ps = prev->state;
-    printf("loop %lu, todel-s: %lu, last-s: %lu, prev-s: %lu\n",
-           num, tds, ls, ps);
+    if (last != nullptr) ls = last->state;
+    if (prev != nullptr) ps = prev->state;
+    printf("loop %lu, todel-s: %lu, last-s: %lu, prev-s: %lu\n", num, tds, ls,
+           ps);
   };
   for (;;) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry * entry = &bucket->getEntry(i);
+      Entry *entry = &bucket->getEntry(i);
 
       // 1. Key not found, returning
       if (entry->state == EMPTY) {
         if (toDelete != nullptr)
-          throw std::logic_error("A problem occured with"
-                                       "the map erase operation");
+          throw std::logic_error(
+              "A problem occured with"
+              "the map erase operation");
         return;
       }
       while (entry->state == PENDING_INSERT) {
@@ -699,8 +638,8 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
 
       if (KeyComp_(&entry->key, &key) == 0) {
         // 2. Key found, try to acquire a lock on it
-        if (!__sync_bool_compare_and_swap(
-                    &entry->state, USED, PENDING_INSERT)) {
+        if (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                          PENDING_INSERT)) {
           // entry has already been deleted by another operation
           Erase(key);
           return;
@@ -717,8 +656,8 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
           size_t numBuck = 0;
           for (; j < bucket->BucketSize(); ++j) {
             lastEntry = &bucket->getEntry(j);
-            if (__sync_bool_compare_and_swap(&lastEntry->state,
-                                             EMPTY, PENDING_INSERT)) {
+            if (__sync_bool_compare_and_swap(&lastEntry->state, EMPTY,
+                                             PENDING_INSERT)) {
               // 3. Last entry found (EMPTY->PENDING)
               if (prevEntry == toDelete) {  // just set it to EMPTY and return;
                 lastEntry->state = EMPTY;
@@ -730,8 +669,8 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
               // lastEntry found and status is PENDING_INSERT
               // need to find prevEntry
 
-              if (!__sync_bool_compare_and_swap(
-                    &prevEntry->state, USED, PENDING_INSERT)) {
+              if (!__sync_bool_compare_and_swap(&prevEntry->state, USED,
+                                                PENDING_INSERT)) {
                 printEntryState(2, toDelete, lastEntry, prevEntry);
                 rt::impl::yield();
                 lastEntry->state = EMPTY;
@@ -769,12 +708,11 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
             if (lastEntry == nullptr) {
               // toDelete has not been found or
               // it is the last entry at the end of the last bucket
-              if (toDelete != nullptr)
-                toDelete->state = EMPTY;
+              if (toDelete != nullptr) toDelete->state = EMPTY;
               return;
             }
-            if (!__sync_bool_compare_and_swap(
-                    &lastEntry->state, USED, PENDING_INSERT)) {
+            if (!__sync_bool_compare_and_swap(&lastEntry->state, USED,
+                                              PENDING_INSERT)) {
               toDelete->state = USED;
               size_++;
               Erase(key);
@@ -803,8 +741,8 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
                 return;
               } else {
                 // Need to lock prev entry as well
-                while (!__sync_bool_compare_and_swap(
-                      &prevEntry->state, USED, PENDING_INSERT)) {
+                while (!__sync_bool_compare_and_swap(&prevEntry->state, USED,
+                                                     PENDING_INSERT)) {
                   rt::impl::yield();
                   printEntryState(6, toDelete, lastEntry, prevEntry);
                 }
@@ -829,34 +767,29 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
   }
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-void
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::
-AsyncErase(rt::Handle& handle, const KTYPE & key) {
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncErase(
+    rt::Handle &handle, const KTYPE &key) {
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
   auto args = std::tuple<LMapPtr, KTYPE>(this, key);
-  auto eraseLambda = [] (rt::Handle&,
-                         const std::tuple<LMapPtr, KTYPE>& t) {
+  auto eraseLambda = [](rt::Handle &, const std::tuple<LMapPtr, KTYPE> &t) {
     (std::get<0>(t))->Erase(std::get<1>(t));
   };
   rt::asyncExecuteAt(handle, rt::thisLocality(), eraseLambda, args);
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-VTYPE*
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
-    const KTYPE & key, const VTYPE & value) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
+    const KTYPE &key, const VTYPE &value) {
   uint64_t bucketIdx = HashFunction(key, kHashSeed) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
 
   // Forever or until we find an insertion point.
   for (;;) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry * entry = &bucket->getEntry(i);
+      Entry *entry = &bucket->getEntry(i);
 
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         // First time insertion.
@@ -870,8 +803,8 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
         while (entry->state == PENDING_INSERT) rt::impl::yield();
 
         if (KeyComp_(&entry->key, &key) == 0) {
-          while (!__sync_bool_compare_and_swap(
-                     &entry->state, USED, PENDING_UPDATE))
+          while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                               PENDING_UPDATE))
             rt::impl::yield();
 
           InsertPolicy_(&entry->value, value);
@@ -883,10 +816,9 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
 
     if (bucket->next == nullptr) {
       // We need to allocate a new buffer
-      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated,
-          false, true)) {
+      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
         // Allocate the bucket
-        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize()*2));
+        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize() * 2));
         bucket->next.swap(newBucket);
       } else {
         // Wait for the allocation to happen
@@ -899,157 +831,134 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
   return nullptr;
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-void
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncInsert(
-    rt::Handle& handle, const KTYPE & key, const VTYPE & value) {
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncInsert(
+    rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
   auto args = std::tuple<LMapPtr, KTYPE, VTYPE>(this, key, value);
-  auto insertLambda = [] (rt::Handle&,
-                           const std::tuple<LMapPtr, KTYPE, VTYPE>& t) {
+  auto insertLambda = [](rt::Handle &,
+                         const std::tuple<LMapPtr, KTYPE, VTYPE> &t) {
     (std::get<0>(t))->Insert(std::get<1>(t), std::get<2>(t));
   };
   rt::asyncExecuteAt(handle, rt::thisLocality(), insertLambda, args);
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-void
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncLookup(
-    rt::Handle& handle, const KTYPE & key, VTYPE** result) {
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
-  auto args = std::tuple<LMapPtr, KTYPE, VTYPE**>(this, key, result);
-  auto lookupLambda = [] (rt::Handle&,
-                          const std::tuple<LMapPtr, KTYPE, VTYPE**>& t) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncLookup(
+    rt::Handle &handle, const KTYPE &key, VTYPE **result) {
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
+  auto args = std::tuple<LMapPtr, KTYPE, VTYPE **>(this, key, result);
+  auto lookupLambda = [](rt::Handle &,
+                         const std::tuple<LMapPtr, KTYPE, VTYPE **> &t) {
     *std::get<2>(t) = (std::get<0>(t))->Lookup(std::get<1>(t));
   };
   rt::asyncExecuteAt(handle, rt::thisLocality(), lookupLambda, args);
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-void
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncLookup(
-    rt::Handle& handle, const KTYPE & key, LookupResult* result) {
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
-  auto args = std::tuple<LMapPtr, KTYPE, LookupResult*>(this, key, result);
-  auto lookupLambda = [] (rt::Handle&,
-                          const std::tuple<LMapPtr, KTYPE, LookupResult*>& t) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncLookup(
+    rt::Handle &handle, const KTYPE &key, LookupResult *result) {
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
+  auto args = std::tuple<LMapPtr, KTYPE, LookupResult *>(this, key, result);
+  auto lookupLambda = [](rt::Handle &,
+                         const std::tuple<LMapPtr, KTYPE, LookupResult *> &t) {
     (std::get<0>(t))->Lookup(std::get<1>(t), std::get<2>(t));
   };
   rt::asyncExecuteAt(handle, rt::thisLocality(), lookupLambda, args);
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-template<typename ApplyFunT, typename ...Args>
-void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::
-ForEachEntry(ApplyFunT &&function,
-             Args&... args) {
-  using FunctionTy = void(*)(const KTYPE&, VTYPE&, Args&...);
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ForEachEntry(
+    ApplyFunT &&function, Args &... args) {
+  using FunctionTy = void (*)(const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
   using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
   ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
-  rt::forEachAt(rt::thisLocality(),
-                ForEachEntryFunWrapper<ArgsTuple, Args...>,
+  rt::forEachAt(rt::thisLocality(), ForEachEntryFunWrapper<ArgsTuple, Args...>,
                 argsTuple, numBuckets_);
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-template<typename ApplyFunT, typename ...Args>
-void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::
-AsyncForEachEntry(rt::Handle & handle,
-                  ApplyFunT &&function,
-                  Args&... args) {
-  using FunctionTy = void(*)(rt::Handle &, const KTYPE&, VTYPE&, Args&...);
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncForEachEntry(
+    rt::Handle &handle, ApplyFunT &&function, Args &... args) {
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
   using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
   ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
   rt::asyncForEachAt(handle, rt::thisLocality(),
-                     AsyncForEachEntryFunWrapper<ArgsTuple, Args...>,
-                     argsTuple, numBuckets_);
+                     AsyncForEachEntryFunWrapper<ArgsTuple, Args...>, argsTuple,
+                     numBuckets_);
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-template<typename ApplyFunT, typename ...Args>
-void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::
-ForEachKey(ApplyFunT &&function, Args&... args) {
-  using FunctionTy = void(*)(const KTYPE &, Args&...);
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ForEachKey(
+    ApplyFunT &&function, Args &... args) {
+  using FunctionTy = void (*)(const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
   using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
   ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
 
-  rt::forEachAt(rt::thisLocality(),
-                ForEachKeyFunWrapper<ArgsTuple, Args...>,
+  rt::forEachAt(rt::thisLocality(), ForEachKeyFunWrapper<ArgsTuple, Args...>,
                 argsTuple, numBuckets_);
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-template<typename ApplyFunT, typename ...Args>
-void
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncForEachKey(
-  rt::Handle & handle,
-  ApplyFunT &&function,
-  Args&... args) {
-  using FunctionTy = void(*)(rt::Handle &, const KTYPE&, Args&...);
-  FunctionTy fn = std::forward<decltype(function)>(function);
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
-  using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
-  ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
-  rt::asyncForEachAt(
-        handle, rt::thisLocality(),
-        AsyncForEachKeyFunWrapper<ArgsTuple, Args...>,
-        argsTuple, numBuckets_);
-}
-
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
-template<typename ApplyFunT, typename ...Args>
-void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::
-AsyncApply(rt::Handle & handle, const KTYPE & key,
-           ApplyFunT && function, Args&... args) {
-  using FunctionTy = void(*)(rt::Handle &, const KTYPE &, VTYPE &, Args&...);
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncForEachKey(
+    rt::Handle &handle, ApplyFunT &&function, Args &... args) {
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
-  using ArgsTuple = std::tuple<LMapPtr, const KTYPE,
-                               FunctionTy, std::tuple<Args...>>;
+  using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
+  ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
+  rt::asyncForEachAt(handle, rt::thisLocality(),
+                     AsyncForEachKeyFunWrapper<ArgsTuple, Args...>, argsTuple,
+                     numBuckets_);
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncApply(
+    rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
+    Args &... args) {
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
+  FunctionTy fn = std::forward<decltype(function)>(function);
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
+  using ArgsTuple =
+      std::tuple<LMapPtr, const KTYPE, FunctionTy, std::tuple<Args...>>;
 
   ArgsTuple argsTuple(this, key, fn, std::tuple<Args...>(args...));
   rt::asyncExecuteAt(handle, rt::thisLocality(),
-                     AsyncApplyFunWrapper<ArgsTuple, Args...>,
-                     argsTuple);
+                     AsyncApplyFunWrapper<ArgsTuple, Args...>, argsTuple);
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
 template <typename ELTYPE>
-VTYPE *
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
-    const KTYPE & key, const ELTYPE & value) {
+VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
+    const KTYPE &key, const ELTYPE &value) {
   uint64_t bucketIdx = HashFunction(key, kHashSeed) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
 
   // Forever or until we find an insertion point.
   for (;;) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry * entry = &bucket->getEntry(i);
+      Entry *entry = &bucket->getEntry(i);
 
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         // First time insertion.
@@ -1063,8 +972,8 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
         while (entry->state == PENDING_INSERT) rt::impl::yield();
 
         if (KeyComp_(&entry->key, &key) == 0) {
-          while (!__sync_bool_compare_and_swap(
-                     &entry->state, USED, PENDING_UPDATE))
+          while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                               PENDING_UPDATE))
             rt::impl::yield();
 
           INSERTER::Insert(&entry->value, value);
@@ -1076,10 +985,9 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
 
     if (bucket->next == nullptr) {
       // We need to allocate a new buffer
-      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated,
-          false, true)) {
+      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
         // Allocate the bucket
-        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize()*2));
+        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize() * 2));
         bucket->next.swap(newBucket);
       } else {
         // Wait for the allocation to happen
@@ -1092,17 +1000,15 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
   return nullptr;
 }
 
-template <
-  typename KTYPE, typename VTYPE,
-  typename KEY_COMPARE, typename INSERTER>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
 template <typename ELTYPE>
-void
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncInsert(
-    rt::Handle& handle, const KTYPE & key, const ELTYPE & value) {
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>*;
+void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncInsert(
+    rt::Handle &handle, const KTYPE &key, const ELTYPE &value) {
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
   auto args = std::tuple<LMapPtr, KTYPE, ELTYPE>(this, key, value);
-  auto insertLambda = [] (rt::Handle&,
-                           const std::tuple<LMapPtr, KTYPE, ELTYPE>& t) {
+  auto insertLambda = [](rt::Handle &,
+                         const std::tuple<LMapPtr, KTYPE, ELTYPE> &t) {
     (std::get<0>(t))->Insert(std::get<1>(t), std::get<2>(t));
   };
   rt::asyncExecuteAt(handle, rt::thisLocality(), insertLambda, args);

@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -21,7 +21,6 @@
 // under the License.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef INCLUDE_SHAD_RUNTIME_TBB_TBB_TRAITS_MAPPING_H_
 #define INCLUDE_SHAD_RUNTIME_TBB_TBB_TRAITS_MAPPING_H_
@@ -46,7 +45,7 @@ struct tbb_tag {};
 
 template <>
 struct HandleTrait<tbb_tag> {
-  using HandleTy    = std::shared_ptr<tbb::task_group>;
+  using HandleTy = std::shared_ptr<tbb::task_group>;
   using ParameterTy = std::shared_ptr<tbb::task_group> &;
   using ConstParameterTy = const std::shared_ptr<tbb::task_group> &;
 
@@ -60,9 +59,7 @@ struct HandleTrait<tbb_tag> {
     return lhs == rhs;
   }
 
-  static std::string toString(ConstParameterTy H) {
-    return "";
-  }
+  static std::string toString(ConstParameterTy H) { return ""; }
 
   static uint64_t toUnsignedInt(ConstParameterTy H) {
     return reinterpret_cast<uint64_t>(H.get());
@@ -82,15 +79,15 @@ template <>
 struct LockTrait<tbb_tag> {
   using LockTy = std::mutex;
 
-  static void lock(LockTy & L) { L.lock(); }
-  static void unlock(LockTy & L) { L.unlock(); }
+  static void lock(LockTy &L) { L.lock(); }
+  static void unlock(LockTy &L) { L.unlock(); }
 };
 
 template <>
 struct RuntimeInternalsTrait<tbb_tag> {
-  static void Initialize(int argc, char *argv[]) { }
+  static void Initialize(int argc, char *argv[]) {}
 
-  static void Finalize() { }
+  static void Finalize() {}
 
   static size_t Concurrency() {
     return tbb::tbb_thread::hardware_concurrency();

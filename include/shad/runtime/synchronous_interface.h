@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_RUNTIME_SYNCHRONOUS_INTERFACE_H_
 #define INCLUDE_SHAD_RUNTIME_SYNCHRONOUS_INTERFACE_H_
 
@@ -37,67 +36,63 @@ namespace rt {
 
 namespace impl {
 
-template<typename TargetSystemTag>
+template <typename TargetSystemTag>
 struct SynchronousInterface {
   template <typename FunT, typename InArgsT>
-  static void
-  executeAt(const Locality & loc, FunT && func, const InArgsT & args);
+  static void executeAt(const Locality &loc, FunT &&func, const InArgsT &args);
 
   template <typename FunT>
-  static void
-  executeAt(const Locality &loc, FunT && func,
-            const std::shared_ptr<uint8_t> & argsBuffer,
-            const uint32_t bufferSize);
+  static void executeAt(const Locality &loc, FunT &&func,
+                        const std::shared_ptr<uint8_t> &argsBuffer,
+                        const uint32_t bufferSize);
 
   template <typename FunT, typename InArgsT>
-  static void
-  executeAtWithRetBuff(
-      const Locality &loc, FunT && func, const InArgsT & args,
-      const uint8_t * resultBuffer, const uint32_t * resultSize);
+  static void executeAtWithRetBuff(const Locality &loc, FunT &&func,
+                                   const InArgsT &args,
+                                   const uint8_t *resultBuffer,
+                                   const uint32_t *resultSize);
 
   template <typename FunT>
-  static void
-  executeAtWithRetBuff(
-      const Locality & loc, FunT && func,
-      const std::shared_ptr<uint8_t> & argsBuffer, const uint32_t bufferSize,
-      const uint8_t * resultBuffer, const uint32_t * resultSize);
+  static void executeAtWithRetBuff(const Locality &loc, FunT &&func,
+                                   const std::shared_ptr<uint8_t> &argsBuffer,
+                                   const uint32_t bufferSize,
+                                   const uint8_t *resultBuffer,
+                                   const uint32_t *resultSize);
 
   template <typename FunT, typename InArgsT, typename ResT>
-  static void executeAtWithRet(
-      const Locality & loc, FunT && func, const InArgsT & args, ResT * result);
+  static void executeAtWithRet(const Locality &loc, FunT &&func,
+                               const InArgsT &args, ResT *result);
 
   template <typename FunT, typename ResT>
-  static void executeAtWithRet(
-      const Locality & loc, FunT && func,
-      const uint8_t * argsBuffer, const uint32_t bufferSize, ResT * result);
+  static void executeAtWithRet(const Locality &loc, FunT &&func,
+                               const uint8_t *argsBuffer,
+                               const uint32_t bufferSize, ResT *result);
 
   template <typename FunT, typename InArgsT>
-  static void executeOnAll(FunT && func, const InArgsT & args);
+  static void executeOnAll(FunT &&func, const InArgsT &args);
 
   template <typename FunT>
-  static void executeOnAll(
-      FunT && func, const std::shared_ptr<uint8_t> & argsBuffer,
-      const uint32_t bufferSize);
+  static void executeOnAll(FunT &&func,
+                           const std::shared_ptr<uint8_t> &argsBuffer,
+                           const uint32_t bufferSize);
 
   template <typename FunT, typename InArgsT>
-  static void forEachAt(
-      const Locality & loc, FunT && func, const InArgsT & args,
-      const size_t numIters);
+  static void forEachAt(const Locality &loc, FunT &&func, const InArgsT &args,
+                        const size_t numIters);
 
   template <typename FunT>
-  static void forEachAt(
-      const Locality &loc, FunT && func,
-      const std::shared_ptr<uint8_t> & argsBuffer, const uint32_t bufferSize,
-      const size_t numIters);
+  static void forEachAt(const Locality &loc, FunT &&func,
+                        const std::shared_ptr<uint8_t> &argsBuffer,
+                        const uint32_t bufferSize, const size_t numIters);
 
   template <typename FunT, typename InArgsT>
-  static void forEachOnAll(
-      FunT && func, const InArgsT & args, const size_t numIters);
+  static void forEachOnAll(FunT &&func, const InArgsT &args,
+                           const size_t numIters);
 
   template <typename FunT>
-  static void forEachOnAll(
-      FunT && func, const std::shared_ptr<uint8_t> &argsBuffer,
-      const uint32_t bufferSize, const size_t numIters);
+  static void forEachOnAll(FunT &&func,
+                           const std::shared_ptr<uint8_t> &argsBuffer,
+                           const uint32_t bufferSize, const size_t numIters);
 };
 
 }  // namespace impl

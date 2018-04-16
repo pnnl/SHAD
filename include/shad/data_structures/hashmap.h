@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -21,7 +21,6 @@
 // under the License.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef INCLUDE_SHAD_DATA_STRUCTURES_HASHMAP_H_
 #define INCLUDE_SHAD_DATA_STRUCTURES_HASHMAP_H_
@@ -49,30 +48,25 @@ namespace shad {
 /// @tparam INSERT_POLICY insertion policy; default is overwrite
 /// (i.e. insertions overwrite previous values
 ///  associated to the same key, if any).
-template<typename KTYPE,
-         typename VTYPE,
-         typename KEY_COMPARE = MemCmp<KTYPE>,
-         typename INSERT_POLICY = Overwriter<VTYPE>>
-class Hashmap
-      : public AbstractDataStructure<Hashmap<KTYPE, VTYPE,
-                                             KEY_COMPARE, INSERT_POLICY>> {
-  template<typename> friend class AbstractDataStructure;
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE = MemCmp<KTYPE>,
+          typename INSERT_POLICY = Overwriter<VTYPE>>
+class Hashmap : public AbstractDataStructure<
+                    Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>> {
+  template <typename>
+  friend class AbstractDataStructure;
+
  public:
   using HmapT = Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
   using LMapT = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
-  using ObjectID =
-              typename AbstractDataStructure<HmapT>::ObjectID;
-  using ShadHashmapPtr =
-              typename AbstractDataStructure<HmapT>::SharedPtr;
+  using ObjectID = typename AbstractDataStructure<HmapT>::ObjectID;
+  using ShadHashmapPtr = typename AbstractDataStructure<HmapT>::SharedPtr;
   struct EntryT {
-    EntryT(const KTYPE& k, const VTYPE& v)
-    : key(k), value(v) {}
+    EntryT(const KTYPE &k, const VTYPE &v) : key(k), value(v) {}
     EntryT() = default;
     KTYPE key;
     VTYPE value;
   };
-  using BuffersVector = typename impl::BuffersVector<EntryT,
-                                                     HmapT>;
+  using BuffersVector = typename impl::BuffersVector<EntryT, HmapT>;
 
   /// @brief Create method.
   ///
@@ -86,9 +80,7 @@ class Hashmap
   /// @brief Getter of the Global Identifier.
   ///
   /// @return The global identifier associated with the hashmap instance.
-  ObjectID GetGlobalID() const {
-    return oid_;
-  }
+  ObjectID GetGlobalID() const { return oid_; }
 
   /// @brief Overall size of the hashmap (number of entries).
   /// @warning Calling the size method may result in one-to-all
@@ -110,7 +102,7 @@ class Hashmap
   /// @param[in] value the value to copy into the hashMap.
   /// @return a pointer to the value if the the key-value was inserted
   ///        or a pointer to a previously inserted value.
-  void AsyncInsert(rt::Handle& handle, const KTYPE &key, const VTYPE &value);
+  void AsyncInsert(rt::Handle &handle, const KTYPE &key, const VTYPE &value);
 
   /// @brief Buffered Insert method.
   /// Inserts a key-value pair, using aggregation buffers.
@@ -128,12 +120,12 @@ class Hashmap
   /// @param[in,out] handle Reference to the handle
   /// @param[in] key The key.
   /// @param[in] value The value.
-  void BufferedAsyncInsert(rt::Handle &handle,
-                           const KTYPE &key, const VTYPE &value);
+  void BufferedAsyncInsert(rt::Handle &handle, const KTYPE &key,
+                           const VTYPE &value);
 
   /// @brief Finalize method for buffered insertions.
   void WaitForBufferedInsert() {
-    auto flushLambda_ = [] (const ObjectID &oid) {
+    auto flushLambda_ = [](const ObjectID &oid) {
       auto ptr = HmapT::GetPtr(oid);
       ptr->buffers_.FlushAll();
     };
@@ -141,7 +133,7 @@ class Hashmap
   }
   /// @brief Remove a key-value pair from the hashmap.
   /// @param[in] key the key.
-  void Erase(const KTYPE & key);
+  void Erase(const KTYPE &key);
 
   /// @brief Asynchronously remove a key-value pair from the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -149,27 +141,26 @@ class Hashmap
   /// @param[in,out] handle Reference to the handle
   /// to be used to wait for completion.
   /// @param[in] key the key.
-  void AsyncErase(rt::Handle& handle, const KTYPE & key);
+  void AsyncErase(rt::Handle &handle, const KTYPE &key);
 
   /// @brief Clear the content of the hashmap.
   void Clear() {
-    auto clearLambda = [] (const ObjectID& oid) {
+    auto clearLambda = [](const ObjectID &oid) {
       auto mapPtr = HmapT::GetPtr(oid);
       mapPtr->localMap_.Clear();
     };
     rt::executeOnAll(clearLambda, oid_);
   }
 
-  using LookupResult = typename LocalHashmap<KTYPE,
-                                             VTYPE,
-                                             KEY_COMPARE>::LookupResult;
+  using LookupResult =
+      typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE>::LookupResult;
 
   /// @brief Get the value associated to a key.
   /// @param[in] key the key.
   /// @param[out] res a pointer to the value if the the key-value was found
   ///             and NULL if it does not exists.
   /// @return true if the entry is found, false otherwise.
-  bool Lookup(const KTYPE &key, VTYPE* res);
+  bool Lookup(const KTYPE &key, VTYPE *res);
 
   /// @brief Asynchronous lookup method.
   /// @warning Asynchronous operations are guaranteed to have completed.
@@ -178,7 +169,7 @@ class Hashmap
   /// to be used to wait for completion.
   /// @param[in] key The key.
   /// @param[out] res The result of the lookup operation.
-  void AsyncLookup(rt::Handle& handle, const KTYPE &key, LookupResult* res);
+  void AsyncLookup(rt::Handle &handle, const KTYPE &key, LookupResult *res);
 
   /// @brief Apply a user-defined function to a key-value pair.
   ///
@@ -192,8 +183,8 @@ class Hashmap
   /// @param key The key.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void Apply(const KTYPE &key, ApplyFunT &&function, Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void Apply(const KTYPE &key, ApplyFunT &&function, Args &... args);
 
   /// @brief Asynchronously apply a user-defined function to a key-value pair.
   ///
@@ -208,9 +199,9 @@ class Hashmap
   /// @param key The key.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void AsyncApply(rt::Handle &handle, const KTYPE &key,
-                  ApplyFunT &&function, Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
+                  Args &... args);
 
   /// @brief Apply a user-defined function to each key-value pair.
   ///
@@ -223,8 +214,8 @@ class Hashmap
   ///
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void ForEachEntry(ApplyFunT &&function, Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void ForEachEntry(ApplyFunT &&function, Args &... args);
 
   /// @brief Asynchronously apply a user-defined function to each key-value
   /// pair.
@@ -239,10 +230,9 @@ class Hashmap
   /// @param[in,out] handle Reference to the handle.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void AsyncForEachEntry(rt::Handle & handle,
-                         ApplyFunT &&function,
-                         Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void AsyncForEachEntry(rt::Handle &handle, ApplyFunT &&function,
+                         Args &... args);
 
   /// @brief Apply a user-defined function to each key.
   ///
@@ -255,8 +245,8 @@ class Hashmap
   ///
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void ForEachKey(ApplyFunT &&function, Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void ForEachKey(ApplyFunT &&function, Args &... args);
 
   /// @brief Asynchronously apply a user-defined function to each key.
   ///
@@ -270,13 +260,12 @@ class Hashmap
   /// @param[in,out] handle Reference to the handle.
   /// @param function The function to apply.
   /// @param args The function arguments.
-  template<typename ApplyFunT, typename ...Args>
-  void AsyncForEachKey(rt::Handle & handle,
-                       ApplyFunT &&function,
-                       Args&... args);
+  template <typename ApplyFunT, typename... Args>
+  void AsyncForEachKey(rt::Handle &handle, ApplyFunT &&function,
+                       Args &... args);
 
   void PrintAllEntries() {
-    auto printLambda = [] (const ObjectID& oid) {
+    auto printLambda = [](const ObjectID &oid) {
       auto mapPtr = HmapT::GetPtr(oid);
       std::cout << "---- Locality: " << rt::thisLocality() << std::endl;
       mapPtr->localMap_.PrintAllEntries();
@@ -285,7 +274,7 @@ class Hashmap
   }
 
   // FIXME it should be protected
-  void BufferEntryInsert(const EntryT& entry) {
+  void BufferEntryInsert(const EntryT &entry) {
     localMap_.Insert(entry.key, entry.value);
   }
 
@@ -305,22 +294,20 @@ class Hashmap
     KTYPE key;
   };
 
-
  protected:
   Hashmap(ObjectID oid, const size_t numEntries)
-      : oid_(oid)
-      , localMap_(std::max(numEntries/constants::kDefaultNumEntriesPerBucket,
-                           1lu))
-      , buffers_(oid){ }
+      : oid_(oid),
+        localMap_(
+            std::max(numEntries / constants::kDefaultNumEntriesPerBucket, 1lu)),
+        buffers_(oid) {}
 };
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline size_t
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Size() const {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline size_t Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Size() const {
   size_t size = localMap_.size_;
   size_t remoteSize;
-  auto sizeLambda = [] (const ObjectID &oid, size_t *res) {
+  auto sizeLambda = [](const ObjectID &oid, size_t *res) {
     auto mapPtr = HmapT::GetPtr(oid);
     *res = mapPtr->localMap_.size_;
   };
@@ -333,19 +320,17 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Size() const {
   return size;
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(
     const KTYPE &key, const VTYPE &value) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     localMap_.Insert(key, value);
   } else {
-    auto insertLambda = [] (const InsertArgs &args) {
+    auto insertLambda = [](const InsertArgs &args) {
       auto mapPtr = HmapT::GetPtr(args.oid);
       mapPtr->localMap_.Insert(args.key, args.value);
     };
@@ -354,19 +339,17 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(
   }
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
-    rt::Handle& handle, const KTYPE &key, const VTYPE &value) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
+    rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     localMap_.AsyncInsert(handle, key, value);
   } else {
-    auto insertLambda = [] (rt::Handle& handle, const InsertArgs &args) {
+    auto insertLambda = [](rt::Handle &handle, const InsertArgs &args) {
       auto mapPtr = HmapT::GetPtr(args.oid);
       mapPtr->localMap_.AsyncInsert(handle, args.key, args.value);
     };
@@ -375,13 +358,11 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
   }
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BufferedInsert(
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BufferedInsert(
     const KTYPE &key, const VTYPE &value) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localMap_.Insert(key, value);
@@ -390,13 +371,13 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BufferedInsert(
   }
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BufferedAsyncInsert(
-  rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE,
+                    INSERT_POLICY>::BufferedAsyncInsert(rt::Handle &handle,
+                                                        const KTYPE &key,
+                                                        const VTYPE &value) {
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localMap_.AsyncInsert(handle, key, value);
@@ -406,18 +387,17 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BufferedAsyncInsert(
   }
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Erase(const KTYPE &key) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Erase(
+    const KTYPE &key) {
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     localMap_.Erase(key);
   } else {
-    auto eraseLambda = [] (const LookupArgs &args) {
+    auto eraseLambda = [](const LookupArgs &args) {
       auto mapPtr = HmapT::GetPtr(args.oid);
       mapPtr->localMap_.Erase(args.key);
     };
@@ -426,19 +406,17 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Erase(const KTYPE &key) {
   }
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncErase(
-    rt::Handle& handle, const KTYPE &key) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncErase(
+    rt::Handle &handle, const KTYPE &key) {
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     localMap_.AsyncErase(handle, key);
   } else {
-    auto eraseLambda = [] (rt::Handle& handle, const LookupArgs &args) {
+    auto eraseLambda = [](rt::Handle &handle, const LookupArgs &args) {
       auto mapPtr = HmapT::GetPtr(args.oid);
       mapPtr->localMap_.AsyncErase(handle, args.key);
     };
@@ -447,19 +425,17 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncErase(
   }
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline bool
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::
-Lookup(const KTYPE &key, VTYPE* res) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline bool Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Lookup(
+    const KTYPE &key, VTYPE *res) {
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     return localMap_.Lookup(key, res);
   } else {
-    auto lookupLambda = [] (const LookupArgs &args, LookupResult *res) {
+    auto lookupLambda = [](const LookupArgs &args, LookupResult *res) {
       auto mapPtr = HmapT::GetPtr(args.oid);
       res->found = mapPtr->localMap_.Lookup(args.key, &res->value);
     };
@@ -474,191 +450,168 @@ Lookup(const KTYPE &key, VTYPE* res) {
   return false;
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-inline void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::
-AsyncLookup(rt::Handle& handle, const KTYPE &key, LookupResult* res) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncLookup(
+    rt::Handle &handle, const KTYPE &key, LookupResult *res) {
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     localMap_.AsyncLookup(handle, key, res);
   } else {
-    auto lookupLambda = [] (rt::Handle&,
-                            const LookupArgs &args, LookupResult *res) {
+    auto lookupLambda = [](rt::Handle &, const LookupArgs &args,
+                           LookupResult *res) {
       auto mapPtr = HmapT::GetPtr(args.oid);
       LookupResult tres;
       mapPtr->localMap_.Lookup(args.key, &tres);
       *res = tres;
     };
     LookupArgs args = {oid_, key};
-    rt::asyncExecuteAtWithRet(handle, targetLocality,
-                              lookupLambda, args, res);
+    rt::asyncExecuteAtWithRet(handle, targetLocality, lookupLambda, args, res);
   }
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-template<typename ApplyFunT, typename ...Args>
-void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::
-ForEachEntry(ApplyFunT &&function, Args&... args) {
-  using FunctionTy = void(*)(const KTYPE&, VTYPE&, Args&...);
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename ApplyFunT, typename... Args>
+void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::ForEachEntry(
+    ApplyFunT &&function, Args &... args) {
+  using FunctionTy = void (*)(const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE>*;
-  using ArgsTuple = std::tuple<LMapT*, FunctionTy, std::tuple<Args...>>;
+  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE> *;
+  using ArgsTuple = std::tuple<LMapT *, FunctionTy, std::tuple<Args...>>;
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&mapPtr->localMap_,
-                        std::get<1>(args),
+    ArgsTuple argsTuple(&mapPtr->localMap_, std::get<1>(args),
                         std::get<2>(args));
     rt::forEachAt(rt::thisLocality(),
-        LMapT:: template ForEachEntryFunWrapper<ArgsTuple, Args...>,
-        argsTuple, mapPtr->localMap_.numBuckets_);
+                  LMapT::template ForEachEntryFunWrapper<ArgsTuple, Args...>,
+                  argsTuple, mapPtr->localMap_.numBuckets_);
   };
   rt::executeOnAll(feLambda, arguments);
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-template<typename ApplyFunT, typename ...Args>
-void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncForEachEntry(
-  rt::Handle& handle,
-  ApplyFunT &&function,
-  Args&... args) {
-  using FunctionTy = void(*)(rt::Handle&, const KTYPE&, VTYPE&, Args&...);
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename ApplyFunT, typename... Args>
+void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncForEachEntry(
+    rt::Handle &handle, ApplyFunT &&function, Args &... args) {
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
-  using ArgsTuple = std::tuple<LMapT*, FunctionTy, std::tuple<Args...>>;
+  using ArgsTuple = std::tuple<LMapT *, FunctionTy, std::tuple<Args...>>;
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
-  auto feLambda = [](rt::Handle& handle, const feArgs &args) {
+  auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&mapPtr->localMap_,
-                        std::get<1>(args),
+    ArgsTuple argsTuple(&mapPtr->localMap_, std::get<1>(args),
                         std::get<2>(args));
-    rt::asyncForEachAt(handle, rt::thisLocality(),
-        LMapT:: template AsyncForEachEntryFunWrapper<ArgsTuple, Args...>,
+    rt::asyncForEachAt(
+        handle, rt::thisLocality(),
+        LMapT::template AsyncForEachEntryFunWrapper<ArgsTuple, Args...>,
         argsTuple, mapPtr->localMap_.numBuckets_);
   };
   rt::asyncExecuteOnAll(handle, feLambda, arguments);
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-template<typename ApplyFunT, typename ...Args>
-void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::ForEachKey(
-  ApplyFunT &&function,
-  Args&... args) {
-  using FunctionTy = void(*)(const KTYPE&, Args&...);
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename ApplyFunT, typename... Args>
+void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::ForEachKey(
+    ApplyFunT &&function, Args &... args) {
+  using FunctionTy = void (*)(const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
-  using ArgsTuple = std::tuple<LMapT*, FunctionTy, std::tuple<Args...>>;
+  using ArgsTuple = std::tuple<LMapT *, FunctionTy, std::tuple<Args...>>;
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&mapPtr->localMap_,
-                        std::get<1>(args),
+    ArgsTuple argsTuple(&mapPtr->localMap_, std::get<1>(args),
                         std::get<2>(args));
     rt::forEachAt(rt::thisLocality(),
-        LMapT:: template ForEachKeyFunWrapper<ArgsTuple, Args...>,
-        argsTuple, mapPtr->localMap_.numBuckets_);
+                  LMapT::template ForEachKeyFunWrapper<ArgsTuple, Args...>,
+                  argsTuple, mapPtr->localMap_.numBuckets_);
   };
   rt::executeOnAll(feLambda, arguments);
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-template<typename ApplyFunT, typename ...Args>
-void
-Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncForEachKey(
-  rt::Handle& handle,
-  ApplyFunT &&function,
-  Args&... args) {
-  using FunctionTy = void(*)(rt::Handle&, const KTYPE&, Args&...);
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename ApplyFunT, typename... Args>
+void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncForEachKey(
+    rt::Handle &handle, ApplyFunT &&function, Args &... args) {
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
-  using ArgsTuple = std::tuple<LMapT*, FunctionTy, std::tuple<Args...>>;
+  using ArgsTuple = std::tuple<LMapT *, FunctionTy, std::tuple<Args...>>;
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
-  auto feLambda = [](rt::Handle& handle, const feArgs &args) {
+  auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&mapPtr->localMap_,
-                        std::get<1>(args),
+    ArgsTuple argsTuple(&mapPtr->localMap_, std::get<1>(args),
                         std::get<2>(args));
-    rt::asyncForEachAt(handle, rt::thisLocality(),
-        LMapT:: template AsyncForEachKeyFunWrapper<ArgsTuple, Args...>,
+    rt::asyncForEachAt(
+        handle, rt::thisLocality(),
+        LMapT::template AsyncForEachKeyFunWrapper<ArgsTuple, Args...>,
         argsTuple, mapPtr->localMap_.numBuckets_);
   };
   rt::asyncExecuteOnAll(handle, feLambda, arguments);
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-template<typename ApplyFunT, typename ...Args>
-void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::
-Apply(const KTYPE& key, ApplyFunT &&function, Args&... args) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename ApplyFunT, typename... Args>
+void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Apply(
+    const KTYPE &key, ApplyFunT &&function, Args &... args) {
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localMap_.Apply(key, function, args...);
   } else {
-    using FunctionTy = void(*)(const KTYPE&, VTYPE&, Args&...);
+    using FunctionTy = void (*)(const KTYPE &, VTYPE &, Args &...);
     FunctionTy fn = std::forward<decltype(function)>(function);
-    using ArgsTuple = std::tuple<ObjectID, const KTYPE,
-                                 FunctionTy, std::tuple<Args...>>;
+    using ArgsTuple =
+        std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
     ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
     auto feLambda = [](const ArgsTuple &args) {
       constexpr auto Size = std::tuple_size<
           typename std::decay<decltype(std::get<3>(args))>::type>::value;
-      ArgsTuple & tuple = const_cast<ArgsTuple&>(args);
-      LMapT* mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMap_);
-      LMapT::CallApplyFun(mapPtr,
-                               std::get<1>(tuple),
-                               std::get<2>(tuple),
-                               std::get<3>(tuple),
-                               std::make_index_sequence<Size>{});
+      ArgsTuple &tuple = const_cast<ArgsTuple &>(args);
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMap_);
+      LMapT::CallApplyFun(mapPtr, std::get<1>(tuple), std::get<2>(tuple),
+                          std::get<3>(tuple), std::make_index_sequence<Size>{});
     };
     rt::executeAt(targetLocality, feLambda, arguments);
   }
 }
 
-template <typename KTYPE, typename VTYPE,
-          typename KEY_COMPARE, typename INSERT_POLICY>
-template<typename ApplyFunT, typename ...Args>
-void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::
-AsyncApply(rt::Handle& handle,
-           const KTYPE& key,
-           ApplyFunT &&function,
-           Args&... args) {
-  uint64_t targetId =
-      HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename ApplyFunT, typename... Args>
+void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncApply(
+    rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
+    Args &... args) {
+  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
     localMap_.AsyncApply(handle, key, function, args...);
   } else {
-    using FunctionTy = void(*)(rt::Handle&, const KTYPE&, VTYPE&, Args&...);
+    using FunctionTy =
+        void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
     FunctionTy fn = std::forward<decltype(function)>(function);
-    using ArgsTuple = std::tuple<ObjectID, const KTYPE,
-                              FunctionTy, std::tuple<Args...>>;
+    using ArgsTuple =
+        std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
     ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
-    auto feLambda = [](rt::Handle& handle, const ArgsTuple &args) {
+    auto feLambda = [](rt::Handle &handle, const ArgsTuple &args) {
       constexpr auto Size = std::tuple_size<
           typename std::decay<decltype(std::get<3>(args))>::type>::value;
-      ArgsTuple & tuple(const_cast<ArgsTuple&>(args));
-      LMapT* mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMap_);
-      LMapT::AsyncCallApplyFun(handle,
-                        mapPtr,
-                        std::get<1>(tuple),
-                        std::get<2>(tuple),
-                        std::get<3>(tuple),
-                        std::make_index_sequence<Size>{});
+      ArgsTuple &tuple(const_cast<ArgsTuple &>(args));
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMap_);
+      LMapT::AsyncCallApplyFun(handle, mapPtr, std::get<1>(tuple),
+                               std::get<2>(tuple), std::get<3>(tuple),
+                               std::make_index_sequence<Size>{});
     };
     rt::asyncExecuteAt(handle, targetLocality, feLambda, arguments);
   }

@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -21,7 +21,6 @@
 // under the License.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef INCLUDE_SHAD_RUNTIME_RUNTIME_H_
 #define INCLUDE_SHAD_RUNTIME_RUNTIME_H_
@@ -45,11 +44,11 @@
 #include "shad/runtime/mapping_traits.h"
 #include "shad/runtime/synchronous_interface.h"
 #if defined HAVE_TBB
-#  include "shad/runtime/tbb/tbb_asynchronous_interface.h"
-#  include "shad/runtime/tbb/tbb_synchronous_interface.h"
-#  include "shad/runtime/tbb/tbb_traits_mapping.h"
+#include "shad/runtime/tbb/tbb_asynchronous_interface.h"
+#include "shad/runtime/tbb/tbb_synchronous_interface.h"
+#include "shad/runtime/tbb/tbb_traits_mapping.h"
 #else
-#  error Unsupported Runtime System
+#error Unsupported Runtime System
 #endif
 
 /// @namespace shad
@@ -72,13 +71,10 @@ class Lock {
   typename impl::LockTrait<TargetSystemTag>::LockTy lock_;
 };
 
-
 namespace impl {
 
 /// @brief yield the runtime
-inline void yield() {
-  RuntimeInternalsTrait<TargetSystemTag>::Yield();
-}
+inline void yield() { RuntimeInternalsTrait<TargetSystemTag>::Yield(); }
 
 /// @brief returns number of threads/cores
 inline size_t getConcurrency() {
@@ -93,9 +89,7 @@ inline void initialize(int argc, char *argv[]) {
 }
 
 /// @brief Finailize the runtime environment prior to program termination.
-inline void finalize() {
-  RuntimeInternalsTrait<TargetSystemTag>::Finalize();
-}
+inline void finalize() { RuntimeInternalsTrait<TargetSystemTag>::Finalize(); }
 
 /// @brief Creates a new Handle.
 inline Handle createHandle() {
@@ -155,10 +149,9 @@ inline std::set<Locality> allLocalities() {
 /// @param func The function to execute.
 /// @param args The arguments to be passed to the function.
 template <typename FunT, typename InArgsT>
-void executeAt(const Locality & loc, FunT && func, const InArgsT & args) {
+void executeAt(const Locality &loc, FunT &&func, const InArgsT &args) {
   impl::SynchronousInterface<TargetSystemTag>::executeAt(loc, func, args);
 }
-
 
 /// @brief Execute a function on a selected locality synchronously.
 ///
@@ -194,12 +187,11 @@ void executeAt(const Locality & loc, FunT && func, const InArgsT & args) {
 /// @param argsBuffer A buffer of bytes to be passed to the function.
 /// @param bufferSize The size of the buffer argsBuffer passed.
 template <typename FunT>
-void
-executeAt(const Locality &loc, FunT && func,
-          const std::shared_ptr<uint8_t> & argsBuffer,
-          const uint32_t bufferSize) {
-  impl::SynchronousInterface<TargetSystemTag>::executeAt(
-      loc, func, argsBuffer, bufferSize);
+void executeAt(const Locality &loc, FunT &&func,
+               const std::shared_ptr<uint8_t> &argsBuffer,
+               const uint32_t bufferSize) {
+  impl::SynchronousInterface<TargetSystemTag>::executeAt(loc, func, argsBuffer,
+                                                         bufferSize);
 }
 
 /// @brief Execute a function on a selected locality synchronously and return a
@@ -244,10 +236,8 @@ executeAt(const Locality &loc, FunT && func,
 /// @param resultSize The location where the runtime will store the number of
 /// bytes written in the result buffer
 template <typename FunT, typename InArgsT>
-void
-executeAtWithRetBuff(
-    const Locality &loc, FunT && func, const InArgsT & args,
-    uint8_t * resultBuffer, uint32_t * resultSize) {
+void executeAtWithRetBuff(const Locality &loc, FunT &&func, const InArgsT &args,
+                          uint8_t *resultBuffer, uint32_t *resultSize) {
   impl::SynchronousInterface<TargetSystemTag>::executeAtWithRetBuff(
       loc, func, args, resultBuffer, resultSize);
 }
@@ -298,11 +288,10 @@ executeAtWithRetBuff(
 /// @param resultSize The location where the runtime will store the number of
 /// bytes written in the result buffer
 template <typename FunT>
-void
-executeAtWithRetBuff(
-    const Locality & loc, FunT && func,
-    const std::shared_ptr<uint8_t> & argsBuffer, const uint32_t bufferSize,
-    uint8_t * resultBuffer, uint32_t * resultSize) {
+void executeAtWithRetBuff(const Locality &loc, FunT &&func,
+                          const std::shared_ptr<uint8_t> &argsBuffer,
+                          const uint32_t bufferSize, uint8_t *resultBuffer,
+                          uint32_t *resultSize) {
   impl::SynchronousInterface<TargetSystemTag>::executeAtWithRetBuff(
       loc, func, argsBuffer, bufferSize, resultBuffer, resultSize);
 }
@@ -347,10 +336,10 @@ executeAtWithRetBuff(
 /// @param args The arguments to be passed to the function.
 /// @param result The location where to store the result.
 template <typename FunT, typename InArgsT, typename ResT>
-void executeAtWithRet(
-    const Locality & loc, FunT && func, const InArgsT & args, ResT * result) {
-  impl::SynchronousInterface<TargetSystemTag>::executeAtWithRet(
-      loc, func, args, result);
+void executeAtWithRet(const Locality &loc, FunT &&func, const InArgsT &args,
+                      ResT *result) {
+  impl::SynchronousInterface<TargetSystemTag>::executeAtWithRet(loc, func, args,
+                                                                result);
 }
 
 /// @brief Execute a function on a selected locality synchronously and
@@ -397,11 +386,9 @@ void executeAtWithRet(
 /// @param bufferSize The size of the buffer argsBuffer passed.
 /// @param result The location where to store the result.
 template <typename FunT, typename ResT>
-void
-executeAtWithRet(
-    const Locality & loc, FunT && func,
-    const std::shared_ptr<uint8_t> & argsBuffer, const uint32_t bufferSize,
-    ResT * result) {
+void executeAtWithRet(const Locality &loc, FunT &&func,
+                      const std::shared_ptr<uint8_t> &argsBuffer,
+                      const uint32_t bufferSize, ResT *result) {
   impl::SynchronousInterface<TargetSystemTag>::executeAtWithRet(
       loc, func, argsBuffer, bufferSize, result);
 }
@@ -434,7 +421,7 @@ executeAtWithRet(
 /// @param func The function to execute.
 /// @param args The arguments to be passed to the function.
 template <typename FunT, typename InArgsT>
-void executeOnAll(FunT && func, const InArgsT & args) {
+void executeOnAll(FunT &&func, const InArgsT &args) {
   impl::SynchronousInterface<TargetSystemTag>::executeOnAll(func, args);
 }
 
@@ -469,13 +456,11 @@ void executeOnAll(FunT && func, const InArgsT & args) {
 /// @param argsBuffer A buffer of bytes to be passed to the function.
 /// @param bufferSize The size of the buffer argsBuffer passed.
 template <typename FunT>
-void
-executeOnAll(FunT && func, const std::shared_ptr<uint8_t> & argsBuffer,
-             const uint32_t bufferSize) {
-  impl::SynchronousInterface<TargetSystemTag>::executeOnAll(
-      func, argsBuffer, bufferSize);
+void executeOnAll(FunT &&func, const std::shared_ptr<uint8_t> &argsBuffer,
+                  const uint32_t bufferSize) {
+  impl::SynchronousInterface<TargetSystemTag>::executeOnAll(func, argsBuffer,
+                                                            bufferSize);
 }
-
 
 /// @brief Execute a parallel loop at a specific locality.
 ///
@@ -511,10 +496,10 @@ executeOnAll(FunT && func, const std::shared_ptr<uint8_t> & argsBuffer,
 /// @param args The arguments to be passed to the function.
 /// @param numIters  The total number of iteration of the loop.
 template <typename FunT, typename InArgsT>
-void forEachAt(const Locality & loc, FunT && func, const InArgsT & args,
+void forEachAt(const Locality &loc, FunT &&func, const InArgsT &args,
                const size_t numIters) {
-  impl::SynchronousInterface<TargetSystemTag>::forEachAt(
-      loc, func, args, numIters);
+  impl::SynchronousInterface<TargetSystemTag>::forEachAt(loc, func, args,
+                                                         numIters);
 }
 
 /// @brief Execute a parallel loop at a specific locality.
@@ -545,12 +530,11 @@ void forEachAt(const Locality & loc, FunT && func, const InArgsT & args,
 /// @param bufferSize The size of the buffer argsBuffer passed.
 /// @param numIters  The total number of iteration of the loop.
 template <typename FunT>
-void
-forEachAt(const Locality &loc, FunT && func,
-          const std::shared_ptr<uint8_t> & argsBuffer,
-          const uint32_t bufferSize, const size_t numIters) {
-  impl::SynchronousInterface<TargetSystemTag>::forEachAt(
-      loc, func, argsBuffer, bufferSize, numIters);
+void forEachAt(const Locality &loc, FunT &&func,
+               const std::shared_ptr<uint8_t> &argsBuffer,
+               const uint32_t bufferSize, const size_t numIters) {
+  impl::SynchronousInterface<TargetSystemTag>::forEachAt(loc, func, argsBuffer,
+                                                         bufferSize, numIters);
 }
 
 /// @brief Execute a parallel loop on the whole system.
@@ -587,10 +571,9 @@ forEachAt(const Locality &loc, FunT && func,
 /// @param args The arguments to be passed to the function.
 /// @param numIters  The total number of iteration of the loop.
 template <typename FunT, typename InArgsT>
-void
-forEachOnAll(FunT && func, const InArgsT & args, const size_t numIters) {
-  impl::SynchronousInterface<TargetSystemTag>::forEachOnAll(
-      func, args, numIters);
+void forEachOnAll(FunT &&func, const InArgsT &args, const size_t numIters) {
+  impl::SynchronousInterface<TargetSystemTag>::forEachOnAll(func, args,
+                                                            numIters);
 }
 
 /// @brief Execute a parallel loop on the whole system.
@@ -620,13 +603,11 @@ forEachOnAll(FunT && func, const InArgsT & args, const size_t numIters) {
 /// @param bufferSize The size of the buffer argsBuffer passed.
 /// @param numIters  The total number of iteration of the loop.
 template <typename FunT>
-void
-forEachOnAll(FunT && func, const std::shared_ptr<uint8_t> & argsBuffer,
-             const uint32_t bufferSize, const size_t numIters) {
+void forEachOnAll(FunT &&func, const std::shared_ptr<uint8_t> &argsBuffer,
+                  const uint32_t bufferSize, const size_t numIters) {
   impl::SynchronousInterface<TargetSystemTag>::forEachOnAll(
       func, argsBuffer, bufferSize, numIters);
 }
-
 
 /// @brief Execute a function on a selected locality asynchronously.
 ///
@@ -663,11 +644,10 @@ forEachOnAll(FunT && func, const std::shared_ptr<uint8_t> & argsBuffer,
 /// @param func The function to execute.
 /// @param args The arguments to be passed to the function.
 template <typename FunT, typename InArgsT>
-void
-asyncExecuteAt(Handle & handle, const Locality & loc, FunT && func,
-               const InArgsT & args) {
-  impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAt(
-      handle, loc, func, args);
+void asyncExecuteAt(Handle &handle, const Locality &loc, FunT &&func,
+                    const InArgsT &args) {
+  impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAt(handle, loc,
+                                                               func, args);
 }
 
 /// @brief Execute a function on a selected locality asynchronously.
@@ -710,10 +690,9 @@ asyncExecuteAt(Handle & handle, const Locality & loc, FunT && func,
 /// @param argsBuffer A buffer of bytes to be passed to the function.
 /// @param bufferSize The size of the buffer argsBuffer passed.
 template <typename FunT>
-void
-asyncExecuteAt(
-    Handle & handle, const Locality & loc, FunT && func,
-    const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize) {
+void asyncExecuteAt(Handle &handle, const Locality &loc, FunT &&func,
+                    const std::shared_ptr<uint8_t> &argsBuffer,
+                    const uint32_t bufferSize) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAt(
       handle, loc, func, argsBuffer, bufferSize);
 }
@@ -773,10 +752,9 @@ asyncExecuteAt(
 /// @param resultSize The location where the runtime will store the number of
 /// bytes written in the result buffer
 template <typename FunT, typename InArgsT>
-void
-asyncExecuteAtWithRetBuff(
-    Handle & handle, const Locality & loc, FunT && func, const InArgsT & args,
-    uint8_t * resultBuffer, uint32_t * resultSize) {
+void asyncExecuteAtWithRetBuff(Handle &handle, const Locality &loc, FunT &&func,
+                               const InArgsT &args, uint8_t *resultBuffer,
+                               uint32_t *resultSize) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAtWithRetBuff(
       handle, loc, func, args, resultBuffer, resultSize);
 }
@@ -838,14 +816,13 @@ asyncExecuteAtWithRetBuff(
 /// @param resultSize The location where the runtime will store the number of
 /// bytes written in the result buffer
 template <typename FunT>
-void asyncExecuteAtWithRetBuff(
-    Handle & handle, const Locality &loc, FunT && func,
-    const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-    uint8_t * resultBuffer, uint32_t * resultSize) {
+void asyncExecuteAtWithRetBuff(Handle &handle, const Locality &loc, FunT &&func,
+                               const std::shared_ptr<uint8_t> &argsBuffer,
+                               const uint32_t bufferSize, uint8_t *resultBuffer,
+                               uint32_t *resultSize) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAtWithRetBuff(
       handle, loc, func, argsBuffer, bufferSize, resultBuffer, resultSize);
 }
-
 
 /// @brief Execute a function on a selected locality asynchronously and return a
 /// result.
@@ -893,10 +870,8 @@ void asyncExecuteAtWithRetBuff(
 /// @param args The arguments to be passed to the function.
 /// @param result The location where to store the result.
 template <typename FunT, typename InArgsT, typename ResT>
-void
-asyncExecuteAtWithRet(
-    Handle & handle, const Locality &loc, FunT && func, const InArgsT & args,
-    ResT * result) {
+void asyncExecuteAtWithRet(Handle &handle, const Locality &loc, FunT &&func,
+                           const InArgsT &args, ResT *result) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAtWithRet(
       handle, loc, func, args, result);
 }
@@ -949,15 +924,12 @@ asyncExecuteAtWithRet(
 /// @param bufferSize The size of the buffer argsBuffer passed.
 /// @param result The location where to store the result.
 template <typename FunT, typename ResT>
-void
-asyncExecuteAtWithRet(
-    Handle & handle, const Locality & loc, FunT && func,
-    const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-    ResT * result) {
+void asyncExecuteAtWithRet(Handle &handle, const Locality &loc, FunT &&func,
+                           const std::shared_ptr<uint8_t> &argsBuffer,
+                           const uint32_t bufferSize, ResT *result) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAtWithRet(
       handle, loc, func, argsBuffer, bufferSize, result);
 }
-
 
 /// @brief Execute a function on all localities asynchronously.
 ///
@@ -991,11 +963,10 @@ asyncExecuteAtWithRet(
 /// @param func The function to execute.
 /// @param args The arguments to be passed to the function.
 template <typename FunT, typename InArgsT>
-void asyncExecuteOnAll(Handle & handle, FunT && func, const InArgsT & args) {
-  impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteOnAll(
-      handle, func, args);
+void asyncExecuteOnAll(Handle &handle, FunT &&func, const InArgsT &args) {
+  impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteOnAll(handle, func,
+                                                                  args);
 }
-
 
 /// @brief Execute a function on all localities synchronously.
 ///
@@ -1033,14 +1004,12 @@ void asyncExecuteOnAll(Handle & handle, FunT && func, const InArgsT & args) {
 /// @param argsBuffer A buffer of bytes to be passed to the function.
 /// @param bufferSize The size of the buffer argsBuffer passed.
 template <typename FunT>
-void
-asyncExecuteOnAll(
-    Handle & handle, FunT && func,
-    const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize) {
+void asyncExecuteOnAll(Handle &handle, FunT &&func,
+                       const std::shared_ptr<uint8_t> &argsBuffer,
+                       const uint32_t bufferSize) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteOnAll(
       handle, func, argsBuffer, bufferSize);
 }
-
 
 /// @brief Execute a parallel loop at a specific locality asynchronously.
 ///
@@ -1078,14 +1047,11 @@ asyncExecuteOnAll(
 /// @param numIters  The total number of iteration of the loop.
 /// @param handle An Handle for the associated task-group.
 template <typename FunT, typename InArgsT>
-void
-asyncForEachAt(
-    Handle & handle, const Locality & loc, FunT && func, const InArgsT & args,
-    const size_t numIters) {
+void asyncForEachAt(Handle &handle, const Locality &loc, FunT &&func,
+                    const InArgsT &args, const size_t numIters) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncForEachAt(
       handle, loc, func, args, numIters);
 }
-
 
 /// @brief Execute a parallel loop at a specific locality asynchronously.
 ///
@@ -1121,15 +1087,12 @@ asyncForEachAt(
 /// @param bufferSize The size of the buffer argsBuffer passed.
 /// @param numIters  The total number of iteration of the loop.
 template <typename FunT>
-void
-asyncForEachAt(
-    Handle & handle, const Locality & loc, FunT && func,
-    const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-    const size_t numIters) {
+void asyncForEachAt(Handle &handle, const Locality &loc, FunT &&func,
+                    const std::shared_ptr<uint8_t> &argsBuffer,
+                    const uint32_t bufferSize, const size_t numIters) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncForEachAt(
       handle, loc, func, argsBuffer, bufferSize, numIters);
 }
-
 
 /// @brief Execute a parallel loop on the whole system asynchronously.
 ///
@@ -1169,10 +1132,8 @@ asyncForEachAt(
 /// @param args The arguments to be passed to the function.
 /// @param numIters  The total number of iteration of the loop.
 template <typename FunT, typename InArgsT>
-void
-asyncForEachOnAll(
-    Handle & handle,
-    FunT && func, const InArgsT & args, const size_t numIters) {
+void asyncForEachOnAll(Handle &handle, FunT &&func, const InArgsT &args,
+                       const size_t numIters) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncForEachOnAll(
       handle, func, args, numIters);
 }
@@ -1209,18 +1170,15 @@ asyncForEachOnAll(
 /// @param bufferSize The size of the buffer argsBuffer passed.
 /// @param numIters  The total number of iteration of the loop.
 template <typename FunT>
-void
-asyncForEachOnAll(
-    Handle & handle, FunT && func,
-    const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-    const size_t numIters) {
+void asyncForEachOnAll(Handle &handle, FunT &&func,
+                       const std::shared_ptr<uint8_t> &argsBuffer,
+                       const uint32_t bufferSize, const size_t numIters) {
   impl::AsynchronousInterface<TargetSystemTag>::asyncForEachOnAll(
       handle, func, argsBuffer, bufferSize, numIters);
 }
 
-
 /// @brief Wait for completion of a set of tasks
-inline void waitForCompletion(Handle & handle) {
+inline void waitForCompletion(Handle &handle) {
   impl::HandleTrait<TargetSystemTag>::WaitFor(handle.id_);
 }
 /// @}

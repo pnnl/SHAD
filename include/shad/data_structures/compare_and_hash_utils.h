@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_DATA_STRUCTURES_COMPARE_AND_HASH_UTILS_H_
 #define INCLUDE_SHAD_DATA_STRUCTURES_COMPARE_AND_HASH_UTILS_H_
 
@@ -30,7 +29,6 @@
 #include <cstdint>
 #include <cstring>
 #include <vector>
-
 
 namespace shad {
 
@@ -61,7 +59,7 @@ namespace shad {
 template <typename KeyTy>
 class MemCmp {
  public:
-  bool operator()(const KeyTy * first, const KeyTy * second) const {
+  bool operator()(const KeyTy *first, const KeyTy *second) const {
     return std::memcmp(first, second, sizeof(KeyTy));
   }
 };
@@ -118,11 +116,10 @@ class MemCmp<std::vector<KeyTy>> {
 /// @param[in] seed A random seed for the hashing process.
 /// @return A 8-bytes long hash value.
 template <typename KeyTy>
-uint64_t HashFunction(const KeyTy & key, uint8_t seed) {
+uint64_t HashFunction(const KeyTy &key, uint8_t seed) {
   constexpr size_t keyWords = sizeof(KeyTy) / sizeof(uint8_t);
 
-  uint8_t const * const key_uint8 =
-      reinterpret_cast<uint8_t const * const>(&key);
+  uint8_t const *const key_uint8 = reinterpret_cast<uint8_t const *const>(&key);
 
   uint64_t hash = 0;
   for (size_t i = 0; i < keyWords; ++i) {
@@ -156,15 +153,15 @@ uint64_t HashFunction(const KeyTy & key, uint8_t seed) {
 /// @param[in] seed A random seed for the hashing process.
 /// @return A 8-bytes long hash value.
 template <typename KeyTy>
-uint64_t HashFunction(const std::vector<KeyTy> & key, uint8_t seed) {
-  uint16_t const * const key_uint16 =
-      reinterpret_cast<uint16_t const * const>(key.data());
+uint64_t HashFunction(const std::vector<KeyTy> &key, uint8_t seed) {
+  uint16_t const *const key_uint16 =
+      reinterpret_cast<uint16_t const *const>(key.data());
 
   uint64_t hash = 0;
   size_t keyWords = (sizeof(KeyTy) * key.size()) / sizeof(uint16_t);
 
   for (size_t i = 0; i < keyWords; ++i) {
-    hash += key_uint16[i]+seed;
+    hash += key_uint16[i] + seed;
     hash += (hash << 10);
     hash ^= (hash >> 6);
   }

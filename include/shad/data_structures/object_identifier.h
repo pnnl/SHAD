@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -21,7 +21,6 @@
 // under the License.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef INCLUDE_SHAD_DATA_STRUCTURES_OBJECT_IDENTIFIER_H_
 #define INCLUDE_SHAD_DATA_STRUCTURES_OBJECT_IDENTIFIER_H_
@@ -62,35 +61,35 @@ class ObjectIdentifier {
   /// @brief Constructor.
   /// @param[in] locality The locality identifier part.
   /// @param[in] localID The local identifier part.
-  ObjectIdentifier(const rt::Locality & locality, uint64_t localID) {
+  ObjectIdentifier(const rt::Locality &locality, uint64_t localID) {
     id_ = static_cast<uint32_t>(locality);
     id_ <<= kIdentifierBitsize;
     id_ |= localID;
   }
 
   /// @brief Copy Constructor
-  ObjectIdentifier(const ObjectIdentifier & oid) = default;
+  ObjectIdentifier(const ObjectIdentifier &oid) = default;
 
   /// @brief Move constructor
   ObjectIdentifier(ObjectIdentifier &&) noexcept = default;
 
   /// @brief Move assignment
-  ObjectIdentifier & operator=(ObjectIdentifier &&) noexcept = default;
+  ObjectIdentifier &operator=(ObjectIdentifier &&) noexcept = default;
 
   /// @brief Operator less than.
   ///
   /// @param[in] lhs Left hand side of the operator.
   /// @param[in] rhs Right hand side of the operator.
   /// @return true if lhs < rhs, false otherwise.
-  friend bool operator<(const ObjectIdentifier & lhs,
-                        const ObjectIdentifier & rhs) {
+  friend bool operator<(const ObjectIdentifier &lhs,
+                        const ObjectIdentifier &rhs) {
     return lhs.id_ < rhs.id_;
   }
 
   /// @brief Assignment operator.
   ///
   /// @param[in] rhs Right hand side of the operator.
-  ObjectIdentifier & operator=(const ObjectIdentifier & rhs) = default;
+  ObjectIdentifier &operator=(const ObjectIdentifier &rhs) = default;
 
   /// @brief Conversion operator to uint64_t
   explicit operator uint64_t() const { return static_cast<uint64_t>(id_); }
@@ -105,9 +104,7 @@ class ObjectIdentifier {
   ///
   /// @return The lowest ObjectIdentifier::kIdentifierBitsize bits of the
   /// ObjectID.
-  size_t GetLocalID() const {
-    return id_ & kIdentifierBitMask;
-  }
+  size_t GetLocalID() const { return id_ & kIdentifierBitMask; }
 
  private:
   /// The Bitmask used to estract the Object Identifier.
@@ -117,16 +114,15 @@ class ObjectIdentifier {
   uint64_t id_;
 };
 
-template<typename T>
+template <typename T>
 const ObjectIdentifier<T> ObjectIdentifier<T>::kNullID =
     ObjectIdentifier<T>(std::numeric_limits<uint64_t>::max());
 
-template<typename T>
+template <typename T>
 constexpr uint8_t ObjectIdentifier<T>::kIdentifierBitsize;
 
-template<typename T>
+template <typename T>
 constexpr uint64_t ObjectIdentifier<T>::kIdentifierBitMask;
-
 
 /// @brief Operator greater than.
 ///
@@ -135,9 +131,9 @@ constexpr uint64_t ObjectIdentifier<T>::kIdentifierBitMask;
 /// @param[in] lhs Left hand side of the operator.
 /// @param[in] rhs Right hand side of the operator.
 /// @return true if lhs > rhs, false otherwise.
-template<typename T>
-inline bool
-operator>(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
+template <typename T>
+inline bool operator>(const ObjectIdentifier<T> &lhs,
+                      const ObjectIdentifier<T> &rhs) {
   return rhs < lhs;
 }
 
@@ -148,9 +144,9 @@ operator>(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
 /// @param[in] lhs Left hand side of the operator.
 /// @param[in] rhs Right hand side of the operator.
 /// @return true if lhs <= rhs, false otherwise.
-template<typename T>
-inline bool
-operator<=(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
+template <typename T>
+inline bool operator<=(const ObjectIdentifier<T> &lhs,
+                       const ObjectIdentifier<T> &rhs) {
   return !(lhs > rhs);
 }
 
@@ -161,9 +157,9 @@ operator<=(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
 /// @param[in] lhs Left hand side of the operator.
 /// @param[in] rhs Right hand side of the operator.
 /// @return true if lhs >= rhs, false otherwise.
-template<typename T>
-inline bool
-operator>=(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
+template <typename T>
+inline bool operator>=(const ObjectIdentifier<T> &lhs,
+                       const ObjectIdentifier<T> &rhs) {
   return !(lhs < rhs);
 }
 
@@ -174,9 +170,9 @@ operator>=(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
 /// @param[in] lhs Left hand side of the operator.
 /// @param[in] rhs Right hand side of the operator.
 /// @return true if lhs == rhs, false otherwise.
-template<typename T>
-inline bool
-operator==(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
+template <typename T>
+inline bool operator==(const ObjectIdentifier<T> &lhs,
+                       const ObjectIdentifier<T> &rhs) {
   return !(rhs < lhs) && !(lhs < rhs);
 }
 
@@ -187,9 +183,9 @@ operator==(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
 /// @param[in] lhs Left hand side of the operator.
 /// @param[in] rhs Right hand side of the operator.
 /// @return true if lhs != rhs, false otherwise.
-template<typename T>
-inline bool
-operator!=(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
+template <typename T>
+inline bool operator!=(const ObjectIdentifier<T> &lhs,
+                       const ObjectIdentifier<T> &rhs) {
   return !(lhs == rhs);
 }
 
@@ -201,13 +197,11 @@ operator!=(const ObjectIdentifier<T> & lhs, const ObjectIdentifier<T> & rhs) {
 /// @param[in] rhs Right hand side of the operator.
 /// @return A reference to the used output stream.
 template <typename T>
-std::ostream &
-operator<<(std::ostream & out, const ObjectIdentifier<T> & rhs) {
+std::ostream &operator<<(std::ostream &out, const ObjectIdentifier<T> &rhs) {
   auto node = rhs.GetOwnerLocality();
   size_t objectId = rhs.GetLocalID();
   return out << "NodeOwner[" << node << "] id = " << objectId;
 }
-
 
 /// @brief Object representing counters to obtain object IDs.
 ///
@@ -219,7 +213,7 @@ class ObjectIdentifierCounter {
  public:
   /// @brief Get the singleton instance of the counter for the type T.
   /// @return A reference to the singleton counter object for the type T.
-  static ObjectIdentifierCounter<T> & Instance() {
+  static ObjectIdentifierCounter<T> &Instance() {
     static ObjectIdentifierCounter<T> instance;
     return instance;
   }
@@ -251,8 +245,8 @@ class ObjectIdentifierCounter {
 /// @param[in] rhs Right hand side of the operator.
 /// @return A reference to the used output stream.
 template <typename T>
-std::ostream &
-operator<<(std::ostream & out, const ObjectIdentifierCounter<T> & rhs) {
+std::ostream &operator<<(std::ostream &out,
+                         const ObjectIdentifierCounter<T> &rhs) {
   uint64_t objectIdentifier = static_cast<uint64_t>(rhs);
   uint64_t node = objectIdentifier >> ObjectIdentifier<T>::kIdentifierBitsize;
   uint64_t objectId =

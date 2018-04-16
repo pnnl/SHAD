@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -184,9 +184,7 @@ int main(int argc, char **argv) {
       [&]() { CSR = loadGraph(argv[1], argv[2]); });
 
   std::cout << "Graph loaded in " << loadingTime.count()
-            << " seconds\n"
-               "Let's find some triangles..."
-            << std::endl;
+            << " seconds\nLet's find some triangles..." << std::endl;
 
   size_t TC = 0;
   auto duration = shad::measure<std::chrono::seconds>::duration(

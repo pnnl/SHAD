@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -21,7 +21,6 @@
 // under the License.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef INCLUDE_SHAD_RUNTIME_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
 #define INCLUDE_SHAD_RUNTIME_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
@@ -42,47 +41,45 @@ namespace rt {
 
 namespace impl {
 
-template<>
+template <>
 struct AsynchronousInterface<tbb_tag> {
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteAt(Handle & handle, const Locality & loc, FunT && function,
-                 const InArgsT & args) {
-    using FunctionTy = void(*)(Handle &, const InArgsT &);
+  static void asyncExecuteAt(Handle &handle, const Locality &loc,
+                             FunT &&function, const InArgsT &args) {
+    using FunctionTy = void (*)(Handle &, const InArgsT &);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
     checkLocality(loc);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run([=, &handle]{ fn(handle, args); });
+    handle.id_->run([=, &handle] { fn(handle, args); });
   }
 
   template <typename FunT>
-  static void
-  asyncExecuteAt(
-      Handle & handle, const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize) {
-    using FunctionTy = void(*)(Handle &, const uint8_t *, const uint32_t);
+  static void asyncExecuteAt(Handle &handle, const Locality &loc,
+                             FunT &&function,
+                             const std::shared_ptr<uint8_t> &argsBuffer,
+                             const uint32_t bufferSize) {
+    using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
     checkLocality(loc);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [=, &handle]{ fn(handle, argsBuffer.get(), bufferSize); });
+    handle.id_->run([=, &handle] { fn(handle, argsBuffer.get(), bufferSize); });
   }
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteAtWithRetBuff(
-      Handle & handle, const Locality & loc, FunT && function,
-      const InArgsT & args, uint8_t * resultBuffer, uint32_t * resultSize) {
+  static void asyncExecuteAtWithRetBuff(Handle &handle, const Locality &loc,
+                                        FunT &&function, const InArgsT &args,
+                                        uint8_t *resultBuffer,
+                                        uint32_t *resultSize) {
     using FunctionTy =
         void (*)(Handle &, const InArgsT &, uint8_t *, uint32_t *);
 
@@ -90,138 +87,123 @@ struct AsynchronousInterface<tbb_tag> {
 
     checkLocality(loc);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
     handle.id_->run(
-        [=, &handle]{
-          fn(handle, args, resultBuffer, resultSize);
-        });
+        [=, &handle] { fn(handle, args, resultBuffer, resultSize); });
   }
 
   template <typename FunT>
   static void asyncExecuteAtWithRetBuff(
-      Handle & handle, const Locality & loc, FunT && function,
+      Handle &handle, const Locality &loc, FunT &&function,
       const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      uint8_t * resultBuffer, uint32_t * resultSize) {
-    using FunctionTy = void(*)(Handle &, const uint8_t *,
-                               const uint32_t, uint8_t *, uint32_t *);
+      uint8_t *resultBuffer, uint32_t *resultSize) {
+    using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t,
+                                uint8_t *, uint32_t *);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
     checkLocality(loc);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [=, &handle]{
-          fn(handle, argsBuffer.get(), bufferSize, resultBuffer, resultSize);
-        });
+    handle.id_->run([=, &handle] {
+      fn(handle, argsBuffer.get(), bufferSize, resultBuffer, resultSize);
+    });
   }
 
   template <typename FunT, typename InArgsT, typename ResT>
-  static void
-  asyncExecuteAtWithRet(
-      Handle & handle, const Locality & loc, FunT && function,
-      const InArgsT & args, ResT * result) {
-    using FunctionTy = void(*)(Handle &, const InArgsT &, ResT *);
+  static void asyncExecuteAtWithRet(Handle &handle, const Locality &loc,
+                                    FunT &&function, const InArgsT &args,
+                                    ResT *result) {
+    using FunctionTy = void (*)(Handle &, const InArgsT &, ResT *);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
     checkLocality(loc);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [=, &handle]{ fn(handle, args, result); });
+    handle.id_->run([=, &handle] { fn(handle, args, result); });
   }
 
   template <typename FunT, typename ResT>
-  static void
-  asyncExecuteAtWithRet(
-      Handle & handle, const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      ResT * result) {
+  static void asyncExecuteAtWithRet(Handle &handle, const Locality &loc,
+                                    FunT &&function,
+                                    const std::shared_ptr<uint8_t> &argsBuffer,
+                                    const uint32_t bufferSize, ResT *result) {
     using FunctionTy =
-        void(*)(Handle &, const uint8_t *, const uint32_t, ResT *);
+        void (*)(Handle &, const uint8_t *, const uint32_t, ResT *);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
     checkLocality(loc);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [&, fn, argsBuffer, bufferSize, result]{
-          fn(handle, argsBuffer.get(), bufferSize, result);
-        });
+    handle.id_->run([&, fn, argsBuffer, bufferSize, result] {
+      fn(handle, argsBuffer.get(), bufferSize, result);
+    });
   }
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncExecuteOnAll(Handle & handle, FunT && function, const InArgsT & args) {
-    using FunctionTy = void(*)(Handle &, const InArgsT &);
+  static void asyncExecuteOnAll(Handle &handle, FunT &&function,
+                                const InArgsT &args) {
+    using FunctionTy = void (*)(Handle &, const InArgsT &);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run([=, &handle]{ fn(handle, args); });
+    handle.id_->run([=, &handle] { fn(handle, args); });
   }
 
   template <typename FunT>
-  static void
-  asyncExecuteOnAll(
-      Handle & handle, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize) {
-    using FunctionTy = void(*)(Handle &, const uint8_t *, const uint32_t);
+  static void asyncExecuteOnAll(Handle &handle, FunT &&function,
+                                const std::shared_ptr<uint8_t> &argsBuffer,
+                                const uint32_t bufferSize) {
+    using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [=, &handle]{
-          fn(handle, argsBuffer.get(), bufferSize);
-        });
+    handle.id_->run([=, &handle] { fn(handle, argsBuffer.get(), bufferSize); });
   }
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncForEachAt(
-      Handle & handle, const Locality & loc, FunT && function,
-      const InArgsT & args, const size_t numIters) {
-    using FunctionTy = void(*)(Handle &, const InArgsT &, size_t);
+  static void asyncForEachAt(Handle &handle, const Locality &loc,
+                             FunT &&function, const InArgsT &args,
+                             const size_t numIters) {
+    using FunctionTy = void (*)(Handle &, const InArgsT &, size_t);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
     checkLocality(loc);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [=, &handle]{
-          tbb::parallel_for(
-              tbb::blocked_range<size_t>(0, numIters),
-              [=, &handle](const tbb::blocked_range<size_t> & range) {
-                for (auto i = range.begin(); i < range.end(); ++i)
-                  fn(handle, args, i);
-              });
-        });
+    handle.id_->run([=, &handle] {
+      tbb::parallel_for(tbb::blocked_range<size_t>(0, numIters),
+                        [=, &handle](const tbb::blocked_range<size_t> &range) {
+                          for (auto i = range.begin(); i < range.end(); ++i)
+                            fn(handle, args, i);
+                        });
+    });
   }
 
   template <typename FunT>
-  static void
-  asyncForEachAt(
-      Handle & handle, const Locality & loc, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      const size_t numIters) {
+  static void asyncForEachAt(Handle &handle, const Locality &loc,
+                             FunT &&function,
+                             const std::shared_ptr<uint8_t> &argsBuffer,
+                             const uint32_t bufferSize, const size_t numIters) {
     using FunctionTy =
         void (*)(Handle &, const uint8_t *, const uint32_t, size_t);
 
@@ -229,67 +211,57 @@ struct AsynchronousInterface<tbb_tag> {
 
     checkLocality(loc);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [=, &handle]{
-          tbb::parallel_for(
-              tbb::blocked_range<size_t>(0, numIters),
-              [=, &handle](const tbb::blocked_range<size_t> & range) {
-                for (auto i = range.begin(); i < range.end(); ++i)
-                  fn(handle, argsBuffer.get(), bufferSize, i);
-              });
-        });
+    handle.id_->run([=, &handle] {
+      tbb::parallel_for(tbb::blocked_range<size_t>(0, numIters),
+                        [=, &handle](const tbb::blocked_range<size_t> &range) {
+                          for (auto i = range.begin(); i < range.end(); ++i)
+                            fn(handle, argsBuffer.get(), bufferSize, i);
+                        });
+    });
   }
 
   template <typename FunT, typename InArgsT>
-  static void
-  asyncForEachOnAll(
-      Handle & handle,
-      FunT && function, const InArgsT & args, const size_t numIters) {
-    using FunctionTy = void(*)(Handle &, const InArgsT &, size_t);
+  static void asyncForEachOnAll(Handle &handle, FunT &&function,
+                                const InArgsT &args, const size_t numIters) {
+    using FunctionTy = void (*)(Handle &, const InArgsT &, size_t);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [=, &handle]{
-          tbb::parallel_for(
-              tbb::blocked_range<size_t>(0, numIters),
-              [&](const tbb::blocked_range<size_t> & range) {
-                for (auto i = range.begin(); i < range.end(); ++i)
-                  fn(handle, args, i);
-              });
-        });
+    handle.id_->run([=, &handle] {
+      tbb::parallel_for(tbb::blocked_range<size_t>(0, numIters),
+                        [&](const tbb::blocked_range<size_t> &range) {
+                          for (auto i = range.begin(); i < range.end(); ++i)
+                            fn(handle, args, i);
+                        });
+    });
   }
 
   template <typename FunT>
-  static void
-  asyncForEachOnAll(
-      Handle & handle, FunT && function,
-      const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
-      const size_t numIters) {
+  static void asyncForEachOnAll(Handle &handle, FunT &&function,
+                                const std::shared_ptr<uint8_t> &argsBuffer,
+                                const uint32_t bufferSize,
+                                const size_t numIters) {
     using FunctionTy =
         void (*)(Handle &, const uint8_t *, const uint32_t, size_t);
 
     FunctionTy fn = std::forward<decltype(function)>(function);
 
-    handle.id_ = handle.IsNull()
-                 ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
+    handle.id_ =
+        handle.IsNull() ? HandleTrait<tbb_tag>::CreateNewHandle() : handle.id_;
 
-    handle.id_->run(
-        [=, &handle]{
-          tbb::parallel_for(
-              tbb::blocked_range<size_t>(0, numIters),
-              [=, &handle](
-                  const tbb::blocked_range<size_t> & range) {
-                for (auto i = range.begin(); i < range.end(); ++i)
-                  fn(handle, argsBuffer.get(), bufferSize, i);
-              });
-        });
+    handle.id_->run([=, &handle] {
+      tbb::parallel_for(tbb::blocked_range<size_t>(0, numIters),
+                        [=, &handle](const tbb::blocked_range<size_t> &range) {
+                          for (auto i = range.begin(); i < range.end(); ++i)
+                            fn(handle, argsBuffer.get(), bufferSize, i);
+                        });
+    });
   }
 };
 

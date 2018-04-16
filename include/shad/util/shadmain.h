@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -22,7 +22,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 #ifndef INCLUDE_SHAD_UTIL_SHADMAIN_H_
 #define INCLUDE_SHAD_UTIL_SHADMAIN_H_
 
@@ -33,7 +32,7 @@ namespace shad {
 ///
 /// The main within the shad namespace is called after the rest of the SHAD
 /// stack is initialized.
-int main(int argc, char * argv[]);
+int main(int argc, char* argv[]);
 
 }  // namespace shad
 

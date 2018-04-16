@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// Copyright 2017 Pacific Northwest National Laboratory
+// Copyright 2018 Battelle Memorial Institute
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -21,7 +21,6 @@
 // under the License.
 //
 //===----------------------------------------------------------------------===//
-
 
 #ifndef INCLUDE_SHAD_DATA_STRUCTURES_ABSTRACT_DATA_STRUCTURE_H_
 #define INCLUDE_SHAD_DATA_STRUCTURES_ABSTRACT_DATA_STRUCTURE_H_
@@ -79,8 +78,8 @@ class AbstractDataStructure {
   ///
   /// @param args Arguments to the DataStructure constructor.
   /// @return A shared_ptr to the newly created DataStructure instance.
-  template <typename ...Args>
-  static SharedPtr Create(Args ... args) {
+  template <typename... Args>
+  static SharedPtr Create(Args... args) {
     auto catalogRef = Catalog::Instance();
     ObjectID id = catalogRef->GetNextID();
     std::tuple<ObjectID, Args...> tuple(id, args...);
@@ -97,7 +96,7 @@ class AbstractDataStructure {
   /// destroy.
   static void Destroy(const ObjectID &oid) {
     auto catalogRef = Catalog::Instance();
-    auto destroyLambda = [] (const ObjectID &oid) {
+    auto destroyLambda = [](const ObjectID &oid) {
       auto catalogRef = Catalog::Instance();
       catalogRef->Erase(oid);
     };
@@ -130,9 +129,8 @@ class AbstractDataStructure {
   virtual ObjectID GetGlobalID() const = 0;
 
  protected:
-  template <typename ...Args>
-  static void
-  UpdateCatalogAndConstruct(const ObjectID & oid, Args && ... args) {
+  template <typename... Args>
+  static void UpdateCatalogAndConstruct(const ObjectID &oid, Args &&... args) {
     // Get a local instance on the remote node.
     auto catalogRef = Catalog::Instance();
     std::shared_ptr<DataStructure> ptr(
@@ -140,16 +138,15 @@ class AbstractDataStructure {
     catalogRef->Insert(oid, ptr);
   }
 
-  template <typename ...Args, std::size_t... is>
-  static void CreateFunInnerWrapper(const std::tuple<Args...> && tuple,
+  template <typename... Args, std::size_t... is>
+  static void CreateFunInnerWrapper(const std::tuple<Args...> &&tuple,
                                     std::index_sequence<is...>) {
     UpdateCatalogAndConstruct(std::get<is>(tuple)...);
   }
 
-  template <typename ...Args>
+  template <typename... Args>
   static void CreateFunWrapper(const std::tuple<Args...> &args) {
-    CreateFunInnerWrapper(
-        std::move(args), std::index_sequence_for<Args...>());
+    CreateFunInnerWrapper(std::move(args), std::index_sequence_for<Args...>());
   }
 
   class Catalog {
@@ -157,11 +154,8 @@ class AbstractDataStructure {
     void Insert(const ObjectID &oid, const SharedPtr ce) {
       uint32_t locality = static_cast<uint32_t>(oid.GetOwnerLocality());
       std::lock_guard<rt::Lock> _(registerLock_);
-      if (register_[locality].size() == oid.GetLocalID()) {
-        register_[locality].push_back(ce);
-        return;
-      } else if (register_[locality].size() < oid.GetLocalID()) {
-        throw std::logic_error("Bad Object ID");
+      if (register_[locality].size() <= oid.GetLocalID()) {
+        register_[locality].resize(oid.GetLocalID() + 1);
       }
       register_[locality][oid.GetLocalID()] = ce;
     }
@@ -184,7 +178,7 @@ class AbstractDataStructure {
       return register_[locality][oid.GetLocalID()];
     }
 
-    static Catalog * Instance() {
+    static Catalog *Instance() {
       static Catalog instance;
       return &instance;
     }
@@ -202,11 +196,7 @@ class AbstractDataStructure {
     }
 
    private:
-    Catalog()
-        : register_(rt::numLocalities())
-        , oidCache_()
-        , registerLock_()
-    {}
+    Catalog() : register_(rt::numLocalities()), oidCache_(), registerLock_() {}
 
     /// The Type storing the counter to obtain new DataStructure object IDs.
     using ObjectIDCounter = ObjectIdentifierCounter<DataStructure>;
