@@ -84,8 +84,10 @@ class TestFixture : public ::benchmark::Fixture {
 bool fake;
 
 BENCHMARK_F(TestFixture, test_RawSet)(benchmark::State& state) {
-  for (size_t i = 0; i < SET_SIZE; i++) {
-    stdset_.insert(i);
+  for (auto _ : state) {
+    for (size_t i = 0; i < SET_SIZE; i++) {
+      stdset_.insert(i);
+    }
   }
 }
 
@@ -101,8 +103,10 @@ BENCHMARK_F(TestFixture, test_RawSet)(benchmark::State& state) {
 // }
 
 BENCHMARK_F(TestFixture, test_SerialInsert)(benchmark::State& state) {
-  for (size_t i = 0; i < SET_SIZE; i++) {
-    setPtr_->Insert(i);
+  for (auto _ : state) {
+    for (size_t i = 0; i < SET_SIZE; i++) {
+      setPtr_->Insert(i);
+    }
   }
 }
 
@@ -111,39 +115,49 @@ BENCHMARK_F(TestFixture, test_SerialInsert)(benchmark::State& state) {
 // }
 
 BENCHMARK_F(TestFixture, test_AsyncInsert)(benchmark::State& state) {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < SET_SIZE; i++) {
-    setPtr_->AsyncInsert(handle, i);
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    for (size_t i = 0; i < SET_SIZE; i++) {
+      setPtr_->AsyncInsert(handle, i);
+    }
+    shad::rt::waitForCompletion(handle);
   }
-  shad::rt::waitForCompletion(handle);
 }
 
 BENCHMARK_F(TestFixture, test_ParallelAsyncInsert)(benchmark::State& state) {
   auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
     setPtr_->AsyncInsert(handle, i);
   };
-  shad::rt::Handle handle;
-  shad::rt::asyncForEachOnAll(handle, feLambda, fake, SET_SIZE);
-  shad::rt::waitForCompletion(handle);
+
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, SET_SIZE);
+    shad::rt::waitForCompletion(handle);
+  }
 }
 
 BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedInsert)(benchmark::State& state) {
   auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
     setPtr_->BufferedAsyncInsert(handle, i);
   };
-  shad::rt::Handle handle;
-  shad::rt::asyncForEachOnAll(handle, feLambda, fake, SET_SIZE);
-  shad::rt::waitForCompletion(handle);
-  setPtr_->WaitForBufferedInsert();
+
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, SET_SIZE);
+    shad::rt::waitForCompletion(handle);
+    setPtr_->WaitForBufferedInsert();
+  }
 }
 
 BENCHMARK_F(TestFixture, test_AsyncBufferedInsert)(benchmark::State& state) {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < SET_SIZE; i++) {
-    setPtr_->BufferedAsyncInsert(handle, i);
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    for (size_t i = 0; i < SET_SIZE; i++) {
+      setPtr_->BufferedAsyncInsert(handle, i);
+    }
+    shad::rt::waitForCompletion(handle);
+    setPtr_->WaitForBufferedInsert();
   }
-  shad::rt::waitForCompletion(handle);
-  setPtr_->WaitForBufferedInsert();
 }
 
 static void asyncApplyFun(shad::rt::Handle &, const int &key) {
@@ -151,9 +165,11 @@ static void asyncApplyFun(shad::rt::Handle &, const int &key) {
 }
 
 BENCHMARK_F(TestFixture, test_AsyncVisitWithFE)(benchmark::State& state) {
-  shad::rt::Handle handle;
-  setPtr_->AsyncForEachElement(handle, asyncApplyFun);
-  shad::rt::waitForCompletion(handle);
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    setPtr_->AsyncForEachElement(handle, asyncApplyFun);
+    shad::rt::waitForCompletion(handle);
+  }
 }
 
 /**
@@ -175,6 +191,9 @@ int main(int argc, char** argv)
       FILE_NAME = std::string(argv[argIndex]);
     }
   }
+  std::cout << "\n SET_SIZE: " << SET_SIZE << std::endl;
+  std::cout << "\n NUM_ITER: " << NUM_ITER << std::endl;
+  std::cout << std::endl;
   
   ::benchmark::Initialize(&argc, argv);
   ::benchmark::RunSpecifiedBenchmarks();

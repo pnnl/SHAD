@@ -200,6 +200,9 @@ int main(int argc, char** argv)
       FILE_NAME = std::string(argv[argIndex]);
     }
   }
+  std::cout << "\n VECTOR_SIZE: " << VECTOR_SIZE << std::endl;
+  std::cout << "\n NUM_ITER: " << NUM_ITER << std::endl;
+  std::cout << std::endl;
   
   ::benchmark::Initialize(&argc, argv);
   ::benchmark::RunSpecifiedBenchmarks();
