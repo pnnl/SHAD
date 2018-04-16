@@ -62,7 +62,8 @@ cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT \
          -DSHAD_RUNTIME_SYSTEM=TBB        \
          -DTBB_ROOT=$TBBROOT              \
          -DGTEST_ROOT=$GTESTROOT          \
-         -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT
+         -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT \
+         -Dbenchmark_ROOT=$BENCHMARKROOT
 make -j <SOMETHING_REASONABLE> && make install
 ```
 
