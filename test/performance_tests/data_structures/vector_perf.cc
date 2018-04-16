@@ -38,6 +38,10 @@
 
 using VectorT = shad::Vector<int>;
 
+static size_t VECTOR_SIZE = 100000;
+static size_t NUM_ITER = 20;
+static std::string FILE_NAME = "results_vector_perf.txt";
+
 static shad::AbstractDataStructure<VectorT>::SharedPtr vectorPtr_;
 static std::vector<int> stdvector_;
 
@@ -51,13 +55,9 @@ class TestFixture : public ::benchmark::Fixture {
    * Executes before each test function.
    */
   void SetUp(benchmark::State& state) override {
-    // TODO parse command line args
-    vectorSize_ = 100000;
-    numIter_ = 20;
+    stdvector_ = std::vector<int>(VECTOR_SIZE, 0);
 
-    stdvector_ = std::vector<int>(vectorSize_, 0);
-
-    auto ptr = VectorT::Create(vectorSize_);
+    auto ptr = VectorT::Create(VECTOR_SIZE);
     struct Args {
       VectorT::ObjectID oid1;
     };
@@ -74,14 +74,11 @@ class TestFixture : public ::benchmark::Fixture {
   void TearDown(benchmark::State& state) override {
     VectorT::Destroy(vectorPtr_->GetGlobalID());
   }
-
-  std::size_t vectorSize_;
-  std::size_t numIter_;
 };
 
 BENCHMARK_F(TestFixture, test_RawVector)(benchmark::State& state) {
   for (auto _ : state) {
-    for (std::size_t i = 0; i < vectorSize_; i++) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
       stdvector_[i] = i;
     }
   }
@@ -96,14 +93,14 @@ BENCHMARK_F(TestFixture, test_ParallelAsyncRawVector)(benchmark::State& state) {
   
   for (auto _ : state) {
     shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(), feLambda, fake,
-                            vectorSize_);
+                            VECTOR_SIZE);
     shad::rt::waitForCompletion(handle);
   }
 }
 
 BENCHMARK_F(TestFixture, test_SerialUpdate)(benchmark::State& state) {
   for (auto _ : state) {
-    for (std::size_t i = 0; i < vectorSize_; i++) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
       vectorPtr_->InsertAt(i, i);
     }
   }
@@ -113,7 +110,7 @@ BENCHMARK_F(TestFixture, test_AsyncUpdate)(benchmark::State& state) {
   shad::rt::Handle handle;
 
   for (auto _ : state) {
-    for (std::size_t i = 0; i < vectorSize_; i++) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
       vectorPtr_->AsyncInsertAt(handle, i, i);
     }
     shad::rt::waitForCompletion(handle);
@@ -128,7 +125,7 @@ BENCHMARK_F(TestFixture, test_ParallelAsyncUpdate)(benchmark::State& state) {
   bool fake = 0;
 
   for (auto _ : state) {
-    shad::rt::asyncForEachOnAll(handle, feLambda, fake, vectorSize_);
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, VECTOR_SIZE);
     shad::rt::waitForCompletion(handle);
   }
 }
@@ -141,7 +138,7 @@ BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedUpdate)(benchmark::State& sta
   bool fake = 0;
 
   for (auto _ : state) {
-    shad::rt::asyncForEachOnAll(handle, feLambda, fake, vectorSize_);
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, VECTOR_SIZE);
     shad::rt::waitForCompletion(handle);
     vectorPtr_->WaitForBufferedInsert();
   }
@@ -151,7 +148,7 @@ BENCHMARK_F(TestFixture, test_AsyncBufferedUpdate)(benchmark::State& state) {
   shad::rt::Handle handle;
 
   for (auto _ : state) {
-    for (std::size_t i = 0; i < vectorSize_; i++) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
       vectorPtr_->BufferedAsyncInsertAt(handle, i, i);
     }
     shad::rt::waitForCompletion(handle);
@@ -168,7 +165,7 @@ BENCHMARK_F(TestFixture, test_AsyncUpdateWithApply)(benchmark::State& state) {
   shad::rt::Handle handle;
 
   for (auto _ : state) {
-    for (std::size_t i = 0; i < vectorSize_; i++) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
       vectorPtr_->AsyncApply(handle, i, asyncApplyFun);
     }
     shad::rt::waitForCompletion(handle);
@@ -179,9 +176,31 @@ BENCHMARK_F(TestFixture, test_AsyncUpdateWithFE)(benchmark::State& state) {
   shad::rt::Handle handle;
 
   for (auto _ : state) {
-    vectorPtr_->AsyncForEachInRange(handle, 0, vectorSize_, asyncApplyFun);
+    vectorPtr_->AsyncForEachInRange(handle, 0, VECTOR_SIZE, asyncApplyFun);
     shad::rt::waitForCompletion(handle);
   }
 }
 
-BENCHMARK_MAIN();
+/**
+ * Custom main() instead of calling BENCHMARK_MAIN()
+ */
+int main(int argc, char** argv)
+{
+  // Parse command line args
+  for (size_t argIndex = 1; argIndex < argc - 1; argIndex++) {
+    std::string arg(argv[argIndex]);
+    if (arg == "--Size") {
+      ++argIndex;
+      VECTOR_SIZE = strtoul(argv[argIndex], nullptr, 0);
+    } else if (arg == "--NumIter") {
+      ++argIndex;
+      NUM_ITER = strtoul(argv[argIndex], nullptr, 0);
+    } else if (arg == "--OutFileName") {
+      ++argIndex;
+      FILE_NAME = std::string(argv[argIndex]);
+    }
+  }
+  
+  ::benchmark::Initialize(&argc, argv);
+  ::benchmark::RunSpecifiedBenchmarks();
+}
