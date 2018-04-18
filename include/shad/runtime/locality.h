@@ -29,11 +29,7 @@
 
 #include "shad/config/config.h"
 #include "shad/runtime/mapping_traits.h"
-#if defined HAVE_TBB
-#include "shad/runtime/tbb/tbb_traits_mapping.h"
-#else
-#error Unsupported Runtime System
-#endif
+#include "shad/runtime/mappings/available_traits_mappings.h"
 
 namespace shad {
 

@@ -22,17 +22,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_SHAD_RUNTIME_TBB_TBB_TRAITS_MAPPING_H_
-#define INCLUDE_SHAD_RUNTIME_TBB_TBB_TRAITS_MAPPING_H_
+#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_TRAITS_MAPPING_H_
+#define INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_TRAITS_MAPPING_H_
 
 #include <cstdint>
 #include <limits>
 #include <memory>
 #include <mutex>
 #include <string>
-
-#include "tbb/task_group.h"
-#include "tbb/tbb.h"
 
 #include "shad/runtime/mapping_traits.h"
 
@@ -41,19 +38,19 @@ namespace shad {
 namespace rt {
 namespace impl {
 
-struct tbb_tag {};
+struct cpp_tag {};
+
+struct CppHandle {};
 
 template <>
-struct HandleTrait<tbb_tag> {
-  using HandleTy = std::shared_ptr<tbb::task_group>;
-  using ParameterTy = std::shared_ptr<tbb::task_group> &;
-  using ConstParameterTy = const std::shared_ptr<tbb::task_group> &;
+struct HandleTrait<cpp_tag> {
+  using HandleTy = std::shared_ptr<CppHandle>;
+  using ParameterTy = std::shared_ptr<CppHandle> &;
+  using ConstParameterTy = const std::shared_ptr<CppHandle> &;
 
   static void Init(ParameterTy H, ConstParameterTy V) {}
 
-  static HandleTy NullValue() {
-    return std::shared_ptr<tbb::task_group>(nullptr);
-  }
+  static HandleTy NullValue() { return nullptr; }
 
   static bool Equal(ConstParameterTy lhs, ConstParameterTy rhs) {
     return lhs == rhs;
@@ -65,18 +62,13 @@ struct HandleTrait<tbb_tag> {
     return reinterpret_cast<uint64_t>(H.get());
   }
 
-  static HandleTy CreateNewHandle() {
-    return std::shared_ptr<tbb::task_group>(new tbb::task_group());
-  }
+  static HandleTy CreateNewHandle() { return std::make_shared<CppHandle>(); }
 
-  static void WaitFor(ParameterTy H) {
-    if (H == nullptr) return;
-    H->wait();
-  }
+  static void WaitFor(ParameterTy H) {}
 };
 
 template <>
-struct LockTrait<tbb_tag> {
+struct LockTrait<cpp_tag> {
   using LockTy = std::mutex;
 
   static void lock(LockTy &L) { L.lock(); }
@@ -84,15 +76,13 @@ struct LockTrait<tbb_tag> {
 };
 
 template <>
-struct RuntimeInternalsTrait<tbb_tag> {
+struct RuntimeInternalsTrait<cpp_tag> {
   static void Initialize(int argc, char *argv[]) {}
 
   static void Finalize() {}
 
-  static size_t Concurrency() {
-    return tbb::tbb_thread::hardware_concurrency();
-  }
-  static void Yield() { tbb::this_tbb_thread::yield(); }
+  static size_t Concurrency() { return 1; }
+  static void Yield() {}
 
   static uint32_t ThisLocality() { return 0; }
   static uint32_t NullLocality() { return -1; }
@@ -101,9 +91,9 @@ struct RuntimeInternalsTrait<tbb_tag> {
 
 }  // namespace impl
 
-using TargetSystemTag = impl::tbb_tag;
+using TargetSystemTag = impl::cpp_tag;
 
 }  // namespace rt
 }  // namespace shad
 
-#endif  // INCLUDE_SHAD_RUNTIME_TBB_TBB_TRAITS_MAPPING_H_
+#endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_TRAITS_MAPPING_H_

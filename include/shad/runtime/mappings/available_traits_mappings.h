@@ -22,34 +22,13 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_SHAD_RUNTIME_TBB_TBB_UTILITY_H_
-#define INCLUDE_SHAD_RUNTIME_TBB_TBB_UTILITY_H_
+#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
+#define INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
 
-#include <cstddef>
-#include <cstdint>
-#include <sstream>
-#include <system_error>
+#if defined HAVE_CPP_SIMPLE
+#include "shad/runtime/mappings/cpp_simple/cpp_simple_traits_mapping.h"
+#elif defined HAVE_TBB
+#include "shad/runtime/mappings/tbb/tbb_traits_mapping.h"
+#endif
 
-#include "shad/runtime/locality.h"
-
-namespace shad {
-namespace rt {
-
-namespace impl {
-
-inline void checkLocality(const Locality& loc) {
-  Locality L(0);
-
-  if (loc != L) {
-    std::stringstream ss;
-    ss << "The system does not include " << loc;
-    throw std::system_error(0xdeadc0de, std::generic_category(), ss.str());
-  }
-}
-
-}  // namespace impl
-
-}  // namespace rt
-}  // namespace shad
-
-#endif  // INCLUDE_SHAD_RUNTIME_TBB_TBB_UTILITY_H_
+#endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_

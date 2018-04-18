@@ -22,34 +22,34 @@
 //
 //===----------------------------------------------------------------------===//
 
+#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_TBB_TBB_UTILITY_H_
+#define INCLUDE_SHAD_RUNTIME_MAPPINGS_TBB_TBB_UTILITY_H_
 
-#ifndef INCLUDE_SHAD_CONFIG_H_
-#define INCLUDE_SHAD_CONFIG_H_
+#include <cstddef>
+#include <cstdint>
+#include <sstream>
+#include <system_error>
 
-#if defined(__cplusplus)
-
-#include <string>
+#include "shad/runtime/locality.h"
 
 namespace shad {
+namespace rt {
 
-constexpr auto kShadVersion = "@PACKAGE_VERSION@";
-constexpr auto kShadVersionLong = "@PACKAGE_VERSION@";
+namespace impl {
 
-constexpr unsigned    kShadVersionMajor = @SHAD_VERSION_MAJOR@;
-constexpr unsigned    kShadVersionMinor = @SHAD_VERSION_MINOR@;
-constexpr unsigned    kShadVersionPatch = @SHAD_VERSION_PATCH@;
+inline void checkLocality(const Locality& loc) {
+  Locality L(0);
 
-constexpr auto kShadVersionBuild = "@PACKAGE_VERSION@";
+  if (loc != L) {
+    std::stringstream ss;
+    ss << "The system does not include " << loc;
+    throw std::system_error(0xdeadc0de, std::generic_category(), ss.str());
+  }
+}
 
-constexpr auto kShadPlatform = "@PLATFORM@";
+}  // namespace impl
 
-} // namespace shad
+}  // namespace rt
+}  // namespace shad
 
-#endif  // defined(__cplusplus)
-
-#define SHAD_VERSION "${PACKAGE_VERSION}"
-
-#cmakedefine HAVE_CPP_SIMPLE
-#cmakedefine HAVE_TBB
-
-#endif // INCLUDE_SHAD_CONFIG_H_
+#endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_TBB_TBB_UTILITY_H_
