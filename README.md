@@ -57,11 +57,11 @@ Before attempting to build SHAD, please take a look at the requirements in [Inst
 git clone <url-to-SHAD-repo>  # or untar the SHAD source code.
 cd shad
 mkdir build && cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT \
-         -DCMAKE_BUILD_TYPE=Release       \
-         -DSHAD_RUNTIME_SYSTEM=TBB        \
-         -DTBB_ROOT=$TBBROOT              \
-         -DGTEST_ROOT=$GTESTROOT          \
+cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT  \
+         -DCMAKE_BUILD_TYPE=Release        \
+         -DSHAD_RUNTIME_SYSTEM=TBB         \
+         -DTBB_ROOT=$TBBROOT               \
+         -DGTEST_ROOT=$GTESTROOT           \
          -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT \
          -Dbenchmark_ROOT=$BENCHMARKROOT
 make -j <SOMETHING_REASONABLE> && make install
