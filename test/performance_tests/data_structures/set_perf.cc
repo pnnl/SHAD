@@ -52,7 +52,6 @@ static std::unordered_set<int> stdset_;
  */
 class TestFixture : public ::benchmark::Fixture {
  public:
-
   /**
    * Executes before each test function.
    */
@@ -62,7 +61,7 @@ class TestFixture : public ::benchmark::Fixture {
       SetT::ObjectID oid1;
       size_t as;
     };
-    auto propagateLambda = [](const Args &args) {
+    auto propagateLambda = [](const Args& args) {
       SET_SIZE = args.as;
       setPtr_ = SetT::GetPtr(args.oid1);
     };
@@ -125,7 +124,7 @@ BENCHMARK_F(TestFixture, test_AsyncInsert)(benchmark::State& state) {
 }
 
 BENCHMARK_F(TestFixture, test_ParallelAsyncInsert)(benchmark::State& state) {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
+  auto feLambda = [](shad::rt::Handle& handle, const bool&, size_t i) {
     setPtr_->AsyncInsert(handle, i);
   };
 
@@ -136,8 +135,9 @@ BENCHMARK_F(TestFixture, test_ParallelAsyncInsert)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedInsert)(benchmark::State& state) {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
+BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedInsert)
+(benchmark::State& state) {
+  auto feLambda = [](shad::rt::Handle& handle, const bool&, size_t i) {
     setPtr_->BufferedAsyncInsert(handle, i);
   };
 
@@ -160,7 +160,7 @@ BENCHMARK_F(TestFixture, test_AsyncBufferedInsert)(benchmark::State& state) {
   }
 }
 
-static void asyncApplyFun(shad::rt::Handle &, const int &key) {
+static void asyncApplyFun(shad::rt::Handle&, const int& key) {
   // do nothing
 }
 
@@ -175,8 +175,7 @@ BENCHMARK_F(TestFixture, test_AsyncVisitWithFE)(benchmark::State& state) {
 /**
  * Custom main() instead of calling BENCHMARK_MAIN()
  */
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
   // Parse command line args
   for (size_t argIndex = 1; argIndex < argc - 1; argIndex++) {
     std::string arg(argv[argIndex]);
@@ -194,7 +193,7 @@ int main(int argc, char** argv)
   std::cout << "\n SET_SIZE: " << SET_SIZE << std::endl;
   std::cout << "\n NUM_ITER: " << NUM_ITER << std::endl;
   std::cout << std::endl;
-  
+
   ::benchmark::Initialize(&argc, argv);
   ::benchmark::RunSpecifiedBenchmarks();
 }

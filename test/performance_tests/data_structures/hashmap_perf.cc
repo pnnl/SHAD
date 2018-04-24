@@ -52,11 +52,10 @@ static std::unordered_map<int, int> stdmap_;
  */
 class TestFixture : public ::benchmark::Fixture {
  public:
-
   /**
    * Executes before each test function.
    */
-  void SetUp(benchmark::State& state) override {
+  void SetUp(benchmark::State &state) override {
     auto ptr = MapT::Create(MAP_SIZE);
     struct Args {
       MapT::ObjectID oid1;
@@ -73,14 +72,14 @@ class TestFixture : public ::benchmark::Fixture {
   /**
    * Executes after each test function.
    */
-  void TearDown(benchmark::State& state) override {
+  void TearDown(benchmark::State &state) override {
     MapT::Destroy(mapPtr_->GetGlobalID());
   }
 };
 
 bool fake;
 
-BENCHMARK_F(TestFixture, test_RawMap)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_RawMap)(benchmark::State &state) {
   for (auto _ : state) {
     for (size_t i = 0; i < MAP_SIZE; i++) {
       stdmap_[i] = i;
@@ -88,7 +87,7 @@ BENCHMARK_F(TestFixture, test_RawMap)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_ParallelAsyncRawMap)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_ParallelAsyncRawMap)(benchmark::State &state) {
   auto feLambda = [](shad::rt::Handle &, const bool &, size_t i) {
     stdmap_[i] = i;
   };
@@ -96,12 +95,12 @@ BENCHMARK_F(TestFixture, test_ParallelAsyncRawMap)(benchmark::State& state) {
   for (auto _ : state) {
     shad::rt::Handle handle;
     shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(), feLambda, fake,
-                            MAP_SIZE);
+                             MAP_SIZE);
     shad::rt::waitForCompletion(handle);
   }
 }
 
-BENCHMARK_F(TestFixture, test_SerialInsert)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_SerialInsert)(benchmark::State &state) {
   for (auto _ : state) {
     for (size_t i = 0; i < MAP_SIZE; i++) {
       mapPtr_->Insert(i, i);
@@ -111,7 +110,7 @@ BENCHMARK_F(TestFixture, test_SerialInsert)(benchmark::State& state) {
 
 void applyFun(const int &key, int &elem) { elem = key; }
 
-BENCHMARK_F(TestFixture, test_AsyncInsert)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_AsyncInsert)(benchmark::State &state) {
   for (auto _ : state) {
     shad::rt::Handle handle;
     for (size_t i = 0; i < MAP_SIZE; i++) {
@@ -121,7 +120,7 @@ BENCHMARK_F(TestFixture, test_AsyncInsert)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_ParallelAsyncInsert)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_ParallelAsyncInsert)(benchmark::State &state) {
   auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
     mapPtr_->AsyncInsert(handle, i, i);
   };
@@ -133,7 +132,8 @@ BENCHMARK_F(TestFixture, test_ParallelAsyncInsert)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedInsert)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedInsert)
+(benchmark::State &state) {
   auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
     mapPtr_->BufferedAsyncInsert(handle, i, i);
   };
@@ -146,7 +146,7 @@ BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedInsert)(benchmark::State& sta
   }
 }
 
-BENCHMARK_F(TestFixture, test_AsyncBufferedInsert)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_AsyncBufferedInsert)(benchmark::State &state) {
   for (auto _ : state) {
     shad::rt::Handle handle;
     for (size_t i = 0; i < MAP_SIZE; i++) {
@@ -165,7 +165,7 @@ static void asyncFEfun(shad::rt::Handle &, const int &key) {
   // do nothing
 }
 
-BENCHMARK_F(TestFixture, test_AsyncUpdateWithApply)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_AsyncUpdateWithApply)(benchmark::State &state) {
   for (auto _ : state) {
     shad::rt::Handle handle;
     for (size_t i = 0; i < MAP_SIZE; i++) {
@@ -175,7 +175,7 @@ BENCHMARK_F(TestFixture, test_AsyncUpdateWithApply)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_AsyncUpdateWithFE)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_AsyncUpdateWithFE)(benchmark::State &state) {
   for (auto _ : state) {
     shad::rt::Handle handle;
     mapPtr_->AsyncForEachEntry(handle, asyncApplyFun);
@@ -183,7 +183,7 @@ BENCHMARK_F(TestFixture, test_AsyncUpdateWithFE)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_AsyncFEKey)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_AsyncFEKey)(benchmark::State &state) {
   for (auto _ : state) {
     shad::rt::Handle handle;
     mapPtr_->AsyncForEachKey(handle, asyncFEfun);
@@ -194,8 +194,7 @@ BENCHMARK_F(TestFixture, test_AsyncFEKey)(benchmark::State& state) {
 /**
  * Custom main() instead of calling BENCHMARK_MAIN()
  */
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
   // Parse command line args
   for (size_t argIndex = 1; argIndex < argc - 1; argIndex++) {
     std::string arg(argv[argIndex]);

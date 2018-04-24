@@ -49,35 +49,30 @@ struct retData {
  */
 class TestFixture : public ::benchmark::Fixture {
  public:
-
   /**
    * Executes before each test function.
    */
-  void SetUp(benchmark::State& state) override {
-
-  }
+  void SetUp(benchmark::State &state) override {}
 
   /**
    * Executes after each test function.
    */
-  void TearDown(benchmark::State& state) override {
-    
-  }
+  void TearDown(benchmark::State &state) override {}
 };
 
 void testFunctionAsyncExecuteAt(shad::rt::Handle &, const exData &data) {
   globalCounter += data.c[0] + data.c[1];
 }
 
-BENCHMARK_F(TestFixture, test_asyncExecuteAt)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncExecuteAt)(benchmark::State &state) {
   exData data{"hello"};
   int i = 0;
 
   for (auto _ : state) {
     shad::rt::Handle handle;
-    shad::rt::asyncExecuteAt(handle,
-                            shad::rt::Locality(i++ % shad::rt::numLocalities()),
-                            testFunctionAsyncExecuteAt, data);
+    shad::rt::asyncExecuteAt(
+        handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
+        testFunctionAsyncExecuteAt, data);
 
     shad::rt::waitForCompletion(handle);
   }
@@ -89,7 +84,8 @@ void testFunctionAsyncExecuteAtInputBuffer(shad::rt::Handle &,
   globalCounter += data[0] + data[1];
 }
 
-BENCHMARK_F(TestFixture, test_asyncExecuteAtInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncExecuteAtInputBuffer)
+(benchmark::State &state) {
   exData value{1, 2};
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)],
                                 std::default_delete<uint8_t[]>());
@@ -99,8 +95,8 @@ BENCHMARK_F(TestFixture, test_asyncExecuteAtInputBuffer)(benchmark::State& state
   for (auto _ : state) {
     shad::rt::Handle handle;
     shad::rt::asyncExecuteAt(
-          handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
-          testFunctionAsyncExecuteAtInputBuffer, data, sizeof(exData));
+        handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
+        testFunctionAsyncExecuteAtInputBuffer, data, sizeof(exData));
 
     shad::rt::waitForCompletion(handle);
   }
@@ -113,7 +109,8 @@ void testFunctionAsyncExecuteAtWithRetBuff(shad::rt::Handle &,
   *size = 2048;
 }
 
-BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetBuff)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetBuff)
+(benchmark::State &state) {
   exData data{"hello"};
 
   uint8_t buffer[2048];
@@ -123,8 +120,8 @@ BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetBuff)(benchmark::State& state
   for (auto _ : state) {
     shad::rt::Handle handle;
     shad::rt::asyncExecuteAtWithRetBuff(
-          handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
-          testFunctionAsyncExecuteAtWithRetBuff, data, buffer, &size);
+        handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
+        testFunctionAsyncExecuteAtWithRetBuff, data, buffer, &size);
 
     shad::rt::waitForCompletion(handle);
   }
@@ -138,7 +135,8 @@ void testFunctionAsyncExecuteAtWithRetBuffInputBuffer(shad::rt::Handle &,
   *size = 2048;
 }
 
-BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetBuffInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetBuffInputBuffer)
+(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)]{1, 2},
                                 std::default_delete<uint8_t[]>());
 
@@ -149,9 +147,9 @@ BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetBuffInputBuffer)(benchmark::S
   for (auto _ : state) {
     shad::rt::Handle handle;
     shad::rt::asyncExecuteAtWithRetBuff(
-          handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
-          testFunctionAsyncExecuteAtWithRetBuffInputBuffer, data, sizeof(data),
-          buffer, &size);
+        handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
+        testFunctionAsyncExecuteAtWithRetBuffInputBuffer, data, sizeof(data),
+        buffer, &size);
 
     shad::rt::waitForCompletion(handle);
   }
@@ -163,7 +161,7 @@ void testFunctionAsyncExecuteAtWithRet(shad::rt::Handle &, const exData &data,
   memcpy(ret, &data, sizeof(retData));
 }
 
-BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRet)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRet)(benchmark::State &state) {
   exData data{"hello"};
   int i = 0;
 
@@ -171,8 +169,8 @@ BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRet)(benchmark::State& state) {
     retData ret;
     shad::rt::Handle handle;
     shad::rt::asyncExecuteAtWithRet(
-          handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
-          testFunctionAsyncExecuteAtWithRet, data, &ret);
+        handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
+        testFunctionAsyncExecuteAtWithRet, data, &ret);
 
     shad::rt::waitForCompletion(handle);
   }
@@ -186,7 +184,8 @@ void testFunctionAsyncExecuteAtWithRetInputBuffer(shad::rt::Handle &,
   memcpy(ret, data, sizeof(retData));
 }
 
-BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetInputBuffer)
+(benchmark::State &state) {
   exData value{1, 2};
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)],
                                 std::default_delete<uint8_t[]>());
@@ -196,14 +195,14 @@ BENCHMARK_F(TestFixture, test_asyncExecuteAtWithRetInputBuffer)(benchmark::State
     retData ret;
     shad::rt::Handle handle;
     shad::rt::asyncExecuteAtWithRet(
-          handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
-          testFunctionAsyncExecuteAtWithRetInputBuffer, data, sizeof(data), &ret);
+        handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
+        testFunctionAsyncExecuteAtWithRetInputBuffer, data, sizeof(data), &ret);
 
     shad::rt::waitForCompletion(handle);
   }
 }
 
-BENCHMARK_F(TestFixture, test_asyncExecuteOnAll)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncExecuteOnAll)(benchmark::State &state) {
   exData data{"hello"};
 
   for (auto _ : state) {
@@ -214,14 +213,15 @@ BENCHMARK_F(TestFixture, test_asyncExecuteOnAll)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_asyncExecuteOnAllInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncExecuteOnAllInputBuffer)
+(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[2]{1, 2},
                                 std::default_delete<uint8_t[]>());
 
   for (auto _ : state) {
     shad::rt::Handle handle;
     shad::rt::asyncExecuteOnAll(handle, testFunctionAsyncExecuteAtInputBuffer,
-                                 data, 2);
+                                data, 2);
 
     shad::rt::waitForCompletion(handle);
   }

@@ -50,27 +50,22 @@ struct retData {
  */
 class TestFixture : public ::benchmark::Fixture {
  public:
-
   /**
    * Executes before each test function.
    */
-  void SetUp(benchmark::State& state) override {
-
-  }
+  void SetUp(benchmark::State &state) override {}
 
   /**
    * Executes after each test function.
    */
-  void TearDown(benchmark::State& state) override {
-    
-  }
+  void TearDown(benchmark::State &state) override {}
 };
 
 void testFunctionExecuteAt(const exData &data) {
   globalCounter += data.c[0] + data.c[1];
 }
 
-BENCHMARK_F(TestFixture, test_executeAt)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_executeAt)(benchmark::State &state) {
   exData data{"hello"};
   int i = 0;
 
@@ -85,7 +80,7 @@ void testFunctionExecuteAtInputBuffer(const uint8_t *data,
   globalCounter += data[0] + data[1];
 }
 
-BENCHMARK_F(TestFixture, test_executeAtInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_executeAtInputBuffer)(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[4040],
                                 std::default_delete<uint8_t[]>());
 
@@ -103,7 +98,7 @@ void testFunctionExecuteAtWithRetBuff(const exData &data, uint8_t *,
   *size = 2048;
 }
 
-BENCHMARK_F(TestFixture, test_executeAtWithRetBuff)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_executeAtWithRetBuff)(benchmark::State &state) {
   exData data{"hello"};
 
   uint8_t buffer[2048];
@@ -125,7 +120,8 @@ void testFunctionExecuteAtWithRetBuffInputBuffer(const uint8_t *data,
   *size = 2048;
 }
 
-BENCHMARK_F(TestFixture, test_executeAtWithRetBuffInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_executeAtWithRetBuffInputBuffer)
+(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)]{1, 2},
                                 std::default_delete<uint8_t[]>());
   uint8_t buffer[2048];
@@ -145,12 +141,12 @@ void testFunctionExecuteAtWithRet(const exData &data, retData *ret) {
   memcpy(ret, &data, sizeof(retData));
 }
 
-BENCHMARK_F(TestFixture, test_executeAtWithRet)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_executeAtWithRet)(benchmark::State &state) {
   exData data{"hello"};
   int i = 0;
 
   for (auto _ : state) {
-    retData ret;  
+    retData ret;
     shad::rt::executeAtWithRet(
         shad::rt::Locality(i++ % shad::rt::numLocalities()),
         testFunctionExecuteAtWithRet, data, &ret);
@@ -163,20 +159,21 @@ void testFunctionExecuteAtWithRetInputBuffer(const uint8_t *data,
   memcpy(ret, data, sizeof(retData));
 }
 
-BENCHMARK_F(TestFixture, test_executeAtWithRetInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_executeAtWithRetInputBuffer)
+(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[4040],
                                 std::default_delete<uint8_t[]>());
   int i = 0;
 
   for (auto _ : state) {
-    retData ret;  
+    retData ret;
     shad::rt::executeAtWithRet(
         shad::rt::Locality(i++ % shad::rt::numLocalities()),
         testFunctionExecuteAtWithRetInputBuffer, data, 4040, &ret);
   }
 }
 
-BENCHMARK_F(TestFixture, test_executeOnAll)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_executeOnAll)(benchmark::State &state) {
   exData data{"hello"};
 
   for (auto _ : state) {
@@ -184,7 +181,8 @@ BENCHMARK_F(TestFixture, test_executeOnAll)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_executeOnAllInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_executeOnAllInputBuffer)
+(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)],
                                 std::default_delete<uint8_t[]>());
   new (data.get()) exData{1, 2};

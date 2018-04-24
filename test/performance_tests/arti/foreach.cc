@@ -45,23 +45,18 @@ struct exData {
  */
 class TestFixture : public ::benchmark::Fixture {
  public:
-
   /**
    * Executes before each test function.
    */
-  void SetUp(benchmark::State& state) override {
-
-  }
+  void SetUp(benchmark::State& state) override {}
 
   /**
    * Executes after each test function.
    */
-  void TearDown(benchmark::State& state) override {
-    
-  }
+  void TearDown(benchmark::State& state) override {}
 };
 
-void testFunctionForEachAt(const exData &data, size_t i) {
+void testFunctionForEachAt(const exData& data, size_t i) {
   globalCounter += data.c[0] + data.c[1];
 }
 
@@ -75,7 +70,7 @@ BENCHMARK_F(TestFixture, test_forEachAt)(benchmark::State& state) {
   }
 }
 
-void testFunctionForEachAtInputBuffer(const uint8_t *data, const uint32_t size,
+void testFunctionForEachAtInputBuffer(const uint8_t* data, const uint32_t size,
                                       size_t i) {
   globalCounter += data[0] + data[1];
 }
@@ -102,7 +97,8 @@ BENCHMARK_F(TestFixture, test_forEachOnAll)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_forEachOnAllInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_forEachOnAllInputBuffer)
+(benchmark::State& state) {
   exData value{1, 2};
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)],
                                 std::default_delete<uint8_t[]>());

@@ -50,7 +50,6 @@ static std::vector<int> stdvector_;
  */
 class TestFixture : public ::benchmark::Fixture {
  public:
-
   /**
    * Executes before each test function.
    */
@@ -61,7 +60,7 @@ class TestFixture : public ::benchmark::Fixture {
     struct Args {
       VectorT::ObjectID oid1;
     };
-    auto propagateLambda = [](const Args &args) {
+    auto propagateLambda = [](const Args& args) {
       vectorPtr_ = VectorT::GetPtr(args.oid1);
     };
     Args args = {ptr->GetGlobalID()};
@@ -85,15 +84,15 @@ BENCHMARK_F(TestFixture, test_RawVector)(benchmark::State& state) {
 }
 
 BENCHMARK_F(TestFixture, test_ParallelAsyncRawVector)(benchmark::State& state) {
-  auto feLambda = [](shad::rt::Handle &, const bool &, std::size_t i) {
+  auto feLambda = [](shad::rt::Handle&, const bool&, std::size_t i) {
     stdvector_[i] = i;
   };
   shad::rt::Handle handle;
   bool fake = 0;
-  
+
   for (auto _ : state) {
     shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(), feLambda, fake,
-                            VECTOR_SIZE);
+                             VECTOR_SIZE);
     shad::rt::waitForCompletion(handle);
   }
 }
@@ -118,7 +117,7 @@ BENCHMARK_F(TestFixture, test_AsyncUpdate)(benchmark::State& state) {
 }
 
 BENCHMARK_F(TestFixture, test_ParallelAsyncUpdate)(benchmark::State& state) {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, std::size_t i) {
+  auto feLambda = [](shad::rt::Handle& handle, const bool&, std::size_t i) {
     vectorPtr_->AsyncInsertAt(handle, i, i);
   };
   shad::rt::Handle handle;
@@ -130,8 +129,9 @@ BENCHMARK_F(TestFixture, test_ParallelAsyncUpdate)(benchmark::State& state) {
   }
 }
 
-BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedUpdate)(benchmark::State& state) {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, std::size_t i) {
+BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedUpdate)
+(benchmark::State& state) {
+  auto feLambda = [](shad::rt::Handle& handle, const bool&, std::size_t i) {
     vectorPtr_->BufferedAsyncInsertAt(handle, i, i);
   };
   shad::rt::Handle handle;
@@ -156,8 +156,8 @@ BENCHMARK_F(TestFixture, test_AsyncBufferedUpdate)(benchmark::State& state) {
   }
 }
 
-static void asyncApplyFun(shad::rt::Handle &, shad::Vector<int>::size_type i,
-                          int &elem) {
+static void asyncApplyFun(shad::rt::Handle&, shad::Vector<int>::size_type i,
+                          int& elem) {
   elem = i;
 }
 
@@ -184,8 +184,7 @@ BENCHMARK_F(TestFixture, test_AsyncUpdateWithFE)(benchmark::State& state) {
 /**
  * Custom main() instead of calling BENCHMARK_MAIN()
  */
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
   // Parse command line args
   for (size_t argIndex = 1; argIndex < argc - 1; argIndex++) {
     std::string arg(argv[argIndex]);
@@ -203,7 +202,7 @@ int main(int argc, char** argv)
   std::cout << "\n VECTOR_SIZE: " << VECTOR_SIZE << std::endl;
   std::cout << "\n NUM_ITER: " << NUM_ITER << std::endl;
   std::cout << std::endl;
-  
+
   ::benchmark::Initialize(&argc, argv);
   ::benchmark::RunSpecifiedBenchmarks();
 }

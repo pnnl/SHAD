@@ -44,23 +44,18 @@ struct exData {
  */
 class TestFixture : public ::benchmark::Fixture {
  public:
-
   /**
    * Executes before each test function.
    */
-  void SetUp(benchmark::State& state) override {
-
-  }
+  void SetUp(benchmark::State& state) override {}
 
   /**
    * Executes after each test function.
    */
-  void TearDown(benchmark::State& state) override {
-    
-  }
+  void TearDown(benchmark::State& state) override {}
 };
 
-void testFunctionAsyncForEachAt(shad::rt::Handle &, const exData &data,
+void testFunctionAsyncForEachAt(shad::rt::Handle&, const exData& data,
                                 size_t i) {
   globalCounter += data.c[0] + data.c[1];
 }
@@ -71,21 +66,22 @@ BENCHMARK_F(TestFixture, test_asyncForEachAt)(benchmark::State& state) {
 
   for (auto _ : state) {
     shad::rt::Handle handle;
-    shad::rt::asyncForEachAt(handle,
-                              shad::rt::Locality(i++ % shad::rt::numLocalities()),
-                              testFunctionAsyncForEachAt, data, state.iterations());
+    shad::rt::asyncForEachAt(
+        handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
+        testFunctionAsyncForEachAt, data, state.iterations());
 
     shad::rt::waitForCompletion(handle);
   }
 }
 
-void testFunctionAsyncForEachAtInputBuffer(shad::rt::Handle &,
-                                           const uint8_t *data,
+void testFunctionAsyncForEachAtInputBuffer(shad::rt::Handle&,
+                                           const uint8_t* data,
                                            const uint32_t size, size_t i) {
   globalCounter += data[0] + data[1];
 }
 
-BENCHMARK_F(TestFixture, test_asyncForEachAtInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncForEachAtInputBuffer)
+(benchmark::State& state) {
   std::shared_ptr<uint8_t> data(new uint8_t[2]{1, 2},
                                 std::default_delete<uint8_t[]>());
   int i = 0;
@@ -93,8 +89,8 @@ BENCHMARK_F(TestFixture, test_asyncForEachAtInputBuffer)(benchmark::State& state
   for (auto _ : state) {
     shad::rt::Handle handle;
     shad::rt::asyncForEachAt(
-          handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
-          testFunctionAsyncForEachAtInputBuffer, data, 2, state.iterations());
+        handle, shad::rt::Locality(i++ % shad::rt::numLocalities()),
+        testFunctionAsyncForEachAtInputBuffer, data, 2, state.iterations());
 
     shad::rt::waitForCompletion(handle);
   }
@@ -102,17 +98,18 @@ BENCHMARK_F(TestFixture, test_asyncForEachAtInputBuffer)(benchmark::State& state
 
 BENCHMARK_F(TestFixture, test_asyncForEachOnAll)(benchmark::State& state) {
   exData data{"hello"};
-  
+
   for (auto _ : state) {
     shad::rt::Handle handle;
     shad::rt::asyncForEachOnAll(handle, testFunctionAsyncForEachAt, data,
-                                  state.iterations());
+                                state.iterations());
 
     shad::rt::waitForCompletion(handle);
   }
 }
 
-BENCHMARK_F(TestFixture, test_asyncForEachOnAllInputBuffer)(benchmark::State& state) {
+BENCHMARK_F(TestFixture, test_asyncForEachOnAllInputBuffer)
+(benchmark::State& state) {
   std::shared_ptr<uint8_t> data(new uint8_t[2]{1, 2},
                                 std::default_delete<uint8_t[]>());
 
