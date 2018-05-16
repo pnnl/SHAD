@@ -68,7 +68,7 @@ elseif (SHAD_RUNTIME_SYSTEM STREQUAL "TBB")
 
   find_package(TBB REQUIRED)
   set(HAVE_TBB 1)
-  set(SHAD_RUNTIME_LIB ${TBB_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+  set(SHAD_RUNTIME_LIB ${CMAKE_THREAD_LIBS_INIT} ${TBB_LIBRARIES})
 elseif (SHAD_RUNTIME_SYSTEM STREQUAL "GMT")
   message(STATUS "Using Global Threading and Memory (GMT) as backend of the Abstract Runtime API.")
   find_package(GMT REQUIRED)

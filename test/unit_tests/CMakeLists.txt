@@ -6,7 +6,7 @@ if (CLANG_TIDY_EXE)
     shadtest_main PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
 endif()
-target_link_libraries(shadtest_main runtime ${GTEST_LIBRARIES} ${SHAD_RUNTIME_LIB})
+target_link_libraries(shadtest_main  ${GTEST_LIBRARIES} ${SHAD_RUNTIME_LIB} runtime)
 
 add_executable(test_gtest_remote_failure gtest_test.cc)
 if (CLANG_TIDY_EXE)
@@ -14,7 +14,7 @@ if (CLANG_TIDY_EXE)
     test_gtest_remote_failure PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
 endif()
-target_link_libraries(test_gtest_remote_failure runtime shadtest_main)
+target_link_libraries(test_gtest_remote_failure ${SHAD_RUNTIME_LIB} runtime shadtest_main)
 
 add_test(NAME test_gtest_remote_failure
   COMMAND ${SHAD_TEST_COMMAND} $<TARGET_FILE:test_gtest_remote_failure>)
