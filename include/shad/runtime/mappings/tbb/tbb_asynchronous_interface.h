@@ -22,8 +22,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_SHAD_RUNTIME_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
-#define INCLUDE_SHAD_RUNTIME_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
+#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
+#define INCLUDE_SHAD_RUNTIME_MAPPINGS_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
 
 #include <cstddef>
 #include <cstdint>
@@ -34,7 +34,7 @@
 #include "shad/runtime/handle.h"
 #include "shad/runtime/locality.h"
 #include "shad/runtime/mapping_traits.h"
-#include "shad/runtime/tbb/tbb_utility.h"
+#include "shad/runtime/mappings/tbb/tbb_utility.h"
 
 namespace shad {
 namespace rt {
@@ -270,4 +270,4 @@ struct AsynchronousInterface<tbb_tag> {
 }  // namespace rt
 }  // namespace shad
 
-#endif  // INCLUDE_SHAD_RUNTIME_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
+#endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
