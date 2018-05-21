@@ -31,6 +31,9 @@
 #elif defined HAVE_TBB
 #include "shad/runtime/mappings/tbb/tbb_asynchronous_interface.h"
 #include "shad/runtime/mappings/tbb/tbb_synchronous_interface.h"
+#elif defined HAVE_GMT
+#include "shad/runtime/mappings/gmt/gmt_asynchronous_interface.h"
+#include "shad/runtime/mappings/gmt/gmt_synchronous_interface.h"
 #else
 #error Unsupported Runtime System
 #endif
