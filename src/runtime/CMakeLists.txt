@@ -4,6 +4,9 @@ if (HAVE_CPP_SIMPLE)
 elseif (HAVE_TBB)
   set(sources
     tbb_mapping/tbb_main.cc)
+elseif (HAVE_GMT)
+  set(sources
+    gmt_mapping/gmt_main.cc)
 endif()
 
 add_library(runtime STATIC ${sources})
@@ -21,5 +24,8 @@ if (HAVE_CPP_SIMPLE)
 elseif (HAVE_TBB)
   target_include_directories(runtime PUBLIC ${TBB_INCLUDE_DIRS})
   target_link_libraries(runtime PUBLIC ${TBB_LIBRARIES})
+elseif (HAVE_GMT)
+  target_include_directories(runtime PUBLIC ${GMT_INCLUDE_DIRS})
+  target_link_libraries(runtime PUBLIC ${GMT_LIBRARIES})
 endif()
 install(TARGETS runtime ARCHIVE DESTINATION lib)

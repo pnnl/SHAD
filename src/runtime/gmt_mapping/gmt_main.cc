@@ -22,15 +22,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
-#define INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
+#include "gmt/gmt.h"
 
-#if defined HAVE_CPP_SIMPLE
-#include "shad/runtime/mappings/cpp_simple/cpp_simple_traits_mapping.h"
-#elif defined HAVE_TBB
-#include "shad/runtime/mappings/tbb/tbb_traits_mapping.h"
-#elif defined HAVE_GMT
-#include "shad/runtime/mappings/gmt/gmt_traits_mapping.h"
-#endif
+namespace shad {
 
-#endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
+extern int main(int argc, char* argv[]);
+
+}  // namespace shad
+
+extern "C" int gmt_main(uint64_t argc, char* argv[]) {
+  return shad::main(argc, argv);
+}

@@ -78,7 +78,7 @@ option(SHAD_ENABLE_PERFORMANCE_TEST "Enable the compilation of the Performance T
 
 set(
   SHAD_RUNTIME_SYSTEM "CPP_SIMPLE" CACHE STRING
-  "Runtime system to be used as backend of the Abstract Runtime API (Default=CPP_SIMPLE, Supported=CPP_SIMPLE | TBB)")
+  "Runtime system to be used as backend of the Abstract Runtime API (Default=CPP_SIMPLE, Supported=CPP_SIMPLE | TBB | GMT)")
 
 
 include(config)
