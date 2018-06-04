@@ -30,6 +30,8 @@
 #include <random>
 #include <thread>
 
+#include <benchmark/benchmark.h>
+
 #include "shad/runtime/runtime.h"
 #include "shad/util/measure.h"
 
@@ -43,16 +45,34 @@ struct retData {
   char c[2048];
 };
 
+/**
+ * Create a Google Benchmark test fixture for data initialization.
+ */
+class TestFixture : public ::benchmark::Fixture {
+ public:
+  /**
+   * Executes before each test function.
+   */
+  void SetUp(benchmark::State &state) override {}
+
+  /**
+   * Executes after each test function.
+   */
+  void TearDown(benchmark::State &state) override {}
+};
+
 void testFunctionExecuteAt(const exData &data) {
   globalCounter += data.c[0] + data.c[1];
 }
 
-void test_executeAt(size_t numTasks) {
+BENCHMARK_F(TestFixture, test_executeAt)(benchmark::State &state) {
   exData data{"hello"};
+  int i = 0;
 
-  for (size_t i = 0; i < numTasks; ++i)
-    shad::rt::executeAt(shad::rt::Locality(i % shad::rt::numLocalities()),
+  for (auto _ : state) {
+    shad::rt::executeAt(shad::rt::Locality(i++ % shad::rt::numLocalities()),
                         testFunctionExecuteAt, data);
+  }
 }
 
 void testFunctionExecuteAtInputBuffer(const uint8_t *data,
@@ -60,12 +80,16 @@ void testFunctionExecuteAtInputBuffer(const uint8_t *data,
   globalCounter += data[0] + data[1];
 }
 
-void test_executeAtInputBuffer(size_t numTasks) {
+BENCHMARK_F(TestFixture, test_executeAtInputBuffer)(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[4040],
                                 std::default_delete<uint8_t[]>());
-  for (size_t i = 0; i < numTasks; ++i)
-    shad::rt::executeAt(shad::rt::Locality(i % shad::rt::numLocalities()),
+
+  int i = 0;
+
+  for (auto _ : state) {
+    shad::rt::executeAt(shad::rt::Locality(i++ % shad::rt::numLocalities()),
                         testFunctionExecuteAtInputBuffer, data, sizeof(data));
+  }
 }
 
 void testFunctionExecuteAtWithRetBuff(const exData &data, uint8_t *,
@@ -74,16 +98,18 @@ void testFunctionExecuteAtWithRetBuff(const exData &data, uint8_t *,
   *size = 2048;
 }
 
-void test_executeAtWithRetBuff(size_t numTasks) {
+BENCHMARK_F(TestFixture, test_executeAtWithRetBuff)(benchmark::State &state) {
   exData data{"hello"};
 
   uint8_t buffer[2048];
   uint32_t size;
+  int i = 0;
 
-  for (size_t i = 0; i < numTasks; ++i)
+  for (auto _ : state) {
     shad::rt::executeAtWithRetBuff(
-        shad::rt::Locality(i % shad::rt::numLocalities()),
+        shad::rt::Locality(i++ % shad::rt::numLocalities()),
         testFunctionExecuteAtWithRetBuff, data, buffer, &size);
+  }
 }
 
 void testFunctionExecuteAtWithRetBuffInputBuffer(const uint8_t *data,
@@ -94,17 +120,20 @@ void testFunctionExecuteAtWithRetBuffInputBuffer(const uint8_t *data,
   *size = 2048;
 }
 
-void test_executeAtWithRetBuffInputBuffer(size_t numTasks) {
+BENCHMARK_F(TestFixture, test_executeAtWithRetBuffInputBuffer)
+(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)]{1, 2},
                                 std::default_delete<uint8_t[]>());
   uint8_t buffer[2048];
   uint32_t size;
+  int i = 0;
 
-  for (size_t i = 0; i < numTasks; ++i)
+  for (auto _ : state) {
     shad::rt::executeAtWithRetBuff(
-        shad::rt::Locality(i % shad::rt::numLocalities()),
+        shad::rt::Locality(i++ % shad::rt::numLocalities()),
         testFunctionExecuteAtWithRetBuffInputBuffer, data, sizeof(data), buffer,
         &size);
+  }
 }
 
 void testFunctionExecuteAtWithRet(const exData &data, retData *ret) {
@@ -112,14 +141,16 @@ void testFunctionExecuteAtWithRet(const exData &data, retData *ret) {
   memcpy(ret, &data, sizeof(retData));
 }
 
-void test_executeAtWithRet(size_t numTasks) {
+BENCHMARK_F(TestFixture, test_executeAtWithRet)(benchmark::State &state) {
   exData data{"hello"};
+  int i = 0;
 
-  retData ret;
-  for (size_t i = 0; i < numTasks; ++i)
+  for (auto _ : state) {
+    retData ret;
     shad::rt::executeAtWithRet(
-        shad::rt::Locality(i % shad::rt::numLocalities()),
+        shad::rt::Locality(i++ % shad::rt::numLocalities()),
         testFunctionExecuteAtWithRet, data, &ret);
+  }
 }
 
 void testFunctionExecuteAtWithRetInputBuffer(const uint8_t *data,
@@ -128,81 +159,38 @@ void testFunctionExecuteAtWithRetInputBuffer(const uint8_t *data,
   memcpy(ret, data, sizeof(retData));
 }
 
-void test_executeAtWithRetInputBuffer(size_t numTasks) {
+BENCHMARK_F(TestFixture, test_executeAtWithRetInputBuffer)
+(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[4040],
                                 std::default_delete<uint8_t[]>());
+  int i = 0;
 
-  retData ret;
-  for (size_t i = 0; i < numTasks; ++i)
+  for (auto _ : state) {
+    retData ret;
     shad::rt::executeAtWithRet(
-        shad::rt::Locality(i % shad::rt::numLocalities()),
+        shad::rt::Locality(i++ % shad::rt::numLocalities()),
         testFunctionExecuteAtWithRetInputBuffer, data, 4040, &ret);
+  }
 }
 
-void test_executeOnAll(size_t numTasks) {
+BENCHMARK_F(TestFixture, test_executeOnAll)(benchmark::State &state) {
   exData data{"hello"};
-  for (size_t i = 0; i < numTasks; ++i)
+
+  for (auto _ : state) {
     shad::rt::executeOnAll(testFunctionExecuteAt, data);
+  }
 }
 
-void test_executeOnAllInputBuffer(size_t numTasks) {
+BENCHMARK_F(TestFixture, test_executeOnAllInputBuffer)
+(benchmark::State &state) {
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)],
                                 std::default_delete<uint8_t[]>());
   new (data.get()) exData{1, 2};
-  for (size_t i = 0; i < numTasks; ++i)
+
+  for (auto _ : state) {
     shad::rt::executeOnAll(testFunctionExecuteAtInputBuffer, data,
                            sizeof(data));
+  }
 }
 
-namespace shad {
-
-int main(int argc, char *argv[]) {
-  const size_t numTasks = 10000;
-
-  // Avoid cold start...
-  for (int i = 0; i < 15; i++) {
-    auto executeAtTime = measure<>::duration(test_executeAt, numTasks);
-    auto executeAtWithRetTime =
-        measure<>::duration(test_executeAtWithRet, numTasks);
-    auto executeAtWithRetBuffTime =
-        measure<>::duration(test_executeAtWithRetBuff, numTasks);
-    auto executeAtInputBufferTime =
-        measure<>::duration(test_executeAtInputBuffer, numTasks);
-    auto executeAtWithRetInputBufferTime =
-        measure<>::duration(test_executeAtWithRetInputBuffer, numTasks);
-    auto executeAtWithRetBuffInputBufferTime =
-        measure<>::duration(test_executeAtWithRetBuffInputBuffer, numTasks);
-    auto executeOnAllTime = measure<>::duration(test_executeOnAll, numTasks);
-    auto executeOnAllInputBufferTime =
-        measure<>::duration(test_executeOnAllInputBuffer, numTasks);
-  }
-
-  for (int i = 0; i < 100; i++) {
-    auto executeAtTime = measure<>::duration(test_executeAt, numTasks);
-    auto executeAtWithRetTime =
-        measure<>::duration(test_executeAtWithRet, numTasks);
-    auto executeAtWithRetBuffTime =
-        measure<>::duration(test_executeAtWithRetBuff, numTasks);
-    auto executeAtInputBufferTime =
-        measure<>::duration(test_executeAtInputBuffer, numTasks);
-    auto executeAtWithRetInputBufferTime =
-        measure<>::duration(test_executeAtWithRetInputBuffer, numTasks);
-    auto executeAtWithRetBuffInputBufferTime =
-        measure<>::duration(test_executeAtWithRetBuffInputBuffer, numTasks);
-    auto executeOnAllTime = measure<>::duration(test_executeOnAll, numTasks);
-    auto executeOnAllInputBufferTime =
-        measure<>::duration(test_executeOnAllInputBuffer, numTasks);
-
-    std::cout << i << " " << executeAtTime.count() << " "
-              << executeAtWithRetTime.count() << " "
-              << executeAtWithRetBuffTime.count() << " "
-              << executeAtInputBufferTime.count() << " "
-              << executeAtWithRetInputBufferTime.count() << " "
-              << executeAtWithRetBuffInputBufferTime.count() << " "
-              << executeOnAllTime.count() << " "
-              << executeOnAllInputBufferTime.count() << std::endl;
-  }
-
-  return 0;
-}
-}  // namespace shad
+BENCHMARK_MAIN();

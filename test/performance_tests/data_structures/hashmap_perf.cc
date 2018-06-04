@@ -31,6 +31,8 @@
 #include <thread>
 #include <unordered_map>
 
+#include <benchmark/benchmark.h>
+
 #include "shad/data_structures/hashmap.h"
 #include "shad/runtime/runtime.h"
 #include "shad/util/measure.h"
@@ -45,7 +47,155 @@ static double secUnit = 1000000;
 static MapT::SharedPtr mapPtr_;
 static std::unordered_map<int, int> stdmap_;
 
-void testInit(int argc, char *argv[]) {
+/**
+ * Create a Google Benchmark test fixture for data initialization.
+ */
+class TestFixture : public ::benchmark::Fixture {
+ public:
+  /**
+   * Executes before each test function.
+   */
+  void SetUp(benchmark::State &state) override {
+    auto ptr = MapT::Create(MAP_SIZE);
+    struct Args {
+      MapT::ObjectID oid1;
+      size_t as;
+    };
+    auto propagateLambda = [](const Args &args) {
+      MAP_SIZE = args.as;
+      mapPtr_ = MapT::GetPtr(args.oid1);
+    };
+    Args args = {ptr->GetGlobalID(), MAP_SIZE};
+    shad::rt::executeOnAll(propagateLambda, args);
+  }
+
+  /**
+   * Executes after each test function.
+   */
+  void TearDown(benchmark::State &state) override {
+    MapT::Destroy(mapPtr_->GetGlobalID());
+  }
+};
+
+bool fake;
+
+BENCHMARK_F(TestFixture, test_RawMap)(benchmark::State &state) {
+  for (auto _ : state) {
+    for (size_t i = 0; i < MAP_SIZE; i++) {
+      stdmap_[i] = i;
+    }
+  }
+}
+
+BENCHMARK_F(TestFixture, test_ParallelAsyncRawMap)(benchmark::State &state) {
+  auto feLambda = [](shad::rt::Handle &, const bool &, size_t i) {
+    stdmap_[i] = i;
+  };
+
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(), feLambda, fake,
+                             MAP_SIZE);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_SerialInsert)(benchmark::State &state) {
+  for (auto _ : state) {
+    for (size_t i = 0; i < MAP_SIZE; i++) {
+      mapPtr_->Insert(i, i);
+    }
+  }
+}
+
+void applyFun(const int &key, int &elem) { elem = key; }
+
+BENCHMARK_F(TestFixture, test_AsyncInsert)(benchmark::State &state) {
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    for (size_t i = 0; i < MAP_SIZE; i++) {
+      mapPtr_->AsyncInsert(handle, i, i);
+    }
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_ParallelAsyncInsert)(benchmark::State &state) {
+  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
+    mapPtr_->AsyncInsert(handle, i, i);
+  };
+
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, MAP_SIZE);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedInsert)
+(benchmark::State &state) {
+  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
+    mapPtr_->BufferedAsyncInsert(handle, i, i);
+  };
+
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, MAP_SIZE);
+    shad::rt::waitForCompletion(handle);
+    mapPtr_->WaitForBufferedInsert();
+  }
+}
+
+BENCHMARK_F(TestFixture, test_AsyncBufferedInsert)(benchmark::State &state) {
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    for (size_t i = 0; i < MAP_SIZE; i++) {
+      mapPtr_->BufferedAsyncInsert(handle, i, i);
+    }
+    shad::rt::waitForCompletion(handle);
+    mapPtr_->WaitForBufferedInsert();
+  }
+}
+
+static void asyncApplyFun(shad::rt::Handle &, const int &key, int &elem) {
+  elem = key;
+}
+
+static void asyncFEfun(shad::rt::Handle &, const int &key) {
+  // do nothing
+}
+
+BENCHMARK_F(TestFixture, test_AsyncUpdateWithApply)(benchmark::State &state) {
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    for (size_t i = 0; i < MAP_SIZE; i++) {
+      mapPtr_->AsyncApply(handle, i, asyncApplyFun);
+    }
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_AsyncUpdateWithFE)(benchmark::State &state) {
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    mapPtr_->AsyncForEachEntry(handle, asyncApplyFun);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_AsyncFEKey)(benchmark::State &state) {
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    mapPtr_->AsyncForEachKey(handle, asyncFEfun);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+/**
+ * Custom main() instead of calling BENCHMARK_MAIN()
+ */
+int main(int argc, char **argv) {
+  // Parse command line args
   for (size_t argIndex = 1; argIndex < argc - 1; argIndex++) {
     std::string arg(argv[argIndex]);
     if (arg == "--Size") {
@@ -62,214 +212,7 @@ void testInit(int argc, char *argv[]) {
   std::cout << "\n MAP_SIZE: " << MAP_SIZE << std::endl;
   std::cout << "\n NUM_ITER: " << NUM_ITER << std::endl;
   std::cout << std::endl;
-  auto ptr = MapT::Create(MAP_SIZE);
-  struct Args {
-    MapT::ObjectID oid1;
-    size_t as;
-  };
-  auto propagateLambda = [](const Args &args) {
-    MAP_SIZE = args.as;
-    mapPtr_ = MapT::GetPtr(args.oid1);
-  };
-  Args args = {ptr->GetGlobalID(), MAP_SIZE};
-  shad::rt::executeOnAll(propagateLambda, args);
+
+  ::benchmark::Initialize(&argc, argv);
+  ::benchmark::RunSpecifiedBenchmarks();
 }
-
-void testFinalize() { MapT::Destroy(mapPtr_->GetGlobalID()); }
-
-bool fake;
-
-void test_RawMap() {
-  for (size_t i = 0; i < MAP_SIZE; i++) {
-    stdmap_[i] = i;
-  }
-}
-
-void test_ParallelAsyncRawMap() {
-  auto feLambda = [](shad::rt::Handle &, const bool &, size_t i) {
-    stdmap_[i] = i;
-  };
-  shad::rt::Handle handle;
-  shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(), feLambda, fake,
-                           MAP_SIZE);
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_SerialInsert() {
-  for (size_t i = 0; i < MAP_SIZE; i++) {
-    mapPtr_->Insert(i, i);
-  }
-}
-
-void applyFun(const int &key, int &elem) { elem = key; }
-
-void test_AsyncInsert() {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < MAP_SIZE; i++) {
-    mapPtr_->AsyncInsert(handle, i, i);
-  }
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_ParallelAsyncInsert() {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
-    mapPtr_->AsyncInsert(handle, i, i);
-  };
-  shad::rt::Handle handle;
-  shad::rt::asyncForEachOnAll(handle, feLambda, fake, MAP_SIZE);
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_ParallelAsyncBufferedInsert() {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
-    mapPtr_->BufferedAsyncInsert(handle, i, i);
-  };
-  shad::rt::Handle handle;
-  shad::rt::asyncForEachOnAll(handle, feLambda, fake, MAP_SIZE);
-  shad::rt::waitForCompletion(handle);
-  mapPtr_->WaitForBufferedInsert();
-}
-
-void test_AsyncBufferedInsert() {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < MAP_SIZE; i++) {
-    mapPtr_->BufferedAsyncInsert(handle, i, i);
-  }
-  shad::rt::waitForCompletion(handle);
-  mapPtr_->WaitForBufferedInsert();
-}
-
-static void asyncApplyFun(shad::rt::Handle &, const int &key, int &elem) {
-  elem = key;
-}
-
-static void asyncFEfun(shad::rt::Handle &, const int &key) {
-  // do nothing
-}
-
-void test_AsyncUpdateWithApply() {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < MAP_SIZE; i++) {
-    mapPtr_->AsyncApply(handle, i, asyncApplyFun);
-  }
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_AsyncUpdateWithFE() {
-  shad::rt::Handle handle;
-  mapPtr_->AsyncForEachEntry(handle, asyncApplyFun);
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_AsyncFEKey() {
-  shad::rt::Handle handle;
-  mapPtr_->AsyncForEachKey(handle, asyncFEfun);
-  shad::rt::waitForCompletion(handle);
-}
-
-void printResults(std::string funName, double time, size_t size) {
-  std::cout << "\n\n*** " << funName << " ***\n---Time: " << time
-            << " secs\n---Throughput: " << (double)size / time << " ops/sec"
-            << std::endl;
-}
-
-namespace shad {
-
-int main(int argc, char *argv[]) {
-  testInit(argc, argv);
-
-  std::ofstream resFile;
-  resFile.open(FILE_NAME);
-
-  size_t RawMapMeasureTot = 0;
-  size_t ParallelAsyncRawMapMeasureTot = 0;
-  size_t SerialInsertMeasureTot = 0;
-  size_t AsyncInsertSecTot = 0;
-  size_t ParallelAsyncInsertSecTot = 0;
-  size_t AsyncBufferedInsertMeasureTot = 0;
-  size_t AsyncUpdateWithFEMeasureTot = 0;
-  size_t AsyncFEkeyMeasureTot = 0;
-
-  size_t RawMapMeasure = 0;
-  size_t ParallelAsyncRawMapMeasure = 0;
-  size_t SerialInsertMeasure = 0;
-  size_t AsyncInsertSec = 0;
-  size_t ParallelAsyncInsertSec = 0;
-  size_t AsyncBufferedInsertMeasure = 0;
-  size_t AsyncUpdateWithFEMeasure = 0;
-  size_t AsyncFEkeyMeasure = 0;
-
-  size_t i = 0;
-  stdmap_ = std::unordered_map<int, int>();
-  for (; i < NUM_ITER; i++) {
-    if (shad::rt::numLocalities() == 1) {
-      RawMapMeasure = measure<unit>::duration(test_RawMap).count();
-
-      ParallelAsyncRawMapMeasure =
-          measure<unit>::duration(test_ParallelAsyncRawMap).count();
-      stdmap_.clear();
-
-      SerialInsertMeasure = measure<unit>::duration(test_SerialInsert).count();
-      stdmap_.clear();
-    }
-
-    AsyncInsertSec = measure<unit>::duration(test_AsyncInsert).count();
-    mapPtr_->Clear();
-
-    ParallelAsyncInsertSec =
-        measure<unit>::duration(test_ParallelAsyncInsert).count();
-    mapPtr_->Clear();
-
-    AsyncBufferedInsertMeasure =
-        measure<unit>::duration(test_ParallelAsyncBufferedInsert).count();
-
-    std::cout << "Size: " << mapPtr_->Size() << std::endl;
-    AsyncUpdateWithFEMeasure =
-        measure<unit>::duration(test_AsyncUpdateWithFE).count();
-
-    AsyncFEkeyMeasure = measure<unit>::duration(test_AsyncFEKey).count();
-
-    RawMapMeasureTot += RawMapMeasure;
-    ParallelAsyncRawMapMeasureTot += ParallelAsyncRawMapMeasure;
-    SerialInsertMeasureTot += SerialInsertMeasure;
-    AsyncInsertSecTot += AsyncInsertSec;
-    ParallelAsyncInsertSecTot += ParallelAsyncInsertSec;
-    AsyncBufferedInsertMeasureTot += AsyncBufferedInsertMeasure;
-    AsyncUpdateWithFEMeasureTot += AsyncUpdateWithFEMeasure;
-    AsyncFEkeyMeasureTot += AsyncFEkeyMeasure;
-
-    resFile << i << " " << RawMapMeasure << " " << ParallelAsyncRawMapMeasure
-            << " " << SerialInsertMeasure << " " << AsyncInsertSec << " "
-            << ParallelAsyncInsertSec << " " << AsyncBufferedInsertMeasure
-            << " " << AsyncUpdateWithFEMeasure << " " << AsyncFEkeyMeasure
-            << " " << std::endl;
-  }
-  resFile << i << " " << RawMapMeasureTot << " "
-          << ParallelAsyncRawMapMeasureTot << " " << SerialInsertMeasureTot
-          << " " << AsyncInsertSecTot << " " << ParallelAsyncInsertSecTot << " "
-          << AsyncBufferedInsertMeasureTot << " " << AsyncUpdateWithFEMeasureTot
-          << " " << AsyncFEkeyMeasure << " " << std::endl;
-
-  std::cout << "\n\n----AVERAGE RESULTS----\n";
-  size_t numElements = MAP_SIZE * NUM_ITER;
-  printResults("STL-Map Serial Insert", RawMapMeasureTot / secUnit,
-               numElements);
-  printResults("STL-Map Parallel Async Update",
-               ParallelAsyncRawMapMeasureTot / secUnit, numElements);
-  printResults("Serial Update", SerialInsertMeasureTot / secUnit, numElements);
-  printResults("Async Update", AsyncInsertSecTot / secUnit, numElements);
-  printResults("Parallel Async Update", ParallelAsyncInsertSecTot / secUnit,
-               numElements);
-  printResults("Async Buffered Update", AsyncBufferedInsertMeasureTot / secUnit,
-               numElements);
-  printResults("Async For Each Update", AsyncUpdateWithFEMeasureTot / secUnit,
-               numElements);
-  printResults("Async For Each Key", AsyncFEkeyMeasureTot / secUnit,
-               numElements);
-
-  resFile.close();
-  testFinalize();
-
-  return 0;
-}
-}  // namespace shad

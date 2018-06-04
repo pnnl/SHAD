@@ -30,21 +30,162 @@
 #include <random>
 #include <thread>
 
+#include <benchmark/benchmark.h>
+
 #include "shad/data_structures/vector.h"
 #include "shad/runtime/runtime.h"
 #include "shad/util/measure.h"
+
+using VectorT = shad::Vector<int>;
 
 static size_t VECTOR_SIZE = 100000;
 static size_t NUM_ITER = 20;
 static std::string FILE_NAME = "results_vector_perf.txt";
 
-using VectorT = shad::Vector<int>;
-using unit = std::chrono::microseconds;
-static double secUnit = 1000000;
 static shad::AbstractDataStructure<VectorT>::SharedPtr vectorPtr_;
 static std::vector<int> stdvector_;
 
-void testInit(int argc, char *argv[]) {
+/**
+ * Create a Google Benchmark test fixture for data initialization.
+ */
+class TestFixture : public ::benchmark::Fixture {
+ public:
+  /**
+   * Executes before each test function.
+   */
+  void SetUp(benchmark::State& state) override {
+    stdvector_ = std::vector<int>(VECTOR_SIZE, 0);
+
+    auto ptr = VectorT::Create(VECTOR_SIZE);
+    struct Args {
+      VectorT::ObjectID oid1;
+    };
+    auto propagateLambda = [](const Args& args) {
+      vectorPtr_ = VectorT::GetPtr(args.oid1);
+    };
+    Args args = {ptr->GetGlobalID()};
+    shad::rt::executeOnAll(propagateLambda, args);
+  }
+
+  /**
+   * Executes after each test function.
+   */
+  void TearDown(benchmark::State& state) override {
+    VectorT::Destroy(vectorPtr_->GetGlobalID());
+  }
+};
+
+BENCHMARK_F(TestFixture, test_RawVector)(benchmark::State& state) {
+  for (auto _ : state) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
+      stdvector_[i] = i;
+    }
+  }
+}
+
+BENCHMARK_F(TestFixture, test_ParallelAsyncRawVector)(benchmark::State& state) {
+  auto feLambda = [](shad::rt::Handle&, const bool&, std::size_t i) {
+    stdvector_[i] = i;
+  };
+  shad::rt::Handle handle;
+  bool fake = 0;
+
+  for (auto _ : state) {
+    shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(), feLambda, fake,
+                             VECTOR_SIZE);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_SerialUpdate)(benchmark::State& state) {
+  for (auto _ : state) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
+      vectorPtr_->InsertAt(i, i);
+    }
+  }
+}
+
+BENCHMARK_F(TestFixture, test_AsyncUpdate)(benchmark::State& state) {
+  shad::rt::Handle handle;
+
+  for (auto _ : state) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
+      vectorPtr_->AsyncInsertAt(handle, i, i);
+    }
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_ParallelAsyncUpdate)(benchmark::State& state) {
+  auto feLambda = [](shad::rt::Handle& handle, const bool&, std::size_t i) {
+    vectorPtr_->AsyncInsertAt(handle, i, i);
+  };
+  shad::rt::Handle handle;
+  bool fake = 0;
+
+  for (auto _ : state) {
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, VECTOR_SIZE);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedUpdate)
+(benchmark::State& state) {
+  auto feLambda = [](shad::rt::Handle& handle, const bool&, std::size_t i) {
+    vectorPtr_->BufferedAsyncInsertAt(handle, i, i);
+  };
+  shad::rt::Handle handle;
+  bool fake = 0;
+
+  for (auto _ : state) {
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, VECTOR_SIZE);
+    shad::rt::waitForCompletion(handle);
+    vectorPtr_->WaitForBufferedInsert();
+  }
+}
+
+BENCHMARK_F(TestFixture, test_AsyncBufferedUpdate)(benchmark::State& state) {
+  shad::rt::Handle handle;
+
+  for (auto _ : state) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
+      vectorPtr_->BufferedAsyncInsertAt(handle, i, i);
+    }
+    shad::rt::waitForCompletion(handle);
+    vectorPtr_->WaitForBufferedInsert();
+  }
+}
+
+static void asyncApplyFun(shad::rt::Handle&, shad::Vector<int>::size_type i,
+                          int& elem) {
+  elem = i;
+}
+
+BENCHMARK_F(TestFixture, test_AsyncUpdateWithApply)(benchmark::State& state) {
+  shad::rt::Handle handle;
+
+  for (auto _ : state) {
+    for (std::size_t i = 0; i < VECTOR_SIZE; i++) {
+      vectorPtr_->AsyncApply(handle, i, asyncApplyFun);
+    }
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_AsyncUpdateWithFE)(benchmark::State& state) {
+  shad::rt::Handle handle;
+
+  for (auto _ : state) {
+    vectorPtr_->AsyncForEachInRange(handle, 0, VECTOR_SIZE, asyncApplyFun);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+/**
+ * Custom main() instead of calling BENCHMARK_MAIN()
+ */
+int main(int argc, char** argv) {
+  // Parse command line args
   for (size_t argIndex = 1; argIndex < argc - 1; argIndex++) {
     std::string arg(argv[argIndex]);
     if (arg == "--Size") {
@@ -61,193 +202,7 @@ void testInit(int argc, char *argv[]) {
   std::cout << "\n VECTOR_SIZE: " << VECTOR_SIZE << std::endl;
   std::cout << "\n NUM_ITER: " << NUM_ITER << std::endl;
   std::cout << std::endl;
-  auto ptr = VectorT::Create(VECTOR_SIZE);
-  struct Args {
-    VectorT::ObjectID oid1;
-    size_t as;
-  };
-  auto propagateLambda = [](const Args &args) {
-    VECTOR_SIZE = args.as;
-    vectorPtr_ = VectorT::GetPtr(args.oid1);
-  };
-  Args args = {ptr->GetGlobalID(), VECTOR_SIZE};
-  shad::rt::executeOnAll(propagateLambda, args);
+
+  ::benchmark::Initialize(&argc, argv);
+  ::benchmark::RunSpecifiedBenchmarks();
 }
-
-void testFinalize() { VectorT::Destroy(vectorPtr_->GetGlobalID()); }
-
-void test_RawVector() {
-  for (size_t i = 0; i < VECTOR_SIZE; i++) {
-    stdvector_[i] = i;
-  }
-}
-
-void test_ParallelAsyncRawVector() {
-  auto feLambda = [](shad::rt::Handle &, const bool &, size_t i) {
-    stdvector_[i] = i;
-  };
-  shad::rt::Handle handle;
-  bool fake = 0;
-  shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(), feLambda, fake,
-                           VECTOR_SIZE);
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_SerialUpdate() {
-  for (size_t i = 0; i < VECTOR_SIZE; i++) {
-    vectorPtr_->InsertAt(i, i);
-  }
-}
-
-void applyFun(size_t i, int &elem) { elem = i; }
-
-void test_AsyncUpdate() {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < VECTOR_SIZE; i++) {
-    vectorPtr_->AsyncInsertAt(handle, i, i);
-  }
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_ParallelAsyncUpdate() {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
-    vectorPtr_->AsyncInsertAt(handle, i, i);
-  };
-  shad::rt::Handle handle;
-  bool fake = 0;
-  shad::rt::asyncForEachOnAll(handle, feLambda, fake, VECTOR_SIZE);
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_ParallelAsyncBufferedUpdate() {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
-    vectorPtr_->BufferedAsyncInsertAt(handle, i, i);
-  };
-  shad::rt::Handle handle;
-  bool fake = 0;
-  shad::rt::asyncForEachOnAll(handle, feLambda, fake, VECTOR_SIZE);
-  shad::rt::waitForCompletion(handle);
-  vectorPtr_->WaitForBufferedInsert();
-}
-
-void test_AsyncBufferedUpdate() {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < VECTOR_SIZE; i++) {
-    vectorPtr_->BufferedAsyncInsertAt(handle, i, i);
-  }
-  shad::rt::waitForCompletion(handle);
-  vectorPtr_->WaitForBufferedInsert();
-}
-
-static void asyncApplyFun(shad::rt::Handle &, shad::Vector<int>::size_type i,
-                          int &elem) {
-  elem = i;
-}
-void test_AsyncUpdateWithApply() {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < VECTOR_SIZE; i++) {
-    vectorPtr_->AsyncApply(handle, i, asyncApplyFun);
-  }
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_AsyncUpdateWithFE() {
-  shad::rt::Handle handle;
-  vectorPtr_->AsyncForEachInRange(handle, 0, VECTOR_SIZE, asyncApplyFun);
-  shad::rt::waitForCompletion(handle);
-}
-
-void printResults(std::string funName, double time, size_t size) {
-  std::cout << "\n\n*** " << funName << " ***\n---Time: " << time
-            << " secs\n---Throughput: " << (double)size / time << " ops/sec"
-            << std::endl;
-}
-
-namespace shad {
-
-int main(int argc, char *argv[]) {
-  testInit(argc, argv);
-
-  std::ofstream resFile;
-  resFile.open(FILE_NAME);
-
-  size_t RawVectorMeasureTot = 0;
-  size_t ParallelAsyncRawVectorMeasureTot = 0;
-  size_t SerialUpdateMeasureTot = 0;
-  size_t AsyncUpdateSecTot = 0;
-  size_t ParallelAsyncUpdateSecTot = 0;
-  size_t AsyncBufferedUpdateMeasureTot = 0;
-  size_t AsyncUpdateWithFEMeasureTot = 0;
-
-  size_t RawVectorMeasure = 0;
-  size_t ParallelAsyncRawVectorMeasure = 0;
-  size_t SerialUpdateMeasure = 0;
-  size_t AsyncUpdateSec = 0;
-  size_t ParallelAsyncUpdateSec = 0;
-  size_t AsyncBufferedUpdateMeasure = 0;
-  size_t AsyncUpdateWithFEMeasure = 0;
-
-  size_t i = 0;
-  stdvector_ = std::vector<int>(VECTOR_SIZE, 0);
-  for (; i < NUM_ITER; i++) {
-    if (shad::rt::numLocalities() == 1) {
-      RawVectorMeasure = measure<unit>::duration(test_RawVector).count();
-
-      ParallelAsyncRawVectorMeasure =
-          measure<unit>::duration(test_ParallelAsyncRawVector).count();
-
-      SerialUpdateMeasure = measure<unit>::duration(test_SerialUpdate).count();
-    }
-
-    AsyncUpdateSec = measure<unit>::duration(test_AsyncUpdate).count();
-
-    ParallelAsyncUpdateSec =
-        measure<unit>::duration(test_ParallelAsyncUpdate).count();
-
-    AsyncBufferedUpdateMeasure =
-        measure<unit>::duration(test_AsyncBufferedUpdate).count();
-
-    AsyncUpdateWithFEMeasure =
-        measure<unit>::duration(test_AsyncUpdateWithFE).count();
-
-    RawVectorMeasureTot += RawVectorMeasure;
-    ParallelAsyncRawVectorMeasureTot += ParallelAsyncRawVectorMeasure;
-    SerialUpdateMeasureTot += SerialUpdateMeasure;
-    AsyncUpdateSecTot += AsyncUpdateSec;
-    ParallelAsyncUpdateSecTot += ParallelAsyncUpdateSec;
-    AsyncBufferedUpdateMeasureTot += AsyncBufferedUpdateMeasure;
-    AsyncUpdateWithFEMeasureTot += AsyncUpdateWithFEMeasure;
-
-    resFile << i << " " << RawVectorMeasure << " "
-            << ParallelAsyncRawVectorMeasure << " " << SerialUpdateMeasure
-            << " " << AsyncUpdateSec << " " << ParallelAsyncUpdateSec << " "
-            << AsyncBufferedUpdateMeasure << " " << AsyncUpdateWithFEMeasure
-            << " " << std::endl;
-  }
-  resFile << i << " " << RawVectorMeasureTot << " "
-          << ParallelAsyncRawVectorMeasureTot << " " << SerialUpdateMeasureTot
-          << " " << AsyncUpdateSecTot << " " << ParallelAsyncUpdateSecTot << " "
-          << AsyncBufferedUpdateMeasureTot << " " << AsyncUpdateWithFEMeasureTot
-          << " " << std::endl;
-
-  std::cout << "\n\n----AVERAGE RESULTS----\n";
-  size_t numElements = VECTOR_SIZE * NUM_ITER;
-  printResults("C-Vector Serial Update", RawVectorMeasureTot / secUnit,
-               numElements);
-  printResults("C-Vector Parallel Async Update",
-               ParallelAsyncRawVectorMeasureTot / secUnit, numElements);
-  printResults("Serial Update", SerialUpdateMeasureTot / secUnit, numElements);
-  printResults("Async Update", AsyncUpdateSecTot / secUnit, numElements);
-  printResults("Parallel Async Update", ParallelAsyncUpdateSecTot / secUnit,
-               numElements);
-  printResults("Async Buffered Update", AsyncBufferedUpdateMeasureTot / secUnit,
-               numElements);
-  printResults("Async For Each Update", AsyncUpdateWithFEMeasureTot / secUnit,
-               numElements);
-
-  resFile.close();
-  testFinalize();
-
-  return 0;
-}
-}  // namespace shad

@@ -29,6 +29,8 @@
 #include <random>
 #include <thread>
 
+#include <benchmark/benchmark.h>
+
 #include "shad/runtime/runtime.h"
 #include "shad/util/measure.h"
 
@@ -38,86 +40,74 @@ struct exData {
   char c[4000];
 };
 
-void testFunctionForEachAt(const exData &data, size_t i) {
+/**
+ * Create a Google Benchmark test fixture for data initialization.
+ */
+class TestFixture : public ::benchmark::Fixture {
+ public:
+  /**
+   * Executes before each test function.
+   */
+  void SetUp(benchmark::State& state) override {}
+
+  /**
+   * Executes after each test function.
+   */
+  void TearDown(benchmark::State& state) override {}
+};
+
+void testFunctionForEachAt(const exData& data, size_t i) {
   globalCounter += data.c[0] + data.c[1];
 }
 
-void test_forEachAt(size_t numTasks, size_t numIteration) {
+BENCHMARK_F(TestFixture, test_forEachAt)(benchmark::State& state) {
   exData data{"hello"};
+  int i = 0;
 
-  for (size_t i = 0; i < numTasks; ++i)
-    shad::rt::forEachAt(shad::rt::Locality(i % shad::rt::numLocalities()),
-                        testFunctionForEachAt, data, numIteration);
+  for (auto _ : state) {
+    shad::rt::forEachAt(shad::rt::Locality(i++ % shad::rt::numLocalities()),
+                        testFunctionForEachAt, data, state.iterations());
+  }
 }
 
-void testFunctionForEachAtInputBuffer(const uint8_t *data, const uint32_t size,
+void testFunctionForEachAtInputBuffer(const uint8_t* data, const uint32_t size,
                                       size_t i) {
   globalCounter += data[0] + data[1];
 }
 
-void test_forEachAtInputBuffer(size_t numTasks, size_t numIteration) {
+BENCHMARK_F(TestFixture, test_forEachAtInputBuffer)(benchmark::State& state) {
   exData value{1, 2};
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)],
                                 std::default_delete<uint8_t[]>());
   std::memcpy(data.get(), &value, sizeof(exData));
+  int i = 0;
 
-  for (size_t i = 0; i < numTasks; ++i)
-    shad::rt::forEachAt(shad::rt::Locality(i % shad::rt::numLocalities()),
+  for (auto _ : state) {
+    shad::rt::forEachAt(shad::rt::Locality(i++ % shad::rt::numLocalities()),
                         testFunctionForEachAtInputBuffer, data, sizeof(data),
-                        numIteration);
+                        state.iterations());
+  }
 }
 
-void test_forEachOnAll(size_t numTasks, size_t numIteration) {
+BENCHMARK_F(TestFixture, test_forEachOnAll)(benchmark::State& state) {
   exData data{"hello"};
 
-  for (size_t i = 0; i < numTasks; ++i)
-    shad::rt::forEachOnAll(testFunctionForEachAt, data, numIteration);
+  for (auto _ : state) {
+    shad::rt::forEachOnAll(testFunctionForEachAt, data, state.iterations());
+  }
 }
 
-void test_forEachOnAllInputBuffer(size_t numTasks, size_t numIteration) {
+BENCHMARK_F(TestFixture, test_forEachOnAllInputBuffer)
+(benchmark::State& state) {
   exData value{1, 2};
   std::shared_ptr<uint8_t> data(new uint8_t[sizeof(exData)],
                                 std::default_delete<uint8_t[]>());
   std::memcpy(data.get(), &value, sizeof(exData));
 
-  for (size_t i = 0; i < numTasks; ++i)
+  for (auto _ : state) {
     shad::rt::forEachOnAll(testFunctionForEachAtInputBuffer, data, sizeof(data),
-                           numIteration);
+                           state.iterations());
+  }
 }
 
-namespace shad {
-
-int main(int argc, char *argv[]) {
-  const size_t numTasks = 1000;
-  const size_t loopIterations = 1000;
-
-  for (int i = 0; i < 15; i++) {
-    auto ForEachAtTime =
-        measure<>::duration(test_forEachAt, numTasks, loopIterations);
-    auto ForEachAtInputBufferTime = measure<>::duration(
-        test_forEachAtInputBuffer, numTasks, loopIterations);
-    auto ForEachOnAllTime =
-        measure<>::duration(test_forEachOnAll, numTasks, loopIterations);
-    auto ForEachOnAllInputBufferTime = measure<>::duration(
-        test_forEachOnAllInputBuffer, numTasks, loopIterations);
-  }
-
-  for (int i = 0; i < 100; i++) {
-    auto ForEachAtTime =
-        measure<>::duration(test_forEachAt, numTasks, loopIterations);
-    auto ForEachAtInputBufferTime = measure<>::duration(
-        test_forEachAtInputBuffer, numTasks, loopIterations);
-    auto ForEachOnAllTime =
-        measure<>::duration(test_forEachOnAll, numTasks, loopIterations);
-    auto ForEachOnAllInputBufferTime = measure<>::duration(
-        test_forEachOnAllInputBuffer, numTasks, loopIterations);
-
-    std::cout << i << " " << ForEachAtTime.count() << " "
-              << ForEachAtInputBufferTime.count() << " "
-              << ForEachOnAllTime.count() << " "
-              << ForEachOnAllInputBufferTime.count() << std::endl;
-  }
-
-  return 0;
-}
-}  // namespace shad
+BENCHMARK_MAIN();

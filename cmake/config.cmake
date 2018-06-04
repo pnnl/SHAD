@@ -125,6 +125,11 @@ if (SHAD_ENABLE_UNIT_TEST)
   find_package(GTest REQUIRED)
 endif()
 
+if (SHAD_ENABLE_PERFORMANCE_TEST)
+  find_package(benchmark REQUIRED)
+  find_package(Threads REQUIRED)
+endif()
+
 # tools:
 include(CheckClangTools)
 if (SHAD_ENABLE_UNIT_TEST OR SHAD_ENABLE_PERFORMANCE_TEST)

@@ -31,6 +31,8 @@
 #include <thread>
 #include <unordered_set>
 
+#include <benchmark/benchmark.h>
+
 #include "shad/data_structures/set.h"
 #include "shad/runtime/runtime.h"
 #include "shad/util/measure.h"
@@ -45,7 +47,136 @@ static double secUnit = 1000000;
 static SetT::SharedPtr setPtr_;
 static std::unordered_set<int> stdset_;
 
-void testInit(int argc, char *argv[]) {
+/**
+ * Create a Google Benchmark test fixture for data initialization.
+ */
+class TestFixture : public ::benchmark::Fixture {
+ public:
+  /**
+   * Executes before each test function.
+   */
+  void SetUp(benchmark::State& state) override {
+    auto ptr = SetT::Create(SET_SIZE);
+    struct Args {
+      SetT::ObjectID oid1;
+      size_t as;
+    };
+    auto propagateLambda = [](const Args& args) {
+      SET_SIZE = args.as;
+      setPtr_ = SetT::GetPtr(args.oid1);
+    };
+    Args args = {ptr->GetGlobalID(), SET_SIZE};
+    shad::rt::executeOnAll(propagateLambda, args);
+  }
+
+  /**
+   * Executes after each test function.
+   */
+  void TearDown(benchmark::State& state) override {
+    SetT::Destroy(setPtr_->GetGlobalID());
+  }
+
+  std::size_t vectorSize_;
+  std::size_t numIter_;
+};
+
+bool fake;
+
+BENCHMARK_F(TestFixture, test_RawSet)(benchmark::State& state) {
+  for (auto _ : state) {
+    for (size_t i = 0; i < SET_SIZE; i++) {
+      stdset_.insert(i);
+    }
+  }
+}
+
+// BENCHMARK_F(TestFixture, test_ParallelAsyncRawSet() {
+//   auto feLambda = [] (shad::rt::Handle&,
+//                       const bool&, size_t i) {
+//     stdset_[i] = i;
+//   };
+//   shad::rt::Handle handle;
+//   shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(),
+//                            feLambda, fake, SET_SIZE);
+//   shad::rt::waitForCompletion(handle);
+// }
+
+BENCHMARK_F(TestFixture, test_SerialInsert)(benchmark::State& state) {
+  for (auto _ : state) {
+    for (size_t i = 0; i < SET_SIZE; i++) {
+      setPtr_->Insert(i);
+    }
+  }
+}
+
+// void applyFun(const int &key, int& elem) {
+//   elem = key;
+// }
+
+BENCHMARK_F(TestFixture, test_AsyncInsert)(benchmark::State& state) {
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    for (size_t i = 0; i < SET_SIZE; i++) {
+      setPtr_->AsyncInsert(handle, i);
+    }
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_ParallelAsyncInsert)(benchmark::State& state) {
+  auto feLambda = [](shad::rt::Handle& handle, const bool&, size_t i) {
+    setPtr_->AsyncInsert(handle, i);
+  };
+
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, SET_SIZE);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+BENCHMARK_F(TestFixture, test_ParallelAsyncBufferedInsert)
+(benchmark::State& state) {
+  auto feLambda = [](shad::rt::Handle& handle, const bool&, size_t i) {
+    setPtr_->BufferedAsyncInsert(handle, i);
+  };
+
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    shad::rt::asyncForEachOnAll(handle, feLambda, fake, SET_SIZE);
+    shad::rt::waitForCompletion(handle);
+    setPtr_->WaitForBufferedInsert();
+  }
+}
+
+BENCHMARK_F(TestFixture, test_AsyncBufferedInsert)(benchmark::State& state) {
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    for (size_t i = 0; i < SET_SIZE; i++) {
+      setPtr_->BufferedAsyncInsert(handle, i);
+    }
+    shad::rt::waitForCompletion(handle);
+    setPtr_->WaitForBufferedInsert();
+  }
+}
+
+static void asyncApplyFun(shad::rt::Handle&, const int& key) {
+  // do nothing
+}
+
+BENCHMARK_F(TestFixture, test_AsyncVisitWithFE)(benchmark::State& state) {
+  for (auto _ : state) {
+    shad::rt::Handle handle;
+    setPtr_->AsyncForEachElement(handle, asyncApplyFun);
+    shad::rt::waitForCompletion(handle);
+  }
+}
+
+/**
+ * Custom main() instead of calling BENCHMARK_MAIN()
+ */
+int main(int argc, char** argv) {
+  // Parse command line args
   for (size_t argIndex = 1; argIndex < argc - 1; argIndex++) {
     std::string arg(argv[argIndex]);
     if (arg == "--Size") {
@@ -62,188 +193,7 @@ void testInit(int argc, char *argv[]) {
   std::cout << "\n SET_SIZE: " << SET_SIZE << std::endl;
   std::cout << "\n NUM_ITER: " << NUM_ITER << std::endl;
   std::cout << std::endl;
-  auto ptr = SetT::Create(SET_SIZE);
-  struct Args {
-    SetT::ObjectID oid1;
-    size_t as;
-  };
-  auto propagateLambda = [](const Args &args) {
-    SET_SIZE = args.as;
-    setPtr_ = SetT::GetPtr(args.oid1);
-  };
-  Args args = {ptr->GetGlobalID(), SET_SIZE};
-  shad::rt::executeOnAll(propagateLambda, args);
+
+  ::benchmark::Initialize(&argc, argv);
+  ::benchmark::RunSpecifiedBenchmarks();
 }
-
-void testFinalize() { SetT::Destroy(setPtr_->GetGlobalID()); }
-
-bool fake;
-
-void test_RawSet() {
-  for (size_t i = 0; i < SET_SIZE; i++) {
-    stdset_.insert(i);
-  }
-}
-
-// void test_ParallelAsyncRawSet() {
-//   auto feLambda = [] (shad::rt::Handle&,
-//                       const bool&, size_t i) {
-//     stdset_[i] = i;
-//   };
-//   shad::rt::Handle handle;
-//   shad::rt::asyncForEachAt(handle, shad::rt::thisLocality(),
-//                            feLambda, fake, SET_SIZE);
-//   shad::rt::waitForCompletion(handle);
-// }
-
-void test_SerialInsert() {
-  for (size_t i = 0; i < SET_SIZE; i++) {
-    setPtr_->Insert(i);
-  }
-}
-
-// void applyFun(const int &key, int& elem) {
-//   elem = key;
-// }
-
-void test_AsyncInsert() {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < SET_SIZE; i++) {
-    setPtr_->AsyncInsert(handle, i);
-  }
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_ParallelAsyncInsert() {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
-    setPtr_->AsyncInsert(handle, i);
-  };
-  shad::rt::Handle handle;
-  shad::rt::asyncForEachOnAll(handle, feLambda, fake, SET_SIZE);
-  shad::rt::waitForCompletion(handle);
-}
-
-void test_ParallelAsyncBufferedInsert() {
-  auto feLambda = [](shad::rt::Handle &handle, const bool &, size_t i) {
-    setPtr_->BufferedAsyncInsert(handle, i);
-  };
-  shad::rt::Handle handle;
-  shad::rt::asyncForEachOnAll(handle, feLambda, fake, SET_SIZE);
-  shad::rt::waitForCompletion(handle);
-  setPtr_->WaitForBufferedInsert();
-}
-
-void test_AsyncBufferedInsert() {
-  shad::rt::Handle handle;
-  for (size_t i = 0; i < SET_SIZE; i++) {
-    setPtr_->BufferedAsyncInsert(handle, i);
-  }
-  shad::rt::waitForCompletion(handle);
-  setPtr_->WaitForBufferedInsert();
-}
-
-static void asyncApplyFun(shad::rt::Handle &, const int &key) {
-  // do nothing
-}
-
-void test_AsyncVisitWithFE() {
-  shad::rt::Handle handle;
-  setPtr_->AsyncForEachElement(handle, asyncApplyFun);
-  shad::rt::waitForCompletion(handle);
-}
-
-void printResults(std::string funName, double time, size_t size) {
-  std::cout << "\n\n*** " << funName << " ***\n---Time: " << time
-            << " secs\n---Throughput: " << (double)size / time << " ops/sec"
-            << std::endl;
-}
-
-namespace shad {
-
-int main(int argc, char *argv[]) {
-  testInit(argc, argv);
-
-  std::ofstream resFile;
-  resFile.open(FILE_NAME);
-
-  size_t RawSetMeasureTot = 0;
-  size_t ParallelAsyncRawSetMeasureTot = 0;
-  size_t SerialInsertMeasureTot = 0;
-  size_t AsyncInsertSecTot = 0;
-  size_t ParallelAsyncInsertSecTot = 0;
-  size_t AsyncBufferedInsertMeasureTot = 0;
-  size_t AsyncVisitWithFEMeasureTot = 0;
-
-  size_t RawSetMeasure = 0;
-  size_t ParallelAsyncRawSetMeasure = 0;
-  size_t SerialInsertMeasure = 0;
-  size_t AsyncInsertSec = 0;
-  size_t ParallelAsyncInsertSec = 0;
-  size_t AsyncBufferedInsertMeasure = 0;
-  size_t AsyncVisitWithFEMeasure = 0;
-
-  size_t i = 0;
-  stdset_ = std::unordered_set<int>();
-  for (; i < NUM_ITER; i++) {
-    if (shad::rt::numLocalities() == 1) {
-      RawSetMeasure = measure<unit>::duration(test_RawSet).count();
-
-      SerialInsertMeasure = measure<unit>::duration(test_SerialInsert).count();
-      setPtr_->Reset(SET_SIZE);
-    }
-
-    AsyncInsertSec = measure<unit>::duration(test_AsyncInsert).count();
-    setPtr_->Reset(SET_SIZE);
-
-    ParallelAsyncInsertSec =
-        measure<unit>::duration(test_ParallelAsyncInsert).count();
-    setPtr_->Reset(SET_SIZE);
-
-    AsyncBufferedInsertMeasure =
-        measure<unit>::duration(test_AsyncBufferedInsert).count();
-
-    test_AsyncVisitWithFE();
-    std::cout << "Size: " << setPtr_->Size() << std::endl;
-    AsyncVisitWithFEMeasure =
-        measure<unit>::duration(test_AsyncVisitWithFE).count();
-
-    RawSetMeasureTot += RawSetMeasure;
-    ParallelAsyncRawSetMeasureTot += ParallelAsyncRawSetMeasure;
-    SerialInsertMeasureTot += SerialInsertMeasure;
-    AsyncInsertSecTot += AsyncInsertSec;
-    ParallelAsyncInsertSecTot += ParallelAsyncInsertSec;
-    AsyncBufferedInsertMeasureTot += AsyncBufferedInsertMeasure;
-    AsyncVisitWithFEMeasureTot += AsyncVisitWithFEMeasure;
-
-    resFile << i << " " << RawSetMeasure << " " << ParallelAsyncRawSetMeasure
-            << " " << SerialInsertMeasure << " " << AsyncInsertSec << " "
-            << ParallelAsyncInsertSec << " " << AsyncBufferedInsertMeasure
-            << " " << AsyncVisitWithFEMeasure << " " << std::endl;
-  }
-  resFile << i << " " << RawSetMeasureTot << " "
-          << ParallelAsyncRawSetMeasureTot << " " << SerialInsertMeasureTot
-          << " " << AsyncInsertSecTot << " " << ParallelAsyncInsertSecTot << " "
-          << AsyncBufferedInsertMeasureTot << " " << AsyncVisitWithFEMeasureTot
-          << " " << std::endl;
-
-  std::cout << "\n\n----AVERAGE RESULTS----\n";
-  size_t numElements = SET_SIZE * NUM_ITER;
-  printResults("STL-Set Serial Insert", RawSetMeasureTot / secUnit,
-               numElements);
-  printResults("STL-Set Parallel Async Update",
-               ParallelAsyncRawSetMeasureTot / secUnit, numElements);
-  printResults("Serial Update", SerialInsertMeasureTot / secUnit, numElements);
-  printResults("Async Update", AsyncInsertSecTot / secUnit, numElements);
-  printResults("Parallel Async Update", ParallelAsyncInsertSecTot / secUnit,
-               numElements);
-  printResults("Async Buffered Update", AsyncBufferedInsertMeasureTot / secUnit,
-               numElements);
-  printResults("Async Visit", AsyncVisitWithFEMeasureTot / secUnit,
-               numElements);
-
-  resFile.close();
-  testFinalize();
-
-  return 0;
-}
-}  // namespace shad
