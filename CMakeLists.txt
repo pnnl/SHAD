@@ -101,7 +101,7 @@ configure_file(
   ${SHAD_MAIN_INCLUDE_DIR}/shad/config/config.h.in
   ${SHAD_INCLUDE_DIR}/shad/config/config.h)
 install(FILES ${SHAD_INCLUDE_DIR}/shad/config/config.h
-  DESTINATION include/shad/config/config.h)
+  DESTINATION include/shad/config)
 
 configure_file(
   ${SHAD_MAIN_INCLUDE_DIR}/shad/config/test-config.h.in
@@ -113,6 +113,7 @@ configure_file(
   ${SHAD_MAIN_SRC_DIR}/pkgconfig/shad.pc.in
   ${SHAD_BINARY_DIR}/pkgconfig/shad.pc @ONLY)
 install(FILES ${SHAD_BINARY_DIR}/pkgconfig/shad.pc DESTINATION pkgconfig)
+install(FILES ${SHAD_MAIN_SRC_DIR}/cmake/FindSHAD.cmake DESTINATION cmake)
 
 # Test commands
 set(SHAD_TEST_COMMAND "")
