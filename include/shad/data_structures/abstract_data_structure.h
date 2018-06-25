@@ -29,6 +29,7 @@
 #include <memory>
 #include <tuple>
 #include <utility>
+#include <deque>
 #include <vector>
 
 #include "shad/data_structures/object_identifier.h"
@@ -174,7 +175,6 @@ class AbstractDataStructure {
 
     SharedPtr GetPtr(const ObjectID &oid) {
       uint32_t locality = static_cast<uint32_t>(oid.GetOwnerLocality());
-      std::lock_guard<rt::Lock> _(registerLock_);
       return register_[locality][oid.GetLocalID()];
     }
 
@@ -201,7 +201,7 @@ class AbstractDataStructure {
     /// The Type storing the counter to obtain new DataStructure object IDs.
     using ObjectIDCounter = ObjectIdentifierCounter<DataStructure>;
 
-    std::vector<std::vector<SharedPtr>> register_;
+    std::vector<std::deque<SharedPtr>> register_;
     std::vector<ObjectID> oidCache_;
     rt::Lock registerLock_;
   };
