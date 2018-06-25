@@ -155,7 +155,6 @@ class AbstractDataStructure {
     void Insert(const ObjectID &oid, const SharedPtr ce) {
       uint32_t locality = static_cast<uint32_t>(oid.GetOwnerLocality());
       std::lock_guard<rt::Lock> _(registerLock_);
-      int diff = oid.GetLocalID() - register_[locality].size();
       if (register_[locality].size() <= oid.GetLocalID()) {
         register_[locality].resize(oid.GetLocalID() + 1);
       }
