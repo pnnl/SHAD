@@ -1,7 +1,7 @@
 
 [![Travis Build Status](https://travis-ci.org/pnnl/SHAD.svg?branch=master)](https://travis-ci.org/pnnl/SHAD)
 <p align="center">
-  <img src="https://github.com/pnnl/SHAD/blob/update-documentation/docs/shad_logo_500.jpeg" width="500"/>
+  <img src="https://github.com/pnnl/SHAD/blob/update-documentation/docs/shad_logo.jpg" width="500"/>
 </p>
 
 # SHAD
