@@ -1,6 +1,6 @@
 
 [![Travis Build Status](https://travis-ci.org/pnnl/SHAD.svg?branch=master)](https://travis-ci.org/pnnl/SHAD)
-![SHAD_Logo](https://github.com/pnnl/SHAD/blob/master/docs/shad_logo_500.jpeg)
+![SHAD_Logo](https://github.com/pnnl/SHAD/blob/update-documentation/docs/shad_logo_500.jpeg)
 # SHAD
 
 ## Build Instructions
