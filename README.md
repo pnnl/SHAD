@@ -4,7 +4,7 @@
   <img src="https://github.com/pnnl/SHAD/blob/update-documentation/docs/shad_logo.jpg" width="500"/>
 </p>
 
-SHAD is the Scalable HighpPerformance Algorithms and Data-structures C++ library. SHAD is designed as a software stack, composed of three main layers:
+SHAD is the Scalable High-Performance Algorithms and Data-structures C++ library. SHAD is designed as a software stack, composed of three main layers:
 - Abstract Runtime Interface: SHAD adopts a shared-memory, task-based, programming model, whose main tasking primitives are definide in its runtime abstraction layer; this component represents an interface to underlying runtime systems, which implement tasking and threading; for portability, SHAD can interface with multiple runtime systems.
 - General Purpose Data-structures: SHAD data-structures offer a shared-memory abstraction, and provide APIs for parallel access and update; data-structures include arrays, vectors, maps and sets.
 - Extensions: SHAD extensions are custom libraries built using the underlying SHAD components, and/or other extensions; SHAD currently include graph data-structures and algorithms.
@@ -53,12 +53,14 @@ If such software is not available on the system, SHAD can be compiled and used w
 SHAD uses the Global Memory and Threading (GMT) Runtime System as backend for commodity clusters.
 GMT requires a Linux OS, C compiler and MPI. It can be installed using the following commands:
 
+```
 git clone https://github.com/pnnl/gmt.git
 cd gmt
 mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$GMT_ROOT \
          -DCMAKE_BUILD_TYPE=Release
 make -j <SOMETHING_REASONABLE> && make install
+```
 
 ### Build SHAD
 
@@ -97,7 +99,7 @@ Once the documentation is build, you can open with your favorite web browser the
 open docs/doxygen/html/index.html  # From your build directory
 ```
 ## Authors
-Vito Giovanni Castellana <vitogiovanni.castellana@pnnl.gov>
+Vito Giovanni Castellana <vitogiovanni.castellana@pnnl.gov>  
 Marco Minutoli <marco.minutoli@pnnl.gov>
 
 ## Disclamer Notice
