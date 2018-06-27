@@ -76,7 +76,7 @@ mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT               \
          -DCMAKE_BUILD_TYPE=Release                     \
          -DSHAD_RUNTIME_SYSTEM=<SupportedRuntimeSystem> \
-         # if   using TBB                               \
+         # if using TBB                                 \
          -DTBB_ROOT=$TBBROOT                            \
          # else if using GMT                            \
          -DGMT_ROOT=$GMTROOT                            \
