@@ -29,7 +29,7 @@ mkdir build && cd build
 make && make install
 ```
 
-where $GPERFTOOLSROOT is the directory where you want the library to be installed.
+where ```$GPERFTOOLSROOT``` is the directory where you want the library to be installed.
 
 #### GTest
 
@@ -42,7 +42,7 @@ mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=$GTESTROOT
 make && make install
 ```
 
-where $GTESTROOT is the directory where you want the library to be installed.
+where ```$GTESTROOT``` is the directory where you want the library to be installed.
 
 ### Runtime Systems
 To fully exploit its features, SHAD requires a supported runtime system or threading library to be installed. SHAD currently supports:
@@ -66,8 +66,8 @@ make -j <SOMETHING_REASONABLE> && make install
 ### Build SHAD
 
 Before attempting to build SHAD, please take a look at the requirements in [Install Dependencies](#install-dependencies).
-In case gtest is not available, compilation of unit tests may be disabled setting SHAD_ENABLE_UNIT_TEST to off.
-Currently SHAD has full support for TBB and GMT [Runtime Systems](#runtime-systems).  Future releases will provide additional backends. Target runtime systems may be specified via the SHAD_RUNTIME_SYSTEM option: valid values for this option are GMT, TBB, and, CPP_SIMPLE.
+In case gtest is not available, compilation of unit tests may be disabled setting ```SHAD_ENABLE_UNIT_TEST``` to off.
+Currently SHAD has full support for TBB and GMT [Runtime Systems](#runtime-systems).  Future releases will provide additional backends. Target runtime systems may be specified via the ```SHAD_RUNTIME_SYSTEM``` option: valid values for this option are ```GMT```, ```TBB```, and, ```CPP_SIMPLE```.
 
 ```
 git clone <url-to-SHAD-repo>  # or untar the SHAD source code.
@@ -76,10 +76,11 @@ mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT               \
          -DCMAKE_BUILD_TYPE=Release                     \
          -DSHAD_RUNTIME_SYSTEM=<SupportedRuntimeSystem> \
-         # when using TBB                               \
+         # if   using TBB                               \
          -DTBB_ROOT=$TBBROOT                            \
-         # when using GMT                               \
+         # else if using GMT                            \
          -DGMT_ROOT=$GMTROOT                            \
+         # endif                                        \
          -DGTEST_ROOT=$GTESTROOT                        \
          -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT
 make -j <SOMETHING_REASONABLE> && make install
