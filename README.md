@@ -46,7 +46,7 @@ where $GTESTROOT is the directory where you want the library to be installed.
 ### Runtime Systems
 To fully exploit its features, SHAD requires a supported runtime system or threading library to be installed. SHAD currently supports:
 - Global Memory and Threading Runtime System (GMT), https://github.com/pnnl/gmt
-- Intel Threading Building Blocks (TBB), https://www.threadingbuildingblocks.org/
+- Intel Threading Building Blocks (TBB), https://www.threadingbuildingblocks.org/  
 If such software is not available on the system, SHAD can be compiled and used with its default (single-threaded) C++ backend.
 
 #### GMT
