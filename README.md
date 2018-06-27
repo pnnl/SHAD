@@ -8,6 +8,7 @@ SHAD is the Scalable High-Performance Algorithms and Data-structures C++ library
 - Abstract Runtime Interface: SHAD adopts a shared-memory, task-based, programming model, whose main tasking primitives are definide in its runtime abstraction layer; this component represents an interface to underlying runtime systems, which implement tasking and threading; for portability, SHAD can interface with multiple [Runtime Systems](#runtime-systems).
 - General Purpose Data-structures: SHAD data-structures offer a shared-memory abstraction, and provide APIs for parallel access and update; data-structures include arrays, vectors, maps and sets.
 - Extensions: SHAD extensions are custom libraries built using the underlying SHAD components, and/or other extensions; SHAD currently include graph data-structures and algorithms.  
+  
 SHAD is written in C++, and requires compiler support for (at least) C++ 11.
 To enable all of the SHAD's features, please review its [Install Dependencies](#install-dependencies) and [Runtime Systems](#runtime-systems) requirements.
 
