@@ -84,7 +84,7 @@ cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT               \
          -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT
 make -j <SOMETHING_REASONABLE> && make install
 ```
-If you have multiple compilers (or compiler versions) available on your system, you may want to indicate a specific one using the -DCMAKE_CXX_COMPILER=<compiler> option.
+If you have multiple compilers (or compiler versions) available on your system, you may want to indicate a specific one using the ```-DCMAKE_CXX_COMPILER=<compiler>``` option.
 
 ### Build the Documentation
 
