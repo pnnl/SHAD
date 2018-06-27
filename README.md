@@ -4,7 +4,12 @@
   <img src="https://github.com/pnnl/SHAD/blob/update-documentation/docs/shad_logo.jpg" width="500"/>
 </p>
 
-# SHAD
+SHAD is the Scalable HighpPerformance Algorithms and Data-structures C++ library. SHAD is designed as a software stack, composed of three main layers:
+- Abstract Runtime Interface: SHAD adopts a shared-memory, task-based, programming model, whose main tasking primitives are definide in its runtime abstraction layer; this component represents an interface to underlying runtime systems, which implement tasking and threading; for portability, SHAD can interface with multiple runtime systems.
+- General Purpose Data-structures: SHAD data-structures offer a shared-memory abstraction, and provide APIs for parallel access and update; data-structures include arrays, vectors, maps and sets.
+- Extensions: SHAD extensions are custom libraries built using the underlying SHAD components, and/or other extensions; SHAD currently include graph data-structures and algorithms.
+SHAD is written in C++, and requires compiler support for (at least) C++ 11.
+To enable all of the SHAD's features, please review its [Install Dependencies](#install-dependencies) and [Runtime Systems](#runtime-systems) requirements.
 
 ## Build Instructions
 
@@ -12,7 +17,7 @@
 
 #### GPerftools
 
-GPerftools is an optional dependency.  Of the whole GPerftools framework, SHAD uses only tcmalloc when available.  We have seen significant performance improvement in using tcmalloc over the standard allocator.  Therefore, we recommend its use.  In the case it is not available through your package manager, you can follow the following basic instruction to build and install GPerftools.  Please refer to the project page to have more detailed information.
+GPerftools is an optional dependency.  Of the whole GPerftools framework, SHAD currently uses only tcmalloc when available.  We have seen significant performance improvement in using tcmalloc over the standard allocator.  Therefore, we recommend its use.  In the case it is not available through your package manager, you can follow the following basic instruction to build and install GPerftools.  Please refer to the project page to have more detailed information.
 
 ```
 git clone https://github.com/gperftools/gperftools.git
@@ -38,37 +43,45 @@ make && make install
 
 where $GTESTROOT is the directory where you want the library to be installed.
 
-#### Google Benchmark
+### Runtime Systems
+To fully exploit its features, SHAD requires a supported runtime system or threading library to be installed. SHAD currently supports:
+- Global Memory and Threading Runtime System (GMT), https://github.com/pnnl/gmt
+- Intel Threading Building Blocks (TBB), https://www.threadingbuildingblocks.org/
+If such software is not available on the system, SHAD can be compiled and used with its default (single-threaded) C++ backend.
 
-The Google Benchmark framework is only required if you want to run the performance benchmarks.  You can install it following these instructions:
+#### GMT
+SHAD uses the Global Memory and Threading (GMT) Runtime System as backend for commodity clusters.
+GMT requires a Linux OS, C compiler and MPI. It can be installed using the following commands:
 
-```
-git clone https://github.com/google/benchmark.git
-cd benchmark
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=RELEASE
-make
-sudo make install
-```
+git clone https://github.com/pnnl/gmt.git
+cd gmt
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$GMT_ROOT \
+         -DCMAKE_BUILD_TYPE=Release
+make -j <SOMETHING_REASONABLE> && make install
 
 ### Build SHAD
 
-Before attempting to build SHAD, please take a look at the requirements in [Install Dependencies](#install-dependencies).  In this first release, SHAD has full support only for the TBB run-time system.  Future releases will provide additional backends.
+Before attempting to build SHAD, please take a look at the requirements in [Install Dependencies](#install-dependencies).
+In case gtest is not available, compilation of unit tests may be disabled setting SHAD_ENABLE_UNIT_TEST to off.
+Currently SHAD has full support for TBB and GMT [Runtime Systems](#runtime-systems).  Future releases will provide additional backends. Target runtime systems may be specified via the SHAD_RUNTIME_SYSTEM option: valid values for this option are GMT, TBB, and, CPP_SIMPLE.
 
 ```
 git clone <url-to-SHAD-repo>  # or untar the SHAD source code.
 cd shad
 mkdir build && cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT  \
-         -DCMAKE_BUILD_TYPE=Release        \
-         -DSHAD_RUNTIME_SYSTEM=TBB         \
-         -DTBB_ROOT=$TBBROOT               \
-         -DGTEST_ROOT=$GTESTROOT           \
-         -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT \
-         -Dbenchmark_ROOT=$BENCHMARKROOT
+cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT               \
+         -DCMAKE_BUILD_TYPE=Release                     \
+         -DSHAD_RUNTIME_SYSTEM=<SupportedRuntimeSystem> \
+         # when using TBB                               \
+         -DTBB_ROOT=$TBBROOT                            \
+         # when using GMT                               \
+         -DGMT_ROOT=$GMTROOT                            \
+         -DGTEST_ROOT=$GTESTROOT                        \
+         -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT
 make -j <SOMETHING_REASONABLE> && make install
 ```
+If you have multiple compilers (or compiler versions) available on your system, you may want to indicate a specific one using the -DCMAKE_CXX_COMPILER=<compiler> option.
 
 ### Build the Documentation
 
