@@ -194,6 +194,7 @@ BENCHMARK_F(TestFixture, test_AsyncFEKey)(benchmark::State &state) {
 /**
  * Custom main() instead of calling BENCHMARK_MAIN()
  */
+namespace shad {
 int main(int argc, char **argv) {
   // Parse command line args
   for (size_t argIndex = 1; argIndex < argc - 1; argIndex++) {
@@ -216,3 +217,4 @@ int main(int argc, char **argv) {
   ::benchmark::Initialize(&argc, argv);
   ::benchmark::RunSpecifiedBenchmarks();
 }
+}  // namespace shad
