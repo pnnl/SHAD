@@ -1,6 +1,6 @@
 # See README.md for instruction on how to build SHAD with CMake
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 if (NOT DEFINED SHAD_VERSION_MAJOR)
   set(SHAD_VERSION_MAJOR 0)
@@ -75,6 +75,7 @@ option(SHAD_ENABLE_CPPLINT "Enable the linting of source code" ON)
 option(SHAD_ENABLE_DOXYGEN "Use doxygen to generate the shad API documentation" OFF)
 option(SHAD_ENABLE_UNIT_TEST "Enable the compilation of Unit Tests" ON)
 option(SHAD_ENABLE_PERFORMANCE_TEST "Enable the compilation of the Performance Tests" OFF)
+option(SHAD_ENABLE_STD_REDUCE_TEST "Enable the tests based on std::reduce" OFF)
 
 set(
   SHAD_RUNTIME_SYSTEM "CPP_SIMPLE" CACHE STRING
