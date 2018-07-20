@@ -64,7 +64,7 @@ class Locality {
   /// Initialize the newly created object with a specific locality ID.
   ///
   /// @param id The locality ID to be assigned.
-  explicit Locality(const uint32_t id) : id_(id) {}
+  explicit constexpr Locality(const uint32_t id) : id_(id) {}
 
   /// @brief Copy-Constructor.
   Locality(const Locality& rhs) = default;
