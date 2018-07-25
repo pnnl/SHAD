@@ -171,6 +171,10 @@ uint64_t HashFunction(const std::vector<KeyTy> &key, uint8_t seed) {
   return hash;
 }
 
+template <>
+uint64_t HashFunction(const size_t &key, uint8_t) {
+  return key;
+}
 }  // namespace shad
 
 #endif  // INCLUDE_SHAD_DATA_STRUCTURES_COMPARE_AND_HASH_UTILS_H_
