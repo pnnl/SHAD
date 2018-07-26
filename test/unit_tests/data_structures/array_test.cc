@@ -22,6 +22,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include <algorithm>
 #include <vector>
 
 #include "gtest/gtest.h"
@@ -29,7 +30,7 @@
 #include "shad/data_structures/array.h"
 #include "shad/runtime/runtime.h"
 
-static size_t kArraySize = 10001;
+constexpr static size_t kArraySize = 10001;
 static size_t kInitValue = 42;
 
 class ArrayTest : public ::testing::Test {
@@ -366,4 +367,62 @@ TEST_F(ArrayTest, AsyncInsertAsyncForEachAndAsyncGet) {
     ASSERT_EQ(values[i], i + 1 + (2 * kInitValue));
   }
   shad::Array<size_t>::Destroy(edsPtr->GetGlobalID());
+}
+
+TEST_F(ArrayTest, CreateNewArray) {
+  auto arrayPtr = shad::array<std::size_t, kArraySize>::Create();
+
+  ASSERT_EQ(arrayPtr->size(), kArraySize);
+  ASSERT_EQ(arrayPtr->max_size(), kArraySize);
+  using value_type = typename shad::array<std::size_t, 123456>::value_type;
+  ASSERT_TRUE((std::is_same<std::size_t, value_type>::value));
+
+  arrayPtr->Destroy(arrayPtr->GetGlobalID());
+}
+
+TEST_F(ArrayTest, FillArray) {
+  auto arrayPtr = shad::array<std::size_t, kArraySize>::Create();
+
+  arrayPtr->fill(0xdeadc0d3);
+
+  ASSERT_EQ(arrayPtr->front(), 0xdeadc0d3);
+  ASSERT_EQ(arrayPtr->back(), 0xdeadc0d3);
+
+  for (size_t i = 0; i < arrayPtr->size(); ++i) {
+    ASSERT_EQ(arrayPtr->at(i), 0xdeadc0d3) << i;
+    arrayPtr->at(i) = i;
+  }
+
+  arrayPtr->Destroy(arrayPtr->GetGlobalID());
+}
+
+TEST_F(ArrayTest, ArrayIterator) {
+  auto arrayPtr = shad::array<std::size_t, kArraySize>::Create();
+
+  std::size_t splitPoint =
+      kArraySize / std::max<std::size_t>(shad::rt::numLocalities(), 2) + 1;
+
+  for (size_t i = 0; i < arrayPtr->size(); ++i) {
+    arrayPtr->at(i) = i;
+  }
+  size_t i = 0;
+  for (auto v : *arrayPtr) {
+    ASSERT_EQ(v, i) << i;
+    ++i;
+  }
+
+  auto itr = arrayPtr->begin();
+  ASSERT_EQ(*itr, 0);
+
+  itr += splitPoint - 10;
+  ASSERT_EQ(*itr, splitPoint - 10) << static_cast<std::size_t>(*itr);
+
+  itr -= 10;
+  ASSERT_EQ(*itr, splitPoint - 20) << static_cast<std::size_t>(*itr);
+
+  itr += 20;
+  ASSERT_EQ(*itr, splitPoint) << static_cast<std::size_t>(*itr);
+
+  itr -= splitPoint - 20;
+  ASSERT_EQ(*itr, 20) << static_cast<std::size_t>(*itr);
 }
