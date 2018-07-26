@@ -64,7 +64,7 @@ class Locality {
   /// Initialize the newly created object with a specific locality ID.
   ///
   /// @param id The locality ID to be assigned.
-  explicit Locality(const uint32_t id) : id_(id) {}
+  explicit constexpr Locality(const uint32_t id) : id_(id) {}
 
   /// @brief Copy-Constructor.
   Locality(const Locality& rhs) = default;
@@ -112,6 +112,21 @@ class Locality {
   /// @return true if the Handle is null, false otherwise.
   bool IsNull() const {
     return id_ == impl::RuntimeInternalsTrait<TargetSystemTag>::NullLocality();
+  }
+
+  Locality& operator++() {
+    ++id_;
+    return *this;
+  }
+
+  Locality& operator+=(std::size_t n) {
+    id_ += n;
+    return *this;
+  }
+
+  Locality& operator-=(std::size_t n) {
+    id_ -= n;
+    return *this;
   }
 
  private:

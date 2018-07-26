@@ -25,11 +25,11 @@
 #ifndef INCLUDE_SHAD_DATA_STRUCTURES_ABSTRACT_DATA_STRUCTURE_H_
 #define INCLUDE_SHAD_DATA_STRUCTURES_ABSTRACT_DATA_STRUCTURE_H_
 
+#include <deque>
 #include <limits>
 #include <memory>
 #include <tuple>
 #include <utility>
-#include <deque>
 #include <vector>
 
 #include "shad/data_structures/object_identifier.h"

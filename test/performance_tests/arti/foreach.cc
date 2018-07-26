@@ -113,7 +113,7 @@ BENCHMARK_F(TestFixture, test_forEachOnAllInputBuffer)
 namespace shad {
 int main(int argc, char** argv) {
   ::benchmark::Initialize(&argc, argv);
-    if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1;
-    ::benchmark::RunSpecifiedBenchmarks();
-  }
+  if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1;
+  ::benchmark::RunSpecifiedBenchmarks();
+}
 }  // namespace shad
