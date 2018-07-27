@@ -426,3 +426,27 @@ TEST_F(ArrayTest, ArrayIterator) {
   itr -= splitPoint - 20;
   ASSERT_EQ(*itr, 20) << static_cast<std::size_t>(*itr);
 }
+
+TEST_F(ArrayTest, ArrayIteratorTraitTest) {
+  using array_type = shad::array<size_t, kArraySize>;
+  using iterator_traits = std::iterator_traits<typename array_type::iterator>;
+
+  ASSERT_TRUE((std::is_same<typename iterator_traits::difference_type,
+                            typename array_type::difference_type>::value));
+  ASSERT_TRUE((std::is_same<typename iterator_traits::value_type,
+                            typename array_type::value_type>::value));
+  ASSERT_TRUE((std::is_same<typename iterator_traits::pointer,
+                            typename array_type::pointer>::value));
+  ASSERT_TRUE((std::is_same<typename iterator_traits::reference,
+                            typename array_type::reference>::value));
+  ASSERT_TRUE((std::is_same<typename iterator_traits::iterator_category,
+                            std::random_access_iterator_tag>::value));
+
+  auto array = array_type::Create();
+
+  array->fill(1);
+  array->at(kArraySize / 2) = 0;
+
+  auto e = std::min_element(array->begin(), array->end());
+  ASSERT_EQ(*e, 0);
+}
