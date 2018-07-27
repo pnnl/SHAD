@@ -1557,7 +1557,7 @@ class array<T, N>::array_iterator {
   }
 
   difference_type operator-(const array_iterator &O) const {
-    if (*this->oid_ != O.oid_)
+    if (oid_ != O.oid_)
       return std::numeric_limits<difference_type>::min();
 
     difference_type distance = (static_cast<uint32_t>(this->locality_) -
