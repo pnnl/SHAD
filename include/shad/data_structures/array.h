@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <cstring>
 #include <functional>
+#include <iterator>
 #include <memory>
 #include <tuple>
 #include <utility>
@@ -1467,10 +1468,13 @@ bool operator>(const array<T, N> &LHS, const array<T, N> &RHS) {
 template <typename T, std::size_t N>
 template <typename U>
 class array<T, N>::array_iterator {
+ public:
   using reference = typename array<T, N>::template ArrayRef<U>;
   using pointer = typename array<T, N>::pointer;
+  using difference_type = std::ptrdiff_t;
+  using value_type = typename array<T, N>::value_type;
+  using iterator_category = std::random_access_iterator_tag;
 
- public:
   array_iterator() = default;
   array_iterator(rt::Locality &&l, std::size_t offset, ObjectID oid)
       : locality_(l), offset_(offset), oid_(oid) {}
@@ -1520,7 +1524,8 @@ class array<T, N>::array_iterator {
     if (n > offset_) {
       locality_ -= ((n - offset_) / chunk_size()) + 1;
       std::size_t delta = (n % chunk_size());
-      offset_ =  delta > offset_ ? chunk_size() - (delta - offset_) : offset_ - delta;
+      offset_ =
+          delta > offset_ ? chunk_size() - (delta - offset_) : offset_ - delta;
     } else {
       offset_ -= n;
     }
@@ -1542,7 +1547,8 @@ class array<T, N>::array_iterator {
     if (n > offset_) {
       tmp.locality_ -= ((n - offset_) / chunk_size()) + 1;
       std::size_t delta = (n % chunk_size());
-      tmp.offset_ =  delta > offset_ ? chunk_size() - (delta - offset_) : offset_ - delta;
+      tmp.offset_ =
+          delta > offset_ ? chunk_size() - (delta - offset_) : offset_ - delta;
     } else {
       tmp.offset_ -= n;
     }
@@ -1551,7 +1557,7 @@ class array<T, N>::array_iterator {
   }
 
   difference_type operator-(const array_iterator &O) const {
-    if (*this->oid_ != O.oid_)
+    if (oid_ != O.oid_)
       return std::numeric_limits<difference_type>::min();
 
     difference_type distance = (static_cast<uint32_t>(this->locality_) -
