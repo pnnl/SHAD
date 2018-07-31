@@ -471,4 +471,14 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
   ASSERT_EQ(first, zero);
   ASSERT_EQ(*(first + 1), std::size_t(2));
   ASSERT_EQ((first + 1), two);
+
+  array->at(kArraySize - 1) = 2;
+  array->at(kArraySize - 2) = 0;
+
+  auto last = std::find_end(array->begin(), array->end(), subList->begin(),
+                            subList->end());
+
+  ASSERT_EQ(*last, std::size_t(0));
+  ASSERT_EQ(*(last + 1), std::size_t(2));
+  ASSERT_NE(two, last);
 }
