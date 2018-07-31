@@ -1540,6 +1540,7 @@ class array<T, N>::array_iterator {
     if (n < 0) return operator+=(-n);
 
     if (n > offset_) {
+      locality_ -= ((n - offset_) / chunk_size()) + 1;
       std::size_t delta = (n % chunk_size());
       offset_ =
           delta > offset_ ? chunk_size() - (delta - offset_) : offset_ - delta;
@@ -1550,8 +1551,10 @@ class array<T, N>::array_iterator {
     return *this;
   }
 
-  array_iterator operator+(std::size_t n) {
+  array_iterator operator+(difference_type n) {
     if (n == 0) return *this;
+
+    if (n < 0) return operator-(-n);
 
     array_iterator tmp(*this);
 
@@ -1561,8 +1564,10 @@ class array<T, N>::array_iterator {
     return tmp;
   }
 
-  array_iterator operator-(std::size_t n) {
+  array_iterator operator-(difference_type n) {
     if (n == 0) return *this;
+
+    if (n < 0) return operator+(-n);
 
     array_iterator tmp = *this;
     if (n > offset_) {
