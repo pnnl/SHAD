@@ -1190,8 +1190,9 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @brief The iterator to the end of the sequence.
   /// @return an ::iterator to the end of the sequence.
   constexpr iterator end() noexcept {
-    return iterator{rt::Locality(rt::numLocalities() - 1), N % chunk_size(),
-                    oid_};
+    size_type pos = chunk_size();
+    pos -= chunk_size() * rt::numLocalities() - N;
+    return iterator{rt::Locality(rt::numLocalities() - 1), pos, oid_};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -1207,8 +1208,9 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @brief The iterator to the end of the sequence.
   /// @return a ::const_iterator to the end of the sequence.
   constexpr const_iterator cend() const noexcept {
-    return const_iterator{rt::Locality(rt::numLocalities() - 1),
-                          N % chunk_size(), oid_};
+    size_type pos = chunk_size();
+    pos -= chunk_size() * rt::numLocalities() - N;
+    return const_iterator{rt::Locality(rt::numLocalities() - 1), pos, oid_};
   }
 
   /// @}
@@ -1489,9 +1491,13 @@ class array<T, N>::array_iterator {
 
   array_iterator &operator++() {
     ++offset_;
-    if (offset_ == chunk_size()) {
+    if (offset_ == chunk_size() &&
+        locality_ != rt::Locality(rt::numLocalities() - 1)) {
       ++locality_;
       offset_ = 0;
+    } else if (offset_ == chunk_size() &&
+               locality_ == rt::Locality(rt::numLocalities() - 1)) {
+      offset_ -= 1;
     }
     return *this;
   }
@@ -1502,15 +1508,25 @@ class array<T, N>::array_iterator {
     return tmp;
   }
 
-  array_iterator &operator--() { return *this; }
+  array_iterator &operator--() {
+    if (offset_ == 0) {
+      locality_ -= 1;
+      offset_ = chunk_size() - 1;
+    } else {
+      --offset_;
+    }
+    return *this;
+  }
   array_iterator operator--(int) {
     array_iterator tmp = *this;
     operator--();
     return tmp;
   }
 
-  array_iterator &operator+=(std::size_t n) {
+  array_iterator &operator+=(difference_type n) {
     if (n == 0) return *this;
+
+    if (n < 0) return operator-=(-n);
 
     locality_ += (offset_ + n) / chunk_size();
     offset_ = (offset_ + n) % chunk_size();
@@ -1518,8 +1534,10 @@ class array<T, N>::array_iterator {
     return *this;
   }
 
-  array_iterator &operator-=(std::size_t n) {
+  array_iterator &operator-=(difference_type n) {
     if (n == 0) return *this;
+
+    if (n < 0) return operator+=(-n);
 
     if (n > offset_) {
       locality_ -= ((n - offset_) / chunk_size()) + 1;
@@ -1533,15 +1551,23 @@ class array<T, N>::array_iterator {
     return *this;
   }
 
-  array_iterator operator+(std::size_t n) {
+  array_iterator operator+(difference_type n) {
     if (n == 0) return *this;
 
-    return array_iterator{rt::Locality((offset_ + n) / chunk_size()),
-                          offset_ + (n % chunk_size()), oid_};
+    if (n < 0) return operator-(-n);
+
+    array_iterator tmp(*this);
+
+    tmp.locality_ += (tmp.offset_ + n) / chunk_size();
+    tmp.offset_ = (tmp.offset_ + n) % chunk_size();
+
+    return tmp;
   }
 
-  array_iterator operator-(std::size_t n) {
+  array_iterator operator-(difference_type n) {
     if (n == 0) return *this;
+
+    if (n < 0) return operator+(-n);
 
     array_iterator tmp = *this;
     if (n > offset_) {
@@ -1557,20 +1583,20 @@ class array<T, N>::array_iterator {
   }
 
   difference_type operator-(const array_iterator &O) const {
-    if (oid_ != O.oid_)
-      return std::numeric_limits<difference_type>::min();
+    if (oid_ != O.oid_) return std::numeric_limits<difference_type>::min();
 
     difference_type distance = (static_cast<uint32_t>(this->locality_) -
                                 static_cast<uint32_t>(O.locality_)) *
                                chunk_size();
-    distance -= this->offset_;
-    distance += O.offset_;
+    distance += this->offset_;
+    distance -= O.offset_;
 
     return distance;
   }
 
   bool operator<(const array_iterator &O) const {
-    return oid_ == O.oid_ && locality_ <= O.locality_ && offset_ < O.offset_;
+    if (locality_ < O.locality_) return true;
+    return offset_ < O.offset_;
   }
 
   bool operator>(const array_iterator &O) const {
