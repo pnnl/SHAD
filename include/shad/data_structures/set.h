@@ -38,7 +38,7 @@
 
 namespace shad {
 
-template <typename LSet, typename T>
+template <typename Set, typename T>
 class set_iterator;
   
 /// @brief The Set data structure.
@@ -65,7 +65,8 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   using iterator = set_iterator<Set<T, ELEM_COMPARE>, T>;
   using const_iterator = set_iterator<Set<T, ELEM_COMPARE>, const T>;
   using local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
-  using const_local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
+  using const_local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>,
+                                             const T>;
   /// @brief Create method.
   ///
   /// Creates a new set instance.
@@ -502,8 +503,10 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
     auto setPtr = SetT::GetPtr(data_.oid_);
     if (static_cast<uint32_t>(rt::thisLocality()) == data_.locId_) {
       const LSet* lsetPtr = &(setPtr->localSet_);
-      ++(data_.lsetIt_);
       auto lend = lset_it::lset_end(lsetPtr);
+      if (data_.lsetIt_ != lend) {
+        ++(data_.lsetIt_);
+      }
       if (data_.lsetIt_ != lend) {
         data_.element_ = *(data_.lsetIt_);
         return *this;
@@ -511,7 +514,8 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
         //find the local begin on next localities
         itData itd;
         for (uint32_t i = data_.locId_+1; i < rt::numLocalities(); ++i) {
-          rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, data_.oid_, &itd);
+          rt::executeAtWithRet(rt::Locality(i),
+                               getLocBeginIt, data_.oid_, &itd);
           if (itd.locId_ != rt::numLocalities()) {
             // It Data is valid
             data_ = itd;
@@ -579,7 +583,8 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
     } else {
       itData outitd;
       for (uint32_t i = itd.locId_+1; i < rt::numLocalities(); ++i) {
-        rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_, &outitd);
+        rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_,
+                             &outitd);
         if (outitd.locId_ != rt::numLocalities()) {
           // It Data is valid
           *res = outitd;

@@ -74,8 +74,7 @@ class LocalSet {
   explicit LocalSet(const size_t numInitBuckets = 16)
       : numBuckets_(numInitBuckets),
         buckets_array_(numInitBuckets),
-        size_(0),
-        buckets_sizes_(numInitBuckets, atomicCounter(0)) {}
+        size_(0) {}
 
   /// @brief Size of the set (number of entries).
   /// @return the size of the set.
@@ -247,38 +246,11 @@ class LocalSet {
     rt::Lock _entriesLock;
   };
   
-  struct atomicCounter
-  {
-    std::atomic<size_t> cnt_;
-
-    atomicCounter() : cnt_() {}
-
-    atomicCounter(const size_t value) : cnt_(value) {}
-
-    atomicCounter(const std::atomic<T> &a) : cnt_(a.load()) {}
-
-    atomicCounter(const atomicCounter &other)
-      :cnt_(other.cnt_.load()) {}
-
-    atomicCounter &operator=(const atomicCounter &other) {
-      cnt_.store(other.cnt_.load());
-    }
-    atomicCounter &operator++() {
-      ++cnt_;
-    }
-    atomicCounter &operator--() {
-      --cnt_;
-    }
-    std::atomic<size_t> &getCnt() {
-      return cnt_;
-    }
-  };
-  
+ 
   ElemCompare ElemComp_;
   size_t numBuckets_;
   std::vector<Bucket> buckets_array_;
   std::atomic<size_t> size_;
-  std::vector<atomicCounter> buckets_sizes_;
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
   static void AsyncCallForEachElementFun(rt::Handle& handle, const size_t i,
@@ -469,8 +441,7 @@ void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
         // and its status set to PENDING_INSERT
         toDelete = entry;
         prevEntry = entry;
-        size_--;
-        --(buckets_sizes_[bucketIdx]);
+        --size_;
 
         // now look for the last two entries.
         size_t j = i + 1;
@@ -495,8 +466,7 @@ void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
                 rt::impl::yield();
                 lastEntry->state = EMPTY;
                 toDelete->state = USED;
-                size_++;
-                ++(buckets_sizes_[bucketIdx]);
+                ++size_;
                 Erase(element);
                 return;
               }
@@ -512,8 +482,7 @@ void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
             } else {
               if (lastEntry->state == PENDING_INSERT) {
                 toDelete->state = USED;
-                size_++;
-                ++(buckets_sizes_[bucketIdx]);
+                ++size_;
                 Erase(element);
                 return;
               }
@@ -534,8 +503,7 @@ void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
             if (!__sync_bool_compare_and_swap(&lastEntry->state, USED,
                                               PENDING_INSERT)) {
               toDelete->state = USED;
-              size_++;
-              ++(buckets_sizes_[bucketIdx]);
+              ++size_;
               Erase(element);
               return;
             }
@@ -607,8 +575,7 @@ void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
 
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         entry->element = std::move(element);
-        size_ += 1;
-        ++(buckets_sizes_[bucketIdx]);
+        ++size_;
         entry->state = USED;
         return;
       } else {
