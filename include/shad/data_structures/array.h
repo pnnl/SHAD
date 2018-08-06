@@ -36,6 +36,7 @@
 
 #include "shad/data_structures/abstract_data_structure.h"
 #include "shad/data_structures/buffer.h"
+#include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
 namespace shad {
@@ -1609,6 +1610,37 @@ class array<T, N>::array_iterator {
 
   bool operator>=(const array_iterator &O) const {
     return oid_ == O.oid_ && !(*this < O);
+  }
+
+  class local_iterator_range {
+   public:
+    local_iterator_range(T *const B, T *const E) : begin_(B), end_(E) {}
+    T *const begin() { return begin_; }
+    T *const end() { return end_; }
+
+   private:
+    T *const begin_;
+    T *const end_;
+  };
+
+  static local_iterator_range local_range(array_iterator &B,
+                                          array_iterator &E) {
+    auto arrayPtr = array<T, N>::GetPtr(B.oid_);
+    array<T, N>::pointer begin{arrayPtr->chunk_};
+    if (B.locality_ == rt::thisLocality()) {
+      begin += B.offset_;
+    }
+
+    array<T, N>::pointer end{arrayPtr->chunk_ + arrayPtr->chunk_size()};
+    if (E.locality_ == rt::thisLocality()) {
+      end = arrayPtr->chunk_ + E.pos_;
+    }
+
+    return local_iterator_range(begin, end);
+  }
+
+  static rt::localities_range localities(array_iterator &B, array_iterator &E) {
+    return rt::localities_range(B.locality_, E.locality_);
   }
 
  private:
