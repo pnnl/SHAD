@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <functional>
 #include <memory>
 #include <tuple>
 #include <utility>
@@ -72,9 +73,7 @@ class LocalSet {
   /// @brief Constructor.
   /// @param numInitBuckets initial number of Buckets.
   explicit LocalSet(const size_t numInitBuckets = 16)
-      : numBuckets_(numInitBuckets),
-        buckets_array_(numInitBuckets),
-        size_(0) {}
+      : numBuckets_(numInitBuckets), buckets_array_(numInitBuckets), size_(0) {}
 
   /// @brief Size of the set (number of entries).
   /// @return the size of the set.
@@ -167,30 +166,26 @@ class LocalSet {
   void PrintAllElements();
 
   iterator begin() {
-    Entry * firstEntry = &buckets_array_[0].getEntry(0);
+    Entry* firstEntry = &buckets_array_[0].getEntry(0);
     iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry);
     if (firstEntry->state == USED) {
       return cbeg;
     }
     return ++cbeg;
   }
-  
-  iterator end() {
-    return iterator::lset_end(numBuckets_);
-  }
+
+  iterator end() { return iterator::lset_end(numBuckets_); }
 
   const_iterator cbegin() {
-    Entry * firstEntry = &buckets_array_[0].getEntry(0);
+    Entry* firstEntry = &buckets_array_[0].getEntry(0);
     const_iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry);
     if (firstEntry->state == USED) {
       return cbeg;
     }
     return ++cbeg;
   }
-  
-  const_iterator cend() {
-    return const_iterator::lset_end(numBuckets_);
-  }
+
+  const_iterator cend() { return const_iterator::lset_end(numBuckets_); }
 
  private:
   static const size_t kNumEntriesPerBucket =
@@ -230,13 +225,6 @@ class LocalSet {
       }
       return entries.get()[i];
     }
-    
-    Entry* getNextPtr(size_t& pos, Bucket*& bucketPtr) {
-      ++pos;
-      if (pos < bucketSize_) {
-        
-      }
-    }
 
     size_t BucketSize() const { return bucketSize_; }
 
@@ -245,8 +233,7 @@ class LocalSet {
     std::shared_ptr<Entry> entries;
     rt::Lock _entriesLock;
   };
-  
- 
+
   ElemCompare ElemComp_;
   size_t numBuckets_;
   std::vector<Bucket> buckets_array_;
@@ -369,7 +356,7 @@ class LocalSet {
 
 template <typename T, typename ELEM_COMPARE>
 bool LocalSet<T, ELEM_COMPARE>::Find(const T& element) {
-  uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<T>{}(element) % numBuckets_;
   Bucket* bucket = &(buckets_array_[bucketIdx]);
 
   while (bucket != nullptr) {
@@ -411,7 +398,7 @@ void LocalSet<T, ELEM_COMPARE>::PrintAllElements() {
 
 template <typename T, typename ELEM_COMPARE>
 void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
-  uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<T>{}(element) % numBuckets_;
   Bucket* bucket = &(buckets_array_[bucketIdx]);
   Entry* prevEntry = nullptr;
   Entry* toDelete = nullptr;
@@ -565,7 +552,7 @@ void LocalSet<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
 
 template <typename T, typename ELEM_COMPARE>
 void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
-  uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<T>{}(element) % numBuckets_;
   Bucket* bucket = &(buckets_array_[bucketIdx]);
 
   // Forever or until we find an insertion point.
@@ -590,8 +577,8 @@ void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
       // We need to allocate a new buffer
       if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
         // Allocate the bucket
-        std::shared_ptr<Bucket> newBucket(new Bucket(
-                                     constants::kSetDefaultNumEntriesPerBucket));
+        std::shared_ptr<Bucket> newBucket(
+            new Bucket(constants::kSetDefaultNumEntriesPerBucket));
         bucket->next.swap(newBucket);
       } else {
         // Wait for the allocation to happen
@@ -659,29 +646,33 @@ void LocalSet<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
 }
 
 template <typename LSet, typename T>
-class lset_iterator : public std::iterator<std::forward_iterator_tag, T>{
+class lset_iterator : public std::iterator<std::forward_iterator_tag, T> {
   template <typename, typename>
   friend class set_iterator;
+
  public:
   using Entry = typename LSet::Entry;
   using State = typename LSet::State;
   using Bucket = typename LSet::Bucket;
 
-  lset_iterator(const LSet* setPtr, size_t bId, size_t pos,
-                Bucket* cb, Entry* ePtr) :
-                      setPtr_(setPtr), bucketId_(bId),
-                      position_(pos), currBucket_(cb), entryPtr_(ePtr) {}
+  lset_iterator(const LSet* setPtr, size_t bId, size_t pos, Bucket* cb,
+                Entry* ePtr)
+      : setPtr_(setPtr),
+        bucketId_(bId),
+        position_(pos),
+        currBucket_(cb),
+        entryPtr_(ePtr) {}
 
   static lset_iterator lset_begin(const LSet* setPtr) {
     Bucket* rootPtr = &(const_cast<LSet*>(setPtr)->buckets_array_[0]);
-    Entry * firstEntry = &(rootPtr->getEntry(0));
+    Entry* firstEntry = &(rootPtr->getEntry(0));
     lset_iterator beg(setPtr, 0, 0, rootPtr, firstEntry);
     if (firstEntry->state == LSet::USED) {
       return beg;
     }
     return ++beg;
   }
-  
+
   static lset_iterator lset_end(const LSet* setPtr) {
     return lset_end(setPtr->numBuckets_);
   }
@@ -689,25 +680,23 @@ class lset_iterator : public std::iterator<std::forward_iterator_tag, T>{
   static lset_iterator lset_end(size_t numBuckets) {
     return lset_iterator(nullptr, numBuckets, 0, nullptr, nullptr);
   }
-  bool operator== (const lset_iterator& other) const {
+  bool operator==(const lset_iterator& other) const {
     return entryPtr_ == other.entryPtr_;
   }
-  bool operator!= (const lset_iterator& other) const {
+  bool operator!=(const lset_iterator& other) const {
     return !(*this == other);
   }
 
-  T operator*() {
-    return entryPtr_->element;
-  }
+  T operator*() const { return entryPtr_->element; }
 
-  lset_iterator &operator++() {
+  lset_iterator& operator++() {
     ++position_;
     if (position_ < constants::kSetDefaultNumEntriesPerBucket) {
       entryPtr_++;
-        if (entryPtr_->state == LSet::USED) {
-          return *this;
-        }
-        position_ = 0;
+      if (entryPtr_->state == LSet::USED) {
+        return *this;
+      }
+      position_ = 0;
     } else {
       position_ = 0;
       currBucket_ = currBucket_->next.get();
@@ -737,8 +726,9 @@ class lset_iterator : public std::iterator<std::forward_iterator_tag, T>{
     operator++();
     return tmp;
   }
+
  private:
-  const LSet * setPtr_;
+  const LSet* setPtr_;
   size_t bucketId_;
   size_t position_;
   Bucket* currBucket_;

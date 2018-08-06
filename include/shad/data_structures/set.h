@@ -26,6 +26,7 @@
 #define INCLUDE_SHAD_DATA_STRUCTURES_SET_H_
 
 #include <algorithm>
+#include <functional>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -40,7 +41,7 @@ namespace shad {
 
 template <typename Set, typename T>
 class set_iterator;
-  
+
 /// @brief The Set data structure.
 ///
 /// SHAD's set is a distributed, unordered, set.
@@ -65,8 +66,8 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   using iterator = set_iterator<Set<T, ELEM_COMPARE>, T>;
   using const_iterator = set_iterator<Set<T, ELEM_COMPARE>, const T>;
   using local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
-  using const_local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>,
-                                             const T>;
+  using const_local_iterator =
+      lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
   /// @brief Create method.
   ///
   /// Creates a new set instance.
@@ -204,24 +205,14 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   // FIXME it should be protected
   void BufferEntryInsert(const T& element) { localSet_.Insert(element); }
 
-  iterator begin() {
-    return iterator::set_begin(this);
-  }
-  iterator end() {
-    return iterator::set_end(this);
-  }
-  const_iterator cbegin() {
-    return const_iterator::set_begin(this);
-  }
-  const_iterator cend() {
-    return const_iterator::set_end(this);
-  }
+  iterator begin() { return iterator::set_begin(this); }
+  iterator end() { return iterator::set_end(this); }
+  const_iterator cbegin() { return const_iterator::set_begin(this); }
+  const_iterator cend() { return const_iterator::set_end(this); }
   local_iterator local_begin() {
     return local_iterator::lset_begin(&localSet_);
   }
-  local_iterator local_end() {
-    return local_iterator::lset_end(&localSet_);
-  }
+  local_iterator local_end() { return local_iterator::lset_end(&localSet_); }
   const_local_iterator clocal_begin() {
     return const_local_iterator::lset_begin(&localSet_);
   }
@@ -266,7 +257,7 @@ inline size_t Set<T, ELEM_COMPARE>::Size() const {
 
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::Insert(const T& element) {
-  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -284,7 +275,7 @@ inline void Set<T, ELEM_COMPARE>::Insert(const T& element) {
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::AsyncInsert(rt::Handle& handle,
                                               const T& element) {
-  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.AsyncInsert(handle, element);
@@ -300,7 +291,7 @@ inline void Set<T, ELEM_COMPARE>::AsyncInsert(rt::Handle& handle,
 
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::BufferedInsert(const T& element) {
-  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.Insert(element);
@@ -312,7 +303,7 @@ inline void Set<T, ELEM_COMPARE>::BufferedInsert(const T& element) {
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::BufferedAsyncInsert(rt::Handle& handle,
                                                       const T& element) {
-  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.AsyncInsert(handle, element);
@@ -323,7 +314,7 @@ inline void Set<T, ELEM_COMPARE>::BufferedAsyncInsert(rt::Handle& handle,
 
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::Erase(const T& element) {
-  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.Erase(element);
@@ -340,7 +331,7 @@ inline void Set<T, ELEM_COMPARE>::Erase(const T& element) {
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
                                              const T& element) {
-  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localSet_.AsyncErase(handle, element);
@@ -356,7 +347,7 @@ inline void Set<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
 
 template <typename T, typename ELEM_COMPARE>
 inline bool Set<T, ELEM_COMPARE>::Find(const T& element) {
-  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     return localSet_.Find(element);
@@ -376,7 +367,7 @@ inline bool Set<T, ELEM_COMPARE>::Find(const T& element) {
 template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::AsyncFind(rt::Handle& handle,
                                             const T& element, bool* found) {
-  uint64_t targetId = HashFunction<T>(element, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -432,29 +423,23 @@ void Set<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
   rt::asyncExecuteOnAll(handle, feLambda, arguments);
 }
 
-
 template <typename SetT, typename T>
-class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
+class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
  public:
   using OIDT = typename SetT::ObjectID;
   using LSet = typename SetT::LSetT;
   using lset_it = lset_iterator<LSet, T>;
 
-  set_iterator(uint32_t locID, 
-                     const OIDT setOID,
-                     lset_it& lit,
-                     T element) {
+  set_iterator(uint32_t locID, const OIDT setOID, lset_it& lit, T element) {
     data_ = {locID, setOID, lit, element};
   }
 
-  set_iterator(uint32_t locID, 
-               const OIDT setOID,
-               lset_it& lit) {
+  set_iterator(uint32_t locID, const OIDT setOID, lset_it& lit) {
     data_ = itData(locID, setOID, lit, *lit);
   }
 
   static set_iterator set_begin(const SetT* setPtr) {
-    const LSet * lsetPtr = &(setPtr->localSet_);
+    const LSet* lsetPtr = &(setPtr->localSet_);
     auto localEnd = lset_it::lset_end(lsetPtr);
     if (static_cast<uint32_t>(rt::thisLocality()) == 0) {
       auto localBegin = lset_it::lset_begin(lsetPtr);
@@ -464,7 +449,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
       set_iterator beg(0, setPtr->oid_, localEnd, T());
       return ++beg;
     }
-    auto getItLambda = [](const OIDT &setOID, set_iterator* res) {
+    auto getItLambda = [](const OIDT& setOID, set_iterator* res) {
       auto setPtr = SetT::GetPtr(setOID);
       const LSet* lsetPtr = &(setPtr->localSet_);
       auto localEnd = lset_it::lset_end(lsetPtr);
@@ -480,26 +465,21 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
     rt::executeAtWithRet(rt::Locality(0), getItLambda, setPtr->oid_, &beg);
     return beg;
   }
-  
+
   static set_iterator set_end(const SetT* setPtr) {
     lset_it lend = lset_it::lset_end(&(setPtr->localSet_));
-    set_iterator end(rt::numLocalities(), OIDT(0),
-                     lend, T());
+    set_iterator end(rt::numLocalities(), OIDT(0), lend, T());
     return end;
   }
-  
-  bool operator== (const set_iterator& other) const {
+
+  bool operator==(const set_iterator& other) const {
     return (data_ == other.data_);
   }
-  bool operator!= (const set_iterator& other) const {
-    return !(*this == other);
-  }
+  bool operator!=(const set_iterator& other) const { return !(*this == other); }
 
-  T operator*() {
-    return data_.element_;
-  }
-  
-  set_iterator &operator++() {
+  T operator*() const { return data_.element_; }
+
+  set_iterator& operator++() {
     auto setPtr = SetT::GetPtr(data_.oid_);
     if (static_cast<uint32_t>(rt::thisLocality()) == data_.locId_) {
       const LSet* lsetPtr = &(setPtr->localSet_);
@@ -511,11 +491,11 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
         data_.element_ = *(data_.lsetIt_);
         return *this;
       } else {
-        //find the local begin on next localities
+        // find the local begin on next localities
         itData itd;
-        for (uint32_t i = data_.locId_+1; i < rt::numLocalities(); ++i) {
-          rt::executeAtWithRet(rt::Locality(i),
-                               getLocBeginIt, data_.oid_, &itd);
+        for (uint32_t i = data_.locId_ + 1; i < rt::numLocalities(); ++i) {
+          rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, data_.oid_,
+                               &itd);
           if (itd.locId_ != rt::numLocalities()) {
             // It Data is valid
             data_ = itd;
@@ -539,37 +519,34 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
 
  private:
   struct itData {
-    itData() : oid_(0) , lsetIt_(nullptr, 0, 0, nullptr, nullptr) {}
-    itData(uint32_t locId, OIDT oid, lset_it lsetIt, T element) :
-          locId_(locId), oid_(oid), lsetIt_(lsetIt), element_(element) {}
-    bool operator== (const itData& other) const {
+    itData() : oid_(0), lsetIt_(nullptr, 0, 0, nullptr, nullptr) {}
+    itData(uint32_t locId, OIDT oid, lset_it lsetIt, T element)
+        : locId_(locId), oid_(oid), lsetIt_(lsetIt), element_(element) {}
+    bool operator==(const itData& other) const {
       return (locId_ == other.locId_) && (lsetIt_ == other.lsetIt_);
     }
-    bool operator!= (itData& other) const {
-      return !(*this == other);
-    }
-      uint32_t locId_;
-      OIDT oid_;
-      lset_it lsetIt_;
-      T element_;
-    };
+    bool operator!=(itData& other) const { return !(*this == other); }
+    uint32_t locId_;
+    OIDT oid_;
+    lset_it lsetIt_;
+    T element_;
+  };
 
   itData data_;
-  
 
-  static void getLocBeginIt(const OIDT &setOID, itData* res) {
+  static void getLocBeginIt(const OIDT& setOID, itData* res) {
     auto setPtr = SetT::GetPtr(setOID);
     auto lsetPtr = &(setPtr->localSet_);
     auto localEnd = lset_it::lset_end(lsetPtr);
     auto localBegin = lset_it::lset_begin(lsetPtr);
     if (localBegin != localEnd) {
-      *res = itData(static_cast<uint32_t>(rt::thisLocality()),
-                                setOID, localBegin, *localBegin);
+      *res = itData(static_cast<uint32_t>(rt::thisLocality()), setOID,
+                    localBegin, *localBegin);
     } else {
       *res = itData(rt::numLocalities(), OIDT(0), localEnd, T());
     }
   }
-  
+
   static void getRemoteIt(const itData& itd, itData* res) {
     auto setPtr = SetT::GetPtr(itd.oid_);
     auto lsetPtr = &(setPtr->localSet_);
@@ -577,14 +554,13 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T>{
     lset_it cit = itd.lsetIt_;
     ++cit;
     if (cit != localEnd) {
-      *res = itData(static_cast<uint32_t>(rt::thisLocality()),
-                                itd.oid_, cit, *cit);
+      *res = itData(static_cast<uint32_t>(rt::thisLocality()), itd.oid_, cit,
+                    *cit);
       return;
     } else {
       itData outitd;
-      for (uint32_t i = itd.locId_+1; i < rt::numLocalities(); ++i) {
-        rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_,
-                             &outitd);
+      for (uint32_t i = itd.locId_ + 1; i < rt::numLocalities(); ++i) {
+        rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_, &outitd);
         if (outitd.locId_ != rt::numLocalities()) {
           // It Data is valid
           *res = outitd;
