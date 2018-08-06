@@ -31,8 +31,6 @@
 #include <cstring>
 #include <vector>
 #include <type_traits>
-#include <typeinfo>
-#include <iostream>
 
 namespace shad {
 
@@ -176,9 +174,11 @@ uint64_t HashFunction(const std::vector<KeyTy> &key, uint8_t seed) {
 }
 
 template <class T>
-struct is_std_hashable : std::integral_constant<bool,
-                                                   std::is_arithmetic<T>::value ||
-                                                   std::is_pointer<T>::value> {
+struct is_std_hashable :
+         std::integral_constant<bool,
+                                std::is_arithmetic<T>::value ||
+                                std::is_pointer<T>::value ||
+                                std::is_same<T, std::string>::value>{
 };
 
 template <typename Key, bool=is_std_hashable<Key>::value>
@@ -194,14 +194,6 @@ struct hash<Key, false> {
   size_t operator()(const Key& k) const noexcept{
     return shad::HashFunction(k, 0u);
   }
-};
-
-template <>
-struct hash<std::string, false> {
-  size_t operator()(const std::string& s) const noexcept{
-    return hasher(s);
-  }
-  std::hash<std::string> hasher;
 };
 
 }  // namespace shad
