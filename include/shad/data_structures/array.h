@@ -36,6 +36,7 @@
 
 #include "shad/data_structures/abstract_data_structure.h"
 #include "shad/data_structures/buffer.h"
+#include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
 namespace shad {
@@ -1180,7 +1181,18 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @brief The iterator to the beginning of the sequence.
   /// @return an ::iterator to the beginning of the sequence.
   constexpr iterator begin() noexcept {
-    return iterator{rt::Locality(0), 0, oid_};
+    if (rt::thisLocality() == rt::Locality(0)) {
+      return iterator{rt::Locality(0), 0, oid_, chunk_.get()};
+    }
+
+    pointer chunk = nullptr;
+    rt::executeAtWithRet(rt::Locality(0),
+                         [](const ObjectID &ID, pointer *result) {
+                           auto This = array<T, N>::GetPtr(ID);
+                           *result = This->chunk_.get();
+                         },
+                         GetGlobalID(), &chunk);
+    return iterator{rt::Locality(0), 0, oid_, chunk};
   }
 
   /// @brief The iterator to the beginning of the sequence.
@@ -1192,7 +1204,21 @@ class array : public AbstractDataStructure<array<T, N>> {
   constexpr iterator end() noexcept {
     size_type pos = chunk_size();
     pos -= chunk_size() * rt::numLocalities() - N;
-    return iterator{rt::Locality(rt::numLocalities() - 1), pos, oid_};
+    rt::Locality last(rt::numLocalities() - 1);
+
+    if (rt::thisLocality() == last) {
+      return iterator{rt::Locality(rt::numLocalities() - 1), pos, oid_,
+                      chunk_.get()};
+    }
+
+    pointer chunk = nullptr;
+    rt::executeAtWithRet(rt::Locality(rt::numLocalities() - 1),
+                         [](const ObjectID &ID, pointer *result) {
+                           auto This = array<T, N>::GetPtr(ID);
+                           *result = This->chunk_.get();
+                         },
+                         GetGlobalID(), &chunk);
+    return iterator{rt::Locality(rt::numLocalities() - 1), pos, oid_, chunk};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -1202,7 +1228,18 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @brief The iterator to the beginning of the sequence.
   /// @return a ::const_iterator to the beginning of the sequence.
   constexpr const_iterator cbegin() const noexcept {
-    return const_iterator{rt::Locality(0), 0, oid_};
+    if (rt::thisLocality() == rt::Locality(0)) {
+      return const_iterator{rt::Locality(0), 0, oid_, chunk_.get()};
+    }
+
+    pointer chunk = nullptr;
+    rt::executeAtWithRet(rt::Locality(0),
+                         [](const ObjectID &ID, pointer *result) {
+                           auto This = array<T, N>::GetPtr(ID);
+                           *result = This->chunk_.get();
+                         },
+                         GetGlobalID(), &chunk);
+    return const_iterator{rt::Locality(0), 0, oid_, chunk};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -1210,7 +1247,23 @@ class array : public AbstractDataStructure<array<T, N>> {
   constexpr const_iterator cend() const noexcept {
     size_type pos = chunk_size();
     pos -= chunk_size() * rt::numLocalities() - N;
-    return const_iterator{rt::Locality(rt::numLocalities() - 1), pos, oid_};
+    rt::Locality last(rt::numLocalities() - 1);
+
+    if (rt::thisLocality() == last) {
+      return const_iterator{rt::Locality(rt::numLocalities() - 1), pos, oid_,
+                            chunk_.get()};
+    }
+
+    pointer chunk = nullptr;
+    rt::executeAtWithRet(rt::Locality(rt::numLocalities() - 1),
+                         [](const ObjectID &ID, pointer *result) {
+                           auto This = array<T, N>::GetPtr(ID);
+                           *result = This->chunk_.get();
+                         },
+                         GetGlobalID(), &chunk);
+
+    return const_iterator{rt::Locality(rt::numLocalities() - 1), pos, oid_,
+                          chunk};
   }
 
   /// @}
@@ -1390,36 +1443,65 @@ class array<T, N>::BaseArrayRef {
  public:
   using value_type = U;
   using ObjectID = typename array<T, N>::ObjectID;
+  using pointer = typename array<T, N>::pointer;
 
+  ObjectID oid_;
+  mutable pointer chunk_;
   std::size_t pos_;
   rt::Locality loc_;
-  ObjectID oid_;
 
-  BaseArrayRef(rt::Locality l, std::size_t p, ObjectID oid)
-      : pos_(p), loc_(l), oid_(oid) {}
+  BaseArrayRef(rt::Locality l, std::size_t p, ObjectID oid,
+               pointer chunk = nullptr)
+      : pos_(p), loc_(l), oid_(oid), chunk_(chunk) {}
 
   value_type get() const {
+    bool local = this->loc_ == rt::thisLocality();
+    if (local && chunk_ != nullptr) {
+      return chunk_[pos_];
+    }
+
+    if (local && chunk_ == nullptr) {
+      auto This = array<T, N>::GetPtr(oid_);
+      return This->chunk_[pos_];
+    }
+
     value_type result;
-    rt::executeAtWithRet(
-        loc_,
-        [](const std::pair<ObjectID, std::size_t> &args, T *result) {
-          auto This = array<T, N>::GetPtr(std::get<0>(args));
-          *result = This->chunk_[std::get<1>(args)];
-        },
-        std::make_pair(oid_, pos_), &result);
+
+    if (chunk_ != nullptr) {
+      rt::executeAtWithRet(
+          loc_,
+          [](const std::pair<pointer, std::size_t> &args, T *result) {
+            *result = std::get<0>(args)[std::get<1>(args)];
+          },
+          std::make_pair(chunk_, pos_), &result);
+    } else {
+      std::pair<value_type, pointer> resultPair;
+      rt::executeAtWithRet(loc_,
+                           [](const std::pair<ObjectID, std::size_t> &args,
+                              std::pair<T, pointer> *result) {
+                             auto This = array<T, N>::GetPtr(std::get<0>(args));
+                             result->first = This->chunk_[std::get<1>(args)];
+                             result->second = This->chunk_.get();
+                           },
+                           std::make_pair(oid_, pos_), &resultPair);
+      result = resultPair.first;
+      chunk_ = resultPair.second;
+    }
     return result;
   }
 };
 
 template <typename T, std::size_t N>
 template <typename U>
-class array<T, N>::ArrayRef : public array<T, N>::template BaseArrayRef<U> {
+class alignas(64) array<T, N>::ArrayRef
+    : public array<T, N>::template BaseArrayRef<U> {
  public:
   using value_type = U;
+  using pointer = typename array<T, N>::pointer;
   using ObjectID = typename array<T, N>::ObjectID;
 
-  ArrayRef(rt::Locality l, std::size_t p, ObjectID oid)
-      : array<T, N>::template BaseArrayRef<U>(l, p, oid) {}
+  ArrayRef(rt::Locality l, std::size_t p, ObjectID oid, pointer chunk = nullptr)
+      : array<T, N>::template BaseArrayRef<U>(l, p, oid, chunk) {}
 
   operator value_type() { return array<T, N>::template BaseArrayRef<U>::get(); }
 
@@ -1428,6 +1510,12 @@ class array<T, N>::ArrayRef : public array<T, N>::template BaseArrayRef<U> {
   }
 
   ArrayRef &operator=(const T &v) {
+    if (this->loc_ == rt::thisLocality()) {
+      auto This = array<T, N>::GetPtr(this->oid_);
+      This->chunk_[this->pos_] = v;
+      return *this;
+    }
+
     rt::executeAt(this->loc_,
                   [](const std::tuple<ObjectID, std::size_t, T> &args) {
                     auto This = array<T, N>::GetPtr(std::get<0>(args));
@@ -1440,14 +1528,15 @@ class array<T, N>::ArrayRef : public array<T, N>::template BaseArrayRef<U> {
 
 template <typename T, std::size_t N>
 template <typename U>
-class array<T, N>::ArrayRef<const U>
+class alignas(64) array<T, N>::ArrayRef<const U>
     : public array<T, N>::template BaseArrayRef<U> {
  public:
   using value_type = const U;
+  using pointer = typename array<T, N>::pointer;
   using ObjectID = typename array<T, N>::ObjectID;
 
-  ArrayRef(rt::Locality l, std::size_t p, ObjectID oid)
-      : array<T, N>::template BaseArrayRef<U>(l, p, oid) {}
+  ArrayRef(rt::Locality l, std::size_t p, ObjectID oid, pointer chunk = nullptr)
+      : array<T, N>::template BaseArrayRef<U>(l, p, oid, chunk) {}
 
   operator value_type() { return array<T, N>::template BaseArrayRef<U>::get(); }
 };
@@ -1469,7 +1558,7 @@ bool operator>(const array<T, N> &LHS, const array<T, N> &RHS) {
 
 template <typename T, std::size_t N>
 template <typename U>
-class array<T, N>::array_iterator {
+class alignas(64) array<T, N>::array_iterator {
  public:
   using reference = typename array<T, N>::template ArrayRef<U>;
   using pointer = typename array<T, N>::pointer;
@@ -1477,9 +1566,12 @@ class array<T, N>::array_iterator {
   using value_type = typename array<T, N>::value_type;
   using iterator_category = std::random_access_iterator_tag;
 
+  using local_iterator_type = pointer;
+
   array_iterator() = default;
-  array_iterator(rt::Locality &&l, std::size_t offset, ObjectID oid)
-      : locality_(l), offset_(offset), oid_(oid) {}
+  array_iterator(rt::Locality &&l, std::size_t offset, ObjectID oid,
+                 pointer chunk)
+      : locality_(l), offset_(offset), oid_(oid), chunk_(chunk) {}
 
   bool operator==(const array_iterator &O) const {
     return locality_ == O.locality_ && oid_ == O.oid_ && offset_ == O.offset_;
@@ -1487,7 +1579,7 @@ class array<T, N>::array_iterator {
 
   bool operator!=(const array_iterator &O) const { return !(*this == O); }
 
-  reference operator*() { return reference(locality_, offset_, oid_); }
+  reference operator*() { return reference(locality_, offset_, oid_, chunk_); }
 
   array_iterator &operator++() {
     ++offset_;
@@ -1495,6 +1587,7 @@ class array<T, N>::array_iterator {
         locality_ != rt::Locality(rt::numLocalities() - 1)) {
       ++locality_;
       offset_ = 0;
+      update_chunk_pointer();
     } else if (offset_ == chunk_size() &&
                locality_ == rt::Locality(rt::numLocalities() - 1)) {
       offset_ -= 1;
@@ -1512,6 +1605,7 @@ class array<T, N>::array_iterator {
     if (offset_ == 0) {
       locality_ -= 1;
       offset_ = chunk_size() - 1;
+      update_chunk_pointer();
     } else {
       --offset_;
     }
@@ -1540,10 +1634,12 @@ class array<T, N>::array_iterator {
     if (n < 0) return operator+=(-n);
 
     if (n > offset_) {
-      locality_ -= ((n - offset_) / chunk_size()) + 1;
+      std::size_t deltaLocality = ((n - offset_) / chunk_size()) + 1;
+      locality_ -= deltaLocality;
       std::size_t delta = (n % chunk_size());
       offset_ =
           delta > offset_ ? chunk_size() - (delta - offset_) : offset_ - delta;
+      if (deltaLocality > 0) update_chunk_pointer();
     } else {
       offset_ -= n;
     }
@@ -1558,8 +1654,13 @@ class array<T, N>::array_iterator {
 
     array_iterator tmp(*this);
 
-    tmp.locality_ += (tmp.offset_ + n) / chunk_size();
+    std::size_t deltaLocality = (tmp.offset_ + n) / chunk_size();
+    tmp.locality_ += deltaLocality;
     tmp.offset_ = (tmp.offset_ + n) % chunk_size();
+
+    if (deltaLocality > 0) {
+      update_chunk_pointer();
+    }
 
     return tmp;
   }
@@ -1571,10 +1672,14 @@ class array<T, N>::array_iterator {
 
     array_iterator tmp = *this;
     if (n > offset_) {
-      tmp.locality_ -= ((n - offset_) / chunk_size()) + 1;
+      std::size_t deltaLocality = ((n - offset_) / chunk_size()) + 1;
+      tmp.locality_ -= deltaLocality;
       std::size_t delta = (n % chunk_size());
       tmp.offset_ =
           delta > offset_ ? chunk_size() - (delta - offset_) : offset_ - delta;
+      if (deltaLocality > 0) {
+        update_chunk_pointer();
+      }
     } else {
       tmp.offset_ -= n;
     }
@@ -1611,10 +1716,60 @@ class array<T, N>::array_iterator {
     return oid_ == O.oid_ && !(*this < O);
   }
 
+  class local_iterator_range {
+   public:
+    local_iterator_range(local_iterator_type B, local_iterator_type E)
+        : begin_(B), end_(E) {}
+    local_iterator_type begin() { return begin_; }
+    local_iterator_type end() { return end_; }
+
+   private:
+    local_iterator_type begin_;
+    local_iterator_type end_;
+  };
+
+  static local_iterator_range local_range(array_iterator &B,
+                                          array_iterator &E) {
+    auto arrayPtr = array<T, N>::GetPtr(B.oid_);
+    array<T, N>::pointer begin{arrayPtr->chunk_};
+    if (B.locality_ == rt::thisLocality()) {
+      begin += B.offset_;
+    }
+
+    array<T, N>::pointer end{arrayPtr->chunk_ + arrayPtr->chunk_size()};
+    if (E.locality_ == rt::thisLocality()) {
+      end = arrayPtr->chunk_ + E.pos_;
+    }
+
+    return local_iterator_range(begin, end);
+  }
+
+  static rt::localities_range localities(array_iterator &B, array_iterator &E) {
+    return rt::localities_range(B.locality_, E.locality_);
+  }
+
+  static array_iterator iterator_from_local(array_iterator &B,
+                                            array_iterator &E,
+                                            local_iterator_type itr) {
+    auto arrayPtr = array<T, N>::GetPtr(B.oid_);
+    return array_iterator(rt::thisLocality(),
+                          std::distance(arrayPtr->chunk_.get(), itr), B.oid_);
+  }
+
  private:
+  void update_chunk_pointer() const {
+    rt::executeAtWithRet(locality_,
+                         [](const ObjectID &ID, pointer *result) {
+                           auto This = array<T, N>::GetPtr(ID);
+                           *result = This->chunk_.get();
+                         },
+                         oid_, &chunk_);
+  }
+
   rt::Locality locality_{static_cast<uint32_t>(-1)};
   ObjectID oid_{static_cast<std::size_t>(-1)};
   std::size_t offset_{static_cast<std::size_t>(-1)};
+  mutable pointer chunk_{nullptr};
 };
 
 }  // namespace shad
