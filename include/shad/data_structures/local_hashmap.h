@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <functional>
 #include <memory>
 #include <tuple>
 #include <utility>
@@ -38,8 +39,11 @@
 namespace shad {
 
 namespace constants {
-constexpr size_t kDefaultNumEntriesPerBucket = 16;
+constexpr size_t kDefaultNumEntriesPerBucket = 128;
 }
+
+template <typename LMap, typename T>
+class lmap_iterator;
 
 template <typename T>
 struct Overwriter {
@@ -63,8 +67,20 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE = MemCmp<KTYPE>,
 class LocalHashmap {
   template <typename, typename, typename, typename>
   friend class Hashmap;
+  friend class lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
+                             std::pair<KTYPE, VTYPE>>;
+  friend class lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
+                             const std::pair<KTYPE, VTYPE>>;
+  template <typename, typename>
+  friend class map_iterator;
 
  public:
+  using iterator =
+      lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
+                    std::pair<KTYPE, VTYPE>>;
+  using const_iterator =
+      lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
+                    const std::pair<KTYPE, VTYPE>>;
   /// @brief Constructor.
   /// @param numInitBuckets initial number of Buckets.
   explicit LocalHashmap(const size_t numInitBuckets)
@@ -279,6 +295,28 @@ class LocalHashmap {
   /// KTYPE and VTYPE
   void PrintAllEntries();
 
+  iterator begin() {
+    Entry *firstEntry = &buckets_array_[0].getEntry(0);
+    iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry);
+    if (firstEntry->state == USED) {
+      return cbeg;
+    }
+    return ++cbeg;
+  }
+
+  iterator end() { return iterator::lmap_end(numBuckets_); }
+
+  const_iterator cbegin() {
+    Entry *firstEntry = &buckets_array_[0].getEntry(0);
+    const_iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry);
+    if (firstEntry->state == USED) {
+      return cbeg;
+    }
+    return ++cbeg;
+  }
+
+  const_iterator cend() { return const_iterator::lmap_end(numBuckets_); }
+
  private:
   static const size_t kNumEntriesPerBucket =
       constants::kDefaultNumEntriesPerBucket;
@@ -477,7 +515,7 @@ class LocalHashmap {
       LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
       const KTYPE &key, ApplyFunT function, std::tuple<Args...> &args,
       std::index_sequence<is...>) {
-    uint64_t bucketIdx = HashFunction(key, kHashSeed) % mapPtr->numBuckets_;
+    size_t bucketIdx = shad::hash<KTYPE>{}(key) % mapPtr->numBuckets_;
     Bucket *bucket = &(mapPtr->buckets_array_[bucketIdx]);
 
     while (bucket != nullptr) {
@@ -509,7 +547,7 @@ class LocalHashmap {
       LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
       const KTYPE &key, ApplyFunT function, std::tuple<Args...> &args,
       std::index_sequence<is...>) {
-    uint64_t bucketIdx = HashFunction(key, kHashSeed) % mapPtr->numBuckets_;
+    size_t bucketIdx = shad::hash<KTYPE>{}(key) % mapPtr->numBuckets_;
     Bucket *bucket = &(mapPtr->buckets_array_[bucketIdx]);
 
     while (bucket != nullptr) {
@@ -551,7 +589,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERTER>
 VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Lookup(
     const KTYPE &key) {
-  uint64_t bucketIdx = HashFunction(key, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
 
   VTYPE *result = nullptr;
@@ -607,7 +645,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERTER>
 void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
     const KTYPE &key) {
-  uint64_t bucketIdx = HashFunction(key, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
   Entry *prevEntry = nullptr;
   Entry *toDelete = nullptr;
@@ -783,7 +821,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERTER>
 VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
     const KTYPE &key, const VTYPE &value) {
-  uint64_t bucketIdx = HashFunction(key, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
 
   // Forever or until we find an insertion point.
@@ -818,7 +856,8 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
       // We need to allocate a new buffer
       if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
         // Allocate the bucket
-        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize() * 2));
+        std::shared_ptr<Bucket> newBucket(
+            new Bucket(constants::kDefaultNumEntriesPerBucket));
         bucket->next.swap(newBucket);
       } else {
         // Wait for the allocation to happen
@@ -952,7 +991,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
 template <typename ELTYPE>
 VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
     const KTYPE &key, const ELTYPE &value) {
-  uint64_t bucketIdx = HashFunction(key, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
 
   // Forever or until we find an insertion point.
@@ -987,7 +1026,8 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
       // We need to allocate a new buffer
       if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
         // Allocate the bucket
-        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize() * 2));
+        std::shared_ptr<Bucket> newBucket(
+            new Bucket(constants::kDefaultNumEntriesPerBucket));
         bucket->next.swap(newBucket);
       } else {
         // Wait for the allocation to happen
@@ -1013,6 +1053,96 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncInsert(
   };
   rt::asyncExecuteAt(handle, rt::thisLocality(), insertLambda, args);
 }
+
+template <typename LMap, typename T>
+class lmap_iterator : public std::iterator<std::forward_iterator_tag, T> {
+  template <typename, typename>
+  friend class map_iterator;
+
+ public:
+  using Entry = typename LMap::Entry;
+  using State = typename LMap::State;
+  using Bucket = typename LMap::Bucket;
+
+  lmap_iterator(const LMap *mapPtr, size_t bId, size_t pos, Bucket *cb,
+                Entry *ePtr)
+      : mapPtr_(mapPtr),
+        bucketId_(bId),
+        position_(pos),
+        currBucket_(cb),
+        entryPtr_(ePtr) {}
+
+  static lmap_iterator lmap_begin(const LMap *mapPtr) {
+    Bucket *rootPtr = &(const_cast<LMap *>(mapPtr)->buckets_array_[0]);
+    Entry *firstEntry = &(rootPtr->getEntry(0));
+    lmap_iterator beg(mapPtr, 0, 0, rootPtr, firstEntry);
+    if (firstEntry->state == LMap::USED) {
+      return beg;
+    }
+    return ++beg;
+  }
+
+  static lmap_iterator lmap_end(const LMap *mapPtr) {
+    return lmap_end(mapPtr->numBuckets_);
+  }
+
+  static lmap_iterator lmap_end(size_t numBuckets) {
+    return lmap_iterator(nullptr, numBuckets, 0, nullptr, nullptr);
+  }
+  bool operator==(const lmap_iterator &other) const {
+    return entryPtr_ == other.entryPtr_;
+  }
+  bool operator!=(const lmap_iterator &other) const {
+    return !(*this == other);
+  }
+
+  T operator*() const { return T(entryPtr_->key, entryPtr_->value); }
+
+  lmap_iterator &operator++() {
+    ++position_;
+    if (position_ < constants::kDefaultNumEntriesPerBucket) {
+      entryPtr_++;
+      if (entryPtr_->state == LMap::USED) {
+        return *this;
+      }
+      position_ = 0;
+    } else {
+      position_ = 0;
+      currBucket_ = currBucket_->next.get();
+      if (currBucket_ != nullptr) {
+        entryPtr_ = &currBucket_->getEntry(position_);
+        if (entryPtr_->state == LMap::USED) {
+          return *this;
+        }
+      }
+    }
+    // check the first entry of the following bucket lists
+    for (++bucketId_; bucketId_ < mapPtr_->numBuckets_; ++bucketId_) {
+      currBucket_ = &const_cast<LMap *>(mapPtr_)->buckets_array_[bucketId_];
+      entryPtr_ = &currBucket_->getEntry(position_);
+      if (entryPtr_->state == LMap::USED) {
+        return *this;
+      }
+    }
+    // next it not found, returning end iterator (n, 0, nullptr)
+    mapPtr_ = nullptr;
+    entryPtr_ = nullptr;
+    currBucket_ = nullptr;
+    return *this;
+  }
+  lmap_iterator operator++(int) {
+    lmap_iterator tmp = *this;
+    operator++();
+    return tmp;
+  }
+
+ private:
+  const LMap *mapPtr_;
+  size_t bucketId_;
+  size_t position_;
+  Bucket *currBucket_;
+  Entry *entryPtr_;
+};
 
 }  // namespace shad
 

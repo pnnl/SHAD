@@ -26,6 +26,7 @@
 #define INCLUDE_SHAD_EXTENSIONS_GRAPH_LIBRARY_EDGE_INDEX_H_
 
 #include <algorithm>
+#include <functional>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -486,7 +487,7 @@ inline size_t EdgeIndex<SrcT, DestT, StorageT>::NumEdges() {
 
 template <typename SrcT, typename DestT, typename StorageT>
 inline size_t EdgeIndex<SrcT, DestT, StorageT>::GetDegree(const SrcT &src) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   size_t degree = 0;
   if (targetLocality == rt::thisLocality()) {
@@ -506,7 +507,7 @@ inline size_t EdgeIndex<SrcT, DestT, StorageT>::GetDegree(const SrcT &src) {
 template <typename SrcT, typename DestT, typename StorageT>
 inline void EdgeIndex<SrcT, DestT, StorageT>::Insert(const SrcT &src,
                                                      const DestT &dest) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -524,7 +525,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::Insert(const SrcT &src,
 template <typename SrcT, typename DestT, typename StorageT>
 inline void EdgeIndex<SrcT, DestT, StorageT>::InsertEdgeList(
     const SrcT &src, DestT *destinations, size_t numDest, bool overwrite) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localIndex_.InsertEdgeList(src, destinations, numDest, overwrite);
@@ -555,7 +556,7 @@ template <typename SrcT, typename DestT, typename StorageT>
 inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncInsertEdgeList(
     rt::Handle &handle, const SrcT &src, DestT *destinations, size_t numDest,
     bool overwrite) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -597,7 +598,7 @@ template <typename SrcT, typename DestT, typename StorageT>
 inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncInsert(rt::Handle &handle,
                                                           const SrcT &src,
                                                           const DestT &dest) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -615,7 +616,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncInsert(rt::Handle &handle,
 template <typename SrcT, typename DestT, typename StorageT>
 inline void EdgeIndex<SrcT, DestT, StorageT>::Erase(const SrcT &src,
                                                     const DestT &dest) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -634,7 +635,7 @@ template <typename SrcT, typename DestT, typename StorageT>
 inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncErase(rt::Handle &handle,
                                                          const SrcT &src,
                                                          const DestT &dest) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -652,7 +653,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncErase(rt::Handle &handle,
 template <typename SrcT, typename DestT, typename StorageT>
 inline void EdgeIndex<SrcT, DestT, StorageT>::BufferedInsert(
     const SrcT &src, const DestT &dest) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localIndex_.Insert(src, dest);
@@ -664,7 +665,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::BufferedInsert(
 template <typename SrcT, typename DestT, typename StorageT>
 inline void EdgeIndex<SrcT, DestT, StorageT>::BufferedAsyncInsert(
     rt::Handle &handle, const SrcT &src, const DestT &dest) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localIndex_.AsyncInsert(handle, src, dest);
@@ -716,7 +717,7 @@ template <typename ApplyFunT, typename... Args>
 void EdgeIndex<SrcT, DestT, StorageT>::ForEachNeighbor(const SrcT &src,
                                                        ApplyFunT &&function,
                                                        Args &... args) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localIndex_.ForEachNeighbor(src, function, args...);
@@ -741,7 +742,7 @@ template <typename SrcT, typename DestT, typename StorageT>
 template <typename ApplyFunT, typename... Args>
 void EdgeIndex<SrcT, DestT, StorageT>::AsyncForEachNeighbor(
     rt::Handle &handle, const SrcT &src, ApplyFunT &&function, Args &... args) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localIndex_.AsyncForEachNeighbor(handle, src, function, args...);
@@ -805,7 +806,7 @@ void EdgeIndex<SrcT, DestT, StorageT>::AsyncForEachEdge(rt::Handle &handle,
 template <typename SrcT, typename DestT, typename StorageT>
 bool EdgeIndex<SrcT, DestT, StorageT>::GetVertexAttributes(
     const SrcT &src, typename StorageT::SrcAttributesT *attr) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -830,7 +831,7 @@ template <typename SrcT, typename DestT, typename StorageT>
 template <typename ApplyFunT, typename... Args>
 void EdgeIndex<SrcT, DestT, StorageT>::VertexAttributesApply(
     const SrcT &src, ApplyFunT &&function, Args &... args) {
-  uint64_t targetId = HashFunction<SrcT>(src, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<SrcT>{}(src) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {

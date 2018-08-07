@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <functional>
 #include <memory>
 #include <tuple>
 #include <utility>
@@ -38,8 +39,11 @@
 namespace shad {
 
 namespace constants {
-constexpr size_t kSetDefaultNumEntriesPerBucket = 16;
+constexpr size_t kSetDefaultNumEntriesPerBucket = 128;
 }
+
+template <typename LSet, typename T>
+class lset_iterator;
 
 /// @brief The LocalSet data structure.
 ///
@@ -57,7 +61,15 @@ class LocalSet {
   template <typename, typename>
   friend class AttrEdgesPair;
 
+  friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
+  friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
+  template <typename, typename>
+  friend class set_iterator;
+
  public:
+  using iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
+  using const_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
+
   /// @brief Constructor.
   /// @param numInitBuckets initial number of Buckets.
   explicit LocalSet(const size_t numInitBuckets = 16)
@@ -153,6 +165,28 @@ class LocalSet {
   /// @warning std::ostream & operator<< must be defined for T.
   void PrintAllElements();
 
+  iterator begin() {
+    Entry* firstEntry = &buckets_array_[0].getEntry(0);
+    iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry);
+    if (firstEntry->state == USED) {
+      return cbeg;
+    }
+    return ++cbeg;
+  }
+
+  iterator end() { return iterator::lset_end(numBuckets_); }
+
+  const_iterator cbegin() {
+    Entry* firstEntry = &buckets_array_[0].getEntry(0);
+    const_iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry);
+    if (firstEntry->state == USED) {
+      return cbeg;
+    }
+    return ++cbeg;
+  }
+
+  const_iterator cend() { return const_iterator::lset_end(numBuckets_); }
+
  private:
   static const size_t kNumEntriesPerBucket =
       constants::kSetDefaultNumEntriesPerBucket;
@@ -199,6 +233,7 @@ class LocalSet {
     std::shared_ptr<Entry> entries;
     rt::Lock _entriesLock;
   };
+
   ElemCompare ElemComp_;
   size_t numBuckets_;
   std::vector<Bucket> buckets_array_;
@@ -321,7 +356,7 @@ class LocalSet {
 
 template <typename T, typename ELEM_COMPARE>
 bool LocalSet<T, ELEM_COMPARE>::Find(const T& element) {
-  uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<T>{}(element) % numBuckets_;
   Bucket* bucket = &(buckets_array_[bucketIdx]);
 
   while (bucket != nullptr) {
@@ -363,7 +398,7 @@ void LocalSet<T, ELEM_COMPARE>::PrintAllElements() {
 
 template <typename T, typename ELEM_COMPARE>
 void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
-  uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<T>{}(element) % numBuckets_;
   Bucket* bucket = &(buckets_array_[bucketIdx]);
   Entry* prevEntry = nullptr;
   Entry* toDelete = nullptr;
@@ -393,7 +428,7 @@ void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
         // and its status set to PENDING_INSERT
         toDelete = entry;
         prevEntry = entry;
-        size_--;
+        --size_;
 
         // now look for the last two entries.
         size_t j = i + 1;
@@ -418,7 +453,7 @@ void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
                 rt::impl::yield();
                 lastEntry->state = EMPTY;
                 toDelete->state = USED;
-                size_++;
+                ++size_;
                 Erase(element);
                 return;
               }
@@ -434,7 +469,7 @@ void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
             } else {
               if (lastEntry->state == PENDING_INSERT) {
                 toDelete->state = USED;
-                size_++;
+                ++size_;
                 Erase(element);
                 return;
               }
@@ -455,7 +490,7 @@ void LocalSet<T, ELEM_COMPARE>::Erase(const T& element) {
             if (!__sync_bool_compare_and_swap(&lastEntry->state, USED,
                                               PENDING_INSERT)) {
               toDelete->state = USED;
-              size_++;
+              ++size_;
               Erase(element);
               return;
             }
@@ -517,7 +552,7 @@ void LocalSet<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
 
 template <typename T, typename ELEM_COMPARE>
 void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
-  uint64_t bucketIdx = HashFunction(element, kHashSeed) % numBuckets_;
+  size_t bucketIdx = shad::hash<T>{}(element) % numBuckets_;
   Bucket* bucket = &(buckets_array_[bucketIdx]);
 
   // Forever or until we find an insertion point.
@@ -527,7 +562,7 @@ void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
 
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         entry->element = std::move(element);
-        size_ += 1;
+        ++size_;
         entry->state = USED;
         return;
       } else {
@@ -542,7 +577,8 @@ void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
       // We need to allocate a new buffer
       if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
         // Allocate the bucket
-        std::shared_ptr<Bucket> newBucket(new Bucket(bucket->BucketSize() * 2));
+        std::shared_ptr<Bucket> newBucket(
+            new Bucket(constants::kSetDefaultNumEntriesPerBucket));
         bucket->next.swap(newBucket);
       } else {
         // Wait for the allocation to happen
@@ -608,6 +644,96 @@ void LocalSet<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
                      AsyncForEachElementFunWrapper<ArgsTuple, Args...>,
                      argsTuple, numBuckets_);
 }
+
+template <typename LSet, typename T>
+class lset_iterator : public std::iterator<std::forward_iterator_tag, T> {
+  template <typename, typename>
+  friend class set_iterator;
+
+ public:
+  using Entry = typename LSet::Entry;
+  using State = typename LSet::State;
+  using Bucket = typename LSet::Bucket;
+
+  lset_iterator(const LSet* setPtr, size_t bId, size_t pos, Bucket* cb,
+                Entry* ePtr)
+      : setPtr_(setPtr),
+        bucketId_(bId),
+        position_(pos),
+        currBucket_(cb),
+        entryPtr_(ePtr) {}
+
+  static lset_iterator lset_begin(const LSet* setPtr) {
+    Bucket* rootPtr = &(const_cast<LSet*>(setPtr)->buckets_array_[0]);
+    Entry* firstEntry = &(rootPtr->getEntry(0));
+    lset_iterator beg(setPtr, 0, 0, rootPtr, firstEntry);
+    if (firstEntry->state == LSet::USED) {
+      return beg;
+    }
+    return ++beg;
+  }
+
+  static lset_iterator lset_end(const LSet* setPtr) {
+    return lset_end(setPtr->numBuckets_);
+  }
+
+  static lset_iterator lset_end(size_t numBuckets) {
+    return lset_iterator(nullptr, numBuckets, 0, nullptr, nullptr);
+  }
+  bool operator==(const lset_iterator& other) const {
+    return entryPtr_ == other.entryPtr_;
+  }
+  bool operator!=(const lset_iterator& other) const {
+    return !(*this == other);
+  }
+
+  T operator*() const { return entryPtr_->element; }
+
+  lset_iterator& operator++() {
+    ++position_;
+    if (position_ < constants::kSetDefaultNumEntriesPerBucket) {
+      entryPtr_++;
+      if (entryPtr_->state == LSet::USED) {
+        return *this;
+      }
+      position_ = 0;
+    } else {
+      position_ = 0;
+      currBucket_ = currBucket_->next.get();
+      if (currBucket_ != nullptr) {
+        entryPtr_ = &currBucket_->getEntry(position_);
+        if (entryPtr_->state == LSet::USED) {
+          return *this;
+        }
+      }
+    }
+    // check the first entry of the following bucket lists
+    for (++bucketId_; bucketId_ < setPtr_->numBuckets_; ++bucketId_) {
+      currBucket_ = &const_cast<LSet*>(setPtr_)->buckets_array_[bucketId_];
+      entryPtr_ = &currBucket_->getEntry(position_);
+      if (entryPtr_->state == LSet::USED) {
+        return *this;
+      }
+    }
+    // next it not found, returning end iterator (n, 0, nullptr)
+    setPtr_ = nullptr;
+    entryPtr_ = nullptr;
+    currBucket_ = nullptr;
+    return *this;
+  }
+  lset_iterator operator++(int) {
+    lset_iterator tmp = *this;
+    operator++();
+    return tmp;
+  }
+
+ private:
+  const LSet* setPtr_;
+  size_t bucketId_;
+  size_t position_;
+  Bucket* currBucket_;
+  Entry* entryPtr_;
+};
 
 }  // namespace shad
 

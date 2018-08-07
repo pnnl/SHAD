@@ -26,6 +26,7 @@
 #define INCLUDE_SHAD_DATA_STRUCTURES_HASHMAP_H_
 
 #include <algorithm>
+#include <functional>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -37,6 +38,9 @@
 #include "shad/runtime/runtime.h"
 
 namespace shad {
+
+template <typename Map, typename T>
+class map_iterator;
 
 /// @brief The Hashmap data structure.
 ///
@@ -54,12 +58,29 @@ class Hashmap : public AbstractDataStructure<
                     Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>> {
   template <typename>
   friend class AbstractDataStructure;
+  friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
+                            std::pair<KTYPE, VTYPE>>;
+  friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
+                            const std::pair<KTYPE, VTYPE>>;
 
  public:
   using HmapT = Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
   using LMapT = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
   using ObjectID = typename AbstractDataStructure<HmapT>::ObjectID;
   using ShadHashmapPtr = typename AbstractDataStructure<HmapT>::SharedPtr;
+
+  using iterator =
+      map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
+                   std::pair<KTYPE, VTYPE>>;
+  using const_iterator =
+      map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
+                   const std::pair<KTYPE, VTYPE>>;
+  using local_iterator =
+      lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
+                    std::pair<KTYPE, VTYPE>>;
+  using const_local_iterator =
+      lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
+                    const std::pair<KTYPE, VTYPE>>;
   struct EntryT {
     EntryT(const KTYPE &k, const VTYPE &v) : key(k), value(v) {}
     EntryT() = default;
@@ -278,6 +299,21 @@ class Hashmap : public AbstractDataStructure<
     localMap_.Insert(entry.key, entry.value);
   }
 
+  iterator begin() { return iterator::map_begin(this); }
+  iterator end() { return iterator::map_end(this); }
+  const_iterator cbegin() { return const_iterator::map_begin(this); }
+  const_iterator cend() { return const_iterator::map_end(this); }
+  local_iterator local_begin() {
+    return local_iterator::lmap_begin(&localMap_);
+  }
+  local_iterator local_end() { return local_iterator::lmap_end(&localMap_); }
+  const_local_iterator clocal_begin() {
+    return const_local_iterator::lmap_begin(&localMap_);
+  }
+  const_local_iterator clocal_end() {
+    return const_local_iterator::lmap_end(&localMap_);
+  }
+
  private:
   ObjectID oid_;
   LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> localMap_;
@@ -324,7 +360,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
 inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(
     const KTYPE &key, const VTYPE &value) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -343,7 +379,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
 inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
     rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -362,7 +398,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
 inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BufferedInsert(
     const KTYPE &key, const VTYPE &value) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localMap_.Insert(key, value);
@@ -377,7 +413,7 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE,
                     INSERT_POLICY>::BufferedAsyncInsert(rt::Handle &handle,
                                                         const KTYPE &key,
                                                         const VTYPE &value) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localMap_.AsyncInsert(handle, key, value);
@@ -391,7 +427,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
 inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Erase(
     const KTYPE &key) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -410,7 +446,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
 inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncErase(
     rt::Handle &handle, const KTYPE &key) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -429,7 +465,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
 inline bool Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Lookup(
     const KTYPE &key, VTYPE *res) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -454,7 +490,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
 inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncLookup(
     rt::Handle &handle, const KTYPE &key, LookupResult *res) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -564,7 +600,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
 template <typename ApplyFunT, typename... Args>
 void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Apply(
     const KTYPE &key, ApplyFunT &&function, Args &... args) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   if (targetLocality == rt::thisLocality()) {
     localMap_.Apply(key, function, args...);
@@ -592,7 +628,7 @@ template <typename ApplyFunT, typename... Args>
 void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncApply(
     rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
     Args &... args) {
-  uint64_t targetId = HashFunction<KTYPE>(key, 0) % rt::numLocalities();
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
   if (targetLocality == rt::thisLocality()) {
@@ -616,6 +652,155 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncApply(
     rt::asyncExecuteAt(handle, targetLocality, feLambda, arguments);
   }
 }
+
+template <typename MapT, typename T>
+class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
+ public:
+  using OIDT = typename MapT::ObjectID;
+  using LMap = typename MapT::LMapT;
+  using lmap_it = lmap_iterator<LMap, T>;
+
+  map_iterator(uint32_t locID, const OIDT mapOID, lmap_it &lit, T element) {
+    data_ = {locID, mapOID, lit, element};
+  }
+
+  map_iterator(uint32_t locID, const OIDT mapOID, lmap_it &lit) {
+    data_ = itData(locID, mapOID, lit, *lit);
+  }
+
+  static map_iterator map_begin(const MapT *mapPtr) {
+    const LMap *lmapPtr = &(mapPtr->localMap_);
+    auto localEnd = lmap_it::lmap_end(lmapPtr);
+    if (static_cast<uint32_t>(rt::thisLocality()) == 0) {
+      auto localBegin = lmap_it::lmap_begin(lmapPtr);
+      if (localBegin != localEnd) {
+        return map_iterator(0, mapPtr->oid_, localBegin);
+      }
+      map_iterator beg(0, mapPtr->oid_, localEnd, T());
+      return ++beg;
+    }
+    auto getItLambda = [](const OIDT &mapOID, map_iterator *res) {
+      auto mapPtr = MapT::GetPtr(mapOID);
+      const LMap *lmapPtr = &(mapPtr->localMap_);
+      auto localEnd = lmap_it::lmap_end(lmapPtr);
+      auto localBegin = lmap_it::lmap_begin(lmapPtr);
+      if (localBegin != localEnd) {
+        *res = map_iterator(0, mapOID, localBegin);
+      } else {
+        map_iterator beg(0, mapOID, localEnd, T());
+        *res = ++beg;
+      }
+    };
+    map_iterator beg(0, mapPtr->oid_, localEnd, T());
+    rt::executeAtWithRet(rt::Locality(0), getItLambda, mapPtr->oid_, &beg);
+    return beg;
+  }
+
+  static map_iterator map_end(const MapT *mapPtr) {
+    lmap_it lend = lmap_it::lmap_end(&(mapPtr->localMap_));
+    map_iterator end(rt::numLocalities(), OIDT(0), lend, T());
+    return end;
+  }
+
+  bool operator==(const map_iterator &other) const {
+    return (data_ == other.data_);
+  }
+  bool operator!=(const map_iterator &other) const { return !(*this == other); }
+
+  T operator*() const { return data_.element_; }
+
+  map_iterator &operator++() {
+    auto mapPtr = MapT::GetPtr(data_.oid_);
+    if (static_cast<uint32_t>(rt::thisLocality()) == data_.locId_) {
+      const LMap *lmapPtr = &(mapPtr->localMap_);
+      auto lend = lmap_it::lmap_end(lmapPtr);
+      if (data_.lmapIt_ != lend) {
+        ++(data_.lmapIt_);
+      }
+      if (data_.lmapIt_ != lend) {
+        data_.element_ = *(data_.lmapIt_);
+        return *this;
+      } else {
+        // find the local begin on next localities
+        itData itd;
+        for (uint32_t i = data_.locId_ + 1; i < rt::numLocalities(); ++i) {
+          rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, data_.oid_,
+                               &itd);
+          if (itd.locId_ != rt::numLocalities()) {
+            // It Data is valid
+            data_ = itd;
+            return *this;
+          }
+        }
+        data_ = itData(rt::numLocalities(), OIDT(0), lend, T());
+        return *this;
+      }
+    }
+    itData itd;
+    rt::executeAtWithRet(rt::Locality(data_.locId_), getRemoteIt, data_, &itd);
+    data_ = itd;
+    return *this;
+  }
+  map_iterator operator++(int) {
+    map_iterator tmp = *this;
+    operator++();
+    return tmp;
+  }
+
+ private:
+  struct itData {
+    itData() : oid_(0), lmapIt_(nullptr, 0, 0, nullptr, nullptr) {}
+    itData(uint32_t locId, OIDT oid, lmap_it lmapIt, T element)
+        : locId_(locId), oid_(oid), lmapIt_(lmapIt), element_(element) {}
+    bool operator==(const itData &other) const {
+      return (locId_ == other.locId_) && (lmapIt_ == other.lmapIt_);
+    }
+    bool operator!=(itData &other) const { return !(*this == other); }
+    uint32_t locId_;
+    OIDT oid_;
+    lmap_it lmapIt_;
+    T element_;
+  };
+
+  itData data_;
+
+  static void getLocBeginIt(const OIDT &mapOID, itData *res) {
+    auto mapPtr = MapT::GetPtr(mapOID);
+    auto lmapPtr = &(mapPtr->localMap_);
+    auto localEnd = lmap_it::lmap_end(lmapPtr);
+    auto localBegin = lmap_it::lmap_begin(lmapPtr);
+    if (localBegin != localEnd) {
+      *res = itData(static_cast<uint32_t>(rt::thisLocality()), mapOID,
+                    localBegin, *localBegin);
+    } else {
+      *res = itData(rt::numLocalities(), OIDT(0), localEnd, T());
+    }
+  }
+
+  static void getRemoteIt(const itData &itd, itData *res) {
+    auto mapPtr = MapT::GetPtr(itd.oid_);
+    auto lmapPtr = &(mapPtr->localMap_);
+    auto localEnd = lmap_it::lmap_end(lmapPtr);
+    lmap_it cit = itd.lmapIt_;
+    ++cit;
+    if (cit != localEnd) {
+      *res = itData(static_cast<uint32_t>(rt::thisLocality()), itd.oid_, cit,
+                    *cit);
+      return;
+    } else {
+      itData outitd;
+      for (uint32_t i = itd.locId_ + 1; i < rt::numLocalities(); ++i) {
+        rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_, &outitd);
+        if (outitd.locId_ != rt::numLocalities()) {
+          // It Data is valid
+          *res = outitd;
+          return;
+        }
+      }
+      *res = itData(rt::numLocalities(), OIDT(0), localEnd, T());
+    }
+  }
+};
 
 }  // namespace shad
 
