@@ -1478,6 +1478,8 @@ class array<T, N>::array_iterator {
   using value_type = typename array<T, N>::value_type;
   using iterator_category = std::random_access_iterator_tag;
 
+  using local_iterator_type = pointer;
+
   array_iterator() = default;
   array_iterator(rt::Locality &&l, std::size_t offset, ObjectID oid)
       : locality_(l), offset_(offset), oid_(oid) {}
@@ -1614,13 +1616,14 @@ class array<T, N>::array_iterator {
 
   class local_iterator_range {
    public:
-    local_iterator_range(T *const B, T *const E) : begin_(B), end_(E) {}
-    T *const begin() { return begin_; }
-    T *const end() { return end_; }
+    local_iterator_range(local_iterator_type B, local_iterator_type E)
+        : begin_(B), end_(E) {}
+    local_iterator_type begin() { return begin_; }
+    local_iterator_type end() { return end_; }
 
    private:
-    T *const begin_;
-    T *const end_;
+    local_iterator_type begin_;
+    local_iterator_type end_;
   };
 
   static local_iterator_range local_range(array_iterator &B,
@@ -1641,6 +1644,14 @@ class array<T, N>::array_iterator {
 
   static rt::localities_range localities(array_iterator &B, array_iterator &E) {
     return rt::localities_range(B.locality_, E.locality_);
+  }
+
+  static array_iterator iterator_from_local(array_iterator &B,
+                                            array_iterator &E,
+                                            local_iterator_type itr) {
+    auto arrayPtr = array<T, N>::GetPtr(B.oid_);
+    return array_iterator(rt::thisLocality(),
+                          std::distance(arrayPtr->chunk_.get(), itr), B.oid_);
   }
 
  private:

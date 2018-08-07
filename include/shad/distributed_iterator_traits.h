@@ -42,6 +42,7 @@ struct distributed_iterator_traits : public std::iterator_traits<Iterator> {
       typename std::iterator_traits<Iterator>::iterator_category;
 
   using local_iterator_range = typename Iterator::local_range;
+  using local_iterator_type = typename Iterator::local_iterator;
 
   static rt::localities_range localities(Iterator begin, Iterator end) {
     return Iterator::localities(begin, end);
@@ -49,6 +50,11 @@ struct distributed_iterator_traits : public std::iterator_traits<Iterator> {
 
   static local_iterator_range local_range(Iterator begin, Iterator end) {
     return Iterator::local_range(begin, end);
+  }
+
+  static Iterator iterator_from_local(Iterator begin, Iterator end,
+                                      local_iterator_type itr) {
+    return Iterator::iterator_from_local(begin, end, itr);
   }
 };
 
