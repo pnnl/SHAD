@@ -192,6 +192,10 @@ class localities_range {
   /// @brief The end of the sequence of Localities.
   Locality end() const { return end_; }
 
+  size_t size() const {
+    return static_cast<uint32_t>(end_) - static_cast<uint32_t>(begin_);
+  }
+
  private:
   Locality begin_;
   Locality end_;
