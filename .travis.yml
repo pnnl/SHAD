@@ -71,19 +71,19 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
-  - git clone https://github.com/google/googletest.git
+  - git clone --branch release-1.8.0 --depth 1 https://github.com/google/googletest.git
   - cd googletest && mkdir build
   - cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$HOME/gtest-root -Bbuild -H.
   - cmake --build build -- -j 2
   - cmake --build build --target install
   - cd ..
-  - git clone https://github.com/01org/tbb.git
+  - git clone --depth 1 https://github.com/01org/tbb.git
   - cd tbb
   - make work_dir=$(pwd)/build-tbb tbb_root=$(pwd)
   - mkdir $HOME/tbb-root && cp -r include $HOME/tbb-root/
   - mkdir $HOME/tbb-root/lib && cp $(pwd)/build-tbb_release/libtbb* $HOME/tbb-root/lib/
   - cd ..
-  - git clone https://github.com/google/benchmark.git
+  - git clone --depth 1 --branch v1.4.1 https://github.com/google/benchmark.git
   - cd benchmark
   - mkdir build
   - cd build
