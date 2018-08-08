@@ -1568,10 +1568,48 @@ class alignas(64) array<T, N>::array_iterator {
 
   using local_iterator_type = pointer;
 
-  array_iterator() = default;
+  /// @brief Constructor.
   array_iterator(rt::Locality &&l, std::size_t offset, ObjectID oid,
                  pointer chunk)
       : locality_(l), offset_(offset), oid_(oid), chunk_(chunk) {}
+
+  /// @brief Default constructor.
+  array_iterator()
+      : array_iterator(rt::Locality(), -1, ObjectID::kNullID, nullptr) {}
+
+  /// @brief Copy constructor.
+  array_iterator(const array_iterator &O)
+      : locality_(O.locality_),
+        offset_(O.offset_),
+        oid_(O.oid_),
+        chunk_(O.chunk_) {}
+
+  /// @brief Move constructor.
+  array_iterator(const array_iterator &&O) noexcept
+      : locality_(std::move(O.locality_)),
+        offset_(std::move(O.offset_)),
+        oid_(std::move(O.oid_)),
+        chunk_(std::move(O.chunk_)) {}
+
+  /// @brief Copy assignment operator.
+  array_iterator &operator=(const array_iterator &O) {
+    locality_ = O.locality_;
+    offset_ = O.offset_;
+    oid_ = O.oid_;
+    chunk_ = O.chunk_;
+
+    return *this;
+  }
+
+  /// @brief Move assignment operator.
+  array_iterator &operator=(array_iterator &&O) {
+    locality_ = std::move(O.locality_);
+    offset_ = std::move(O.offset_);
+    oid_ = std::move(O.oid_);
+    chunk_ = std::move(O.chunk_);
+
+    return *this;
+  }
 
   bool operator==(const array_iterator &O) const {
     return locality_ == O.locality_ && oid_ == O.oid_ && offset_ == O.offset_;
@@ -1700,12 +1738,13 @@ class alignas(64) array<T, N>::array_iterator {
   }
 
   bool operator<(const array_iterator &O) const {
-    if (locality_ < O.locality_) return true;
-    return offset_ < O.offset_;
+    if (locality_ > O.locality_) return false;
+    return locality_ < O.locality_ || offset_ < O.offset_;
   }
 
   bool operator>(const array_iterator &O) const {
-    return oid_ == O.oid_ && locality_ >= O.locality_ && offset_ > O.offset_;
+    if (locality_ < O.locality_) return false;
+    return locality_ > O.locality_ || offset_ > O.offset_;
   }
 
   bool operator<=(const array_iterator &O) const {
@@ -1731,21 +1770,23 @@ class alignas(64) array<T, N>::array_iterator {
   static local_iterator_range local_range(array_iterator &B,
                                           array_iterator &E) {
     auto arrayPtr = array<T, N>::GetPtr(B.oid_);
-    array<T, N>::pointer begin{arrayPtr->chunk_};
+    typename array<T, N>::pointer begin{arrayPtr->chunk_.get()};
     if (B.locality_ == rt::thisLocality()) {
       begin += B.offset_;
     }
 
-    array<T, N>::pointer end{arrayPtr->chunk_ + arrayPtr->chunk_size()};
+    typename array<T, N>::pointer end{arrayPtr->chunk_.get() +
+                                      arrayPtr->chunk_size()};
     if (E.locality_ == rt::thisLocality()) {
-      end = arrayPtr->chunk_ + E.pos_;
+      end = arrayPtr->chunk_.get() + E.offset_;
     }
 
     return local_iterator_range(begin, end);
   }
 
   static rt::localities_range localities(array_iterator &B, array_iterator &E) {
-    return rt::localities_range(B.locality_, E.locality_);
+    return rt::localities_range(
+        B.locality_, rt::Locality(static_cast<uint32_t>(E.locality_) + 1));
   }
 
   static array_iterator iterator_from_local(array_iterator &B,
@@ -1753,7 +1794,8 @@ class alignas(64) array<T, N>::array_iterator {
                                             local_iterator_type itr) {
     auto arrayPtr = array<T, N>::GetPtr(B.oid_);
     return array_iterator(rt::thisLocality(),
-                          std::distance(arrayPtr->chunk_.get(), itr), B.oid_);
+                          std::distance(arrayPtr->chunk_.get(), itr), B.oid_,
+                          arrayPtr->chunk_.get());
   }
 
  private:
