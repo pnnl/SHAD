@@ -64,6 +64,7 @@ class Hashmap : public AbstractDataStructure<
                             const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
 
  public:
+  using value_type = std::pair<KTYPE, VTYPE>;
   using HmapT = Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
   using LMapT = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
   using ObjectID = typename AbstractDataStructure<HmapT>::ObjectID;
@@ -659,7 +660,9 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   using OIDT = typename MapT::ObjectID;
   using LMap = typename MapT::LMapT;
   using lmap_it = lmap_iterator<LMap, T>;
+  using value_type = T;
 
+  map_iterator() {}
   map_iterator(uint32_t locID, const OIDT mapOID, lmap_it &lit, T element) {
     data_ = {locID, mapOID, lit, element};
   }

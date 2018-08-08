@@ -67,6 +67,7 @@ class LocalSet {
   friend class set_iterator;
 
  public:
+  using value_type = T;
   using iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
   using const_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
 
@@ -651,10 +652,12 @@ class lset_iterator : public std::iterator<std::forward_iterator_tag, T> {
   friend class set_iterator;
 
  public:
+  using value_type = T;
   using Entry = typename LSet::Entry;
   using State = typename LSet::State;
   using Bucket = typename LSet::Bucket;
 
+  lset_iterator() {};
   lset_iterator(const LSet* setPtr, size_t bId, size_t pos, Bucket* cb,
                 Entry* ePtr)
       : setPtr_(setPtr),

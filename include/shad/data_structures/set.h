@@ -57,6 +57,7 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   friend class set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
 
  public:
+  using value_type = T;
   using SetT = Set<T, ELEM_COMPARE>;
   using LSetT = LocalSet<T, ELEM_COMPARE>;
   using ObjectID = typename AbstractDataStructure<SetT>::ObjectID;
@@ -426,10 +427,12 @@ void Set<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
 template <typename SetT, typename T, typename NonConstT>
 class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
  public:
+  using value_type = T;
   using OIDT = typename SetT::ObjectID;
   using LSet = typename SetT::LSetT;
   using lset_it = lset_iterator<LSet, T>;
 
+  set_iterator() {}
   set_iterator(uint32_t locID, const OIDT setOID, lset_it& lit, T element) {
     data_ = {locID, setOID, lit, element};
   }
