@@ -430,22 +430,22 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
   using value_type = T;
   using OIDT = typename SetT::ObjectID;
   using LSet = typename SetT::LSetT;
-  using lset_it = lset_iterator<LSet, T>;
+  using local_iterator_type = lset_iterator<LSet, T>;
 
   set_iterator() {}
-  set_iterator(uint32_t locID, const OIDT setOID, lset_it& lit, T element) {
+  set_iterator(uint32_t locID, const OIDT setOID, local_iterator_type& lit, T element) {
     data_ = {locID, setOID, lit, element};
   }
 
-  set_iterator(uint32_t locID, const OIDT setOID, lset_it& lit) {
+  set_iterator(uint32_t locID, const OIDT setOID, local_iterator_type& lit) {
     data_ = itData(locID, setOID, lit, *lit);
   }
 
   static set_iterator set_begin(const SetT* setPtr) {
     const LSet* lsetPtr = &(setPtr->localSet_);
-    auto localEnd = lset_it::lset_end(lsetPtr);
+    auto localEnd = local_iterator_type::lset_end(lsetPtr);
     if (static_cast<uint32_t>(rt::thisLocality()) == 0) {
-      auto localBegin = lset_it::lset_begin(lsetPtr);
+      auto localBegin = local_iterator_type::lset_begin(lsetPtr);
       if (localBegin != localEnd) {
         return set_iterator(0, setPtr->oid_, localBegin);
       }
@@ -455,8 +455,8 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
     auto getItLambda = [](const OIDT& setOID, set_iterator* res) {
       auto setPtr = SetT::GetPtr(setOID);
       const LSet* lsetPtr = &(setPtr->localSet_);
-      auto localEnd = lset_it::lset_end(lsetPtr);
-      auto localBegin = lset_it::lset_begin(lsetPtr);
+      auto localEnd = local_iterator_type::lset_end(lsetPtr);
+      auto localBegin = local_iterator_type::lset_begin(lsetPtr);
       if (localBegin != localEnd) {
         *res = set_iterator(0, setOID, localBegin);
       } else {
@@ -470,7 +470,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   static set_iterator set_end(const SetT* setPtr) {
-    lset_it lend = lset_it::lset_end(&(setPtr->localSet_));
+    local_iterator_type lend = local_iterator_type::lset_end(&(setPtr->localSet_));
     set_iterator end(rt::numLocalities(), OIDT(0), lend, T());
     return end;
   }
@@ -486,7 +486,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
     auto setPtr = SetT::GetPtr(data_.oid_);
     if (static_cast<uint32_t>(rt::thisLocality()) == data_.locId_) {
       const LSet* lsetPtr = &(setPtr->localSet_);
-      auto lend = lset_it::lset_end(lsetPtr);
+      auto lend = local_iterator_type::lset_end(lsetPtr);
       if (data_.lsetIt_ != lend) {
         ++(data_.lsetIt_);
       }
@@ -520,10 +520,50 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
     return tmp;
   }
 
+  class local_iterator_range {
+   public:
+    local_iterator_range(local_iterator_type B, local_iterator_type E)
+        : begin_(B), end_(E) {}
+    local_iterator_type begin() { return begin_; }
+    local_iterator_type end() { return end_; }
+
+   private:
+    local_iterator_type begin_;
+    local_iterator_type end_;
+  };
+  static local_iterator_range local_range(set_iterator &B,
+                                          set_iterator &E) {
+    auto setPtr = SetT::GetPtr(B.data_.oid_);
+    local_iterator_type lbeg, lend;
+    uint32_t thisLocId = static_cast<uint32_t>(rt::thisLocality());
+    if (B.data_.locId_ == thisLocId) {
+      lbeg = B.data_.lsetIt_;
+    } else {
+      lbeg = local_iterator_type::lset_begin(&(setPtr->localSet_));
+    }
+    if (E.data_.locId_ == thisLocId) {
+      lend = E.data_.lsetIt_;
+    } else {
+      lend = local_iterator_type::lset_end(&(setPtr->localSet_));
+    }
+    return local_iterator_range(lbeg, lend);
+  }
+  static rt::localities_range localities(set_iterator &B, set_iterator &E) {
+    return rt::localities_range(
+        rt::Locality(B.data_.locId_),
+        rt::Locality(std::min<uint32_t>(rt::numLocalities(), E.data_.locId_+ 1)));
+  }
+
+  static set_iterator iterator_from_local(set_iterator &B,
+                                          set_iterator &E,
+                                          local_iterator_type itr) {
+    return set_iterator(static_cast<uint32_t>(rt::thisLocality()),
+                        B.data_.oid_, itr);
+  }
  private:
   struct itData {
     itData() : oid_(0), lsetIt_(nullptr, 0, 0, nullptr, nullptr) {}
-    itData(uint32_t locId, OIDT oid, lset_it lsetIt, T element)
+    itData(uint32_t locId, OIDT oid, local_iterator_type lsetIt, T element)
         : locId_(locId), oid_(oid), lsetIt_(lsetIt), element_(element) {}
     bool operator==(const itData& other) const {
       return (locId_ == other.locId_) && (lsetIt_ == other.lsetIt_);
@@ -531,7 +571,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
     bool operator!=(itData& other) const { return !(*this == other); }
     uint32_t locId_;
     OIDT oid_;
-    lset_it lsetIt_;
+    local_iterator_type lsetIt_;
     NonConstT element_;
   };
 
@@ -540,8 +580,8 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
   static void getLocBeginIt(const OIDT& setOID, itData* res) {
     auto setPtr = SetT::GetPtr(setOID);
     auto lsetPtr = &(setPtr->localSet_);
-    auto localEnd = lset_it::lset_end(lsetPtr);
-    auto localBegin = lset_it::lset_begin(lsetPtr);
+    auto localEnd = local_iterator_type::lset_end(lsetPtr);
+    auto localBegin = local_iterator_type::lset_begin(lsetPtr);
     if (localBegin != localEnd) {
       *res = itData(static_cast<uint32_t>(rt::thisLocality()), setOID,
                     localBegin, *localBegin);
@@ -553,8 +593,8 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
   static void getRemoteIt(const itData& itd, itData* res) {
     auto setPtr = SetT::GetPtr(itd.oid_);
     auto lsetPtr = &(setPtr->localSet_);
-    auto localEnd = lset_it::lset_end(lsetPtr);
-    lset_it cit = itd.lsetIt_;
+    auto localEnd = local_iterator_type::lset_end(lsetPtr);
+    local_iterator_type cit = itd.lsetIt_;
     ++cit;
     if (cit != localEnd) {
       *res = itData(static_cast<uint32_t>(rt::thisLocality()), itd.oid_, cit,
