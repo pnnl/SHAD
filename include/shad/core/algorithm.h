@@ -83,6 +83,43 @@ ForwardItr find(distributed_parallel_tag&& policy, ForwardItr first,
   return last;
 }
 
+template <typename ForwardItr, typename T>
+ForwardItr find(distributed_sequential_tag&& policy, ForwardItr first,
+                ForwardItr last, const T& value) {
+  using itr_traits = distributed_iterator_traits<ForwardItr>;
+  auto localities = itr_traits::localities(first, last);
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    ForwardItr result;
+
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<ForwardItr, ForwardItr, T>& args,
+           ForwardItr* result) {
+          auto begin = std::get<0>(args);
+          *result = std::get<1>(args);
+          auto value = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, *result);
+          auto local_res =
+              std::find(local_range.begin(), local_range.end(), value);
+
+          if (local_res != local_range.end()) {
+            *result = std::move(itr_traits::iterator_from_local(
+                std::get<0>(args), std::get<1>(args), local_res));
+          }
+        },
+        std::make_tuple(first, last, value), &result);
+
+    if (result != last) {
+      return result;
+    }
+  }
+
+  return last;
+}
+
 }  // namespace impl
 
 template <typename ExecutionPolicy, typename ForwardItr, typename T>

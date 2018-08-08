@@ -43,4 +43,18 @@ TEST_F(AlgorithmsTest, find) {
                         array_->end(), 0);
 
   ASSERT_EQ(res, array_->end());
+
+  res = shad::find(shad::distributed_sequential_tag{}, array_->begin(),
+                   array_->end(), 0);
+  ASSERT_EQ(res, array_->end());
+
+  array_->at(array_->size() - 1) = 2;
+
+  res = shad::find(shad::distributed_sequential_tag{}, array_->begin(),
+                   array_->end(), 2);
+  ASSERT_EQ(res, (array_->end() - 1));
+
+  res = shad::find(shad::distributed_parallel_tag{}, array_->begin(),
+                   array_->end(), 2);
+  ASSERT_EQ(res, (array_->end() - 1));
 }
