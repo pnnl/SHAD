@@ -21,4 +21,5 @@ add_test(NAME test_gtest_remote_failure
 
 add_subdirectory(runtime)
 add_subdirectory(data_structures)
+add_subdirectory(core)
 add_subdirectory(extensions/graph_library)
