@@ -659,23 +659,23 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
  public:
   using OIDT = typename MapT::ObjectID;
   using LMap = typename MapT::LMapT;
-  using lmap_it = lmap_iterator<LMap, T>;
+  using local_iterator_type = lmap_iterator<LMap, T>;
   using value_type = T;
 
   map_iterator() {}
-  map_iterator(uint32_t locID, const OIDT mapOID, lmap_it &lit, T element) {
+  map_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit, T element) {
     data_ = {locID, mapOID, lit, element};
   }
 
-  map_iterator(uint32_t locID, const OIDT mapOID, lmap_it &lit) {
+  map_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit) {
     data_ = itData(locID, mapOID, lit, *lit);
   }
 
   static map_iterator map_begin(const MapT *mapPtr) {
     const LMap *lmapPtr = &(mapPtr->localMap_);
-    auto localEnd = lmap_it::lmap_end(lmapPtr);
+    auto localEnd = local_iterator_type::lmap_end(lmapPtr);
     if (static_cast<uint32_t>(rt::thisLocality()) == 0) {
-      auto localBegin = lmap_it::lmap_begin(lmapPtr);
+      auto localBegin = local_iterator_type::lmap_begin(lmapPtr);
       if (localBegin != localEnd) {
         return map_iterator(0, mapPtr->oid_, localBegin);
       }
@@ -685,8 +685,8 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     auto getItLambda = [](const OIDT &mapOID, map_iterator *res) {
       auto mapPtr = MapT::GetPtr(mapOID);
       const LMap *lmapPtr = &(mapPtr->localMap_);
-      auto localEnd = lmap_it::lmap_end(lmapPtr);
-      auto localBegin = lmap_it::lmap_begin(lmapPtr);
+      auto localEnd = local_iterator_type::lmap_end(lmapPtr);
+      auto localBegin = local_iterator_type::lmap_begin(lmapPtr);
       if (localBegin != localEnd) {
         *res = map_iterator(0, mapOID, localBegin);
       } else {
@@ -700,7 +700,7 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   static map_iterator map_end(const MapT *mapPtr) {
-    lmap_it lend = lmap_it::lmap_end(&(mapPtr->localMap_));
+    local_iterator_type lend = local_iterator_type::lmap_end(&(mapPtr->localMap_));
     map_iterator end(rt::numLocalities(), OIDT(0), lend, T());
     return end;
   }
@@ -716,7 +716,7 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     auto mapPtr = MapT::GetPtr(data_.oid_);
     if (static_cast<uint32_t>(rt::thisLocality()) == data_.locId_) {
       const LMap *lmapPtr = &(mapPtr->localMap_);
-      auto lend = lmap_it::lmap_end(lmapPtr);
+      auto lend = local_iterator_type::lmap_end(lmapPtr);
       if (data_.lmapIt_ != lend) {
         ++(data_.lmapIt_);
       }
@@ -744,16 +744,58 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     data_ = itd;
     return *this;
   }
+
   map_iterator operator++(int) {
     map_iterator tmp = *this;
     operator++();
     return tmp;
   }
 
+  class local_iterator_range {
+   public:
+    local_iterator_range(local_iterator_type B, local_iterator_type E)
+        : begin_(B), end_(E) {}
+    local_iterator_type begin() { return begin_; }
+    local_iterator_type end() { return end_; }
+
+   private:
+    local_iterator_type begin_;
+    local_iterator_type end_;
+  };
+  static local_iterator_range local_range(map_iterator &B,
+                                          map_iterator &E) {
+    auto mapPtr = MapT::GetPtr(B.data_.oid_);
+    local_iterator_type lbeg, lend;
+    uint32_t thisLocId = static_cast<uint32_t>(rt::thisLocality());
+    if (B.data_.locId_ == thisLocId) {
+      lbeg = B.data_.lsetIt_;
+    } else {
+      lbeg = local_iterator_type::lmap_begin(&(mapPtr->localMap_));
+    }
+    if (E.data_.locId_ == thisLocId) {
+      lend = E.data_.lsetIt_;
+    } else {
+      lend = local_iterator_type::lmap_end(&(mapPtr->localMap_));
+    }
+    return local_iterator_range(lbeg, lend);
+  }
+  static rt::localities_range localities(map_iterator &B, map_iterator &E) {
+    return rt::localities_range(
+        rt::Locality(B.data_.locId_),
+        rt::Locality(std::min<uint32_t>(rt::numLocalities(),
+                                        E.data_.locId_+ 1)));
+  }
+
+  static map_iterator iterator_from_local(map_iterator &B,
+                                          map_iterator &E,
+                                          local_iterator_type itr) {
+    return map_iterator(static_cast<uint32_t>(rt::thisLocality()),
+                        B.data_.oid_, itr);
+  }
  private:
   struct itData {
     itData() : oid_(0), lmapIt_(nullptr, 0, 0, nullptr, nullptr) {}
-    itData(uint32_t locId, OIDT oid, lmap_it lmapIt, T element)
+    itData(uint32_t locId, OIDT oid, local_iterator_type lmapIt, T element)
         : locId_(locId), oid_(oid), lmapIt_(lmapIt), element_(element) {}
     bool operator==(const itData &other) const {
       return (locId_ == other.locId_) && (lmapIt_ == other.lmapIt_);
@@ -761,7 +803,7 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     bool operator!=(itData &other) const { return !(*this == other); }
     uint32_t locId_;
     OIDT oid_;
-    lmap_it lmapIt_;
+    local_iterator_type lmapIt_;
     NonConstT element_;
   };
 
@@ -770,8 +812,8 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   static void getLocBeginIt(const OIDT &mapOID, itData *res) {
     auto mapPtr = MapT::GetPtr(mapOID);
     auto lmapPtr = &(mapPtr->localMap_);
-    auto localEnd = lmap_it::lmap_end(lmapPtr);
-    auto localBegin = lmap_it::lmap_begin(lmapPtr);
+    auto localEnd = local_iterator_type::lmap_end(lmapPtr);
+    auto localBegin = local_iterator_type::lmap_begin(lmapPtr);
     if (localBegin != localEnd) {
       *res = itData(static_cast<uint32_t>(rt::thisLocality()), mapOID,
                     localBegin, *localBegin);
@@ -783,8 +825,8 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   static void getRemoteIt(const itData &itd, itData *res) {
     auto mapPtr = MapT::GetPtr(itd.oid_);
     auto lmapPtr = &(mapPtr->localMap_);
-    auto localEnd = lmap_it::lmap_end(lmapPtr);
-    lmap_it cit = itd.lmapIt_;
+    auto localEnd = local_iterator_type::lmap_end(lmapPtr);
+    local_iterator_type cit = itd.lmapIt_;
     ++cit;
     if (cit != localEnd) {
       *res = itData(static_cast<uint32_t>(rt::thisLocality()), itd.oid_, cit,
