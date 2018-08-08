@@ -39,7 +39,7 @@
 
 namespace shad {
 
-template <typename Set, typename T>
+template <typename Set, typename T, typename NonConstT>
 class set_iterator;
 
 /// @brief The Set data structure.
@@ -53,8 +53,8 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   template <typename>
   friend class AbstractDataStructure;
 
-  friend class set_iterator<Set<T, ELEM_COMPARE>, T>;
-  friend class set_iterator<Set<T, ELEM_COMPARE>, const T>;
+  friend class set_iterator<Set<T, ELEM_COMPARE>, T, T>;
+  friend class set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
 
  public:
   using SetT = Set<T, ELEM_COMPARE>;
@@ -63,8 +63,8 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   using ShadSetPtr = typename AbstractDataStructure<SetT>::SharedPtr;
   using BuffersVector = typename impl::BuffersVector<T, SetT>;
 
-  using iterator = set_iterator<Set<T, ELEM_COMPARE>, T>;
-  using const_iterator = set_iterator<Set<T, ELEM_COMPARE>, const T>;
+  using iterator = set_iterator<Set<T, ELEM_COMPARE>, T, T>;
+  using const_iterator = set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
   using local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
   using const_local_iterator =
       lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
@@ -423,7 +423,7 @@ void Set<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
   rt::asyncExecuteOnAll(handle, feLambda, arguments);
 }
 
-template <typename SetT, typename T>
+template <typename SetT, typename T, typename NonConstT>
 class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
  public:
   using OIDT = typename SetT::ObjectID;
@@ -529,7 +529,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
     uint32_t locId_;
     OIDT oid_;
     lset_it lsetIt_;
-    T element_;
+    NonConstT element_;
   };
 
   itData data_;
