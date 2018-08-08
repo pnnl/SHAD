@@ -173,6 +173,30 @@ inline bool operator>=(const Locality& lhs, const Locality& rhs) {
   return !(lhs < rhs);
 }
 
+/// @brief A range of localities.
+class localities_range {
+ public:
+  /// @brief Constructor.
+  /// @param B The begin.
+  /// @param E the end.
+  localities_range(const Locality& B, const Locality& E) : begin_(B), end_(E) {}
+
+  /// @brief Default constructor.
+  localities_range()
+      : localities_range(Locality(0),
+                         Locality(impl::RuntimeInternalsTrait<
+                                  TargetSystemTag>::NumLocalities())) {}
+
+  /// @brief The begin of the sequence of Localities.
+  Locality begin() const { return begin_; }
+  /// @brief The end of the sequence of Localities.
+  Locality end() const { return end_; }
+
+ private:
+  Locality begin_;
+  Locality end_;
+};
+
 }  // namespace rt
 
 }  // namespace shad

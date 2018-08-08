@@ -445,8 +445,40 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
   auto array = array_type::Create();
 
   array->fill(1);
-  array->at(kArraySize / 2) = 0;
 
-  auto e = std::min_element(array->begin(), array->end());
-  ASSERT_EQ(*e, 0);
+  std::size_t j = 0;
+  for (auto itr = array->begin(), end = array->end(); itr < end; ++itr) ++j;
+  ASSERT_EQ(j, array->size());
+  array->at(kArraySize / 2) = 0;
+  array->at((kArraySize / 2) + 1) = 2;
+
+  auto subList = shad::array<std::size_t, 2>::Create();
+  subList->at(0) = 0;
+  subList->at(1) = 2;
+
+  auto max = std::max_element(array->begin(), array->end());
+  ASSERT_EQ(*max, std::size_t(2));
+
+  auto two = std::find(array->begin(), array->end(), std::size_t(2));
+  auto zero = std::find(array->begin(), array->end(), std::size_t(0));
+
+  ASSERT_EQ(*two, std::size_t(2));
+  ASSERT_EQ(*zero, std::size_t(0));
+
+  auto first = std::search(array->begin(), array->end(), subList->begin(),
+                           subList->end());
+  ASSERT_EQ(*first, std::size_t(0));
+  ASSERT_EQ(first, zero);
+  ASSERT_EQ(*(first + 1), std::size_t(2));
+  ASSERT_EQ((first + 1), two);
+
+  array->at(kArraySize - 1) = 2;
+  array->at(kArraySize - 2) = 0;
+
+  auto last = std::find_end(array->begin(), array->end(), subList->begin(),
+                            subList->end());
+
+  ASSERT_EQ(*last, std::size_t(0));
+  ASSERT_EQ(*(last + 1), std::size_t(2));
+  ASSERT_NE(two, last);
 }
