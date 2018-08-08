@@ -63,7 +63,7 @@ class LocalSet {
 
   friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
   friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
-  template <typename, typename>
+  template <typename, typename, typename>
   friend class set_iterator;
 
  public:
@@ -647,7 +647,7 @@ void LocalSet<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
 
 template <typename LSet, typename T>
 class lset_iterator : public std::iterator<std::forward_iterator_tag, T> {
-  template <typename, typename>
+  template <typename, typename, typename>
   friend class set_iterator;
 
  public:

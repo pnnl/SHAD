@@ -39,7 +39,7 @@
 
 namespace shad {
 
-template <typename Map, typename T>
+template <typename Map, typename T, typename NonConstT>
 class map_iterator;
 
 /// @brief The Hashmap data structure.
@@ -59,9 +59,9 @@ class Hashmap : public AbstractDataStructure<
   template <typename>
   friend class AbstractDataStructure;
   friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                            std::pair<KTYPE, VTYPE>>;
+                            std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                            const std::pair<KTYPE, VTYPE>>;
+                            const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
 
  public:
   using HmapT = Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
@@ -71,10 +71,10 @@ class Hashmap : public AbstractDataStructure<
 
   using iterator =
       map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                   std::pair<KTYPE, VTYPE>>;
+                   std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   using const_iterator =
       map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                   const std::pair<KTYPE, VTYPE>>;
+                   const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   using local_iterator =
       lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                     std::pair<KTYPE, VTYPE>>;
@@ -653,7 +653,7 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncApply(
   }
 }
 
-template <typename MapT, typename T>
+template <typename MapT, typename T, typename NonConstT>
 class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
  public:
   using OIDT = typename MapT::ObjectID;
@@ -759,7 +759,7 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     uint32_t locId_;
     OIDT oid_;
     lmap_it lmapIt_;
-    T element_;
+    NonConstT element_;
   };
 
   itData data_;
