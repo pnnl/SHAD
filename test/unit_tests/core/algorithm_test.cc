@@ -107,3 +107,34 @@ TEST_F(AlgorithmsTest, for_each) {
                                 std::placeholders::_1));
   ASSERT_EQ(res, array_->end());
 }
+
+TEST_F(AlgorithmsTest, any_of) {
+  using value_type = typename std::array<size_t, 10001>::value_type;
+  using reference = typename std::array<size_t, 10001>::reference;
+
+  bool res = shad::all_of(shad::distributed_sequential_tag{}, array_->begin(),
+                          array_->end(),
+                          std::bind(std::equal_to<value_type>(), value_type(1),
+                                    std::placeholders::_1));
+  ASSERT_TRUE(res);
+
+  res = shad::all_of(shad::distributed_parallel_tag{}, array_->begin(),
+                     array_->end(),
+                     std::bind(std::equal_to<value_type>(), value_type(1),
+                               std::placeholders::_1));
+  ASSERT_TRUE(res);
+
+  array_->at(array_->size() - 1) = 0;
+
+  res = shad::all_of(shad::distributed_sequential_tag{}, array_->begin(),
+                     array_->end(),
+                     std::bind(std::equal_to<value_type>(), value_type(1),
+                               std::placeholders::_1));
+  ASSERT_FALSE(res);
+
+  res = shad::all_of(shad::distributed_parallel_tag{}, array_->begin(),
+                     array_->end(),
+                     std::bind(std::equal_to<value_type>(), value_type(1),
+                               std::placeholders::_1));
+  ASSERT_FALSE(res);
+}

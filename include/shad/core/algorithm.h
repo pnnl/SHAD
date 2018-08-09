@@ -26,6 +26,7 @@
 #define INCLUDE_SHAD_CORE_ALGORITHM_H
 
 #include <algorithm>
+#include <functional>
 #include <iterator>
 #include <tuple>
 #include <utility>
@@ -36,6 +37,87 @@
 #include "shad/runtime/runtime.h"
 
 namespace shad {
+
+namespace impl {
+
+template <typename ForwardItr, typename UnaryPredicate>
+bool all_of(distributed_sequential_tag&& policy, ForwardItr first,
+            ForwardItr last, UnaryPredicate p) {
+  using itr_traits = distributed_iterator_traits<ForwardItr>;
+  auto localities = itr_traits::localities(first, last);
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    bool result;
+
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
+           bool* result) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto predicate = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          *result =
+              std::all_of(local_range.begin(), local_range.end(), predicate);
+        },
+        std::make_tuple(first, last, p), &result);
+
+    if (!result) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+template <typename ForwardItr, typename UnaryPredicate>
+bool all_of(distributed_parallel_tag&& policy, ForwardItr first,
+            ForwardItr last, UnaryPredicate p) {
+  using itr_traits = distributed_iterator_traits<ForwardItr>;
+  auto localities = itr_traits::localities(first, last);
+
+  rt::Handle H;
+
+  std::vector<char> results(localities.size());
+  size_t i = 0;
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::asyncExecuteAtWithRet(
+        H, locality,
+        [](rt::Handle&,
+           const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
+           char* result) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto predicate = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          *result =
+              std::all_of(local_range.begin(), local_range.end(), predicate)
+                  ? 1
+                  : 0;
+        },
+        std::make_tuple(first, last, p), &results[i]);
+    ++i;
+  }
+
+  rt::waitForCompletion(H);
+
+  return std::all_of(results.begin(), results.end(),
+                     [](char v) -> bool { return v == 1; });
+}
+
+}  // namespace impl
+
+template <typename ExecutionPolicy, typename ForwardItr,
+          typename UnaryPredicate>
+bool all_of(ExecutionPolicy&& policy, ForwardItr first, ForwardItr last,
+            UnaryPredicate p) {
+  return impl::all_of(std::forward<ExecutionPolicy>(policy), first, last, p);
+}
 
 namespace impl {
 
