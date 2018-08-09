@@ -7,13 +7,13 @@ include(CheckIncludeFile)
 include(CheckIncludeFileCXX)
 include(CheckLibraryExists)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 ## Workaround for the intel compiler
 if (Intel)
   if (${CMAKE_VERSION} VERSION_LESS "3.6")
-    if (CMAKE_CXX_STANDARD STREQUAL 14)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    if (CMAKE_CXX_STANDARD STREQUAL 17)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
     else()
       message(FATAL_ERROR "Unsupported C++ Standard requested")
     endif()
