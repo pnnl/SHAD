@@ -26,6 +26,7 @@
 #define INCLUDE_SHAD_RUNTIME_MAPPINGS_GMT_GMT_TRAITS_MAPPING_H_
 
 #include <cstdint>
+#include <iostream>
 #include <limits>
 #include <mutex>
 #include <string>
