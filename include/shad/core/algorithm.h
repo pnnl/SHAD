@@ -230,6 +230,65 @@ ForwardItr find_if_not(ExecutionPolicy&& policy, ForwardItr first,
                        std::unary_negate<UnaryPredicate>(p));
 }
 
+namespace impl {
+
+template <typename ForwardItr, typename UnaryPredicate>
+void for_each(distributed_sequential_tag&& policy, ForwardItr first,
+              ForwardItr last, UnaryPredicate p) {
+  using itr_traits = distributed_iterator_traits<ForwardItr>;
+  auto localities = itr_traits::localities(first, last);
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAt(
+        locality,
+        [](const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto predicate = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          std::for_each(local_range.begin(), local_range.end(), predicate);
+        },
+        std::make_tuple(first, last, p));
+  }
+}
+
+template <typename ForwardItr, typename UnaryPredicate>
+void for_each(distributed_parallel_tag&& policy, ForwardItr first,
+              ForwardItr last, UnaryPredicate p) {
+  using itr_traits = distributed_iterator_traits<ForwardItr>;
+  auto localities = itr_traits::localities(first, last);
+
+  rt::Handle H;
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::asyncExecuteAt(
+        H, locality,
+        [](rt::Handle&,
+           const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto predicate = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          std::for_each(local_range.begin(), local_range.end(), predicate);
+        },
+        std::make_tuple(first, last, p));
+  }
+
+  rt::waitForCompletion(H);
+}
+
+}  // namespace impl
+
+template <typename ExecutionPolicy, typename ForwardItr,
+          typename UnaryPredicate>
+void for_each(ExecutionPolicy&& policy, ForwardItr first, ForwardItr last,
+              UnaryPredicate p) {
+  impl::for_each(std::forward<ExecutionPolicy>(policy), first, last, p);
+}
+
 }  // namespace shad
 
 #endif /* INCLUDE_SHAD_CORE_ALGORITHM_H */
