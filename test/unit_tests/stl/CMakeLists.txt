@@ -1,8 +1,8 @@
 set(tests
   for_ut
-  L0_std_min_max_ut
-  L0_std_non_modifying_ut
-  L0_std_numeric_ut
+  std_min_max_ut
+  std_non_modifying_ut
+  std_numeric_ut
 )
 
 foreach(t ${tests})
