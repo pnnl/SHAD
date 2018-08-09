@@ -63,10 +63,11 @@ class LocalSet {
 
   friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
   friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
-  template <typename, typename>
+  template <typename, typename, typename>
   friend class set_iterator;
 
  public:
+  using value_type = T;
   using iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
   using const_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
 
@@ -647,14 +648,16 @@ void LocalSet<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
 
 template <typename LSet, typename T>
 class lset_iterator : public std::iterator<std::forward_iterator_tag, T> {
-  template <typename, typename>
+  template <typename, typename, typename>
   friend class set_iterator;
 
  public:
+  using value_type = T;
   using Entry = typename LSet::Entry;
   using State = typename LSet::State;
   using Bucket = typename LSet::Bucket;
 
+  lset_iterator() {};
   lset_iterator(const LSet* setPtr, size_t bId, size_t pos, Bucket* cb,
                 Entry* ePtr)
       : setPtr_(setPtr),
