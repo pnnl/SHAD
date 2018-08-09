@@ -58,3 +58,29 @@ TEST_F(AlgorithmsTest, find) {
                    array_->end(), 2);
   ASSERT_EQ(res, (array_->end() - 1));
 }
+
+TEST_F(AlgorithmsTest, find_if) {
+  using value_type = typename std::array<size_t, 10001>::value_type;
+  auto equal_to_zero = [](const value_type& v) -> bool { return v == 0; };
+  auto res = shad::find_if(shad::distributed_parallel_tag{}, array_->begin(),
+                           array_->end(), equal_to_zero);
+
+  ASSERT_EQ(res, array_->end());
+
+  res = shad::find_if(shad::distributed_sequential_tag{}, array_->begin(),
+                      array_->end(), equal_to_zero);
+  ASSERT_EQ(res, array_->end());
+
+  array_->at(array_->size() - 1) = 2;
+
+  auto equal_to_two = [](const value_type& v) -> bool { return v == 2; };
+  res = shad::find_if(shad::distributed_sequential_tag{}, array_->begin(),
+                      array_->end(), equal_to_two);
+  ASSERT_EQ(res, (array_->end() - 1));
+
+  res = shad::find_if(shad::distributed_parallel_tag{}, array_->begin(),
+                      array_->end(),
+                      std::bind(std::equal_to<value_type>(), value_type(2),
+                                std::placeholders::_1));
+  ASSERT_EQ(res, (array_->end() - 1));
+}
