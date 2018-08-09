@@ -71,10 +71,11 @@ class LocalHashmap {
                              std::pair<KTYPE, VTYPE>>;
   friend class lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
                              const std::pair<KTYPE, VTYPE>>;
-  template <typename, typename>
+  template <typename, typename, typename>
   friend class map_iterator;
 
  public:
+  using value_type = std::pair<KTYPE, VTYPE>;
   using iterator =
       lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
                     std::pair<KTYPE, VTYPE>>;
@@ -1056,14 +1057,16 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncInsert(
 
 template <typename LMap, typename T>
 class lmap_iterator : public std::iterator<std::forward_iterator_tag, T> {
-  template <typename, typename>
+  template <typename, typename, typename>
   friend class map_iterator;
 
  public:
+  using value_type = T;
   using Entry = typename LMap::Entry;
   using State = typename LMap::State;
   using Bucket = typename LMap::Bucket;
 
+  lmap_iterator() {}
   lmap_iterator(const LMap *mapPtr, size_t bId, size_t pos, Bucket *cb,
                 Entry *ePtr)
       : mapPtr_(mapPtr),
