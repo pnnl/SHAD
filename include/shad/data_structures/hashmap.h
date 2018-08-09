@@ -768,12 +768,12 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     local_iterator_type lbeg, lend;
     uint32_t thisLocId = static_cast<uint32_t>(rt::thisLocality());
     if (B.data_.locId_ == thisLocId) {
-      lbeg = B.data_.lsetIt_;
+      lbeg = B.data_.lmapIt_;
     } else {
       lbeg = local_iterator_type::lmap_begin(&(mapPtr->localMap_));
     }
     if (E.data_.locId_ == thisLocId) {
-      lend = E.data_.lsetIt_;
+      lend = E.data_.lmapIt_;
     } else {
       lend = local_iterator_type::lmap_end(&(mapPtr->localMap_));
     }
