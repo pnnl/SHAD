@@ -75,6 +75,7 @@ option(SHAD_ENABLE_CPPLINT "Enable the linting of source code" ON)
 option(SHAD_ENABLE_DOXYGEN "Use doxygen to generate the shad API documentation" OFF)
 option(SHAD_ENABLE_UNIT_TEST "Enable the compilation of Unit Tests" ON)
 option(SHAD_ENABLE_PERFORMANCE_TEST "Enable the compilation of the Performance Tests" OFF)
+option(SHAD_ENABLE_LOGGING "Enable the logging system" OFF)
 
 set(
   SHAD_RUNTIME_SYSTEM "CPP_SIMPLE" CACHE STRING

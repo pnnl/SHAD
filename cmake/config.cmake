@@ -122,10 +122,11 @@ if (GPERFTOOLS_FOUND)
 endif()
 
 # spdlog: this portion added by methun
-if (SHAD_LOGGING_SYSTEM)
+if (SHAD_ENABLE_LOGGING)
     message(STATUS "Using spdlog library for logging the benchmark.")
     find_package(SPDLOG REQUIRED)
-    include_directories(${SPDLOG_INCLUDE_DIR})
+    message(STATUS ${SPDLOG_INCLUDE_DIRS})
+    include_directories(${SPDLOG_INCLUDE_DIRS})
     set(HAVE_LOGGING 1)
 endif()
 
