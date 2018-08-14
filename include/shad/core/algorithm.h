@@ -122,8 +122,8 @@ bool all_of(ExecutionPolicy&& policy, ForwardItr first, ForwardItr last,
 namespace impl {
 
 template <typename ForwardItr, typename UnaryPredicate>
-bool any_of(distributed_sequential_tag && policy, ForwardItr first, ForwardItr last,
-            UnaryPredicate p) {
+bool any_of(distributed_sequential_tag&& policy, ForwardItr first,
+            ForwardItr last, UnaryPredicate p) {
   using itr_traits = distributed_iterator_traits<ForwardItr>;
   auto localities = itr_traits::localities(first, last);
 
@@ -154,8 +154,8 @@ bool any_of(distributed_sequential_tag && policy, ForwardItr first, ForwardItr l
 }
 
 template <typename ForwardItr, typename UnaryPredicate>
-bool any_of(distributed_parallel_tag && policy, ForwardItr first, ForwardItr last,
-            UnaryPredicate p) {
+bool any_of(distributed_parallel_tag&& policy, ForwardItr first,
+            ForwardItr last, UnaryPredicate p) {
   using itr_traits = distributed_iterator_traits<ForwardItr>;
   auto localities = itr_traits::localities(first, last);
 
@@ -198,6 +198,13 @@ template <typename ExecutionPolicy, typename ForwardItr,
 bool any_of(ExecutionPolicy&& policy, ForwardItr first, ForwardItr last,
             UnaryPredicate p) {
   return impl::any_of(std::forward<ExecutionPolicy>(policy), first, last, p);
+}
+
+template <typename ExecutionPolicy, typename ForwardItr,
+          typename UnaryPredicate>
+bool none_of(ExecutionPolicy&& policy, ForwardItr first, ForwardItr last,
+             UnaryPredicate p) {
+  return !any_of(std::forward<ExecutionPolicy>(policy), first, last, p);
 }
 
 namespace impl {
