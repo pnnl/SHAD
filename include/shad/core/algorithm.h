@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <numeric>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -457,6 +458,84 @@ template <typename ExecutionPolicy, typename ForwardItr,
 void for_each(ExecutionPolicy&& policy, ForwardItr first, ForwardItr last,
               UnaryPredicate p) {
   impl::for_each(std::forward<ExecutionPolicy>(policy), first, last, p);
+}
+
+namespace impl {
+
+template <typename InputItr, typename T>
+typename shad::distributed_iterator_traits<InputItr>::difference_type count(
+    distributed_parallel_tag&& policy, InputItr first, InputItr last,
+    const T& value) {
+  using itr_traits = distributed_iterator_traits<InputItr>;
+  using difference_type = typename itr_traits::difference_type;
+  auto localities = itr_traits::localities(first, last);
+
+  rt::Handle H;
+
+  std::vector<difference_type> results(localities.size());
+  size_t i = 0;
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::asyncExecuteAtWithRet(
+        H, locality,
+        [](rt::Handle&, const std::tuple<InputItr, InputItr, T>& args,
+           difference_type* result) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto value = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          *result = std::count(local_range.begin(), local_range.end(), value);
+        },
+        std::make_tuple(first, last, value), &results[i]);
+
+    ++i;
+  }
+
+  rt::waitForCompletion(H);
+
+  return std::accumulate(results.begin(), results.end(), difference_type(0));
+}
+
+template <typename InputItr, typename T>
+typename shad::distributed_iterator_traits<InputItr>::difference_type count(
+    distributed_sequential_tag&& policy, InputItr first, InputItr last,
+    const T& value) {
+  using itr_traits = distributed_iterator_traits<InputItr>;
+  using difference_type = typename itr_traits::difference_type;
+  auto localities = itr_traits::localities(first, last);
+
+  difference_type result = 0;
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    difference_type delta = 0;
+
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<InputItr, InputItr, T>& args,
+           difference_type* result) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto value = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          *result = std::count(local_range.begin(), local_range.end(), value);
+        },
+        std::make_tuple(first, last, value), &delta);
+
+    result += delta;
+  }
+
+  return result;
+}
+
+}  // namespace impl
+
+template <typename ExecutionPolicy, typename InputItr, typename T>
+typename shad::distributed_iterator_traits<InputItr>::difference_type count(
+    ExecutionPolicy&& policy, InputItr first, InputItr last, const T& value) {
+  return impl::count(std::forward<ExecutionPolicy>(policy), first, last, value);
 }
 
 }  // namespace shad

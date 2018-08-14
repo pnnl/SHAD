@@ -201,3 +201,26 @@ TEST_F(AlgorithmsTest, none_of) {
   ASSERT_FALSE(res);
 }
 
+TEST_F(AlgorithmsTest, count) {
+  using value_type = typename std::array<size_t, 10001>::value_type;
+  using reference = typename std::array<size_t, 10001>::reference;
+
+  auto res = shad::count(shad::distributed_sequential_tag{}, array_->begin(),
+                         array_->end(), value_type(1));
+  ASSERT_EQ(res, array_->size());
+
+  res = shad::count(shad::distributed_parallel_tag{}, array_->begin(),
+                    array_->end(), value_type(1));
+  ASSERT_EQ(res, array_->size());
+
+  array_->at(array_->size() - 1) = 0;
+
+  res = shad::count(shad::distributed_sequential_tag{}, array_->begin(),
+                    array_->end(), value_type(1));
+  ASSERT_EQ(res, array_->size() - 1);
+
+  res = shad::count(shad::distributed_parallel_tag{}, array_->begin(),
+                    array_->end(), value_type(1));
+  ASSERT_EQ(res, array_->size() - 1);
+}
+
