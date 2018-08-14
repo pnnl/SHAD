@@ -291,7 +291,7 @@ struct AsynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("asyncExecuteOnAll", diff.count(), &handle, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(InArgsT),0);
+      log_handler->printlf("asyncExecuteOnAll", diff.count(), &handle, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT),0);
   }
 
   template <typename FunT>
@@ -326,7 +326,7 @@ struct AsynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("asyncExecuteOnAll-argsBuffer", diff.count(), &handle, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0);
+      log_handler->printlf("asyncExecuteOnAll-argsBuffer", diff.count(), &handle, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>),0);
   }
 
   template <typename FunT, typename InArgsT>

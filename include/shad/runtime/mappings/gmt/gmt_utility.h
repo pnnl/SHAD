@@ -274,7 +274,7 @@ void execAsyncFunWrapper(const void *args, uint32_t args_size, void *,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execAsyncFunWrapper", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
+    log_handler->printlf("execAsyncFunWrapper", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), 0);
 }
 
 inline void execAsyncFunWrapper(const void *args, uint32_t args_size, void *,
@@ -447,6 +447,7 @@ void execAsyncFunWithRetBuffWrapper(const void *args, uint32_t args_size,
     funArgs->fun(fnargs, reinterpret_cast<uint8_t *>(result), resSize,
                  Handle(handle));
     
+    Handle H(handle);
     checkOutputSize(*resSize);
     
     // End logging time
