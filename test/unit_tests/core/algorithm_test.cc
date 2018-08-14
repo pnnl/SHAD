@@ -224,3 +224,33 @@ TEST_F(AlgorithmsTest, count) {
   ASSERT_EQ(res, array_->size() - 1);
 }
 
+TEST_F(AlgorithmsTest, count_if) {
+  using value_type = typename std::array<size_t, 10001>::value_type;
+  using reference = typename std::array<size_t, 10001>::reference;
+
+  auto res = shad::count_if(shad::distributed_sequential_tag{}, array_->begin(),
+                            array_->end(),
+                            std::bind(std::equal_to<value_type>(),
+                                      value_type(1), std::placeholders::_1));
+  ASSERT_EQ(res, array_->size());
+
+  res = shad::count_if(shad::distributed_parallel_tag{}, array_->begin(),
+                       array_->end(),
+                       std::bind(std::equal_to<value_type>(), value_type(1),
+                                 std::placeholders::_1));
+  ASSERT_EQ(res, array_->size());
+
+  array_->at(array_->size() - 1) = 0;
+
+  res = shad::count_if(shad::distributed_sequential_tag{}, array_->begin(),
+                       array_->end(),
+                       std::bind(std::equal_to<value_type>(), value_type(1),
+                                 std::placeholders::_1));
+  ASSERT_EQ(res, array_->size() - 1);
+
+  res = shad::count_if(shad::distributed_parallel_tag{}, array_->begin(),
+                       array_->end(),
+                       std::bind(std::equal_to<value_type>(), value_type(1),
+                                 std::placeholders::_1));
+  ASSERT_EQ(res, array_->size() - 1);
+}
