@@ -99,7 +99,7 @@ void execFunWrapper(const void *args, uint32_t args_size, void *, uint32_t *,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execFunWrapper", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0);
+    log_handler->printlf("execFunWrapper", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), 0);
 }
 
 inline void execFunWrapper(const void *args, uint32_t args_size, void *,
@@ -117,7 +117,7 @@ inline void execFunWrapper(const void *args, uint32_t args_size, void *,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execFunWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), args_size - sizeof(functionPtr), 0);
+    log_handler->printlf("execFunWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), args_size - sizeof(functionPtr), 0);
 }
 
 template <typename FunT, typename InArgsT>
@@ -136,7 +136,7 @@ void execFunWithRetBuffWrapper(const void *args, uint32_t, void *result,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execFunWithRetBuffWrapper", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(uint32_t));
+    log_handler->printlf("execFunWithRetBuffWrapper", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), sizeof(uint32_t));
 }
 
 inline void execFunWithRetBuffWrapper(const void *args, uint32_t argsSize,
@@ -160,7 +160,7 @@ inline void execFunWithRetBuffWrapper(const void *args, uint32_t argsSize,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execFunWithRetBuffWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), argsSize - sizeof(functionPtr), sizeof(*resultSize));
+    log_handler->printlf("execFunWithRetBuffWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), argsSize - sizeof(functionPtr), sizeof(*resultSize));
 }
 
 template <typename FunT, typename InArgsT, typename ResT>
@@ -182,7 +182,7 @@ void execFunWithRetWrapper(const void *args, uint32_t args_size, void *result,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execFunWithRetWrapper", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(ResT));
+    log_handler->printlf("execFunWithRetWrapper", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), sizeof(ResT));
 }
 
 template <typename ResT>
@@ -206,7 +206,7 @@ void execFunWithRetWrapper(const void *args, uint32_t args_size, void *result,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execFunWithRetWrapper-ResT", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), args_size - sizeof(functionPtr), sizeof(ResT));
+    log_handler->printlf("execFunWithRetWrapper-ResT", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), args_size - sizeof(functionPtr), sizeof(ResT));
 }
 
 inline void forEachWrapper(uint64_t startIt, uint64_t numIters,
@@ -231,7 +231,7 @@ inline void forEachWrapper(uint64_t startIt, uint64_t numIters,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("forEachWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(argSize), 0, numIters);
+    log_handler->printlf("forEachWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(argSize), 0, numIters);
 }
 
 template <typename FunT, typename InArgsT>
@@ -250,7 +250,7 @@ void forEachWrapper(uint64_t startIt, uint64_t numIters, const void *args,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("forEachWrapper", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
+    log_handler->printlf("forEachWrapper", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
 }
 
 static uint32_t garbageSize;
@@ -274,7 +274,7 @@ void execAsyncFunWrapper(const void *args, uint32_t args_size, void *,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execAsyncFunWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
+    log_handler->printlf("execAsyncFunWrapper", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
 }
 
 inline void execAsyncFunWrapper(const void *args, uint32_t args_size, void *,
@@ -294,7 +294,7 @@ inline void execAsyncFunWrapper(const void *args, uint32_t args_size, void *,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execAsyncFunWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), args_size - sizeof(functionPtr), 0);
+    log_handler->printlf("execAsyncFunWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), args_size - sizeof(functionPtr), 0);
 }
 
 template <typename FunT, typename InArgsT, typename ResT>
@@ -317,7 +317,7 @@ void asyncExecFunWithRetWrapper(const void *args, uint32_t args_size,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("asyncExecFunWithRetWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(ResT));
+    log_handler->printlf("asyncExecFunWithRetWrapper", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), sizeof(ResT));
 }
 
 template <typename ResT>
@@ -343,7 +343,7 @@ void asyncExecFunWithRetWrapper(const void *args, uint32_t args_size,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("asyncExecFunWithRetWrapper-ResT", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), args_size - sizeof(functionPtr), sizeof(ResT));
+    log_handler->printlf("asyncExecFunWithRetWrapper-ResT", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), args_size - sizeof(functionPtr), sizeof(ResT));
 }
 
 template <typename FunT, typename InArgsT>
@@ -364,7 +364,7 @@ void asyncExecFunWithRetBuffWrapper(const void *args, uint32_t, void *result,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("asyncExecFunWithRetBuffWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(*resultSize));
+    log_handler->printlf("asyncExecFunWithRetBuffWrapper", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), sizeof(*resultSize));
 }
 
 inline void asyncExecFunWithRetBuffWrapper(const void *args, uint32_t argsSize,
@@ -389,7 +389,7 @@ inline void asyncExecFunWithRetBuffWrapper(const void *args, uint32_t argsSize,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("asyncExecFunWithRetBuffWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), argsSize - sizeof(functionPtr), sizeof(*resultSize));
+    log_handler->printlf("asyncExecFunWithRetBuffWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), argsSize - sizeof(functionPtr), sizeof(*resultSize));
 }
 
 inline void asyncForEachWrapper(uint64_t startIt, uint64_t numIters,
@@ -412,7 +412,7 @@ inline void asyncForEachWrapper(uint64_t startIt, uint64_t numIters,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("asyncForEachWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(argSize), 0, numIters);
+    log_handler->printlf("asyncForEachWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(argSize), 0, numIters);
 }
 
 template <typename FunT, typename InArgsT>
@@ -431,7 +431,7 @@ void asyncForEachWrapper(uint64_t startIt, uint64_t numIters, const void *args,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("asyncForEachWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
+    log_handler->printlf("asyncForEachWrapper", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
 }
 
 template <typename FunT, typename InArgsT>
@@ -453,7 +453,7 @@ void execAsyncFunWithRetBuffWrapper(const void *args, uint32_t args_size,
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
-    log_handler->printlf("execAsyncFunWithRetBuffWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(*resSize));
+    log_handler->printlf("execAsyncFunWithRetBuffWrapper", diff.count(), &H, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT), sizeof(*resSize));
 }
 
 }  // namespace impl

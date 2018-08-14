@@ -76,7 +76,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("executeAt", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(InArgsT),0);
+      log_handler->printlf("executeAt", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(InArgsT),0);
   }
 
   template <typename FunT>
@@ -108,7 +108,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("executeAt-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0);
+      log_handler->printlf("executeAt-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0);
   }
 
   template <typename FunT, typename InArgsT>
@@ -136,7 +136,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("executeAtWithRetBuff", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(InArgsT),0);
+      log_handler->printlf("executeAtWithRetBuff", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(InArgsT),0);
   }
 
   template <typename FunT>
@@ -172,7 +172,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("executeAtWithRetBuff-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0);
+      log_handler->printlf("executeAtWithRetBuff-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0);
   }
 
   template <typename FunT, typename InArgsT, typename ResT>
@@ -200,7 +200,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("executeAtWithRet", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(InArgsT),0);
+      log_handler->printlf("executeAtWithRet", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(InArgsT),0);
   }
 
   template <typename FunT, typename ResT>
@@ -234,7 +234,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("executeAtWithRet-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0);
+      log_handler->printlf("executeAtWithRet-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0);
   }
 
   template <typename FunT, typename InArgsT>
@@ -258,7 +258,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("executeOnAll", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT),0);
+      log_handler->printlf("executeOnAll", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT),0);
   }
 
   template <typename FunT>
@@ -289,7 +289,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("executeOnAll-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>),0);
+      log_handler->printlf("executeOnAll-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>),0);
   }
 
   template <typename FunT, typename InArgsT>
@@ -323,7 +323,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("forEachAt", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(InArgsT),0, numIters);
+      log_handler->printlf("forEachAt", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(InArgsT),0, numIters);
   }
 
   template <typename FunT>
@@ -366,7 +366,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("forEachAt-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0, numIters);
+      log_handler->printlf("forEachAt-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>),0, numIters);
   }
 
   template <typename FunT, typename InArgsT>
@@ -397,7 +397,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("forEachOnAll", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT),0, numIters);
+      log_handler->printlf("forEachOnAll", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(InArgsT),0, numIters);
   }
 
   template <typename FunT>
@@ -438,7 +438,7 @@ struct SynchronousInterface<gmt_tag> {
       auto t2 = shad_clock::now();
       std::chrono::duration<double> diff = t2-t1;
       auto log_handler = shad::slog::ShadLog::Instance();
-      log_handler->printlf("forEachOnAll-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>),0, numIters);
+      log_handler->printlf("forEachOnAll-argsBuffer", diff.count(), nullptr, RuntimeInternalsTrait<gmt_tag>::ThisLocality(), RuntimeInternalsTrait<gmt_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>),0, numIters);
   }
 };
 
