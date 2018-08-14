@@ -1173,7 +1173,16 @@ void asyncForEachOnAll(Handle &handle, FunT &&func,
 
 /// @brief Wait for completion of a set of tasks
 inline void waitForCompletion(Handle &handle) {
-  impl::HandleTrait<TargetSystemTag>::WaitFor(handle.id_);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    impl::HandleTrait<TargetSystemTag>::WaitFor(handle.id_);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("waitForCompletion", diff.count(), &handle, thisLocality(), thisLocality(), 0, 0);
 }
 /// @}
 

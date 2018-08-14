@@ -22,6 +22,13 @@
 //
 //===----------------------------------------------------------------------===//
 
+/*
+ Developer      Date            Description
+ ================================================================================
+ Methun K       08/01/2018      Added logging
+ --------------------------------------------------------------------------------
+ */
+
 #ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_GMT_GMT_UTILITY_H_
 #define INCLUDE_SHAD_RUNTIME_MAPPINGS_GMT_GMT_UTILITY_H_
 
@@ -31,6 +38,8 @@
 #include <system_error>
 
 #include "shad/runtime/locality.h"
+#include "shad/runtime/mappings/gmt/gmt_traits_mapping.h"
+#include "shad/util/slog.h"
 
 namespace shad {
 namespace rt {
@@ -80,99 +89,168 @@ struct ExecFunWrapperArgs {
 template <typename FunT, typename InArgsT>
 void execFunWrapper(const void *args, uint32_t args_size, void *, uint32_t *,
                     gmt_handle_t) {
-  const ExecFunWrapperArgs<FunT, InArgsT> &funArgs =
-      *reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-  funArgs.fun(funArgs.args);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    const ExecFunWrapperArgs<FunT, InArgsT> &funArgs = *reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    funArgs.fun(funArgs.args);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execFunWrapper", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0);
 }
 
 inline void execFunWrapper(const void *args, uint32_t args_size, void *,
                            uint32_t *, gmt_handle_t) {
-  using FunctionTy = void (*)(const uint8_t *, const uint32_t);
-
-  FunctionTy functionPtr =
-      *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
-  functionPtr(reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
-              args_size - sizeof(functionPtr));
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy = void (*)(const uint8_t *, const uint32_t);
+    
+    FunctionTy functionPtr = *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
+    functionPtr(reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
+                args_size - sizeof(functionPtr));
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execFunWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), args_size - sizeof(functionPtr), 0);
 }
 
 template <typename FunT, typename InArgsT>
 void execFunWithRetBuffWrapper(const void *args, uint32_t, void *result,
                                uint32_t *resultSize, gmt_handle_t) {
-  const impl::ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
-      reinterpret_cast<const impl::ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-  const InArgsT &fnargs = funArgs->args;
-  funArgs->fun(fnargs, reinterpret_cast<uint8_t *>(result), resultSize);
-
-  checkOutputSize(*resultSize);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    const impl::ExecFunWrapperArgs<FunT, InArgsT> *funArgs = reinterpret_cast<const impl::ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    const InArgsT &fnargs = funArgs->args;
+    funArgs->fun(fnargs, reinterpret_cast<uint8_t *>(result), resultSize);
+    
+    checkOutputSize(*resultSize);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execFunWithRetBuffWrapper", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(uint32_t));
 }
 
 inline void execFunWithRetBuffWrapper(const void *args, uint32_t argsSize,
                                       void *result, uint32_t *resultSize,
                                       gmt_handle_t) {
-  using FunctionTy =
-      void (*)(const uint8_t *, const uint32_t, uint8_t *, uint32_t *);
-
-  FunctionTy functionPtr =
-      *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
-  functionPtr(reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
-              argsSize - sizeof(functionPtr),
-              reinterpret_cast<uint8_t *>(result), resultSize);
-
-  checkOutputSize(*resultSize);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy =
+    void (*)(const uint8_t *, const uint32_t, uint8_t *, uint32_t *);
+    
+    FunctionTy functionPtr =
+    *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
+    functionPtr(reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
+                argsSize - sizeof(functionPtr),
+                reinterpret_cast<uint8_t *>(result), resultSize);
+    
+    checkOutputSize(*resultSize);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execFunWithRetBuffWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), argsSize - sizeof(functionPtr), sizeof(*resultSize));
 }
 
 template <typename FunT, typename InArgsT, typename ResT>
 void execFunWithRetWrapper(const void *args, uint32_t args_size, void *result,
                            uint32_t *resSize, gmt_handle_t) {
-  using FunctionTy = void (*)(const InArgsT &, ResT *);
-
-  const impl::ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
-      reinterpret_cast<const impl::ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-  const InArgsT &fnargs = funArgs->args;
-
-  funArgs->fun(fnargs, reinterpret_cast<ResT *>(result));
-  *resSize = sizeof(ResT);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy = void (*)(const InArgsT &, ResT *);
+    
+    const impl::ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
+    reinterpret_cast<const impl::ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    const InArgsT &fnargs = funArgs->args;
+    
+    funArgs->fun(fnargs, reinterpret_cast<ResT *>(result));
+    *resSize = sizeof(ResT);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execFunWithRetWrapper", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(ResT));
 }
 
 template <typename ResT>
 void execFunWithRetWrapper(const void *args, uint32_t args_size, void *result,
                            uint32_t *resSize, gmt_handle_t) {
-  using FunctionTy = void (*)(const uint8_t *, const uint32_t, ResT *);
-
-  FunctionTy functionPtr =
-      *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
-
-  ResT *resultPtr = reinterpret_cast<ResT *>(result);
-
-  functionPtr(reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
-              args_size - sizeof(functionPtr), resultPtr);
-  *resSize = sizeof(ResT);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy = void (*)(const uint8_t *, const uint32_t, ResT *);
+    
+    FunctionTy functionPtr =
+    *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
+    
+    ResT *resultPtr = reinterpret_cast<ResT *>(result);
+    
+    functionPtr(reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
+                args_size - sizeof(functionPtr), resultPtr);
+    *resSize = sizeof(ResT);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execFunWithRetWrapper-ResT", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), args_size - sizeof(functionPtr), sizeof(ResT));
 }
 
 inline void forEachWrapper(uint64_t startIt, uint64_t numIters,
                            const void *args, gmt_handle_t) {
-  using FunctionTy = void (*)(const uint8_t *, const uint32_t, size_t);
-
-  FunctionTy functionPtr =
-      *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
-  const uint32_t argSize = *reinterpret_cast<const uint32_t *>(
-      reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr));
-
-  const uint8_t *buffer = reinterpret_cast<const uint8_t *>(args) +
-                          sizeof(functionPtr) + sizeof(argSize);
-
-  for (size_t i = 0; i < numIters; ++i)
-    functionPtr(buffer, argSize, startIt + i);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy = void (*)(const uint8_t *, const uint32_t, size_t);
+    
+    FunctionTy functionPtr =
+    *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
+    const uint32_t argSize = *reinterpret_cast<const uint32_t *>(
+                                                                 reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr));
+    
+    const uint8_t *buffer = reinterpret_cast<const uint8_t *>(args) +
+    sizeof(functionPtr) + sizeof(argSize);
+    
+    for (size_t i = 0; i < numIters; ++i)
+        functionPtr(buffer, argSize, startIt + i);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("forEachWrapper-inline", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(argSize), 0, numIters);
 }
 
 template <typename FunT, typename InArgsT>
 void forEachWrapper(uint64_t startIt, uint64_t numIters, const void *args,
                     gmt_handle_t) {
-  const impl::ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
-      reinterpret_cast<const impl::ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-  const InArgsT &fnargs = funArgs->args;
-
-  for (size_t i = 0; i < numIters; ++i) funArgs->fun(fnargs, startIt + i);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    const impl::ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
+    reinterpret_cast<const impl::ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    const InArgsT &fnargs = funArgs->args;
+    
+    for (size_t i = 0; i < numIters; ++i) funArgs->fun(fnargs, startIt + i);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("forEachWrapper", diff.count(), nullptr, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
 }
 
 static uint32_t garbageSize;
@@ -184,127 +262,198 @@ inline gmt_handle_t getGmtHandle(Handle &handle) {
 template <typename FunT, typename InArgsT>
 void execAsyncFunWrapper(const void *args, uint32_t args_size, void *,
                          uint32_t *, gmt_handle_t handle) {
-  const ExecFunWrapperArgs<FunT, InArgsT> &funArgs =
-      *reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-
-  Handle H(handle);
-  funArgs.fun(H, funArgs.args);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    const ExecFunWrapperArgs<FunT, InArgsT> &funArgs = *reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    
+    Handle H(handle);
+    funArgs.fun(H, funArgs.args);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execAsyncFunWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
 }
 
 inline void execAsyncFunWrapper(const void *args, uint32_t args_size, void *,
                                 uint32_t *, gmt_handle_t handle) {
-  using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t);
-
-  FunctionTy functionPtr =
-      *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
-
-  Handle H(handle);
-  functionPtr(H, reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
-              args_size - sizeof(functionPtr));
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t);
+    
+    FunctionTy functionPtr = *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
+    
+    Handle H(handle);
+    functionPtr(H, reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
+                args_size - sizeof(functionPtr));
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execAsyncFunWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), args_size - sizeof(functionPtr), 0);
 }
 
 template <typename FunT, typename InArgsT, typename ResT>
 void asyncExecFunWithRetWrapper(const void *args, uint32_t args_size,
                                 void *result, uint32_t *resSize,
                                 gmt_handle_t handle) {
-  using FunctionTy = void (*)(Handle &, const InArgsT &, ResT *);
-
-  const ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
-      reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-  const InArgsT &fnargs = funArgs->args;
-
-  Handle H(handle);
-  funArgs->fun(H, fnargs, reinterpret_cast<ResT *>(result));
-  *resSize = sizeof(ResT);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy = void (*)(Handle &, const InArgsT &, ResT *);
+    
+    const ExecFunWrapperArgs<FunT, InArgsT> *funArgs = reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    const InArgsT &fnargs = funArgs->args;
+    
+    Handle H(handle);
+    funArgs->fun(H, fnargs, reinterpret_cast<ResT *>(result));
+    *resSize = sizeof(ResT);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("asyncExecFunWithRetWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(ResT));
 }
 
 template <typename ResT>
 void asyncExecFunWithRetWrapper(const void *args, uint32_t args_size,
                                 void *result, uint32_t *resSize,
                                 gmt_handle_t handle) {
-  using FunctionTy =
-      void (*)(Handle &, const uint8_t *, const uint32_t, ResT *);
-
-  FunctionTy functionPtr =
-      *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
-
-  ResT *resultPtr = reinterpret_cast<ResT *>(result);
-
-  Handle H(handle);
-  functionPtr(H, reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
-              args_size - sizeof(functionPtr), resultPtr);
-  *resSize = sizeof(ResT);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy =
+    void (*)(Handle &, const uint8_t *, const uint32_t, ResT *);
+    
+    FunctionTy functionPtr = *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
+    
+    ResT *resultPtr = reinterpret_cast<ResT *>(result);
+    
+    Handle H(handle);
+    functionPtr(H, reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
+                args_size - sizeof(functionPtr), resultPtr);
+    *resSize = sizeof(ResT);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("asyncExecFunWithRetWrapper-ResT", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), args_size - sizeof(functionPtr), sizeof(ResT));
 }
 
 template <typename FunT, typename InArgsT>
 void asyncExecFunWithRetBuffWrapper(const void *args, uint32_t, void *result,
                                     uint32_t *resultSize, gmt_handle_t handle) {
-  const ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
-      reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-  const InArgsT &fnargs = funArgs->args;
-
-  Handle H(handle);
-  funArgs->fun(H, fnargs, reinterpret_cast<uint8_t *>(result), resultSize);
-
-  checkOutputSize(*resultSize);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    const ExecFunWrapperArgs<FunT, InArgsT> *funArgs = reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    const InArgsT &fnargs = funArgs->args;
+    
+    Handle H(handle);
+    funArgs->fun(H, fnargs, reinterpret_cast<uint8_t *>(result), resultSize);
+    
+    checkOutputSize(*resultSize);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("asyncExecFunWithRetBuffWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(*resultSize));
 }
 
 inline void asyncExecFunWithRetBuffWrapper(const void *args, uint32_t argsSize,
                                            void *result, uint32_t *resultSize,
                                            gmt_handle_t handle) {
-  using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t,
-                              uint8_t *, uint32_t *);
-
-  FunctionTy functionPtr =
-      *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
-
-  Handle H(handle);
-  functionPtr(H, reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
-              argsSize - sizeof(functionPtr),
-              reinterpret_cast<uint8_t *>(result), resultSize);
-
-  checkOutputSize(*resultSize);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t,
+                                uint8_t *, uint32_t *);
+    
+    FunctionTy functionPtr = *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
+    
+    Handle H(handle);
+    functionPtr(H, reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr),
+                argsSize - sizeof(functionPtr),
+                reinterpret_cast<uint8_t *>(result), resultSize);
+    
+    checkOutputSize(*resultSize);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("asyncExecFunWithRetBuffWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), argsSize - sizeof(functionPtr), sizeof(*resultSize));
 }
 
 inline void asyncForEachWrapper(uint64_t startIt, uint64_t numIters,
                                 const void *args, gmt_handle_t handle) {
-  using FunctionTy =
-      void (*)(Handle &, const uint8_t *, const uint32_t, size_t);
-
-  FunctionTy functionPtr =
-      *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
-  const uint32_t argSize = *reinterpret_cast<const uint32_t *>(
-      reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr));
-
-  const uint8_t *buffer = reinterpret_cast<const uint8_t *>(args) +
-                          sizeof(functionPtr) + sizeof(argSize);
-  Handle H(handle);
-  for (size_t i = 0; i < numIters; ++i)
-    functionPtr(H, buffer, argSize, startIt + i);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    using FunctionTy =
+    void (*)(Handle &, const uint8_t *, const uint32_t, size_t);
+    
+    FunctionTy functionPtr = *reinterpret_cast<FunctionTy *>(const_cast<void *>(args));
+    const uint32_t argSize = *reinterpret_cast<const uint32_t *>(reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr));
+    
+    const uint8_t *buffer = reinterpret_cast<const uint8_t *>(args) + sizeof(functionPtr) + sizeof(argSize);
+    Handle H(handle);
+    for (size_t i = 0; i < numIters; ++i)
+        functionPtr(H, buffer, argSize, startIt + i);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("asyncForEachWrapper-inline", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(argSize), 0, numIters);
 }
 
 template <typename FunT, typename InArgsT>
 void asyncForEachWrapper(uint64_t startIt, uint64_t numIters, const void *args,
                          gmt_handle_t handle) {
-  const ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
-      reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-  const InArgsT &fnargs = funArgs->args;
-
-  Handle H(handle);
-  for (size_t i = 0; i < numIters; ++i) funArgs->fun(H, fnargs, startIt + i);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    const ExecFunWrapperArgs<FunT, InArgsT> *funArgs = reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    const InArgsT &fnargs = funArgs->args;
+    
+    Handle H(handle);
+    for (size_t i = 0; i < numIters; ++i) funArgs->fun(H, fnargs, startIt + i);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("asyncForEachWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
 }
 
 template <typename FunT, typename InArgsT>
 void execAsyncFunWithRetBuffWrapper(const void *args, uint32_t args_size,
                                     void *result, uint32_t *resSize,
                                     gmt_handle_t handle) {
-  const ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
-      reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
-  const InArgsT &fnargs = funArgs->args;
-  funArgs->fun(fnargs, reinterpret_cast<uint8_t *>(result), resSize,
-               Handle(handle));
-
-  checkOutputSize(*resSize);
+    // Start logging time
+    auto t1 = shad_clock::now();
+    
+    const ExecFunWrapperArgs<FunT, InArgsT> *funArgs =
+    reinterpret_cast<const ExecFunWrapperArgs<FunT, InArgsT> *>(args);
+    const InArgsT &fnargs = funArgs->args;
+    funArgs->fun(fnargs, reinterpret_cast<uint8_t *>(result), resSize,
+                 Handle(handle));
+    
+    checkOutputSize(*resSize);
+    
+    // End logging time
+    auto t2 = shad_clock::now();
+    std::chrono::duration<double> diff = t2-t1;
+    auto log_handler = shad::slog::ShadLog::Instance();
+    log_handler->printlf("execAsyncFunWithRetBuffWrapper", diff.count(), &H, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), sizeof(*resSize));
 }
 
 }  // namespace impl
