@@ -145,7 +145,7 @@ void sumNumbers(size_t arraySize){
 
 namespace shad {
 int main(int argc, char**argv) {
-    
+    std::cout<<"Running...\n";
     size_t arraySize = 0;
     if(argc<2) arraySize = 9999999;
     else arraySize = std::stol(argv[1]);

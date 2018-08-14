@@ -36,8 +36,6 @@
 #ifndef INCLUDE_UTIL_SLOG_H_
 #define INCLUDE_UTIL_SLOG_H_
 
-#define HAVE_LOG true
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -183,7 +181,7 @@ namespace shad{
                     tag = "GMT";
                 #endif
                 
-                #if defined HAVE_LOG
+                #if defined HAVE_LOGGING
                     const ShadType param = {tag, eventName, std::to_string(execTimeInSec), "sec", handle, static_cast<uint32_t>(sloc), static_cast<uint32_t>(dloc), inputSizeInByte, outputSizeInByte, loopCounter};
                 
                     printLogInFile(param);
