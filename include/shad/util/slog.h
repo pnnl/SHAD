@@ -80,8 +80,6 @@ namespace shad{
 
         class ShadLog{
         private:
-            size_t counter[2]={0,0};
-            
             // @brief Get Today's date
             std::string getTodayDate(){
                 auto now = shad_clock::now();
@@ -156,16 +154,16 @@ namespace shad{
                     //std::string logger_name = msg.eventName + "_" + std::to_string((++counter[0])%100000000) + "_" + std::to_string((counter[0]>99999998?(++counter[1])%100000000:counter[1]));
                     
                     
-                    auto async_logger = spdlog::get(msg.eventName);
+                    auto async_logger = spdlog::get("SHAD_LOGGER");
                     
                     if(!async_logger){
-                        async_logger = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(msg.eventName, "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
+                        async_logger = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>("SHAD_LOGGER", "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
+                        async_logger->set_pattern("{\"T\":%t, \"P\":%P, \"TS\":\"%Y-%m-%dT%X.%eZ\", %v},");
                     }
                     
-                    async_logger->set_pattern("{\"T\":%t, \"P\":%P, \"TS\":\"%Y-%m-%dT%X.%eZ\", %v},");
                     async_logger->info("{}", msg);
                     
-                    spdlog::flush_every(std::chrono::seconds(1));
+                    async_logger->flush();
                     
                     //shutDownLogging();
                 }catch (const spdlog::spdlog_ex& ex){
