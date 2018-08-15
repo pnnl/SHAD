@@ -165,9 +165,7 @@ namespace shad{
                     async_logger->set_pattern("{\"T\":%t, \"P\":%P, \"TS\":\"%Y-%m-%dT%X.%eZ\", %v},");
                     async_logger->info("{}", msg);
                     
-                    //spdlog::flush_every(std::chrono::seconds(3));
-                    
-                    spdlog::drop(msg.eventName);
+                    spdlog::flush_every(std::chrono::seconds(1));
                     
                     //shutDownLogging();
                 }catch (const spdlog::spdlog_ex& ex){
