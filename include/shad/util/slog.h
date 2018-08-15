@@ -142,10 +142,10 @@ namespace shad{
                 spdlog::flush_every(std::chrono::seconds(3));
                 
                 // apply some function on all registered loggers
-                spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {});
+                //spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {});
                 
                 // release any threads created by spdlog, and drop all loggers in the registry.
-                spdlog::shutdown();
+                //spdlog::shutdown();
             }
 
             // @brief Printing logging information in a file, the suffix of the file name is today's date
@@ -153,14 +153,21 @@ namespace shad{
             void printLogInFile(const ShadType& msg){
                 try{
                     //spdlog::init_thread_pool(8192, 100); // queue with 8k items and 100 backing thread.
-                    std::string logger_name = msg.eventName + "_" + std::to_string((++counter[0])%100000000) + "_" + std::to_string((counter[0]>99999998?(++counter[1])%100000000:counter[1]));
-                    auto async_logger = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(logger_name, "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
+                    //std::string logger_name = msg.eventName + "_" + std::to_string((++counter[0])%100000000) + "_" + std::to_string((counter[0]>99999998?(++counter[1])%100000000:counter[1]));
+                    
+                    
+                    auto async_logger = spdlog::get(msg.eventName);
+                    
+                    if(!async_logger){
+                        async_logger = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(msg.eventName, "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
+                    }
                     
                     async_logger->set_pattern("{\"T\":%t, \"P\":%P, \"TS\":\"%Y-%m-%dT%X.%eZ\", %v},");
                     async_logger->info("{}", msg);
-                    async_logger->flush();
                     
-                    spdlog::drop(logger_name);
+                    //spdlog::flush_every(std::chrono::seconds(3));
+                    
+                    //spdlog::drop(logger_name);
                     
                     //shutDownLogging();
                 }catch (const spdlog::spdlog_ex& ex){
