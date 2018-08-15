@@ -156,6 +156,8 @@ namespace shad{
                     async_file->set_pattern("{\"T\":%t, \"P\":%P, \"TS\":\"%Y-%m-%dT%X.%eZ\", %v},");
                     async_file->info("{}", msg);
                     
+                    spdlog::drop(msg.eventName);
+                    
                     //shutDownLogging();
                 }catch (const spdlog::spdlog_ex& ex){
                     std::cout << "Log initialization failed: " << ex.what() << std::endl;
