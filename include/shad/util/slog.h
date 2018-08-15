@@ -80,6 +80,8 @@ namespace shad{
 
         class ShadLog{
         private:
+            size_t counter[2]={0,0};
+            
             // @brief Get Today's date
             std::string getTodayDate(){
                 auto now = shad_clock::now();
@@ -151,7 +153,7 @@ namespace shad{
             void printLogInFile(const ShadType& msg){
                 try{
                     //spdlog::init_thread_pool(8192, 100); // queue with 8k items and 100 backing thread.
-                    std::string logger_name = msg.eventName + "_" + std::to_string(std::chrono::milliseconds(std::chrono::seconds(std::time(NULL))).count());
+                    std::string logger_name = msg.eventName + "_" + std::to_string((++counter[0])%100000000) + "_" + std::to_string((counter[0]>99999998?(++counter[1])%100000000:counter[1]));
                     auto async_file = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(logger_name, "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
                     
                     async_file->set_pattern("{\"T\":%t, \"P\":%P, \"TS\":\"%Y-%m-%dT%X.%eZ\", %v},");
