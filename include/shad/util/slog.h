@@ -150,13 +150,15 @@ namespace shad{
             //  arg: vector of parameters
             void printLogInFile(const ShadType& msg){
                 try{
-                    spdlog::init_thread_pool(8192, 100); // queue with 8k items and 100 backing thread.
-                    auto async_file = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(msg.eventName, "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
+                    //spdlog::init_thread_pool(8192, 100); // queue with 8k items and 100 backing thread.
+                    auto async_file = std::make_shared<spdlog::async_logger>(msg.eventName, spdlog::daily_logger_mt(msg.eventName, "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0), spdlog::thread_pool(), async_overflow_policy::block);
+                    
+                    //spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(msg.eventName, "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
                     
                     async_file->set_pattern("{\"T\":%t, \"P\":%P, \"TS\":\"%Y-%m-%dT%X.%eZ\", %v},");
                     async_file->info("{}", msg);
                     
-                    spdlog::drop(msg.eventName);
+                    //spdlog::drop(msg.eventName);
                     
                     //shutDownLogging();
                 }catch (const spdlog::spdlog_ex& ex){
