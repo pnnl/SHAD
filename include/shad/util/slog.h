@@ -167,7 +167,7 @@ namespace shad{
                     
                     //spdlog::flush_every(std::chrono::seconds(3));
                     
-                    //spdlog::drop(logger_name);
+                    spdlog::drop(msg.eventName);
                     
                     //shutDownLogging();
                 }catch (const spdlog::spdlog_ex& ex){
