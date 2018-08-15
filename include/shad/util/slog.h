@@ -80,6 +80,8 @@ namespace shad{
 
         class ShadLog{
         private:
+            size_t counter=0;
+            
             // @brief Get Today's date
             std::string getTodayDate(){
                 auto now = shad_clock::now();
@@ -151,12 +153,13 @@ namespace shad{
             void printLogInFile(const ShadType& msg){
                 try{
                     //spdlog::init_thread_pool(8192, 100); // queue with 8k items and 100 backing thread.
-                    auto async_file = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(msg.eventName + "_" + std::to_string(counter), "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
+                    std::string logger_name = msg.eventName + "_" + std::to_string(counter);
+                    auto async_file = spdlog::create_async<spdlog::sinks::daily_file_sink_mt>(logger_name, "logs/" + msg.rtTagName + "_" + std::to_string(static_cast<uint32_t>(msg.sloc)) + ".json", 0, 0);
                     
                     async_file->set_pattern("{\"T\":%t, \"P\":%P, \"TS\":\"%Y-%m-%dT%X.%eZ\", %v},");
                     async_file->info("{}", msg);
                     
-                    spdlog::drop(msg.eventName + "_" + std::to_string(counter));
+                    spdlog::drop(logger_name);
                     
                     //shutDownLogging();
                 }catch (const spdlog::spdlog_ex& ex){
@@ -170,7 +173,6 @@ namespace shad{
             // @brief Creating singleton object
             static ShadLog *Instance() {
                 static ShadLog instance;
-                static size_t counter=1;
                 return &instance;
             }
 
@@ -185,7 +187,7 @@ namespace shad{
                 #endif
                 
                 #if defined HAVE_LOGGING
-                    counter = (++counter)%100000000;
+                counter = (++counter)%100000000;
                     const ShadType param = {tag, eventName, std::to_string(execTimeInSec), "sec", handle, static_cast<uint32_t>(sloc), static_cast<uint32_t>(dloc), inputSizeInByte, outputSizeInByte, loopCounter};
                 
                     printLogInFile(param);
