@@ -44,6 +44,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 import datetime as dt
 import sys, getopt
+import fileinput
 
 # Class holds datetime functionalities
 class SDateTime:
@@ -88,10 +89,10 @@ class SPlot:
 		plt.xticks(fontsize=xFontSize)
 		plt.yticks(fontsize=yFontSize)
 
-		if scaleX is "log":
+		if scaleX.upper() == "LOG":
 			plt.xscale(scaleX)
 
-		if scaleY is "log":
+		if scaleY.upper() == "LOG":
 			plt.yscale(scaleY)
 
 		if len(xlabel)>0:
@@ -175,10 +176,10 @@ class SPlot:
 		plt.xticks(fontsize=xFontSize)
 		plt.yticks(fontsize=yFontSize)
 
-		if scaleX is "log":
+		if scaleX.upper() == "LOG":
 			plt.xscale(scaleX)
 
-		if scaleY is "log":
+		if scaleY.upper() == "LOG":
 			plt.yscale(scaleY)
 
 		if len(xlabel)>0:
@@ -211,23 +212,27 @@ class SLogAnalysis:
 	def __init__(self, _dir="/", _fdir="/"):
 		self.dir = _dir
 		self.fileList = []
-		self.json = ""
 		self.df = None
 		self.dateObj = SDateTime()
 		self.plot = SPlot(_fdir)
-
-		if not os.path.exists(self.dir):
-			try:
-			    os.makedirs(self.dir)
-			except OSError as e:
-			    if e.errno != errno.EEXIST:
-			        raise
+		self.__checkDir(self.dir)
+		_tDir = join(self.dir, 'tmp')
+		self.__checkDir(_tDir)
+		self.tJSON = join(_tDir,'temp.json')
 
 	#def fileChooser(self):
 	#	root = tk.Tk()
 	#	root.withdraw()
 	#	file_path = filedialog.askopenfilenames(initialdir = self.dir, title = "Select file", filetypes = (("JSON files","*.json"),("all files","*.*")))
 	#	self.fileList = [i for i in root.tk.splitlist(file_path)]
+
+	def __checkDir(self, _dir):
+		if not os.path.exists(_dir):
+			try:
+			    os.makedirs(_dir)
+			except OSError as e:
+			    if e.errno != errno.EEXIST:
+			        raise
 
 	def getLogFiles(self, runtime="", locality=-1, startDate=None, endDate=None):
 		_fileList = [f for f in listdir(self.dir) if isfile(join(self.dir, f))]
@@ -269,28 +274,43 @@ class SLogAnalysis:
 
 	def readFiles(self):
 		if len(self.fileList) > 0:
-			self.json = "["
-			for f in self.fileList:
-				if (isfile(f)):
-					fp = open(f, "r")
-					for line in fp:
-						self.json += line
-					fp.close()
-					if (self.json[-1:]!='}'):
-						self.json = self.json[:-1]
-			self.json = self.json[:-1] + "]"
-			self.df = pd.DataFrame(pd.read_json(self.json, "record"))
+			print("Starts processing JSON object...")
+			if isfile(self.tJSON):
+				os.remove(self.tJSON)
 
-	def eventFrequencyPlot(self, xlab="", ylab="", xRotation = 0, yRotation = 0, fullTitle="", fontSizeX=7, fontSizeY=7):
+			with open(self.tJSON, 'w') as outfile:
+				outfile.write("[")
+				input_lines = fileinput.input(files=self.fileList)
+				a = 0
+				for line in input_lines:
+					a += 1
+				input_lines = fileinput.input(files=self.fileList)
+				b=0
+				for line in input_lines:
+					b +=1
+
+					if (line[-1:]!=','):
+						line = line[:-1]
+					if b==a:
+						line = line[:-1]+"]"
+					
+					outfile.write(line)
+
+			print("Converting JSON to dataframe...")
+			self.df = pd.DataFrame(pd.read_json(self.tJSON, "record"))
+			print("Conversion completed...")
+
+
+	def eventFrequencyPlot(self, xlab="", ylab="", xRotation = 0, yRotation = 0, fullTitle="", fontSizeX=7, fontSizeY=7, xScale="", yScale=""):
 		if self.df is None:
 			self.readFiles();
 
 		if self.df is not None:
 			df_ENC = self.df.groupby('EN').size().reset_index(name='Counts')
 			# plotting histogram
-			self.plot.barPlot(df_ENC['EN'], df_ENC['Counts'], xlabel=xlab, ylabel=ylab, xRot = xRotation, yRot = yRotation, title=fullTitle, xFontSize=fontSizeX, yFontSize=fontSizeY)
+			self.plot.barPlot(df_ENC['EN'], df_ENC['Counts'], xlabel=xlab, ylabel=ylab, xRot = xRotation, yRot = yRotation, title=fullTitle, xFontSize=fontSizeX, yFontSize=fontSizeY, scaleX=xScale, scaleY=yScale)
 
-	def eventMatricPlot(self, matricColName='ET', matricName='Execution time', xlab="", ylab="", xRotation = 0, yRotation = 0, fullTitle="", fontSizeX=7, fontSizeY=7, xScale="", yScale=""):
+	def eventMatricPlot(self, matricColName='ET', matricName='Execution time', matricUnit="s", xlab="", ylab="", xRotation = 0, yRotation = 0, fullTitle="", fontSizeX=7, fontSizeY=7, xScale="", yScale=""):
 		if self.df is None:
 			self.readFiles();
 
@@ -472,8 +492,11 @@ class SLogMenu:
 		self.startDT = None
 		self.endDT = None
 		self.eventCount = False
+		self.eventCountScaleY = ''
 		self.eventMatricCount = False
+		self.eventMatricCountScaleY = ''
 		self.eventMatricName = 'ET'
+		self.EventMatricUnit = "s"
 		self.eventMatric = False
 		self.eventName = ''
 		self.matricName = ''
@@ -493,13 +516,16 @@ class SLogMenu:
 	      		'\n--dt: Date in a format of mm-dd-yyyy [Optional]' + 
 	      		'\n--dtr: Date range. Eg. 07-12-2016T09-03-2017 [Optional]' + 
 	      		'\n--ec: Plot the number of times an event is called' + 
+	      		'\n--ecy: Scale y axis values [optional, default value ''], eg. log' + 
 	      		'\n--emc: Plot aggregate matric count vs event. You have to pass the matric name using --emn parameter.' + 
+	      		'\n--emcy: Scale y axis values [optional, default value ''], eg. log' + 
 	      		'\n--emn: Event matric name, eg. execution time (ET), input size (IS), output size (OS), loop counter (LI)' + 
+	      		'\n--emu: Event matric unit: for execution time: Milisecond (ms), Minute (m or min), Hour (h or hr or hour), Day (d or day), Month (mn or month), and default unit is second; For IS or OS: kilo (kb), mega (mb), giga (gb), tera (tb), default is byte (b)' + 
 	      		'\n--em: Flag to enable functionality to plot event vs matric [By default it will plot event vs matric for ]' + 
 	      		'\n--en: Event name' + 
 	      		'\n--mn: Matric name, eg. execution time (ET), input size (IS), output size (OS), loop counter (LI)' + 
 	      		'\n--ti: Time interval in the time line' + 
-	      		'\n--tu: Time interval unit, eg. Minute (m or min), Hour (h or hr or hour), Day (d or day), Month (mn or month), and default unit is second' + 
+	      		'\n--tu: Time interval unit, eg. Milisecond (ms), Minute (m or min), Hour (h or hr or hour), Day (d or day), Month (mn or month), and default unit is second (s)' + 
 	      		'\n--ml: Show all event time lines in a single chart [optional, default: False]' +
 	      		'\n')
 	
@@ -511,7 +537,7 @@ class SLogMenu:
 
 	def __parseArgs(self, argv):
 		try:
-			opts, args = getopt.getopt(argv, 'hd:f:r:l:', ["help","dt=","dtr=","ec","emc","emn=","em","en=","mn=","ti=","tu=","ml"])
+			opts, args = getopt.getopt(argv, 'hd:f:r:l:', ["help","dt=","dtr=","ec","ecy=","emc","emcy=","emn=","emu=","em","en=","mn=","ti=","tu=","ml"])
 		except getopt.GetoptError as err:
 			print(err)
 			self.__helpMessage()
@@ -535,10 +561,16 @@ class SLogMenu:
 				self.__parseDateRange(arg)
 			elif opt == "--ec":
 				self.eventCount = True
+			elif opt == "--ecy":
+				self.eventCountScaleY = arg
 			elif opt == "--emc":
 				self.eventMatricCount = True
+			elif opt == "--emcy":
+				self.eventMatricCountScaleY = arg
 			elif opt == "--emn":
 				self.eventMatricName = arg
+			elif opt == "--emu":
+				self.EventMatricUnit = arg
 			elif opt == "--em":
 				self.eventMatric = True
 			elif opt == "--en":
@@ -568,7 +600,9 @@ class SLogMenu:
 		print("Start date=", self.startDT)
 		print("End date=", self.endDT)
 		print("Event count=", self.eventCount)
+		print("Event count scale Y=", self.eventCountScaleY)
 		print("Event Matric count=", self.eventMatricCount)
+		print("Event Matric count scale Y=", self.eventMatricCountScaleY)
 		print("Event Matric Name=", self.eventMatricName)
 		print("Event matric=", self.eventMatric)
 		print("Event name=", self.eventName)
@@ -589,18 +623,16 @@ class SLogMenu:
 		logObj.getLogFiles(runtime=self.runtime, locality=self.locality, startDate=_date, endDate=self.endDT)
 		
 		if self.eventCount==True:
-			logObj.eventFrequencyPlot(xlab = "Event name", ylab="Frequency", xRotation=30, fullTitle="Event frequency plot")
+			logObj.eventFrequencyPlot(xlab = "Event name", ylab="Frequency", xRotation=30, fullTitle="Event frequency plot", yScale=self.eventCountScaleY)
 		
 		if self.eventMatricCount == True:
 			mn = ''
 			yl = ''
 			title = ''
-			scl = ''
 			if self.eventMatricName == "ET":
 				mn = "Execution time"
-				yl = "Aggregated execution time (sec) in logarithmic scale"
+				yl = "Aggregated execution time (sec)"
 				title = "Event execution time plot"
-				scl = 'log'
 			elif self.eventMatricName == "IS":
 				mn = "Input size"
 				yl = "Aggregated input size (byte)"
@@ -614,22 +646,28 @@ class SLogMenu:
 				yl = "Aggregated loop counter"
 				title = "Event loop counter plot"
 
-			logObj.eventMatricPlot(matricColName=self.eventMatricName, matricName=mn, xlab = "Event name", ylab=yl, xRotation=30, fullTitle=title, yScale=scl)
+			if self.eventMatricCountScaleY.upper() == "LOG":
+				yl += " in logarithmic scale"
+
+			logObj.eventMatricPlot(matricColName=self.eventMatricName, matricName=mn, xlab = "Event name", ylab=yl, xRotation=30, fullTitle=title, yScale=self.eventMatricCountScaleY)
 		
 		if self.eventMatric==True:
 			
 			tunit = 'seconds'
+			# miliseconds
+			if(self.timeUnit.upper() == "MS"): 
+				tunit = "miliseconds"
 			# minutes
-			if(self.timeUnit == "m" or self.timeUnit == "min"): 
+			if(self.timeUnit.upper() == "M" or self.timeUnit.upper() == "MIN"): 
 				tunit = "minutes"
 			# hours
-			elif(self.timeUnit == "h" or self.timeUnit == "hr" or self.timeUnit == "hour"):
+			elif(self.timeUnit.upper() == "H" or self.timeUnit.upper() == "HR" or self.timeUnit.upper() == "HOUR"):
 				tunit = "hours"
 			# day
-			elif(self.timeUnit == "d" or self.timeUnit == "day"):
+			elif(self.timeUnit.upper() == "D" or self.timeUnit.upper() == "DAY"):
 				tunit = "days"
 			# month (assuming each month is 30 days long)
-			elif(self.timeUnit == "mn" or self.timeUnit == "month"):
+			elif(self.timeUnit.upper() == "MN" or self.timeUnit.upper() == "MONTH"):
 				tunit = "months"
 
 			logObj.analyzeEventMatric(en=self.eventName, matr=self.matricName, ts=self.timeInterval, unit=self.timeUnit, 
@@ -640,4 +678,7 @@ class SLogMenu:
 if __name__ == "__main__":
 	menu = SLogMenu(sys.argv[1:])
 	menu.generateReport()
+
+# test command:
+# python3 ./slog.py -d "/Users/methun/self/PNNL/Work/Shad_log/log_2018-08-15" -f "/Users/methun/self/PNNL/Work/Shad_log/logfig" --dt "08-15-2018" --ec --em --ti 5 --ml
 
