@@ -63,6 +63,18 @@ cmake .. -DCMAKE_INSTALL_PREFIX=$GMT_ROOT \
 make -j <SOMETHING_REASONABLE> && make install
 ```
 
+#### SPDLOG
+SHAD uses spdlog which is very fast, header only and C++ library for logging.
+It can be installed using the following commands:
+
+```
+git clone https://github.com/gabime/spdlog.git
+cd spdlog
+mkdir build && cd build
+cmake ..
+make -j <SOMETHING_REASONABLE>
+```
+
 ### Build SHAD
 
 Before attempting to build SHAD, please take a look at the requirements in [Install Dependencies](#install-dependencies).
@@ -82,7 +94,9 @@ cmake .. -DCMAKE_INSTALL_PREFIX=$SHADROOT               \
          -DGMT_ROOT=$GMTROOT                            \
          # endif                                        \
          -DGTEST_ROOT=$GTESTROOT                        \
-         -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT
+         -DGPERFTOOLS_ROOT=$GPERFTOOLSROOT              \
+         -DSPDLOG_ROOT=$INCLUDE_DIR_PATH_OF_SPDLOG      \
+         -DSHAD_ENABLE_LOGGING = 1
 make -j <SOMETHING_REASONABLE> && make install
 ```
 If you have multiple compilers (or compiler versions) available on your system, you may want to indicate a specific one using the ```-DCMAKE_CXX_COMPILER=<compiler>``` option.
