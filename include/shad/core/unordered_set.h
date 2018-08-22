@@ -89,7 +89,7 @@ class unordered_set {
   ///
   /// @todo add equal parameter
   /// @todo add allocator parameter
-  explicit unordered_set(size_type bucket_count = 1024,
+  explicit unordered_set(size_type bucket_count = 1021,
                          const Hash &hash = Hash()) {
     ptr = set_t::Create(bucket_count);
   }

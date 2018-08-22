@@ -181,30 +181,36 @@ class array {
   ///
   /// @param O The array to swap the content with.
   void swap(array<T, N> &O) noexcept /* (std::is_nothrow_swappable_v<T>) */ {
-    ptr->swap(O);
+    ptr->swap(*O->ptr);
   }
-  /// @}
-
-  /// @defgroup Obsolete - todo
-  /// @{
-  auto get() { return ptr; }
   /// @}
 
  private:
   std::shared_ptr<array_t> ptr = nullptr;
+
+  auto get() const { return ptr; }
+
+  template <class T_, std::size_t N_>
+  friend bool operator==(const array<T_, N_> &, const array<T_, N_> &);
+
+  template <class T_, std::size_t N_>
+  friend bool operator<(const array<T_, N_> &, const array<T_, N_> &);
+
+  template <class T_, std::size_t N_>
+  friend bool operator>(const array<T_, N_> &, const array<T_, N_> &);
 };
 
-template <typename T, std::size_t N>
+template <class T, std::size_t N>
 bool operator==(const array<T, N> &LHS, const array<T, N> &RHS) {
-  return operator==(*LHS.get(), *RHS.get());
+  return *LHS.get() == *RHS.get();
 }
 
-template <typename T, std::size_t N>
+template <class T, std::size_t N>
 bool operator<(const array<T, N> &LHS, const array<T, N> &RHS) {
   return operator<(*LHS.get(), *RHS.get());
 }
 
-template <typename T, std::size_t N>
+template <class T, std::size_t N>
 bool operator>(const array<T, N> &LHS, const array<T, N> &RHS) {
   return operator>(*LHS.get(), *RHS.get());
 }

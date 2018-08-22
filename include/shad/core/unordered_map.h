@@ -92,7 +92,7 @@ class unordered_map {
   ///
   /// @todo add equal parameter
   /// @todo add allocator parameter
-  explicit unordered_map(size_type bucket_count = 1024,
+  explicit unordered_map(size_type bucket_count = 1021,
                          const Hash &hash = Hash()) {
     ptr = hashmap_t::Create(bucket_count);
   }
