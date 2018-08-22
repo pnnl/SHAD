@@ -31,6 +31,18 @@
 
 namespace shad {
 
+/// @brief Fixed size distributed array.
+///
+/// Section 21.3.7.1 of the C++ standard defines the ::array as a fixed-size
+/// sequence of objects.  An ::array should be a contiguous container (as
+/// defined in section 21.2.1).  According to that definition, contiguous
+/// containers requires contiguous iterators.  The definition of contiguous
+/// iterators implies contiguous memory allocation for the sequence, and it
+/// cannot be guaranteed in many distributed settings.  Therefore, ::array
+/// relaxes this requirement.
+///
+/// @tparam T The type of the elements in the distributed array.
+/// @tparam N The number of element in the distributed array.
 template <class T, std::size_t N>
 class array {
   using array_t = impl::array<T, N>;

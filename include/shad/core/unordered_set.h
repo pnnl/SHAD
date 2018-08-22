@@ -30,8 +30,21 @@
 
 namespace shad {
 
-// todo KeyEqual
-// todo Allocator parameter
+/// @brief Distributed unordered set.
+///
+/// A distributed associative container that contains a set of unique objects of
+/// type Key. Search, insertion, and removal have average constant-time
+/// complexity. Internally, the elements are not sorted in any particular order,
+/// but organized into buckets. Which bucket an element is placed into depends
+/// entirely on the hash of its value. This allows fast access to individual
+/// elements, since once a hash is computed, it refers to the exact bucket the
+/// element is placed into.
+///
+/// @tparam Key The type of the elements.
+/// @tparam Hash The type of the hashing callable.
+///
+/// @todo KeyEqual template parameter
+/// @todo Allocator template parameter
 template <class Key, class Hash = shad::hash<Key>>
 class unordered_set {
   using set_t = Set<Key>;
@@ -70,7 +83,14 @@ class unordered_set {
 
  public:
   /// @brief Constructor.
-  explicit unordered_set(size_type bucket_count = 1024) {
+  ///
+  /// @param bucket_count The minimum number of buckets.
+  /// @param hash The hashing callable.
+  ///
+  /// @todo add equal parameter
+  /// @todo add allocator parameter
+  explicit unordered_set(size_type bucket_count = 1024,
+                         const Hash &hash = Hash()) {
     ptr = set_t::Create(bucket_count);
   }
 
@@ -82,15 +102,27 @@ class unordered_set {
 
   /// @defgroup Iterators
   /// @{
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return an ::iterator to the beginning of the sequence.
   constexpr iterator begin() const noexcept { return ptr->begin(); }
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return a ::const_iterator to the beginning of the sequence.
   constexpr const_iterator cbegin() const noexcept { return ptr->cbegin(); }
+  /// @brief The iterator to the end of the sequence.
+  /// @return an ::iterator to the end of the sequence.
   constexpr iterator end() const noexcept { return ptr->end(); }
+  /// @brief The iterator to the end of the sequence.
+  /// @return a ::const_iterator to the end of the sequence.
   constexpr const_iterator cend() const noexcept { return ptr->cend(); }
   /// @}
 
   /// @defgroup Capacity
   /// @{
+  /// @brief Empty test.
+  /// @return true if empty, and false otherwise.
   bool empty() const noexcept { return size() == 0; }
+  /// @brief The size of the container.
+  /// @return the size of the container.
   size_type size() const noexcept { return ptr->Size(); }
   // todo max_size
   /// @}
