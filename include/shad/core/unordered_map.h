@@ -99,9 +99,6 @@ class unordered_map {
 
   /// @defgroup Modifiers - todo
   /// @{
-  std::pair<iterator,bool> insert( const value_type& value ) {
-	  ptr->Insert(value.first, value.second);
-  }
   /// @}
 
   /// @defgroup Lookup - todo
@@ -130,8 +127,7 @@ class unordered_map {
   /// @}
 
  private:
-  using shared_ptr_t = typename hashmap_t::ShadHashmapPtr;
-  shared_ptr_t ptr = nullptr;
+  std::shared_ptr<hashmap_t> ptr = nullptr;
 };
 
 // todo operator==

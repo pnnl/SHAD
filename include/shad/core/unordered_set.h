@@ -75,9 +75,7 @@ class unordered_set {
   }
 
   /// @brief Destructor.
-  ~unordered_set() {
-    set_t::Destroy(ptr.get()->GetGlobalID());
-  }
+  ~unordered_set() { set_t::Destroy(ptr.get()->GetGlobalID()); }
 
   // todo assignment
   // todo get_allocator
@@ -128,8 +126,7 @@ class unordered_set {
   /// @}
 
  private:
-  using shared_ptr_t = typename set_t::ShadSetPtr;
-  shared_ptr_t ptr = nullptr;
+  std::shared_ptr<set_t> ptr = nullptr;
 };
 
 // todo operator==
