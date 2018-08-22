@@ -370,18 +370,18 @@ TEST_F(ArrayTest, AsyncInsertAsyncForEachAndAsyncGet) {
 }
 
 TEST_F(ArrayTest, CreateNewArray) {
-  auto arrayPtr = shad::array<std::size_t, kArraySize>::Create();
+  auto arrayPtr = shad::impl::array<std::size_t, kArraySize>::Create();
 
   ASSERT_EQ(arrayPtr->size(), kArraySize);
   ASSERT_EQ(arrayPtr->max_size(), kArraySize);
-  using value_type = typename shad::array<std::size_t, 123456>::value_type;
+  using value_type = typename shad::impl::array<std::size_t, 123456>::value_type;
   ASSERT_TRUE((std::is_same<std::size_t, value_type>::value));
 
   arrayPtr->Destroy(arrayPtr->GetGlobalID());
 }
 
 TEST_F(ArrayTest, FillArray) {
-  auto arrayPtr = shad::array<std::size_t, kArraySize>::Create();
+  auto arrayPtr = shad::impl::array<std::size_t, kArraySize>::Create();
 
   arrayPtr->fill(0xdeadc0d3);
 
@@ -397,7 +397,7 @@ TEST_F(ArrayTest, FillArray) {
 }
 
 TEST_F(ArrayTest, ArrayIterator) {
-  auto arrayPtr = shad::array<std::size_t, kArraySize>::Create();
+  auto arrayPtr = shad::impl::array<std::size_t, kArraySize>::Create();
 
   std::size_t splitPoint =
       kArraySize / std::max<std::size_t>(shad::rt::numLocalities(), 2) + 1;
@@ -428,7 +428,7 @@ TEST_F(ArrayTest, ArrayIterator) {
 }
 
 TEST_F(ArrayTest, ArrayIteratorTraitTest) {
-  using array_type = shad::array<size_t, kArraySize>;
+  using array_type = shad::impl::array<size_t, kArraySize>;
   using iterator_traits = std::iterator_traits<typename array_type::iterator>;
 
   ASSERT_TRUE((std::is_same<typename iterator_traits::difference_type,
@@ -452,7 +452,7 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
   array->at(kArraySize / 2) = 0;
   array->at((kArraySize / 2) + 1) = 2;
 
-  auto subList = shad::array<std::size_t, 2>::Create();
+  auto subList = shad::impl::array<std::size_t, 2>::Create();
   subList->at(0) = 0;
   subList->at(1) = 2;
 

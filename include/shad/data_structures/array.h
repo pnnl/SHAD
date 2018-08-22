@@ -1074,6 +1074,7 @@ void Array<T>::ForEach(ApplyFunT &&function, Args &... args) {
   rt::executeOnAll(feLambda, arguments);
 }
 
+namespace impl {
 /// @brief Fixed size distributed array.
 ///
 /// Section 21.3.7.1 of the C++ standard defines the ::array as a fixed-size
@@ -1813,6 +1814,8 @@ class alignas(64) array<T, N>::array_iterator {
   std::size_t offset_{static_cast<std::size_t>(-1)};
   mutable pointer chunk_{nullptr};
 };
+
+}  // namespace impl
 
 }  // namespace shad
 

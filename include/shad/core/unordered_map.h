@@ -99,7 +99,9 @@ class unordered_map {
 
   /// @defgroup Modifiers - todo
   /// @{
-
+  std::pair<iterator,bool> insert( const value_type& value ) {
+	  ptr->Insert(value.first, value.second);
+  }
   /// @}
 
   /// @defgroup Lookup - todo
