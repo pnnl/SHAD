@@ -50,6 +50,9 @@ template <class Key, class T, class Hash = shad::hash<Key>>
 class unordered_map {
   using hashmap_t = Hashmap<Key, T>;
 
+  template <typename T_>
+  friend class buffered_insert_iterator;
+
  public:
   /// @defgroup Types
   /// @{
@@ -154,13 +157,13 @@ class unordered_map {
 
   /// @}
 
-  /// @defgroup Obsolete - todo
-  /// @{
-  auto get() { return ptr; }
-  /// @}
-
  private:
   std::shared_ptr<hashmap_t> ptr = nullptr;
+
+  void buffered_insert(iterator, const value_type &value) {
+    ptr->BufferedInsert(value.first, value.second);
+  }
+  void buffered_flush() { ptr->WaitForBufferedInsert(); }
 };
 
 // todo operator==

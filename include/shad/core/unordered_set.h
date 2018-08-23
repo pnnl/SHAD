@@ -49,6 +49,9 @@ template <class Key, class Hash = shad::hash<Key>>
 class unordered_set {
   using set_t = Set<Key>;
 
+  template <typename T>
+  friend class buffered_insert_iterator;
+
  public:
   /// @defgroup Types
   /// @{
@@ -152,13 +155,11 @@ class unordered_set {
 
   /// @}
 
-  /// @defgroup Obsolete - todo
-  /// @{
-  auto get() { return ptr; }
-  /// @}
-
  private:
   std::shared_ptr<set_t> ptr = nullptr;
+
+  void buffered_insert(iterator, const Key &k) { ptr->BufferedInsert(k); }
+  void buffered_flush() { ptr->WaitForBufferedInsert(); }
 };
 
 // todo operator==
