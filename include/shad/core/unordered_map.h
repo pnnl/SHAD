@@ -25,6 +25,7 @@
 #ifndef INCLUDE_SHAD_CORE_UNORDERED_MAP_H_
 #define INCLUDE_SHAD_CORE_UNORDERED_MAP_H_
 
+#include "shad/core/iterator.h"
 #include "shad/data_structures/compare_and_hash_utils.h"
 #include "shad/data_structures/hashmap.h"
 
@@ -49,6 +50,8 @@ namespace shad {
 template <class Key, class T, class Hash = shad::hash<Key>>
 class unordered_map {
   using hashmap_t = Hashmap<Key, T>;
+
+  friend class buffered_insert_iterator<unordered_map>;
 
  public:
   /// @defgroup Types
@@ -154,13 +157,13 @@ class unordered_map {
 
   /// @}
 
-  /// @defgroup Obsolete - todo
-  /// @{
-  auto get() { return ptr; }
-  /// @}
-
  private:
   std::shared_ptr<hashmap_t> ptr = nullptr;
+
+  void buffered_insert(iterator, const value_type &value) {
+    ptr->BufferedInsert(value.first, value.second);
+  }
+  void buffered_flush() { ptr->WaitForBufferedInsert(); }
 };
 
 // todo operator==
