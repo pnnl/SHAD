@@ -48,6 +48,25 @@ using VTF = shad_test_stl::VectorTestFixture<T>;
 using VTF_TestTypes = ::testing::Types<std::vector<int>>;
 TYPED_TEST_CASE(VTF, VTF_TestTypes);
 
+// min_element, max_element, minmax_element
+using VTF_TestTypes = ::testing::Types<std::vector<int>>;
+TYPED_TEST_CASE(VTF, VTF_TestTypes);
+
+TYPED_TEST(VTF, min_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::min_element<it_t>, shad_test_stl::min_element_<it_t>);
+}
+
+TYPED_TEST(VTF, max_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::max_element<it_t>, shad_test_stl::max_element_<it_t>);
+}
+
+TYPED_TEST(VTF, minmax_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::minmax_element<it_t>, shad_test_stl::minmax_element_<it_t>);
+}
+
 // find_if, find_if_not
 TYPED_TEST(VTF, std_find_if) {
   using it_t = typeof(this->in->begin());
@@ -242,6 +261,22 @@ using ATF_TestTypes =
     ::testing::Types<std::array<int, shad_test_stl::kNumElements>,
                      shad::array<int, shad_test_stl::kNumElements>>;
 TYPED_TEST_CASE(ATF, ATF_TestTypes);
+
+// min_element, max_element, minmax_element
+TYPED_TEST(ATF, min_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::min_element<it_t>, shad_test_stl::min_element_<it_t>);
+}
+
+TYPED_TEST(ATF, max_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::max_element<it_t>, shad_test_stl::max_element_<it_t>);
+}
+
+TYPED_TEST(ATF, minmax_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::minmax_element<it_t>, shad_test_stl::minmax_element_<it_t>);
+}
 
 // find_if, find_if_not
 TYPED_TEST(ATF, std_find_if) {
@@ -443,6 +478,22 @@ using STF_TestTypes =
     ::testing::Types<std::unordered_set<int>, shad::unordered_set<int>>;
 TYPED_TEST_CASE(STF, STF_TestTypes);
 
+// min_element, max_element, minmax_element
+TYPED_TEST(STF, min_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::min_element<it_t>, shad_test_stl::min_element_<it_t>);
+}
+
+TYPED_TEST(STF, max_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::max_element<it_t>, shad_test_stl::max_element_<it_t>);
+}
+
+TYPED_TEST(STF, minmax_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::minmax_element<it_t>, shad_test_stl::minmax_element_<it_t>);
+}
+
 // find_if, find_if_not
 TYPED_TEST(STF, std_find_if) {
   using it_t = typeof(this->in->begin());
@@ -636,6 +687,22 @@ using MTF = shad_test_stl::MapTestFixture<T>;
 using MTF_TestTypes = ::testing::Types<std::unordered_map<int, int>,
                                        shad::unordered_map<int, int>>;
 TYPED_TEST_CASE(MTF, MTF_TestTypes);
+
+// min_element, max_element, minmax_element
+TYPED_TEST(MTF, min_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::min_element<it_t>, shad_test_stl::min_element_<it_t>);
+}
+
+TYPED_TEST(MTF, max_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::max_element<it_t>, shad_test_stl::max_element_<it_t>);
+}
+
+TYPED_TEST(MTF, minmax_element) {
+  using it_t = typeof(this->in->begin());
+  this->test(std::minmax_element<it_t>, shad_test_stl::minmax_element_<it_t>);
+}
 
 // find_if, find_if_not
 TYPED_TEST(MTF, std_find_if) {
