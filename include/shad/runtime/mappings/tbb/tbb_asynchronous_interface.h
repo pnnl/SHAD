@@ -57,8 +57,9 @@ namespace shad {
                 template <typename FunT, typename InArgsT>
                 static void asyncExecuteAt(Handle &handle, const Locality &loc,
                                            FunT &&function, const InArgsT &args) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy = void (*)(Handle &, const InArgsT &);
                     
@@ -71,11 +72,12 @@ namespace shad {
                     
                     handle.id_->run([=, &handle] { fn(handle, args); });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
                     log_handler->printlf("asyncExecuteAt", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(InArgsT),0);
+#endif
                 }
                 
                 template <typename FunT>
@@ -83,8 +85,9 @@ namespace shad {
                                            FunT &&function,
                                            const std::shared_ptr<uint8_t> &argsBuffer,
                                            const uint32_t bufferSize) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t);
                     
@@ -97,11 +100,12 @@ namespace shad {
                     
                     handle.id_->run([=, &handle] { fn(handle, argsBuffer.get(), bufferSize); });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
-                    log_handler->printlf("asyncExecuteAt-argBuffer", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>), 0);
+                    log_handler->printlf("asyncExecuteAt", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>), 0);
+#endif
                 }
                 
                 template <typename FunT, typename InArgsT>
@@ -109,8 +113,9 @@ namespace shad {
                                                       FunT &&function, const InArgsT &args,
                                                       uint8_t *resultBuffer,
                                                       uint32_t *resultSize) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy =
                     void (*)(Handle &, const InArgsT &, uint8_t *, uint32_t *);
@@ -125,11 +130,12 @@ namespace shad {
                     handle.id_->run(
                                     [=, &handle] { fn(handle, args, resultBuffer, resultSize); });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
                     log_handler->printlf("asyncExecuteAtWithRetBuff", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(InArgsT), 0);
+#endif
                 }
                 
                 template <typename FunT>
@@ -137,8 +143,9 @@ namespace shad {
                                                       Handle &handle, const Locality &loc, FunT &&function,
                                                       const std::shared_ptr<uint8_t> &argsBuffer, const uint32_t bufferSize,
                                                       uint8_t *resultBuffer, uint32_t *resultSize) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t,
                                                 uint8_t *, uint32_t *);
@@ -154,19 +161,21 @@ namespace shad {
                         fn(handle, argsBuffer.get(), bufferSize, resultBuffer, resultSize);
                     });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
-                    log_handler->printlf("asyncExecuteAtWithRetBuff-argBuffer", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>), 0);
+                    log_handler->printlf("asyncExecuteAtWithRetBuff", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>), 0);
+#endif
                 }
                 
                 template <typename FunT, typename InArgsT, typename ResT>
                 static void asyncExecuteAtWithRet(Handle &handle, const Locality &loc,
                                                   FunT &&function, const InArgsT &args,
                                                   ResT *result) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy = void (*)(Handle &, const InArgsT &, ResT *);
                     
@@ -179,11 +188,12 @@ namespace shad {
                     
                     handle.id_->run([=, &handle] { fn(handle, args, result); });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
                     log_handler->printlf("asyncExecuteAtWithRet", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(InArgsT), 0);
+#endif
                 }
                 
                 template <typename FunT, typename ResT>
@@ -191,8 +201,9 @@ namespace shad {
                                                   FunT &&function,
                                                   const std::shared_ptr<uint8_t> &argsBuffer,
                                                   const uint32_t bufferSize, ResT *result) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy =
                     void (*)(Handle &, const uint8_t *, const uint32_t, ResT *);
@@ -208,18 +219,20 @@ namespace shad {
                         fn(handle, argsBuffer.get(), bufferSize, result);
                     });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
-                    log_handler->printlf("asyncExecuteAtWithRet-argBuffer", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>), 0);
+                    log_handler->printlf("asyncExecuteAtWithRet", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>), 0);
+#endif
                 }
                 
                 template <typename FunT, typename InArgsT>
                 static void asyncExecuteOnAll(Handle &handle, FunT &&function,
                                               const InArgsT &args) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy = void (*)(Handle &, const InArgsT &);
                     
@@ -230,19 +243,21 @@ namespace shad {
                     
                     handle.id_->run([=, &handle] { fn(handle, args); });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
                     log_handler->printlf("asyncExecuteOnAll", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0);
+#endif
                 }
                 
                 template <typename FunT>
                 static void asyncExecuteOnAll(Handle &handle, FunT &&function,
                                               const std::shared_ptr<uint8_t> &argsBuffer,
                                               const uint32_t bufferSize) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy = void (*)(Handle &, const uint8_t *, const uint32_t);
                     
@@ -253,19 +268,21 @@ namespace shad {
                     
                     handle.id_->run([=, &handle] { fn(handle, argsBuffer.get(), bufferSize); });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
-                    log_handler->printlf("asyncExecuteOnAll-argBuffer", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>), 0);
+                    log_handler->printlf("asyncExecuteOnAll", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>), 0);
+#endif
                 }
                 
                 template <typename FunT, typename InArgsT>
                 static void asyncForEachAt(Handle &handle, const Locality &loc,
                                            FunT &&function, const InArgsT &args,
                                            const size_t numIters) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy = void (*)(Handle &, const InArgsT &, size_t);
                     
@@ -284,11 +301,12 @@ namespace shad {
                                           });
                     });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
                     log_handler->printlf("asyncForEachAt", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(InArgsT), 0, numIters);
+#endif
                 }
                 
                 template <typename FunT>
@@ -296,8 +314,9 @@ namespace shad {
                                            FunT &&function,
                                            const std::shared_ptr<uint8_t> &argsBuffer,
                                            const uint32_t bufferSize, const size_t numIters) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy =
                     void (*)(Handle &, const uint8_t *, const uint32_t, size_t);
@@ -317,18 +336,20 @@ namespace shad {
                                           });
                     });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
-                    log_handler->printlf("asyncForEachAt-argsBuffer", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>), 0, numIters);
+                    log_handler->printlf("asyncForEachAt", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), loc, sizeof(std::shared_ptr<uint8_t>), 0, numIters);
+#endif
                 }
                 
                 template <typename FunT, typename InArgsT>
                 static void asyncForEachOnAll(Handle &handle, FunT &&function,
                                               const InArgsT &args, const size_t numIters) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy = void (*)(Handle &, const InArgsT &, size_t);
                     
@@ -345,11 +366,12 @@ namespace shad {
                                           });
                     });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
                     log_handler->printlf("asyncForEachOnAll", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(InArgsT), 0, numIters);
+#endif
                 }
                 
                 template <typename FunT>
@@ -357,8 +379,9 @@ namespace shad {
                                               const std::shared_ptr<uint8_t> &argsBuffer,
                                               const uint32_t bufferSize,
                                               const size_t numIters) {
-                    // Start logging time
+#if defined HAVE_LOGGING
                     auto t1 = shad_clock::now();
+#endif
                     
                     using FunctionTy =
                     void (*)(Handle &, const uint8_t *, const uint32_t, size_t);
@@ -376,11 +399,12 @@ namespace shad {
                                           });
                     });
                     
-                    // End logging time
+#if defined HAVE_LOGGING
                     auto t2 = shad_clock::now();
                     std::chrono::duration<double> diff = t2-t1;
                     auto log_handler = shad::slog::ShadLog::Instance();
-                    log_handler->printlf("asyncForEachOnAll-argsBuffer", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>), 0, numIters);
+                    log_handler->printlf("asyncForEachOnAll", diff.count(), &handle, RuntimeInternalsTrait<tbb_tag>::ThisLocality(), RuntimeInternalsTrait<tbb_tag>::ThisLocality(), sizeof(std::shared_ptr<uint8_t>), 0, numIters);
+#endif
                 }
             };
             
@@ -390,3 +414,4 @@ namespace shad {
 }  // namespace shad
 
 #endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_TBB_TBB_ASYNCHRONOUS_INTERFACE_H_
+

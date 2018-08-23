@@ -83,24 +83,35 @@ void syncLoadFor(const size_t& arraySize){
     std::default_random_engine generator;
     std::uniform_int_distribution<int> distribution(0,99999);
     
+    #if defined HAVE_LOGGING
     auto t1 = shad_clock::now();
+    #endif
+    
     for(size_t i=0; i<arraySize;i++){
         int rVal = distribution(generator);
         myarray->InsertAt(i, rVal);
     }
+    
+    #if defined HAVE_LOGGING
     auto t2 = shad_clock::now();
     std::chrono::duration<double> diff = t2-t1;
     auto log_handler = shad::slog::ShadLog::Instance();
     log_handler->printlf("For:Load", diff.count(), nullptr, shad::rt::thisLocality(), shad::rt::thisLocality(), sizeof(size_t), sizeof(std::atomic<size_t>), arraySize);
     
     t1 = shad_clock::now();
+    #endif
+    
     bigSum = 0;
     for(size_t i=0; i<arraySize;i++){
         bigSum += myarray->At(i);
     }
+    
+    #if defined HAVE_LOGGING
     t2 = shad_clock::now();
     diff = t2-t1;
     log_handler->printlf("For:Sum", diff.count(), nullptr, shad::rt::thisLocality(), shad::rt::thisLocality(), sizeof(size_t), sizeof(std::atomic<size_t>), arraySize);
+    #endif
+    
     std::cout<<"Sum: "<<bigSum<<std::endl;
 }
 
