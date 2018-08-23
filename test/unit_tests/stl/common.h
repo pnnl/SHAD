@@ -33,8 +33,9 @@
 
 #include "gtest/gtest.h"
 
-#include "shad/data_structures/array.h"
-#include "shad/data_structures/set.h"
+#include "shad/core/array.h"
+#include "shad/core/unordered_map.h"
+#include "shad/core/unordered_set.h"
 
 namespace shad_test_stl {
 
@@ -77,7 +78,7 @@ template <typename U, size_t size, bool even>
 struct create_array_<shad::array<U, size>, even> {
   using T = shad::array<U, size>;
   std::shared_ptr<T> operator()() {
-    auto res = T::Create();
+    auto res = std::make_shared<T>();
     for (size_t i = 0; i < size; ++i) res->at(i) = 2 * i + !even;
     return res;
   }
@@ -94,11 +95,12 @@ struct create_set_<std::unordered_set<U>, even> {
 };
 
 template <typename U, bool even>
-struct create_set_<shad::Set<U>, even> {
-  using T = shad::Set<U>;
+struct create_set_<shad::unordered_set<U>, even> {
+  using T = shad::unordered_set<U>;
   std::shared_ptr<T> operator()(size_t size) {
-    auto res = T::Create(size);
-    for (size_t i = 0; i < size; ++i) res->Insert(2 * i + !even);
+    auto res = std::make_shared<T>(size);
+    auto res_ = res->get();
+    for (size_t i = 0; i < size; ++i) res_->Insert(2 * i + !even);
     return res;
   }
 };
@@ -114,11 +116,12 @@ struct create_map_<std::unordered_map<U, V>, even> {
 };
 
 template <typename U, typename V, bool even>
-struct create_map_<shad::Hashmap<U, V>, even> {
-  using T = shad::Hashmap<U, V>;
+struct create_map_<shad::unordered_map<U, V>, even> {
+  using T = shad::unordered_map<U, V>;
   std::shared_ptr<T> operator()(size_t size) {
-    auto res = T::Create(size);
-    for (size_t i = 0; i < size; ++i) (*res).Insert(i, 2 * i + !even);
+    auto res = std::make_shared<T>(size);
+    auto res_ = res->get();
+    for (size_t i = 0; i < size; ++i) (*res_).Insert(i, 2 * i + !even);
     return res;
   }
 };
@@ -129,35 +132,6 @@ int64_t expected_checksum_(size_t size) {
   for (size_t i = 0; i < size; ++i) res += 2 * i + !even;
   return res;
 }
-
-// container destruction
-template <typename T>
-struct destroy_container_ {
-  void operator()(std::shared_ptr<T>) {}
-};
-
-template <typename T>
-void destroy_shad_contanier_(std::shared_ptr<T> c) {
-  T::Destroy(c.get()->GetGlobalID());
-}
-
-template <typename U, size_t size>
-struct destroy_container_<shad::array<U, size>> {
-  using T = shad::array<U, size>;
-  void operator()(std::shared_ptr<T> c) { destroy_shad_contanier_(c); }
-};
-
-template <typename U, typename V>
-struct destroy_container_<shad::Hashmap<U, V>> {
-  using T = shad::Hashmap<U, V>;
-  void operator()(std::shared_ptr<T> c) { destroy_shad_contanier_(c); }
-};
-
-template <typename U>
-struct destroy_container_<shad::Set<U>> {
-  using T = shad::Set<U>;
-  void operator()(std::shared_ptr<T> c) { destroy_shad_contanier_(c); }
-};
 
 // sub-sequencing from dynamic-size containers
 template <typename T>
@@ -207,16 +181,17 @@ struct subseq_from_<std::unordered_set<U>> {
 };
 
 template <typename U>
-struct subseq_from_<shad::Set<U>> {
-  using T = shad::Set<U>;
+struct subseq_from_<shad::unordered_set<U>> {
+  using T = shad::unordered_set<U>;
   std::shared_ptr<T> operator()(std::shared_ptr<T> in, size_t start_idx,
                                 size_t len) {
     assert(start_idx < in->Size());
     auto first = it_seek_(in, start_idx);
-    auto res = T::Create(len);
+    auto res = std::make_shared<T>(len);
+    auto res_ = res->get();
     for (size_t i = 0; i < len; ++i) {
       assert(first != in->end());
-      res->Insert(*first);
+      res_->Insert(*first);
       ++first;
     }
     return res;
@@ -242,17 +217,18 @@ struct subseq_from_<std::unordered_map<U, V>> {
 };
 
 template <typename U, typename V>
-struct subseq_from_<shad::Hashmap<U, V>> {
-  using T = shad::Hashmap<U, V>;
+struct subseq_from_<shad::unordered_map<U, V>> {
+  using T = shad::unordered_map<U, V>;
   std::shared_ptr<T> operator()(std::shared_ptr<T> in, size_t start_idx,
                                 size_t len) {
     assert(start_idx < (*in).Size());
     auto first = it_seek_(in, start_idx);
-    auto res = T::Create(len);
+    auto res = std::make_shared<T>(len);
+    auto res_ = res->get();
     std::unordered_map<U, V> x;
     for (size_t i = 0; i < len; ++i) {
       assert(first != in->end());
-      res->Insert((*first).first, (*first).second);
+      res_->Insert((*first).first, (*first).second);
       ++first;
     }
     return res;
@@ -286,7 +262,7 @@ struct static_subseq_from_<shad::array<U, size>, size_> {
   std::shared_ptr<T_> operator()(std::shared_ptr<T> in, size_t start_idx) {
     assert(start_idx < size);
     auto first = it_seek_(in, start_idx);
-    auto res = T_::Create();
+    auto res = std::make_shared<T_>();
     for (size_t i = 0; i < size_; ++i) {
       assert(first != in->end());
       res->at(i) = *first++;
@@ -322,8 +298,6 @@ struct pair_acc {
 // test fixtures
 template <typename T>
 class TestFixture : public ::testing::Test {
-  void TearDown() { destroy_container_<T>{}(this->in); }
-
  public:
   template <typename F, typename... args_>
   void test(F &&sub_f, F &&obj_f, args_... args) {

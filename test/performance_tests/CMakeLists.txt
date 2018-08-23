@@ -10,4 +10,4 @@ target_link_libraries(shadperf_main ${benchmark_LIBRARIES} ${SHAD_RUNTIME_LIB} r
 
 add_subdirectory(arti)
 add_subdirectory(data_structures)
-add_subdirectory(stl)
+

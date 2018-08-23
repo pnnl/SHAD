@@ -25,11 +25,11 @@
 #include "gtest/gtest.h"
 
 #include "shad/core/algorithm.h"
-#include "shad/data_structures/array.h"
+#include "shad/core/array.h"
 
 class AlgorithmsTest : public ::testing::Test {
  public:
-  AlgorithmsTest() { array_ = shad::array<size_t, 10001>::Create(); }
+  AlgorithmsTest() { array_ = std::make_shared<shad::array<size_t, 10001>>(); }
 
   void SetUp() { array_->fill(size_t(1)); }
   void TearDown() {}

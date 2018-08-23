@@ -29,9 +29,9 @@
 
 #include "gtest/gtest.h"
 
-#include "shad/data_structures/array.h"
-#include "shad/data_structures/hashmap.h"
-#include "shad/data_structures/set.h"
+#include "shad/core/array.h"
+#include "shad/core/unordered_map.h"
+#include "shad/core/unordered_set.h"
 
 #include "common.h"
 
@@ -105,13 +105,14 @@ TYPED_TEST(ATF, for_inc_deref) {
 
 ///////////////////////////////////////
 //
-// std::unordered_set, shad::Set
+// std::unordered_set, shad::unordered_set
 //
 ///////////////////////////////////////
 template <typename T>
 using STF = shad_test_stl::SetTestFixture<T>;
 
-using STF_TestTypes = ::testing::Types<std::unordered_set<int>, shad::Set<int>>;
+using STF_TestTypes =
+    ::testing::Types<std::unordered_set<int>, shad::unordered_set<int>>;
 TYPED_TEST_CASE(STF, STF_TestTypes);
 
 TYPED_TEST(STF, for_deref) {
@@ -137,13 +138,14 @@ TYPED_TEST(STF, for_inc_deref) {
 
 ///////////////////////////////////////
 //
-// std::unordered_map, shad::Hashmap
+// std::unordered_map, shad::unordered_map
 //
 ///////////////////////////////////////
 template <typename T>
 using MTF = shad_test_stl::MapTestFixture<T>;
 
-using MTF_TestTypes = ::testing::Types<std::unordered_map<int, int>, shad::Hashmap<int, int>>;
+using MTF_TestTypes = ::testing::Types<std::unordered_map<int, int>,
+                                       shad::unordered_map<int, int>>;
 TYPED_TEST_CASE(MTF, MTF_TestTypes);
 
 TYPED_TEST(MTF, for_deref) {
