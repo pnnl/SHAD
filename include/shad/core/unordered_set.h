@@ -25,6 +25,7 @@
 #ifndef INCLUDE_SHAD_CORE_UNORDERED_SET_H_
 #define INCLUDE_SHAD_CORE_UNORDERED_SET_H_
 
+#include "shad/core/iterator.h"
 #include "shad/data_structures/compare_and_hash_utils.h"
 #include "shad/data_structures/set.h"
 
@@ -49,8 +50,7 @@ template <class Key, class Hash = shad::hash<Key>>
 class unordered_set {
   using set_t = Set<Key>;
 
-  template <typename T>
-  friend class buffered_insert_iterator;
+  friend class buffered_insert_iterator<unordered_set>;
 
  public:
   /// @defgroup Types

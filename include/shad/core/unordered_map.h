@@ -25,6 +25,7 @@
 #ifndef INCLUDE_SHAD_CORE_UNORDERED_MAP_H_
 #define INCLUDE_SHAD_CORE_UNORDERED_MAP_H_
 
+#include "shad/core/iterator.h"
 #include "shad/data_structures/compare_and_hash_utils.h"
 #include "shad/data_structures/hashmap.h"
 
@@ -50,8 +51,7 @@ template <class Key, class T, class Hash = shad::hash<Key>>
 class unordered_map {
   using hashmap_t = Hashmap<Key, T>;
 
-  template <typename T_>
-  friend class buffered_insert_iterator;
+  friend class buffered_insert_iterator<unordered_map>;
 
  public:
   /// @defgroup Types

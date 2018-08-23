@@ -82,9 +82,9 @@ class buffered_insert_iterator
   /// The destruction flushes all pending insertions into the container.
   ~buffered_insert_iterator() { container_->buffered_flush(); }
 
-  inline buffered_insert_iterator& operator*() { return *this; }
-  inline buffered_insert_iterator& operator++() { return *this; }
-  inline buffered_insert_iterator& operator++(int) { return *this; }
+  buffered_insert_iterator& operator*() { return *this; }
+  buffered_insert_iterator& operator++() { return *this; }
+  buffered_insert_iterator& operator++(int) { return *this; }
 };
 
 }  // namespace shad
