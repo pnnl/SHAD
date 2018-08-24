@@ -48,9 +48,22 @@ import fileinput
 
 # Class holds datetime functionalities
 class SDateTime:
+    """This class holds the functionalities related to date time."""
+        
 	def __init__(self):
+        """Empty constructor."""
 		pass
+        
 	def formatDateTime(self, t="", format="%Y-%m-%dT%H:%M:%S.%fZ"):
+        """This method converts a datetime string to a datetime object with in a specified format
+            
+            Parameters:
+            t (string): Datetime in string format. If no value is passed then method will return current datetime in the specified format.
+            format (string): Datetime parsing format. Y for year, m for month, d for day, H for hour, M for minute, S for second, f for milisecond.
+            
+            Returns:
+            datetime: Datetime object
+        """
 		if len(t)==0:
 			if len(format)==0:
 				return str(dt.datetime.now())
@@ -63,7 +76,13 @@ class SDateTime:
 
 # Class holds plotting functionalitites
 class SPlot:
+    """This class handles all plotting functionalities."""
 	def __init__(self, _dir="/"):
+        """Constructor for SPlot
+        
+            Parameters:
+            _dir (string): The absolute path of the directory where the plots will be saved. If the directory does not exists then system will create that directory.
+        """
 		self.dir = _dir
 
 		if not os.path.exists(self.dir):
@@ -74,6 +93,15 @@ class SPlot:
 			        raise
 
 	def getFileName(self, xlabel, ylabel):
+        """This method generates file name based on axis label
+            
+            Parameters:
+            xlabel (string): Label along x axis
+            ylabel (string): Label along y axis
+            
+            Return:
+            string: Generates file name concatenated with datetime
+        """
 		fn = ''
 		if len(xlabel)>0:
 			fn = fn + xlabel.replace(" ", "_") + "_"
@@ -84,7 +112,16 @@ class SPlot:
 		return fn + str(dt.datetime.now()).replace(" ", "_")
 
 	def barPlot(self, x, y, xlabel="", ylabel="", title="", xRot=0, yRot=0, xFontSize=10, yFontSize=10, save=True, fileName="", scaleX="", scaleY="", fdpi=350):
-		plt.figure(dpi=fdpi)
+        """Bar chart plot
+            
+            Parameters:
+            x (list): Vector or list of x coordinate data
+            y (list): Vector or list of y coordinate data
+            xlabel (string): Text to explain x axis data
+            ylabel (string): Text to explain y axis data
+            
+        """
+        plt.figure(dpi=fdpi)
 		plt.bar(x, y)
 		plt.xticks(fontsize=xFontSize)
 		plt.yticks(fontsize=yFontSize)
