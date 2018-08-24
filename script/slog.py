@@ -119,7 +119,16 @@ class SPlot:
             y (list): Vector or list of y coordinate data
             xlabel (string): Text to explain x axis data
             ylabel (string): Text to explain y axis data
-            
+            title (string): Title of the figure
+            xRot (int): Degree to rotate xlabel text
+            yRot (int): Degree to rotate ylabel text
+            xFontSize (float): Font size of xlabel text
+            yFontSize (float): Font size of ylabel text
+            save (boolean): True indicates save the plot in a file, False indicates show the plot on run.
+            fileName (string): The name of the file
+            scaleX (string): Scale the x axis data. Test 'log' specifies scaling the x axis data in log scale.
+            scaleY (string): Scale the y axis data. Test 'log' specifies scaling the y axis data in log scale.
+            fdpi (int): Picture dpi. Default value 350.
         """
         plt.figure(dpi=fdpi)
 		plt.bar(x, y)
@@ -157,7 +166,24 @@ class SPlot:
 			plt.show()
 
 	def __generateGrid(self, fig, x=[], y=[], showXMajorTics=True, showXMinorTics=True, xMajorTics=10, xMinorTics=5, showYMajorTics=True, showYMinorTics=True, yMajorTics=10, yMinorTics=5, alphaMajor=0.5, alphaMinor=0.2):
-		ax = fig.add_subplot(1, 1, 1)
+        """Generate grid for a figure
+            
+            Parameters:
+            fig (object): matplotlib.plt.figure object
+            x (list): Range of x coordinate data. x[0] is minimum data, x[1] is maximum data
+            y (list): Range of y coordinate data. y[0] is minimum data, y[1] is maximum data
+            showXMajorTics (boolean): Show major tics along x axis or not. Default value is True
+            showXMinorTics (boolean): Show minor tics along x axis or not. Default value is True
+            xMajorTics (int): Number of major tics along x axis. Default value is 10
+            xMinorTics (int): Number of minor tics along x axis. Default value is 5
+            showYMajorTics (boolean): Show major axis along y axis or not. Default value is True
+            showYMinorTics (boolean): Show minor tics along y axis or not. Default value is True
+            yMajorTics (int): Number of major tics along y axis. Default value is 10
+            yMinorTics (int): Number of minor tics along y axis. Default value is 5
+            alphaMajor (float): Depth of major axis. Range of value from 0 to 1. Default value is 0.5
+            alphaMinor (float): Depth of minor axis. Range of value from 0 to 1. Default value is 0.2
+        """
+        ax = fig.add_subplot(1, 1, 1)
 
 		if len(x) > 0:
 			if showXMajorTics==True and xMajorTics!=0:
@@ -193,7 +219,45 @@ class SPlot:
 		save=True, fileName="", scaleX="", scaleY="", _showXMajorTics=True, _showXMinorTics=False, _xMajorTics=10, _xMinorTics=5, 
 		_showYMajorTics=True, _showYMinorTics=False, _yMajorTics=10, _yMinorTics=5, _alphaMajor=0.5, _alphaMinor=0.2, color=['k'], 
 		lineType='-', lineWidth=2, fdpi=350, showGrid=False, showLegends=False, legends=[], legendPos='center left', boxToAnchor=(1, 0.5)):
-		
+        """Line chart plot
+            
+            Parameters:
+            Parameters:
+            x (list): Vector or list of x coordinate data
+            y (list): Vector or list of y coordinate data
+            xRange (list): Range of x coordinate data. x[0] is minimum data, x[1] is maximum data
+            yRange (list): Range of y coordinate data. y[0] is minimum data, y[1] is maximum data
+            xlabel (string): Text to explain x axis data
+            ylabel (string): Text to explain y axis data
+            title (string): Title of the figure
+            xRot (int): Degree to rotate xlabel text
+            yRot (int): Degree to rotate ylabel text
+            xFontSize (float): Font size of xlabel text
+            yFontSize (float): Font size of ylabel text
+            save (boolean): True indicates save the plot in a file, False indicates show the plot on run.
+            fileName (string): The name of the file
+            scaleX (string): Scale the x axis data. Test 'log' specifies scaling the x axis data in log scale.
+            scaleY (string): Scale the y axis data. Test 'log' specifies scaling the y axis data in log scale.
+            _showXMajorTics (boolean): Show major tics along x axis or not. Default value is True
+            _showXMinorTics (boolean): Show minor tics along x axis or not. Default value is True
+            _xMajorTics (int): Number of major tics along x axis. Default value is 10
+            _xMinorTics (int): Number of minor tics along x axis. Default value is 5
+            _showYMajorTics (boolean): Show major axis along y axis or not. Default value is True
+            _showYMinorTics (boolean): Show minor tics along y axis or not. Default value is True
+            _yMajorTics (int): Number of major tics along y axis. Default value is 10
+            _yMinorTics (int): Number of minor tics along y axis. Default value is 5
+            _alphaMajor (float): Depth of major axis. Range of value from 0 to 1. Default value is 0.5
+            _alphaMinor (float): Depth of minor axis. Range of value from 0 to 1. Default value is 0.2
+            color (list): List of matplotlib.colors
+            lineType (string): Line type. Default value '-'
+            lineWidth (int): Line width, default value is 2
+            fdpi (int): Picture dpi. Default value 350.
+            showGrid (boolean): Show grid or not. Default value is False
+            showLegends (boolean): Show legends or not. Default value is False
+            legends (list): List of legends. Default value is []
+            legendPos (string): Legend position. Default value is 'center left'
+            boxToAnchor (array): Position of legend box. Default value is (1, 0.5)
+        """
 		fig = plt.figure(dpi=fdpi)
 
 		if showGrid==True:
