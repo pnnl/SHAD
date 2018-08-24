@@ -119,6 +119,11 @@ class Locality {
     return *this;
   }
 
+  Locality& operator--() {
+    --id_;
+    return *this;
+  }
+
   Locality& operator+=(std::size_t n) {
     id_ += n;
     return *this;
