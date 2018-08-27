@@ -1462,10 +1462,10 @@ class array<T, N>::BaseArrayRef {
 
   ObjectID oid_;
   mutable pointer chunk_;
-  std::size_t pos_;
+  std::ptrdiff_t pos_;
   rt::Locality loc_;
 
-  BaseArrayRef(rt::Locality l, std::size_t p, ObjectID oid,
+  BaseArrayRef(rt::Locality l, std::ptrdiff_t p, ObjectID oid,
                pointer chunk = nullptr)
       : pos_(p), loc_(l), oid_(oid), chunk_(chunk) {}
 
@@ -1496,11 +1496,11 @@ class array<T, N>::BaseArrayRef {
 
   value_type get() const {
     bool local = this->loc_ == rt::thisLocality();
-    if (false && local && chunk_ != nullptr) {
+    if (local && chunk_ != nullptr) {
       return chunk_[pos_];
     }
 
-    if (local && (true || chunk_ == nullptr)) {
+    if (local && chunk_ == nullptr) {
       auto This = array<T, N>::GetPtr(oid_);
       chunk_ = This->chunk_.get();
       return This->chunk_[pos_];
@@ -1511,14 +1511,14 @@ class array<T, N>::BaseArrayRef {
     if (false && chunk_ != nullptr) {
       rt::executeAtWithRet(
           loc_,
-          [](const std::pair<pointer, std::size_t> &args, T *result) {
+          [](const std::pair<pointer, std::ptrdiff_t> &args, T *result) {
             *result = std::get<0>(args)[std::get<1>(args)];
           },
           std::make_pair(chunk_, pos_), &result);
     } else {
       std::pair<value_type, pointer> resultPair;
       rt::executeAtWithRet(loc_,
-                           [](const std::pair<ObjectID, std::size_t> &args,
+                           [](const std::pair<ObjectID, std::ptrdiff_t> &args,
                               std::pair<T, pointer> *result) {
                              auto This = array<T, N>::GetPtr(std::get<0>(args));
                              result->first = This->chunk_[std::get<1>(args)];
@@ -1536,7 +1536,7 @@ template <typename T, std::size_t N>
 template <typename U>
 class alignas(64) array<T, N>::ArrayRef
     : public array<T, N>::template BaseArrayRef<U> {
- public:
+ public: 
   using value_type = U;
   using pointer = typename array<T, N>::pointer;
   using ObjectID = typename array<T, N>::ObjectID;
@@ -1580,7 +1580,7 @@ class alignas(64) array<T, N>::ArrayRef
     if (this->chunk_ == nullptr) {
       rt::executeAtWithRet(
           this->loc_,
-          [](const std::tuple<ObjectID, std::size_t, T> &args,
+          [](const std::tuple<ObjectID, std::ptrdiff_t, T> &args,
              pointer *result) {
             auto This = array<T, N>::GetPtr(std::get<0>(args));
             This->chunk_[std::get<1>(args)] = std::get<2>(args);
@@ -1589,7 +1589,7 @@ class alignas(64) array<T, N>::ArrayRef
           std::make_tuple(this->oid_, this->pos_, v), &this->chunk_);
     } else {
       rt::executeAt(this->loc_,
-                    [](const std::tuple<pointer, std::size_t, T> &args) {
+                    [](const std::tuple<pointer, std::ptrdiff_t, T> &args) {
                       std::get<0>(args)[std::get<1>(args)] = std::get<2>(args);
                     },
                     std::make_tuple(this->chunk_, this->pos_, v));
@@ -1667,7 +1667,7 @@ class alignas(64) array<T, N>::array_iterator {
   using local_iterator_type = pointer;
 
   /// @brief Constructor.
-  array_iterator(rt::Locality &&l, std::size_t offset, ObjectID oid,
+  array_iterator(rt::Locality &&l, std::ptrdiff_t offset, ObjectID oid,
                  pointer chunk)
       : locality_(l), offset_(offset), oid_(oid), chunk_(chunk) {}
 
@@ -1739,10 +1739,10 @@ class alignas(64) array<T, N>::array_iterator {
   }
 
   array_iterator &operator--() {
-    if (offset_ == 0) {
+    if (locality_ != rt::Locality(0) && offset_ == 0) {
       locality_ -= 1;
       if (pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality())
-        offset_ -= chunk_size() - 1;
+        offset_ = chunk_size() - 1;
       else
         offset_ = chunk_size();
       update_chunk_pointer();
@@ -1806,7 +1806,7 @@ class alignas(64) array<T, N>::array_iterator {
         --locality_;
       }
 
-      if (offset_ < n) {
+      if (locality_ != rt::Locality(0) && offset_ < n) {
         --locality_;
         offset_ = chunk - (n - offset_);
       } else {
@@ -1943,7 +1943,7 @@ class alignas(64) array<T, N>::array_iterator {
 
   rt::Locality locality_{static_cast<uint32_t>(-1)};
   ObjectID oid_{static_cast<std::size_t>(-1)};
-  std::size_t offset_{static_cast<std::size_t>(-1)};
+  std::ptrdiff_t offset_{static_cast<std::ptrdiff_t>(-1)};
   mutable pointer chunk_{nullptr};
 };
 
