@@ -296,6 +296,14 @@ struct is_odd {
   bool operator()(const T &x) { return !(is_even<T>{}(x)); }
 };
 
+template <typename T>
+std::function<bool(const T &)> is_even_wrapper =
+    [](const T &x) -> bool { return is_even<T>{}(x); };
+
+template <typename T>
+std::function<bool(const T &)> is_odd_wrapper =
+    [](const T &x) -> bool { return !is_even<T>{}(x); };
+
 // accumulate a pair into a numeric value
 template <typename acc_t, typename pair_t>
 struct pair_acc {
@@ -311,6 +319,16 @@ class TestFixture : public ::testing::Test {
   template <typename F, typename... args_>
   void test(F &&sub_f, F &&obj_f, args_... args) {
     auto obs = sub_f(in->begin(), in->end(), args...);
+    auto exp = obj_f(in->begin(), in->end(), args...);
+    ASSERT_EQ(obs, exp);
+  }
+
+  template <typename ExecutionPolicy, typename FS, typename FO,
+            typename... args_>
+  void test_with_policy(ExecutionPolicy &&policy, FS &&sub_f, FO &&obj_f,
+                        args_... args) {
+    auto obs = sub_f(std::forward<ExecutionPolicy>(policy), in->begin(),
+                     in->end(), args...);
     auto exp = obj_f(in->begin(), in->end(), args...);
     ASSERT_EQ(obs, exp);
   }

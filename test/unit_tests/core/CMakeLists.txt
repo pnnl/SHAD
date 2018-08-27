@@ -3,6 +3,7 @@ set(tests
   for_test
   std_algorithm_test
   std_numeric_test
+  shad_algorithm_test
 )
 
 foreach(t ${tests})
