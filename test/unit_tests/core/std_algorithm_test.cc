@@ -195,12 +195,14 @@ TYPED_TEST(VTF, std_find_end) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::find_end<it_t, it_t>, shad_test_stl::find_end_<it_t, it_t>,
              s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_vector_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_vector_<TypeParam, false>{}(
+      shad_test_stl::substr_len);
   this->test(std::find_end<it_t, it_t>, shad_test_stl::find_end_<it_t, it_t>,
              s->begin(), s->end());
 }
@@ -211,12 +213,14 @@ TYPED_TEST(VTF, std_find_first_of) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::find_first_of<it_t, it_t>,
              shad_test_stl::find_first_of_<it_t, it_t>, s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_vector_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_vector_<TypeParam, false>{}(
+      shad_test_stl::substr_len);
   this->test(std::find_first_of<it_t, it_t>,
              shad_test_stl::find_first_of_<it_t, it_t>, s->begin(), s->end());
 }
@@ -237,12 +241,14 @@ TYPED_TEST(VTF, std_search) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::search<it_t, it_t>, shad_test_stl::search_<it_t, it_t>,
              s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_vector_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_vector_<TypeParam, false>{}(
+      shad_test_stl::substr_len);
   this->test(std::search<it_t, it_t>, shad_test_stl::search_<it_t, it_t>,
              s->begin(), s->end());
 }
@@ -405,8 +411,9 @@ TYPED_TEST(ATF, std_find_end) {
   using it_t = typeof(this->in->begin());
 
   // occurring
-  auto s = shad_test_stl::static_subseq_from_<TypeParam, 32>{}(
-      this->in, shad_test_stl::kNumElements - 32);
+  auto s = shad_test_stl::static_subseq_from_<TypeParam,
+                                              shad_test_stl::substr_len>{}(
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len);
   using s_it_t = typeof(s->begin());
   this->test(std::find_end<it_t, s_it_t>,
              shad_test_stl::find_end_<it_t, s_it_t>, s->begin(), s->end());
@@ -423,8 +430,9 @@ TYPED_TEST(ATF, std_find_first_of) {
   using it_t = typeof(this->in->begin());
 
   // occurring
-  auto s = shad_test_stl::static_subseq_from_<TypeParam, 32>{}(
-      this->in, shad_test_stl::kNumElements - 32);
+  auto s = shad_test_stl::static_subseq_from_<TypeParam,
+                                              shad_test_stl::substr_len>{}(
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len);
   using s_it_t = typeof(s->begin());
   this->test(std::find_first_of<it_t, s_it_t>,
              shad_test_stl::find_first_of_<it_t, s_it_t>, s->begin(), s->end());
@@ -451,8 +459,9 @@ TYPED_TEST(ATF, std_search) {
   using it_t = typeof(this->in->begin());
 
   // occurring
-  auto s = shad_test_stl::static_subseq_from_<TypeParam, 32>{}(
-      this->in, shad_test_stl::kNumElements - 32);
+  auto s = shad_test_stl::static_subseq_from_<TypeParam,
+                                              shad_test_stl::substr_len>{}(
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len);
   using s_it_t = typeof(s->begin());
   this->test(std::search<it_t, s_it_t>, shad_test_stl::search_<it_t, s_it_t>,
              s->begin(), s->end());
@@ -622,12 +631,13 @@ TYPED_TEST(STF, std_find_end) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::find_end<it_t, it_t>, shad_test_stl::find_end_<it_t, it_t>,
              s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_set_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_set_<TypeParam, false>{}(shad_test_stl::substr_len);
   this->test(std::find_end<it_t, it_t>, shad_test_stl::find_end_<it_t, it_t>,
              s->begin(), s->end());
 }
@@ -638,12 +648,13 @@ TYPED_TEST(STF, std_find_first_of) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::find_first_of<it_t, it_t>,
              shad_test_stl::find_first_of_<it_t, it_t>, s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_set_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_set_<TypeParam, false>{}(shad_test_stl::substr_len);
   this->test(std::find_first_of<it_t, it_t>,
              shad_test_stl::find_first_of_<it_t, it_t>, s->begin(), s->end());
 }
@@ -664,12 +675,13 @@ TYPED_TEST(STF, std_search) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::search<it_t, it_t>, shad_test_stl::search_<it_t, it_t>,
              s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_set_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_set_<TypeParam, false>{}(shad_test_stl::substr_len);
   this->test(std::search<it_t, it_t>, shad_test_stl::search_<it_t, it_t>,
              s->begin(), s->end());
 }
@@ -834,12 +846,13 @@ TYPED_TEST(MTF, std_find_end) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::find_end<it_t, it_t>, shad_test_stl::find_end_<it_t, it_t>,
              s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_map_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_map_<TypeParam, false>{}(shad_test_stl::substr_len);
   this->test(std::find_end<it_t, it_t>, shad_test_stl::find_end_<it_t, it_t>,
              s->begin(), s->end());
 }
@@ -850,12 +863,13 @@ TYPED_TEST(MTF, std_find_first_of) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::find_first_of<it_t, it_t>,
              shad_test_stl::find_first_of_<it_t, it_t>, s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_map_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_map_<TypeParam, false>{}(shad_test_stl::substr_len);
   this->test(std::find_first_of<it_t, it_t>,
              shad_test_stl::find_first_of_<it_t, it_t>, s->begin(), s->end());
 }
@@ -876,12 +890,13 @@ TYPED_TEST(MTF, std_search) {
 
   // occurring
   auto s = shad_test_stl::subseq_from_<TypeParam>{}(
-      this->in, shad_test_stl::kNumElements - 32, 32);
+      this->in, shad_test_stl::kNumElements - shad_test_stl::substr_len,
+      shad_test_stl::substr_len);
   this->test(std::search<it_t, it_t>, shad_test_stl::search_<it_t, it_t>,
              s->begin(), s->end());
 
   // not occurring
-  s = shad_test_stl::create_map_<TypeParam, false>{}(32);
+  s = shad_test_stl::create_map_<TypeParam, false>{}(shad_test_stl::substr_len);
   this->test(std::search<it_t, it_t>, shad_test_stl::search_<it_t, it_t>,
              s->begin(), s->end());
 }

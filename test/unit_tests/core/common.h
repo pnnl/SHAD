@@ -41,6 +41,7 @@
 namespace shad_test_stl {
 
 static constexpr size_t kNumElements = 1024;
+static constexpr size_t substr_len = 32;
 
 // container creation and expected checksum
 template <typename T, bool even>
