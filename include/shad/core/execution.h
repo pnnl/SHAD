@@ -25,10 +25,21 @@
 #ifndef INCLUDE_SHAD_CORE_EXECUTION_H
 #define INCLUDE_SHAD_CORE_EXECUTION_H
 
+#include <type_traits>
+
 namespace shad {
 
 struct distributed_sequential_tag {};
 struct distributed_parallel_tag {};
+
+template <class ExecutionPolicy>
+struct is_execution_policy :
+         std::integral_constant<bool,
+                                std::is_same<ExecutionPolicy,
+                                          distributed_sequential_tag>::value ||
+                                std::is_same<ExecutionPolicy,
+                                          distributed_parallel_tag>::value>{
+};
 
 }  // namespace shad
 
