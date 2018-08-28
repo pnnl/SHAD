@@ -402,8 +402,8 @@ TEST_F(ArrayTest, ArrayIterator) {
 
   std::size_t splitPoint =
       kArraySize / std::max<std::size_t>(shad::rt::numLocalities(), 2) +
-      (kArraySize % std::max<std::size_t>(shad::rt::numLocalities(), 2) ? 0
-                                                                        : 1);
+      ((kArraySize % std::max<std::size_t>(shad::rt::numLocalities(), 2) ? 0
+                                                                         : 1));
 
   for (size_t i = 0; i < arrayPtr->size(); ++i) {
     arrayPtr->at(i) = i;
@@ -508,4 +508,25 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
   ASSERT_EQ(*last, std::size_t(0));
   ASSERT_EQ(*(last + 1), std::size_t(2));
   ASSERT_NE(two, last);
+
+  shad::rt::executeOnAll(
+      [](const std::pair<shad::impl::array<std::size_t, 2>::ObjectID,
+                         shad::impl::array<std::size_t, kArraySize>::ObjectID>
+             &args) {
+        auto subListPtr =
+            shad::impl::array<std::size_t, 2>::GetPtr(std::get<0>(args));
+        auto arrayPtr = shad::impl::array<std::size_t, kArraySize>::GetPtr(
+            std::get<1>(args));
+
+        auto res = std::search(arrayPtr->begin(), arrayPtr->end(),
+                               subListPtr->begin(), subListPtr->end());
+
+        ASSERT_EQ(res, arrayPtr->begin() + (kArraySize / 2))
+            << shad::rt::thisLocality();
+        ASSERT_EQ(*res, std::size_t(0)) << shad::rt::thisLocality();
+        ASSERT_EQ(res + 1, arrayPtr->begin() + (kArraySize / 2 + 1))
+            << shad::rt::thisLocality();
+        ASSERT_EQ(*(res + 1), std::size_t(2)) << shad::rt::thisLocality();
+      },
+      std::make_pair(subList->GetGlobalID(), array->GetGlobalID()));
 }
