@@ -1,5 +1,6 @@
 set(tests
   algorithm_test
+  numeric_test
 )
 
 foreach(t ${tests})
