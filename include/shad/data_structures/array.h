@@ -1540,7 +1540,7 @@ template <typename T, std::size_t N>
 template <typename U>
 class alignas(64) array<T, N>::ArrayRef
     : public array<T, N>::template BaseArrayRef<U> {
- public: 
+ public:
   using value_type = U;
   using pointer = typename array<T, N>::pointer;
   using ObjectID = typename array<T, N>::ObjectID;
