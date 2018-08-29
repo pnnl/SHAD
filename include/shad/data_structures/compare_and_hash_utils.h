@@ -26,11 +26,11 @@
 #define INCLUDE_SHAD_DATA_STRUCTURES_COMPARE_AND_HASH_UTILS_H_
 
 #include <algorithm>
-#include <functional>
 #include <cstdint>
 #include <cstring>
-#include <vector>
+#include <functional>
 #include <type_traits>
+#include <vector>
 
 #include "shad/core/type_traits.h"
 
@@ -177,20 +177,17 @@ uint64_t HashFunction(const std::vector<KeyTy> &key, uint8_t seed) {
 
 template <typename Key, bool=is_std_hashable<Key>::value>
 struct hash {
-  size_t operator()(const Key& k) const noexcept{
-    return hasher(k);
-  }
+  size_t operator()(const Key &k) const noexcept { return hasher(k); }
   std::hash<Key> hasher;
 };
 
 template <typename Key>
 struct hash<Key, false> {
-  size_t operator()(const Key& k) const noexcept{
+  size_t operator()(const Key &k) const noexcept {
     return shad::HashFunction(k, 0u);
   }
 };
 
 }  // namespace shad
-
 
 #endif  // INCLUDE_SHAD_DATA_STRUCTURES_COMPARE_AND_HASH_UTILS_H_

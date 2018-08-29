@@ -1,8 +1,12 @@
-
-[![Travis Build Status](https://travis-ci.org/pnnl/SHAD.svg?branch=master)](https://travis-ci.org/pnnl/SHAD)
 <p align="center">
   <img src="https://github.com/pnnl/SHAD/blob/update-documentation/docs/shad_logo.jpg" width="500"/>
 </p>
+
+[![Travis Build Status](https://travis-ci.org/pnnl/SHAD.svg?branch=master)](https://travis-ci.org/pnnl/SHAD)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d353a0bb182a47da80e5711c4e39ca0c)](https://www.codacy.com/project/mminutoli/SHAD/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pnnl/SHAD&amp;utm_campaign=Badge_Grade_Dashboard)
+[![GitHub license](https://img.shields.io/badge/license-APACHE2-blue.svg)](https://raw.githubusercontent.com/pnnl/SHAD/master/LICENSE.md)
+[![GitHub tag](https://img.shields.io/github/tag/pnnl/SHAD.svg)](http://github.com/pnnl/SHAD/releases)
+[![GitHub Issues](https://img.shields.io/github/issues/pnnl/SHAD.svg)](http://github.com/pnnl/SHAD/issues)
 
 SHAD is the Scalable High-Performance Algorithms and Data-structures C++ library. SHAD is designed as a software stack, composed of three main layers:
 - Abstract Runtime Interface: SHAD adopts a shared-memory, task-based, programming model, whose main tasking primitives are definide in its runtime abstraction layer; this component represents an interface to underlying runtime systems, which implement tasking and threading; for portability, SHAD can interface with multiple [Runtime Systems](#runtime-systems).
