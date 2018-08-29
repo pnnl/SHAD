@@ -33,7 +33,6 @@
 #include <vector>
 
 #include "shad/core/execution.h"
-#include "shad/core/type_traits.h"
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
@@ -296,11 +295,10 @@ OutputIt partial_sum(InputIt first, InputIt last,
           }
           BinaryOperation op = std::get<5>(args);
           value_t acc = *begin;
-          if (rt::thisLocality() == std::get<3>(args)) {
-            *d_first = acc;
-          } else {
-            *d_first = op(acc, std::get<4>(args));
-          } 
+          if (rt::thisLocality() != std::get<3>(args)) {
+            acc = op(std::move(acc), std::get<4>(args));
+          }
+          *d_first = acc;
           while (++begin != end) {
             acc = op(std::move(acc), *begin);
             *++d_first = acc;
@@ -897,6 +895,403 @@ T transform_reduce(distributed_parallel_tag&&  policy,
   return init;
 }
 
+template <class InputIt, class OutputIt, class T,
+          class BinaryOperation, class UnaryOperation>
+OutputIt transform_exclusive_scan(distributed_sequential_tag&& policy,
+                                  InputIt first, InputIt last,
+                                  OutputIt d_first, T init,
+                                  BinaryOperation op,
+                                  UnaryOperation uop) {
+  using itr_traits = distributed_iterator_traits<InputIt>;
+  auto localities = itr_traits::localities(first, last);
+  auto startingLoc = localities.begin();
+  auto res = std::make_pair(d_first, init);
+  for (auto locality = startingLoc, end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<InputIt, InputIt, OutputIt,
+                            T, BinaryOperation, UnaryOperation>& args,
+           std::pair<OutputIt, T>* result) {
+          auto d_first = std::get<2>(args);
+          auto local_range = itr_traits::local_range(std::get<0>(args),
+                                                     std::get<1>(args));
+          auto begin = local_range.begin();
+          auto end = local_range.end();
+          if (begin == end) {
+            *result = std::make_pair(d_first, std::get<3>(args));
+            return;
+          }
+          T acc = std::get<3>(args);
+          auto op = std::get<4>(args);
+          auto uop = std::get<5>(args);
+          *d_first = acc;
+          acc = op(std::move(acc), uop(*begin));
+          while (++begin != end) {
+            *++d_first = acc;
+            acc = op(std::move(acc), uop(*begin));
+          }
+          *result = std::make_pair(++d_first, acc);
+        },
+        std::make_tuple(first, last, res.first, res.second, op, uop), &res);
+  }
+  return d_first;
+}
+
+template <class InputIt, class OutputIt, class T,
+          class BinaryOperation, class UnaryOperation>
+OutputIt transform_exclusive_scan(distributed_parallel_tag&& policy,
+                                  InputIt first, InputIt last,
+                                  OutputIt d_first, T init,
+                                  BinaryOperation op,
+                                  UnaryOperation uop) {
+  using itr_traits = distributed_iterator_traits<InputIt>;
+  auto localities = itr_traits::localities(first, last);
+  auto startingLoc = localities.begin();
+  uint32_t numLoc = localities.size();
+  std::vector<std::pair<OutputIt, T>> res(numLoc);
+  rt::Handle h;
+  size_t i = 0;
+  for (auto locality = startingLoc, end = localities.end();
+       locality != end; ++locality, ++i) {
+    rt::asyncExecuteAtWithRet(
+        h, locality,
+        [](rt::Handle&,
+           const std::tuple<InputIt, InputIt, OutputIt,
+                            BinaryOperation, UnaryOperation>& args,
+           std::pair<OutputIt, T>* result) {
+          auto d_first = std::get<2>(args);
+          auto df = d_first;
+          auto gbegin = std::get<0>(args);
+          auto gend = std::get<1>(args);
+          auto local_range = itr_traits::local_range(gbegin, gend);
+          auto begin = local_range.begin();
+          auto end = local_range.end();
+          auto it = itr_traits::iterator_from_local(gbegin, gend, begin);
+          auto dist = std::distance(gbegin, it);
+          d_first += dist;
+          if (begin == end) {
+            *result = std::make_pair(d_first, T{});
+            return;
+          }
+          auto op = std::get<3>(args);
+          auto uop = std::get<4>(args);
+          T acc = *begin;
+          *d_first = acc;
+          acc = uop(acc);
+          while (++begin != end) {
+            *++d_first = acc;
+            acc = op(std::move(acc), uop(*begin));
+          }
+          *result = std::make_pair(++d_first, acc);
+        },
+        std::make_tuple(first, last, d_first, op, uop), &res[i]);
+  }
+  rt::waitForCompletion(h);
+  auto d_f = d_first;
+  auto acc = init;
+  OutputIt chunk_end = d_first;
+//   return chunk_end;
+  bool is_first = true;
+  for (i=0; i<numLoc; ++i) {
+    chunk_end = res[i].first;
+    auto d_localities = itr_traits::localities(d_f, chunk_end);
+    auto d_startingLoc = d_localities.begin();
+    for (auto locality = d_startingLoc, end = d_localities.end();
+         locality != end; ++locality) {
+      rt::asyncExecuteAt(
+          h, locality,
+          [](rt::Handle&,
+             const std::tuple<OutputIt, OutputIt,
+                              BinaryOperation, T>& args) {
+            auto gbegin = std::get<0>(args);
+            auto gend = std::get<1>(args);
+            auto local_range = itr_traits::local_range(std::get<0>(args),
+                                                       std::get<1>(args));
+            auto begin = local_range.begin();
+            auto end = local_range.end();
+            BinaryOperation op = std::get<2>(args);
+            auto acc = std::get<3>(args);
+            *begin = acc;
+            while (begin!= end) {
+              *(++begin) += acc;
+            }
+          },
+          std::make_tuple(d_first, chunk_end, op, acc));
+    }
+    d_f = chunk_end;
+    acc += res[i].second;
+  }
+  rt::waitForCompletion(h);
+  return chunk_end;
+}
+
+template <class InputIt, class OutputIt,
+          class BinaryOperation, class UnaryOperation>
+OutputIt transform_inclusive_scan(distributed_sequential_tag&& policy,
+                                  InputIt first, InputIt last,
+                                  OutputIt d_first,
+                                  BinaryOperation op, UnaryOperation uop) {
+  using itr_traits = distributed_iterator_traits<InputIt>;
+  auto localities = itr_traits::localities(first, last);
+  auto startingLoc = localities.begin();
+  using value_t = typename itr_traits::value_type;
+  value_t acc;
+  auto res = std::make_pair(d_first, acc);
+  for (auto locality = startingLoc, end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<InputIt, InputIt, OutputIt,
+                            rt::Locality, value_t,
+                            BinaryOperation, UnaryOperation>& args,
+           std::pair<OutputIt, value_t>* result) {
+          auto d_first = std::get<2>(args);
+          auto local_range = itr_traits::local_range(std::get<0>(args),
+                                                     std::get<1>(args));
+          auto begin = local_range.begin();
+          auto end = local_range.end();
+          if (begin == end) {
+            *result = std::make_pair(d_first, std::get<4>(args));
+            return;
+          }
+          BinaryOperation op = std::get<5>(args);
+          UnaryOperation uop = std::get<6>(args);
+          value_t acc = uop(*begin);
+          if (rt::thisLocality() == std::get<3>(args)) {
+            *d_first = acc;
+          } else {
+            acc = op(std::move(acc), std::get<4>(args));
+            *d_first = acc;
+          }
+          while (++begin != end) {
+            acc = op(std::move(acc), uop(*begin));
+            *++d_first = acc;
+          }
+          *result = std::make_pair(++d_first, acc);
+        },
+        std::make_tuple(first, last, res.first, startingLoc,
+                        res.second, op, uop),
+                        &res);
+  }
+  return d_first;
+}
+
+template <class InputIt, class OutputIt,
+          class BinaryOperation, class UnaryOperation>
+OutputIt transform_inclusive_scan(distributed_parallel_tag&& policy,
+                                  InputIt first, InputIt last,
+                                  OutputIt d_first,
+                                  BinaryOperation op, UnaryOperation uop) {
+  using itr_traits = distributed_iterator_traits<InputIt>;
+  using value_t = typename itr_traits::value_type;
+  auto localities = itr_traits::localities(first, last);
+  auto startingLoc = localities.begin();
+  uint32_t numLoc = localities.size();
+  std::vector<std::pair<OutputIt, value_t>> res(numLoc);
+  rt::Handle h;
+  size_t i = 0;
+  for (auto locality = startingLoc, end = localities.end();
+       locality != end; ++locality, ++i) {
+    rt::asyncExecuteAtWithRet(
+        h, locality,
+        [](rt::Handle&,
+           const std::tuple<InputIt, InputIt, OutputIt,
+                            BinaryOperation, UnaryOperation>& args,
+           std::pair<OutputIt, value_t>* result) {
+          auto d_first = std::get<2>(args);
+          auto df = d_first;
+          auto gbegin = std::get<0>(args);
+          auto gend = std::get<1>(args);
+          auto local_range = itr_traits::local_range(gbegin, gend);
+          auto begin = local_range.begin();
+          auto end = local_range.end();
+          auto it = itr_traits::iterator_from_local(gbegin, gend, begin);
+          auto dist = std::distance(gbegin, it);
+          d_first += dist;
+          if (begin == end) {
+            *result = std::make_pair(d_first, value_t{});
+            return;
+          }
+          BinaryOperation op = std::get<3>(args);
+          UnaryOperation uop = std::get<4>(args);
+          value_t acc = uop(*begin);
+          *d_first = acc;
+          while (++begin != end) {
+            acc = op(std::move(acc), uop(*begin));
+            *++d_first = acc;
+          }
+          *result = std::make_pair(++d_first, acc);
+        },
+        std::make_tuple(first, last, d_first, op, uop), &res[i]);
+  }
+  rt::waitForCompletion(h);
+  auto d_f = d_first;
+  value_t acc;
+  OutputIt chunk_end = d_first;
+  if (numLoc == 0) {
+    return chunk_end;
+  } else {
+    chunk_end = res[0].first;
+    acc = res[0].second;
+  }
+  for (i=1; i<numLoc; ++i) {
+    chunk_end = res[i].first;
+    auto d_localities = itr_traits::localities(d_f, chunk_end);
+    auto d_startingLoc = d_localities.begin();
+    for (auto locality = d_startingLoc, end = d_localities.end();
+         locality != end; ++locality) {
+      rt::asyncExecuteAt(
+          h, locality,
+          [](rt::Handle&, const std::tuple<OutputIt, OutputIt,
+                                           BinaryOperation, value_t>& args) {
+            auto gbegin = std::get<0>(args);
+            auto gend = std::get<1>(args);
+            auto local_range = itr_traits::local_range(std::get<0>(args),
+                                                       std::get<1>(args));
+            auto begin = local_range.begin();
+            auto end = local_range.end();
+            BinaryOperation op = std::get<2>(args);
+            auto acc = std::get<3>(args);
+            for (auto it = begin; it!= end; ++it) {
+              *it += acc;
+            }
+          },
+          std::make_tuple(d_first, chunk_end, op, acc));
+    }
+    d_f = chunk_end;
+    acc += res[i].second;
+  }
+  rt::waitForCompletion(h);
+  return chunk_end;
+}
+
+template <class InputIt, class OutputIt,
+          class BinaryOperation, class UnaryOperation, class T>
+OutputIt transform_inclusive_scan(distributed_sequential_tag&& policy,
+                                  InputIt first, InputIt last,
+                                  OutputIt d_first,
+                                  BinaryOperation op,
+                                  UnaryOperation uop, T init) {
+  using itr_traits = distributed_iterator_traits<InputIt>;
+  auto localities = itr_traits::localities(first, last);
+  auto startingLoc = localities.begin();
+  auto res = std::make_pair(d_first, init);
+  for (auto locality = startingLoc, end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<InputIt, InputIt, OutputIt,
+                            T, BinaryOperation, UnaryOperation>& args,
+           std::pair<OutputIt, T>* result) {
+          auto d_first = std::get<2>(args);
+          auto local_range = itr_traits::local_range(std::get<0>(args),
+                                                     std::get<1>(args));
+          auto begin = local_range.begin();
+          auto end = local_range.end();
+          if (begin == end) {
+            *result = std::make_pair(d_first, std::get<3>(args));
+            return;
+          }
+          BinaryOperation op = std::get<4>(args);
+          UnaryOperation uop = std::get<5>(args);
+          T acc = op(std::get<3>(args), uop(*begin));
+          *d_first = acc; 
+          while (++begin != end) {
+            acc = op(std::move(acc), uop(*begin));
+            *++d_first = acc;
+          }
+          *result = std::make_pair(++d_first, acc);
+        },
+        std::make_tuple(first, last, res.first, res.second, op, uop),
+                        &res);
+  }
+  return d_first;
+}
+
+template <class InputIt, class OutputIt,
+          class BinaryOperation, class UnaryOperation, class T>
+OutputIt transform_inclusive_scan(distributed_parallel_tag&& policy,
+                                  InputIt first, InputIt last,
+                                  OutputIt d_first,
+                                  BinaryOperation op,
+                                  UnaryOperation uop, T init) {
+  using itr_traits = distributed_iterator_traits<InputIt>;
+  auto localities = itr_traits::localities(first, last);
+  auto startingLoc = localities.begin();
+  uint32_t numLoc = localities.size();
+  std::vector<std::pair<OutputIt, T>> res(numLoc);
+  rt::Handle h;
+  size_t i = 0;
+  for (auto locality = startingLoc, end = localities.end();
+       locality != end; ++locality, ++i) {
+    rt::asyncExecuteAtWithRet(
+        h, locality,
+        [](rt::Handle&,
+           const std::tuple<InputIt, InputIt, OutputIt,
+                            BinaryOperation, UnaryOperation>& args,
+           std::pair<OutputIt, T>* result) {
+          auto d_first = std::get<2>(args);
+          auto df = d_first;
+          auto gbegin = std::get<0>(args);
+          auto gend = std::get<1>(args);
+          auto local_range = itr_traits::local_range(gbegin, gend);
+          auto begin = local_range.begin();
+          auto end = local_range.end();
+          auto it = itr_traits::iterator_from_local(gbegin, gend, begin);
+          auto dist = std::distance(gbegin, it);
+          d_first += dist;
+          if (begin == end) {
+            *result = std::make_pair(d_first, T{});
+            return;
+          }
+          BinaryOperation op = std::get<3>(args);
+          UnaryOperation uop = std::get<4>(args);
+          T acc = uop(*begin);
+          *d_first = acc;
+          while (++begin != end) {
+            acc = op(std::move(acc), uop(*begin));
+            *++d_first = acc;
+          }
+          *result = std::make_pair(++d_first, acc);
+        },
+        std::make_tuple(first, last, d_first, op, uop), &res[i]);
+  }
+  rt::waitForCompletion(h);
+  auto d_f = d_first;
+  auto acc = init;
+  OutputIt chunk_end = d_first;
+  for (i=0; i<numLoc; ++i) {
+    chunk_end = res[i].first;
+    auto d_localities = itr_traits::localities(d_f, chunk_end);
+    auto d_startingLoc = d_localities.begin();
+    for (auto locality = d_startingLoc, end = d_localities.end();
+         locality != end; ++locality) {
+      rt::asyncExecuteAt(
+          h, locality,
+          [](rt::Handle&, const std::tuple<OutputIt, OutputIt,
+                                           BinaryOperation, T>& args) {
+            auto gbegin = std::get<0>(args);
+            auto gend = std::get<1>(args);
+            auto local_range = itr_traits::local_range(std::get<0>(args),
+                                                       std::get<1>(args));
+            auto begin = local_range.begin();
+            auto end = local_range.end();
+            BinaryOperation op = std::get<2>(args);
+            auto acc = std::get<3>(args);
+            for (auto it = begin; it!= end; ++it) {
+              *it += acc;
+            }
+          },
+          std::make_tuple(d_first, chunk_end, op, acc));
+    }
+    d_f = chunk_end;
+    acc += res[i].second;
+  }
+  rt::waitForCompletion(h);
+  return chunk_end;
+}
+
 }  // namespace impl
 
 template <class ForwardIterator, class T>
@@ -1164,6 +1559,77 @@ T transform_reduce(ExecutionPolicy&& policy,
                    T init, BinaryOp binary_op, UnaryOp unary_op) {
   return impl::transform_reduce(std::forward<ExecutionPolicy>(policy),
                                 first, last, init, binary_op, unary_op);
+}
+
+template <class InputIt, class OutputIt, class T,
+          class BinaryOperation, class UnaryOperation>
+OutputIt transform_exclusive_scan(InputIt first, InputIt last,
+                                  OutputIt d_first, T init,
+                                  BinaryOperation binary_op,
+                                  UnaryOperation unary_op) {
+  return impl::transform_exclusive_scan(distributed_sequential_tag{},
+                                        first, last, d_first, init,
+                                        binary_op, unary_op);
+}
+
+template <class ExecutionPolicy,
+          class ForwardIt1, class ForwardIt2,
+          class T, class BinaryOperation, class UnaryOperation >
+ForwardIt2 transform_exclusive_scan(ExecutionPolicy&& policy,
+                                    ForwardIt1 first, ForwardIt1 last,
+                                    ForwardIt2 d_first, T init,
+                                    BinaryOperation binary_op,
+                                    UnaryOperation unary_op ) {
+  return impl::transform_exclusive_scan(std::forward<ExecutionPolicy>(policy),
+                                        first, last, d_first, init,
+                                        binary_op, unary_op);
+}
+
+template <class InputIt, class OutputIt,
+          class BinaryOperation, class UnaryOperation>
+OutputIt transform_inclusive_scan(InputIt first, InputIt last,
+                                  OutputIt d_first,
+                                  BinaryOperation binary_op,
+                                  UnaryOperation unary_op ) {
+  return impl::transform_inclusive_scan(distributed_sequential_tag{},
+                                        first, last, d_first,
+                                        binary_op, unary_op );
+}
+
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
+          class BinaryOperation, class UnaryOperation>
+ForwardIt2 transform_inclusive_scan(ExecutionPolicy&& policy,
+                                    ForwardIt1 first, ForwardIt1 last,
+                                    ForwardIt2 d_first,
+                                    BinaryOperation binary_op,
+                                    UnaryOperation unary_op ) {
+  return impl::transform_inclusive_scan(std::forward<ExecutionPolicy>(policy),
+                                        first, last, d_first,
+                                        binary_op, unary_op );
+}
+
+template <class InputIt, class OutputIt,
+          class BinaryOperation, class UnaryOperation, class T>
+OutputIt transform_inclusive_scan(InputIt first, InputIt last,
+                                  OutputIt d_first,
+                                  BinaryOperation binary_op,
+                                  UnaryOperation unary_op,
+                                  T init) {
+  return impl::transform_inclusive_scan(distributed_sequential_tag{},
+                                        first, last, d_first,
+                                        binary_op, unary_op, init);
+}
+
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
+          class BinaryOperation, class UnaryOperation, class T >
+ForwardIt2 transform_inclusive_scan(ExecutionPolicy&& policy,
+                                    ForwardIt1 first, ForwardIt1 last,
+                                    ForwardIt2 d_first,
+                                    BinaryOperation binary_op,
+                                    UnaryOperation unary_op, T init) {
+  return impl::transform_inclusive_scan(std::forward<ExecutionPolicy>(policy),
+                                        first, last, d_first,
+                                        binary_op, unary_op, init);
 }
 
 }  // namespace shad
