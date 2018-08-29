@@ -22,17 +22,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include <chrono>
 #include <iterator>
 
 #include "gtest/gtest.h"
 
 #include "shad/core/algorithm.h"
-#include "shad/core/array.h"
 #include "shad/core/iterator.h"
 #include "shad/core/unordered_map.h"
 #include "shad/core/unordered_set.h"
-#include "shad/util/measure.h"
 
 constexpr int batch_size = 128;
 std::pair<int, int> kv(int x) { return std::make_pair(x, x); }
