@@ -1191,7 +1191,7 @@ class array : public AbstractDataStructure<array<T, N>> {
                            *result = This->chunk_.get();
                          },
                          GetGlobalID(), &chunk);
-    return iterator{rt::Locality(0), 0, oid_, chunk};
+    return iterator(rt::Locality(0), 0, oid_, chunk);
   }
 
   /// @brief The iterator to the beginning of the sequence.
@@ -1201,18 +1201,18 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @brief The iterator to the end of the sequence.
   /// @return an ::iterator to the end of the sequence.
   constexpr iterator end() noexcept {
+    if (N < rt::numLocalities()) {
+      rt::Locality last(uint32_t(N - 1));
+      pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
+      return iterator(std::forward<rt::Locality>(last), 1, oid_, chunk);
+    }
+
     size_type pos = chunk_size();
     if (pivot_locality() != rt::Locality(0)) --pos;
 
-    rt::Locality last(N >= size_t(rt::numLocalities()) ? rt::numLocalities() - 1
-                                                       : uint32_t(N - 1));
-
-    if (rt::thisLocality() == last) {
-      return iterator(std::forward<rt::Locality>(last), pos, oid_,
-                      chunk_.get());
-    }
-
-    return iterator(std::forward<rt::Locality>(last), pos, oid_, nullptr);
+    rt::Locality last(rt::numLocalities() - 1);
+    pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
+    return iterator(std::forward<rt::Locality>(last), pos, oid_, chunk);
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -1223,27 +1223,34 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @return a ::const_iterator to the beginning of the sequence.
   constexpr const_iterator cbegin() const noexcept {
     if (rt::thisLocality() == rt::Locality(0)) {
-      return const_iterator{rt::Locality(0), 0, oid_, chunk_.get()};
+      return const_iterator(rt::Locality(0), 0, oid_, chunk_.get());
     }
 
-    return const_iterator{rt::Locality(0), 0, oid_, nullptr};
+    pointer chunk = nullptr;
+    rt::executeAtWithRet(rt::Locality(0),
+                         [](const ObjectID &ID, pointer *result) {
+                           auto This = array<T, N>::GetPtr(ID);
+                           *result = This->chunk_.get();
+                         },
+                         GetGlobalID(), &chunk);
+    return const_iterator(rt::Locality(0), 0, oid_, chunk);
   }
 
   /// @brief The iterator to the end of the sequence.
   /// @return a ::const_iterator to the end of the sequence.
   constexpr const_iterator cend() const noexcept {
+    if (N < rt::numLocalities()) {
+      rt::Locality last(uint32_t(N - 1));
+      pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
+      return const_iterator(std::forward<rt::Locality>(last), 1, oid_, chunk);
+    }
+
     size_type pos = chunk_size();
     if (pivot_locality() != rt::Locality(0)) --pos;
 
-    rt::Locality last(N >= size_t(rt::numLocalities()) ? rt::numLocalities() - 1
-                                                       : uint32_t(N - 1));
-
-    if (rt::thisLocality() == last) {
-      return const_iterator(std::forward<rt::Locality>(last), pos, oid_,
-                            chunk_.get());
-    }
-
-    return const_iterator(std::forward<rt::Locality>(last), pos, oid_, nullptr);
+    rt::Locality last(rt::numLocalities() - 1);
+    pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
+    return const_iterator(std::forward<rt::Locality>(last), pos, oid_, chunk);
   }
 
   /// @}
@@ -1467,7 +1474,7 @@ class array<T, N>::BaseArrayRef {
 
   BaseArrayRef(rt::Locality l, std::ptrdiff_t p, ObjectID oid,
                pointer chunk = nullptr)
-      : pos_(p), loc_(l), oid_(oid), chunk_(chunk) {}
+      : oid_(oid), chunk_(chunk), pos_(p), loc_(l) {}
 
   BaseArrayRef(const BaseArrayRef &O)
       : oid_(O.oid_), chunk_(O.chunk_), pos_(O.pos_), loc_(O.loc_) {}
@@ -1496,39 +1503,36 @@ class array<T, N>::BaseArrayRef {
 
   value_type get() const {
     bool local = this->loc_ == rt::thisLocality();
-    if (local && chunk_ != nullptr) {
+    if (local) {
+      if (chunk_ == nullptr) {
+        auto This = array<T, N>::GetPtr(oid_);
+        chunk_ = This->chunk_.get();
+      }
       return chunk_[pos_];
     }
 
-    if (local && chunk_ == nullptr) {
-      auto This = array<T, N>::GetPtr(oid_);
-      chunk_ = This->chunk_.get();
-      return This->chunk_[pos_];
-    }
-
-    value_type result;
-
-    if (false && chunk_ != nullptr) {
+    if (chunk_ != nullptr) {
+      value_type result;
       rt::executeAtWithRet(
           loc_,
           [](const std::pair<pointer, std::ptrdiff_t> &args, T *result) {
             *result = std::get<0>(args)[std::get<1>(args)];
           },
           std::make_pair(chunk_, pos_), &result);
-    } else {
-      std::pair<value_type, pointer> resultPair;
-      rt::executeAtWithRet(loc_,
-                           [](const std::pair<ObjectID, std::ptrdiff_t> &args,
-                              std::pair<T, pointer> *result) {
-                             auto This = array<T, N>::GetPtr(std::get<0>(args));
-                             result->first = This->chunk_[std::get<1>(args)];
-                             result->second = This->chunk_.get();
-                           },
-                           std::make_pair(oid_, pos_), &resultPair);
-      result = resultPair.first;
-      chunk_ = resultPair.second;
+      return result;
     }
-    return result;
+
+    std::pair<value_type, pointer> resultPair;
+    rt::executeAtWithRet(loc_,
+                         [](const std::pair<ObjectID, std::ptrdiff_t> &args,
+                            std::pair<T, pointer> *result) {
+                           auto This = array<T, N>::GetPtr(std::get<0>(args));
+                           result->first = This->chunk_[std::get<1>(args)];
+                           result->second = This->chunk_.get();
+                         },
+                         std::make_pair(oid_, pos_), &resultPair);
+    chunk_ = resultPair.second;
+    return resultPair.first;
   }
 };
 
@@ -1562,7 +1566,7 @@ class alignas(64) array<T, N>::ArrayRef
     return array<T, N>::template BaseArrayRef<U>::get();
   }
 
-  bool operator==(const value_type &v) const {
+  bool operator==(const value_type &&v) const {
     return array<T, N>::template BaseArrayRef<U>::get() == v;
   }
 
@@ -1673,7 +1677,7 @@ class alignas(64) array<T, N>::array_iterator {
 
   /// @brief Default constructor.
   array_iterator()
-      : array_iterator(rt::Locality(), -1, ObjectID::kNullID, nullptr) {}
+      : array_iterator(rt::Locality(0), -1, ObjectID::kNullID, nullptr) {}
 
   /// @brief Copy constructor.
   array_iterator(const array_iterator &O)
@@ -1723,10 +1727,10 @@ class alignas(64) array<T, N>::array_iterator {
       chunk -= 1;
 
     ++offset_;
-    if (offset_ == chunk &&
-        locality_ != rt::Locality(rt::numLocalities() - 1)) {
+    if (offset_ == chunk && locality_ < rt::Locality(rt::numLocalities() - 1)) {
       ++locality_;
       offset_ = 0;
+
       update_chunk_pointer();
     }
     return *this;
@@ -1739,12 +1743,13 @@ class alignas(64) array<T, N>::array_iterator {
   }
 
   array_iterator &operator--() {
-    if (locality_ != rt::Locality(0) && offset_ == 0) {
+    if (locality_ > rt::Locality(0) && offset_ == 0) {
       locality_ -= 1;
       if (pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality())
         offset_ = chunk_size() - 1;
       else
         offset_ = chunk_size();
+
       update_chunk_pointer();
     }
 
@@ -1763,8 +1768,12 @@ class alignas(64) array<T, N>::array_iterator {
 
     if (n < 0) return operator-=(-n);
 
-    if (pivot_locality() != rt::Locality(0)) {
-      size_t chunk = chunk_size();
+    size_t chunk = rt::thisLocality() >= pivot_locality() ? chunk_size() - 1
+                                                          : chunk_size();
+    if (n > chunk && rt::numLocalities() > 1) {
+      ++locality_;
+      offset_ = 0;
+
       for (auto l = locality_, end = rt::Locality(rt::numLocalities() - 1);
            l != end && n >= chunk; ++l) {
         if (l >= pivot_locality()) chunk = chunk_size() - 1;
@@ -1773,17 +1782,10 @@ class alignas(64) array<T, N>::array_iterator {
         ++locality_;
       }
 
-      offset_ += n;
-      if (offset_ >= chunk) {
-        ++locality_;
-        offset_ -= chunk;
-      }
-    } else {
-      locality_ += (offset_ + n) / chunk_size();
-      offset_ = (offset_ + n) % chunk_size();
+      update_chunk_pointer();
     }
 
-    update_chunk_pointer();
+    offset_ += n;
     return *this;
   }
 
@@ -1792,31 +1794,35 @@ class alignas(64) array<T, N>::array_iterator {
 
     if (n < 0) return operator+=(-n);
 
-    if (n > offset_) {
+    if (n > offset_ && rt::numLocalities() > 1) {
       size_t chunk = chunk_size();
-      for (auto l = locality_, end = rt::Locality(0); l != end && n >= chunk;
-           --l) {
+      n -= offset_;
+      offset_ = 0;
+
+      for (auto l = locality_, end = rt::Locality(0); l != end; --l) {
         if (pivot_locality() != rt::Locality(0) && l >= pivot_locality()) {
           chunk = chunk_size() - 1;
         } else {
           chunk = chunk_size();
         }
 
+        if (n <= chunk) break;
+
         n -= chunk;
         --locality_;
       }
 
-      if (locality_ != rt::Locality(0) && offset_ < n) {
+      if (locality_ != rt::Locality(0)) {
         --locality_;
-        offset_ = chunk - (n - offset_);
-      } else {
-        offset_ -= n;
+        offset_ = chunk;
+        --n;
       }
-    } else {
-      offset_ -= n;
+
+      update_chunk_pointer();
     }
 
-    update_chunk_pointer();
+    offset_ -= n;
+
     return *this;
   }
 
@@ -1857,12 +1863,12 @@ class alignas(64) array<T, N>::array_iterator {
   }
 
   bool operator<(const array_iterator &O) const {
-    if (locality_ > O.locality_) return false;
+    if (oid_ != O.oid_ || locality_ > O.locality_) return false;
     return locality_ < O.locality_ || offset_ < O.offset_;
   }
 
   bool operator>(const array_iterator &O) const {
-    if (locality_ < O.locality_) return false;
+    if (oid_ != O.oid_ || locality_ < O.locality_) return false;
     return locality_ > O.locality_ || offset_ > O.offset_;
   }
 
