@@ -59,7 +59,7 @@ class Hashmap : public AbstractDataStructure<
   template <typename>
   friend class AbstractDataStructure;
   friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                            std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
+                            const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                             const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
 
@@ -72,13 +72,13 @@ class Hashmap : public AbstractDataStructure<
 
   using iterator =
       map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                   std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
+                   const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   using const_iterator =
       map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                    const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   using local_iterator =
       lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                    std::pair<KTYPE, VTYPE>>;
+                    const std::pair<KTYPE, VTYPE>>;
   using const_local_iterator =
       lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                     const std::pair<KTYPE, VTYPE>>;

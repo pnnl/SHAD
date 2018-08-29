@@ -30,6 +30,7 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include <unordered_set>
 
 #include "shad/data_structures/abstract_data_structure.h"
 #include "shad/data_structures/buffer.h"
@@ -53,7 +54,7 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   template <typename>
   friend class AbstractDataStructure;
 
-  friend class set_iterator<Set<T, ELEM_COMPARE>, T, T>;
+  friend class set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
   friend class set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
 
  public:
@@ -64,9 +65,9 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   using ShadSetPtr = typename AbstractDataStructure<SetT>::SharedPtr;
   using BuffersVector = typename impl::BuffersVector<T, SetT>;
 
-  using iterator = set_iterator<Set<T, ELEM_COMPARE>, T, T>;
+  using iterator = set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
   using const_iterator = set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
-  using local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
+  using local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
   using const_local_iterator =
       lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
   /// @brief Create method.

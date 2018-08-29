@@ -25,6 +25,8 @@
 #ifndef INCLUDE_SHAD_CORE_UNORDERED_SET_H_
 #define INCLUDE_SHAD_CORE_UNORDERED_SET_H_
 
+#include <algorithm>
+
 #include "shad/core/iterator.h"
 #include "shad/data_structures/compare_and_hash_utils.h"
 #include "shad/data_structures/set.h"
@@ -132,7 +134,18 @@ class unordered_set {
 
   /// @defgroup Modifiers - todo
   /// @{
+  std::pair<iterator, bool> insert(const value_type &value) {
+    // todo avoid lookup by modifying Insert()
+    if (!ptr->Find(value)) {
+      ptr->Insert(value);
+      return std::make_pair(std::find(begin(), end(), value), true);
+    }
+    return std::make_pair(std::find(begin(), end(), value), false);
+  }
 
+  iterator insert(const_iterator, const value_type &value) {
+    return insert(value).first;
+  }
   /// @}
 
   /// @defgroup Lookup - todo

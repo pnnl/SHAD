@@ -135,6 +135,19 @@ class unordered_map {
 
   /// @defgroup Modifiers - todo
   /// @{
+  std::pair<iterator, bool> insert(const value_type &value) {
+    // todo avoid lookups by modifying Insert()
+    mapped_type buf;
+    if (!ptr->Lookup(value.first, &buf)) {
+      ptr->Insert(value.first, value.second);
+      return std::make_pair(std::find(begin(), end(), value), true);
+    }
+    return std::make_pair(std::find(begin(), end(), value), false);
+  }
+
+  iterator insert(const_iterator, const value_type &value) {
+    return insert(value).first;
+  }
   /// @}
 
   /// @defgroup Lookup - todo
