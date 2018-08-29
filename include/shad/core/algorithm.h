@@ -218,7 +218,7 @@ ForwardItr find(distributed_parallel_tag&& policy, ForwardItr first,
 
   rt::Handle H;
 
-  std::vector<ForwardItr> results(localities.size());
+  std::vector<ForwardItr> results(localities.size(), last);
   size_t i = 0;
 
   for (auto locality = localities.begin(), end = localities.end();
@@ -262,7 +262,7 @@ ForwardItr find(distributed_sequential_tag&& policy, ForwardItr first,
 
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
-    ForwardItr result;
+    ForwardItr result = last;
 
     rt::executeAtWithRet(
         locality,
@@ -309,7 +309,7 @@ ForwardItr find_if(distributed_sequential_tag&& policy, ForwardItr first,
 
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
-    ForwardItr result;
+    ForwardItr result = last;
 
     rt::executeAtWithRet(
         locality,
@@ -346,7 +346,7 @@ ForwardItr find_if(distributed_parallel_tag&& policy, ForwardItr first,
 
   rt::Handle H;
 
-  std::vector<ForwardItr> results(localities.size());
+  std::vector<ForwardItr> results(localities.size(), last);
   size_t i = 0;
 
   for (auto locality = localities.begin(), end = localities.end();
