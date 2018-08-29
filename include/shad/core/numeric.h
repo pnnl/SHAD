@@ -1117,6 +1117,8 @@ OutputIt transform_inclusive_scan(distributed_parallel_tag&& policy,
           UnaryOperation uop = std::get<4>(args);
           value_t acc = uop(*begin);
           *d_first = acc;
+          std::cout << "dist: " << dist << ", acc: "
+          << acc << ", d_f:" << *d_first << std::endl;
           while (++begin != end) {
             acc = op(std::move(acc), uop(*begin));
             *++d_first = acc;

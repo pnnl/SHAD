@@ -1,6 +1,4 @@
 set(tests
-  algorithm_test
-  numeric_test
   for_test
   std_algorithm_test
   std_numeric_test
