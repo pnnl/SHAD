@@ -374,7 +374,8 @@ TEST_F(ArrayTest, CreateNewArray) {
 
   ASSERT_EQ(arrayPtr->size(), kArraySize);
   ASSERT_EQ(arrayPtr->max_size(), kArraySize);
-  using value_type = typename shad::impl::array<std::size_t, 123456>::value_type;
+  using value_type =
+      typename shad::impl::array<std::size_t, 123456>::value_type;
   ASSERT_TRUE((std::is_same<std::size_t, value_type>::value));
 
   arrayPtr->Destroy(arrayPtr->GetGlobalID());
@@ -385,11 +386,11 @@ TEST_F(ArrayTest, FillArray) {
 
   arrayPtr->fill(0xdeadc0d3);
 
-  ASSERT_EQ(arrayPtr->front(), 0xdeadc0d3);
-  ASSERT_EQ(arrayPtr->back(), 0xdeadc0d3);
+  ASSERT_EQ(arrayPtr->front(), std::size_t(0xdeadc0d3));
+  ASSERT_EQ(arrayPtr->back(), std::size_t(0xdeadc0d3));
 
   for (size_t i = 0; i < arrayPtr->size(); ++i) {
-    ASSERT_EQ(arrayPtr->at(i), 0xdeadc0d3) << i;
+    ASSERT_EQ(arrayPtr->at(i), std::size_t(0xdeadc0d3)) << i;
     arrayPtr->at(i) = i;
   }
 
@@ -400,7 +401,9 @@ TEST_F(ArrayTest, ArrayIterator) {
   auto arrayPtr = shad::impl::array<std::size_t, kArraySize>::Create();
 
   std::size_t splitPoint =
-      kArraySize / std::max<std::size_t>(shad::rt::numLocalities(), 2) + 1;
+      kArraySize / std::max<std::size_t>(shad::rt::numLocalities(), 2) +
+      ((kArraySize % std::max<std::size_t>(shad::rt::numLocalities(), 2) ? 0
+                                                                         : 1));
 
   for (size_t i = 0; i < arrayPtr->size(); ++i) {
     arrayPtr->at(i) = i;
@@ -412,7 +415,7 @@ TEST_F(ArrayTest, ArrayIterator) {
   }
 
   auto itr = arrayPtr->begin();
-  ASSERT_EQ(*itr, 0);
+  ASSERT_EQ(*itr, std::size_t(0));
 
   itr += splitPoint - 10;
   ASSERT_EQ(*itr, splitPoint - 10) << static_cast<std::size_t>(*itr);
@@ -424,11 +427,11 @@ TEST_F(ArrayTest, ArrayIterator) {
   ASSERT_EQ(*itr, splitPoint) << static_cast<std::size_t>(*itr);
 
   itr -= splitPoint - 20;
-  ASSERT_EQ(*itr, 20) << static_cast<std::size_t>(*itr);
+  ASSERT_EQ(*itr, std::size_t(20)) << static_cast<std::size_t>(*itr);
 }
 
 TEST_F(ArrayTest, ArrayIteratorTraitTest) {
-  using array_type = shad::impl::array<size_t, kArraySize>;
+  using array_type = shad::impl::array<std::size_t, kArraySize>;
   using iterator_traits = std::iterator_traits<typename array_type::iterator>;
 
   ASSERT_TRUE((std::is_same<typename iterator_traits::difference_type,
@@ -449,25 +452,49 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
   std::size_t j = 0;
   for (auto itr = array->begin(), end = array->end(); itr < end; ++itr) ++j;
   ASSERT_EQ(j, array->size());
+
   array->at(kArraySize / 2) = 0;
   array->at((kArraySize / 2) + 1) = 2;
+
+  array->at(array->size() - 2) = 0;
+  array->at(array->size() - 1) = 2;
 
   auto subList = shad::impl::array<std::size_t, 2>::Create();
   subList->at(0) = 0;
   subList->at(1) = 2;
 
+  ASSERT_EQ(subList->at(0), std::size_t(0));
+  ASSERT_EQ(subList->at(1), std::size_t(2));
+
   auto max = std::max_element(array->begin(), array->end());
   ASSERT_EQ(*max, std::size_t(2));
 
-  auto two = std::find(array->begin(), array->end(), std::size_t(2));
-  auto zero = std::find(array->begin(), array->end(), std::size_t(0));
+  ASSERT_EQ(std::distance(array->begin(), array->end()), array->size());
+  ASSERT_EQ(std::distance(subList->begin(), subList->end()), subList->size());
 
+  ASSERT_EQ(std::distance(array->begin(), array->begin() + (kArraySize / 2)),
+            kArraySize / 2);
+  ASSERT_EQ(std::distance(array->end(), array->end() - (kArraySize / 2)),
+            -(kArraySize / 2));
+
+  auto zero = std::find(array->begin(), array->end(), std::size_t(0));
+  ASSERT_EQ(*zero, std::size_t(0)) << zero << " " << array->begin();
+
+  auto two = std::find(array->begin(), array->end(), std::size_t(2));
   ASSERT_EQ(*two, std::size_t(2));
-  ASSERT_EQ(*zero, std::size_t(0));
+
+  {
+    auto two = std::find(subList->begin(), subList->end(), std::size_t(2));
+    ASSERT_EQ(*two, std::size_t(2));
+
+    auto zero = std::find(subList->begin(), subList->end(), std::size_t(0));
+    ASSERT_EQ(*zero, std::size_t(0));
+  }
 
   auto first = std::search(array->begin(), array->end(), subList->begin(),
                            subList->end());
-  ASSERT_EQ(*first, std::size_t(0));
+
+  ASSERT_EQ(*first, std::size_t(0)) << *first;
   ASSERT_EQ(first, zero);
   ASSERT_EQ(*(first + 1), std::size_t(2));
   ASSERT_EQ((first + 1), two);
@@ -481,4 +508,25 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
   ASSERT_EQ(*last, std::size_t(0));
   ASSERT_EQ(*(last + 1), std::size_t(2));
   ASSERT_NE(two, last);
+
+  shad::rt::executeOnAll(
+      [](const std::pair<shad::impl::array<std::size_t, 2>::ObjectID,
+                         shad::impl::array<std::size_t, kArraySize>::ObjectID>
+             &args) {
+        auto subListPtr =
+            shad::impl::array<std::size_t, 2>::GetPtr(std::get<0>(args));
+        auto arrayPtr = shad::impl::array<std::size_t, kArraySize>::GetPtr(
+            std::get<1>(args));
+
+        auto res = std::search(arrayPtr->begin(), arrayPtr->end(),
+                               subListPtr->begin(), subListPtr->end());
+
+        ASSERT_EQ(res, arrayPtr->begin() + (kArraySize / 2))
+            << shad::rt::thisLocality();
+        ASSERT_EQ(*res, std::size_t(0)) << shad::rt::thisLocality();
+        ASSERT_EQ(res + 1, arrayPtr->begin() + (kArraySize / 2 + 1))
+            << shad::rt::thisLocality();
+        ASSERT_EQ(*(res + 1), std::size_t(2)) << shad::rt::thisLocality();
+      },
+      std::make_pair(subList->GetGlobalID(), array->GetGlobalID()));
 }
