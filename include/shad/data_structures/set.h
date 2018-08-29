@@ -30,7 +30,6 @@
 #include <tuple>
 #include <utility>
 #include <vector>
-#include <unordered_set>
 
 #include "shad/data_structures/abstract_data_structure.h"
 #include "shad/data_structures/buffer.h"
