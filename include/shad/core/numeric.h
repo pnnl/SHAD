@@ -861,11 +861,9 @@ T transform_reduce(distributed_parallel_tag&&  policy,
   size_t i = 0;
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality, ++i) {
-//     rt::asyncExecuteAtWithRet(
-//         h, locality,
-    rt::executeAtWithRet(
-        locality,
-        [](// rt::Handle &h,
+    rt::asyncExecuteAtWithRet(
+        h, locality,
+        [](rt::Handle &h,
            const std::tuple<ForwardIt1, ForwardIt1, ForwardIt2,
                             BinaryOp1, BinaryOp2>& args,
            T* result) {
