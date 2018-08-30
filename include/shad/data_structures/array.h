@@ -1566,8 +1566,7 @@ class alignas(64) array<T, N>::ArrayRef
   }
 
   bool operator==(const ArrayRef &&v) const {
-    if (BaseArrayRef<U>::operator==(v)) return true;
-    return false;
+    return array<T, N>::template BaseArrayRef<U>::operator==(v);
   }
 
   ArrayRef &operator=(const T &v) {
@@ -1625,8 +1624,7 @@ class alignas(64) array<T, N>::ArrayRef<const U>
   ArrayRef(ArrayRef &&O) : array<T, N>::template BaseArrayRef<U>(O) {}
 
   bool operator==(const ArrayRef &&v) const {
-    if (array<T, N>::template BaseArrayRef<U>::operator==(v)) return true;
-    return false;
+    return array<T, N>::template BaseArrayRef<U>::operator==(v);
   }
 
   ArrayRef &operator=(const ArrayRef &O) {
