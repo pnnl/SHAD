@@ -77,7 +77,7 @@ class array {
   explicit array() { ptr = array_t::Create(); }
 
   /// @brief Destructor.
-  ~array() { array_t::Destroy(ptr.get()->GetGlobalID()); }
+  ~array() { array_t::Destroy(ptr->GetGlobalID()); }
 
   /// @brief The copy assignment operator.
   ///
