@@ -1493,6 +1493,11 @@ class array<T, N>::BaseArrayRef {
     return *this;
   }
 
+  bool operator==(const BaseArrayRef& O) const {
+    if (oid_ == O.oid_ && pos_ == O.pos_ && loc_ == O.loc_) return true;
+    return this->get() == O.get();
+  }
+
   value_type get() const {
     bool local = this->loc_ == rt::thisLocality();
     if (local) {
@@ -1558,8 +1563,9 @@ class alignas(64) array<T, N>::ArrayRef
     return array<T, N>::template BaseArrayRef<U>::get();
   }
 
-  bool operator==(const value_type &&v) const {
-    return array<T, N>::template BaseArrayRef<U>::get() == v;
+  bool operator==(const ArrayRef &&v) const {
+    if (BaseArrayRef<U>::operator==(v)) return true;
+    return false;
   }
 
   ArrayRef &operator=(const T &v) {
@@ -1614,6 +1620,11 @@ class alignas(64) array<T, N>::ArrayRef<const U>
   ArrayRef(const ArrayRef &O) : array<T, N>::template BaseArrayRef<U>(O) {}
 
   ArrayRef(ArrayRef &&O) : array<T, N>::template BaseArrayRef<U>(O) {}
+
+  bool operator==(const ArrayRef &&v) const {
+    if (array<T, N>::template BaseArrayRef<U>::operator==(v)) return true;
+    return false;
+  }
 
   ArrayRef &operator=(const ArrayRef &O) {
     array<T, N>::template BaseArrayRef<U>::operator=(O);
