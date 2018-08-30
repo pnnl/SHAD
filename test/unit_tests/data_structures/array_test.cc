@@ -550,7 +550,6 @@ TEST_F(ArrayTest, LocalRanges) {
   auto first2 = array2->begin();
   auto localities = iterator_traits::localities(first, last);
   auto startingLoc = localities.begin();
-  uint32_t numLoc = localities.size();
 
   for (auto locality = startingLoc, end = localities.end();
        locality != end; ++locality) {
