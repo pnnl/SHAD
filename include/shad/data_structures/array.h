@@ -1199,7 +1199,7 @@ class array : public AbstractDataStructure<array<T, N>> {
       return iterator{std::forward<rt::Locality>(last), 1, oid_, chunk};
     }
 
-    size_type pos = chunk_size();
+    difference_type pos = chunk_size();
     if (pivot_locality() != rt::Locality(0)) --pos;
 
     rt::Locality last(rt::numLocalities() - 1);
@@ -1237,7 +1237,7 @@ class array : public AbstractDataStructure<array<T, N>> {
       return const_iterator{std::forward<rt::Locality>(last), 1, oid_, chunk};
     }
 
-    size_type pos = chunk_size();
+    difference_type pos = chunk_size();
     if (pivot_locality() != rt::Locality(0)) --pos;
 
     rt::Locality last(rt::numLocalities() - 1);
@@ -1273,7 +1273,8 @@ class array : public AbstractDataStructure<array<T, N>> {
     for (auto l = rt::Locality(0), end = rt::Locality(rt::numLocalities() - 1);
          l != end; ++l) {
       if (n < chunk) {
-        return reference{l, n, oid_};
+        difference_type position(n);
+        return reference{l, position, oid_};
       }
 
       if (pivot_locality() == rt::Locality(0) || l < pivot_locality()) {
@@ -1283,7 +1284,8 @@ class array : public AbstractDataStructure<array<T, N>> {
       }
       n -= chunk;
     }
-    return reference{rt::Locality(rt::numLocalities() - 1), n, oid_};
+    difference_type position(n);
+    return reference{rt::Locality(rt::numLocalities() - 1), position, oid_};
   }
 
   /// @brief Unchecked element access operator.
@@ -1292,7 +1294,10 @@ class array : public AbstractDataStructure<array<T, N>> {
     size_t chunk = chunk_size();
     for (auto l = rt::Locality(0), end = rt::Locality(rt::numLocalities() - 1);
          l != end; ++l) {
-      if (n < chunk) return const_reference{l, n, oid_};
+      if (n < chunk) {
+        difference_type position(n);
+        return const_reference{l, position, oid_};
+      }
 
       if (pivot_locality() == rt::Locality(0) || l < pivot_locality()) {
         chunk = chunk_size();
@@ -1301,7 +1306,9 @@ class array : public AbstractDataStructure<array<T, N>> {
       }
       n -= chunk;
     }
-    return const_reference{rt::Locality(rt::numLocalities() - 1), n, oid_};
+    difference_type position(n);
+    return const_reference{rt::Locality(rt::numLocalities() - 1), position,
+                           oid_};
   }
 
   /// @brief Checked element access operator.
@@ -1450,14 +1457,15 @@ class array<T, N>::BaseArrayRef {
  public:
   using value_type = U;
   using ObjectID = typename array<T, N>::ObjectID;
+  using difference_type = typename array<T, N>::difference_type;
   using pointer = typename array<T, N>::pointer;
 
   ObjectID oid_;
   mutable pointer chunk_;
-  std::ptrdiff_t pos_;
+  difference_type pos_;
   rt::Locality loc_;
 
-  BaseArrayRef(rt::Locality l, std::ptrdiff_t p, ObjectID oid,
+  BaseArrayRef(rt::Locality l, difference_type p, ObjectID oid,
                pointer chunk = nullptr)
       : oid_(oid), chunk_(chunk), pos_(p), loc_(l) {}
 
@@ -1505,7 +1513,7 @@ class array<T, N>::BaseArrayRef {
       value_type result;
       rt::executeAtWithRet(
           loc_,
-          [](const std::pair<pointer, std::ptrdiff_t> &args, T *result) {
+          [](const std::pair<pointer, difference_type> &args, T *result) {
             *result = std::get<0>(args)[std::get<1>(args)];
           },
           std::make_pair(chunk_, pos_), &result);
@@ -1514,7 +1522,7 @@ class array<T, N>::BaseArrayRef {
 
     std::pair<value_type, pointer> resultPair;
     rt::executeAtWithRet(loc_,
-                         [](const std::pair<ObjectID, std::ptrdiff_t> &args,
+                         [](const std::pair<ObjectID, difference_type> &args,
                             std::pair<T, pointer> *result) {
                            auto This = array<T, N>::GetPtr(std::get<0>(args));
                            result->first = This->chunk_[std::get<1>(args)];
@@ -1533,9 +1541,10 @@ class alignas(64) array<T, N>::ArrayRef
  public:
   using value_type = U;
   using pointer = typename array<T, N>::pointer;
+  using difference_type = typename array<T, N>::difference_type;
   using ObjectID = typename array<T, N>::ObjectID;
 
-  ArrayRef(rt::Locality l, std::size_t p, ObjectID oid, pointer chunk = nullptr)
+  ArrayRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk = nullptr)
       : array<T, N>::template BaseArrayRef<U>(l, p, oid, chunk) {}
 
   ArrayRef(const ArrayRef &O) : array<T, N>::template BaseArrayRef<U>(O) {}
@@ -1575,7 +1584,7 @@ class alignas(64) array<T, N>::ArrayRef
     if (this->chunk_ == nullptr) {
       rt::executeAtWithRet(
           this->loc_,
-          [](const std::tuple<ObjectID, std::ptrdiff_t, T> &args,
+          [](const std::tuple<ObjectID, difference_type, T> &args,
              pointer *result) {
             auto This = array<T, N>::GetPtr(std::get<0>(args));
             This->chunk_[std::get<1>(args)] = std::get<2>(args);
@@ -1584,7 +1593,7 @@ class alignas(64) array<T, N>::ArrayRef
           std::make_tuple(this->oid_, this->pos_, v), &this->chunk_);
     } else {
       rt::executeAt(this->loc_,
-                    [](const std::tuple<pointer, std::ptrdiff_t, T> &args) {
+                    [](const std::tuple<pointer, difference_type, T> &args) {
                       std::get<0>(args)[std::get<1>(args)] = std::get<2>(args);
                     },
                     std::make_tuple(this->chunk_, this->pos_, v));
@@ -1605,6 +1614,7 @@ class alignas(64) array<T, N>::ArrayRef<const U>
  public:
   using value_type = const U;
   using pointer = typename array<T, N>::pointer;
+  using difference_type = typename array<T, N>::difference_type;
   using ObjectID = typename array<T, N>::ObjectID;
 
   ArrayRef(rt::Locality l, std::size_t p, ObjectID oid, pointer chunk = nullptr)
@@ -1628,7 +1638,6 @@ class alignas(64) array<T, N>::ArrayRef<const U>
     array<T, N>::template BaseArrayRef<U>::operator=(O);
     return *this;
   }
-
 
   operator value_type() const {  // NOLINT
     return array<T, N>::template BaseArrayRef<U>::get();
@@ -1668,7 +1677,7 @@ class alignas(64) array<T, N>::array_iterator {
   using local_iterator_type = pointer;
 
   /// @brief Constructor.
-  array_iterator(rt::Locality &&l, std::ptrdiff_t offset, ObjectID oid,
+  array_iterator(rt::Locality &&l, difference_type offset, ObjectID oid,
                  pointer chunk)
       : locality_(l), offset_(offset), oid_(oid), chunk_(chunk) {}
 
@@ -1950,7 +1959,7 @@ class alignas(64) array<T, N>::array_iterator {
 
   rt::Locality locality_{static_cast<uint32_t>(-1)};
   ObjectID oid_{static_cast<std::size_t>(-1)};
-  std::ptrdiff_t offset_{static_cast<std::ptrdiff_t>(-1)};
+  difference_type offset_{-1};
   mutable pointer chunk_{nullptr};
 };
 
