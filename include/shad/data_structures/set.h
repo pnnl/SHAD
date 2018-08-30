@@ -35,6 +35,7 @@
 #include "shad/data_structures/buffer.h"
 #include "shad/data_structures/compare_and_hash_utils.h"
 #include "shad/data_structures/local_set.h"
+#include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
 namespace shad {
@@ -91,7 +92,10 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
 
   /// @brief Insert an element in the set.
   /// @param[in] element the element.
-  void Insert(const T& element);
+  /// @return a pair consisting of an iterator to the inserted element (or to
+  /// the element that prevented the insertion) and a bool denoting whether the
+  /// insertion took place.
+  std::pair<iterator, bool> Insert(const T& element);
 
   /// @brief Asynchronously Insert an element in the set.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -257,20 +261,26 @@ inline size_t Set<T, ELEM_COMPARE>::Size() const {
 }
 
 template <typename T, typename ELEM_COMPARE>
-inline void Set<T, ELEM_COMPARE>::Insert(const T& element) {
+inline std::pair<typename Set<T, ELEM_COMPARE>::iterator, bool>
+Set<T, ELEM_COMPARE>::Insert(const T& element) {
   size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
+  using res_t = std::pair<local_iterator, bool>;
+  using itr_traits = distributed_iterator_traits<iterator>;
+  res_t res;
   if (targetLocality == rt::thisLocality()) {
-    localSet_.Insert(element);
+    res = localSet_.Insert(element);
   } else {
-    auto insertLambda = [](const ExeAtArgs& args) {
+    auto insertLambda = [](const ExeAtArgs& args, res_t* res) {
       auto setPtr = SetT::GetPtr(args.oid);
-      setPtr->localSet_.Insert(args.element);
+      *res = setPtr->localSet_.Insert(args.element);
     };
     ExeAtArgs args = {oid_, element};
-    rt::executeAt(targetLocality, insertLambda, args);
+    rt::executeAtWithRet(targetLocality, insertLambda, args, &res);
   }
+  auto git = itr_traits::iterator_from_local(begin(), end(), res.first);
+  return std::make_pair(git, res.second);
 }
 
 template <typename T, typename ELEM_COMPARE>

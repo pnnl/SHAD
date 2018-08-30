@@ -135,12 +135,7 @@ class unordered_set {
   /// @defgroup Modifiers - todo
   /// @{
   std::pair<iterator, bool> insert(const value_type &value) {
-    // todo avoid lookup by modifying Insert()
-    if (!ptr->Find(value)) {
-      ptr->Insert(value);
-      return std::make_pair(std::find(begin(), end(), value), true);
-    }
-    return std::make_pair(std::find(begin(), end(), value), false);
+    return ptr->Insert(value);
   }
 
   iterator insert(const_iterator, const value_type &value) {
