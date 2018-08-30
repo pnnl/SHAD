@@ -1183,7 +1183,7 @@ class array : public AbstractDataStructure<array<T, N>> {
     if (rt::thisLocality() == rt::Locality(0)) {
       return iterator{rt::Locality(0), 0, oid_, chunk_.get()};
     }
-    return iterator(rt::Locality(0), 0, oid_, nullptr);
+    return iterator{rt::Locality(0), 0, oid_, nullptr};
   }
 
   /// @brief The iterator to the beginning of the sequence.
@@ -1196,7 +1196,7 @@ class array : public AbstractDataStructure<array<T, N>> {
     if (N < rt::numLocalities()) {
       rt::Locality last(uint32_t(N - 1));
       pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-      return iterator(std::forward<rt::Locality>(last), 1, oid_, chunk);
+      return iterator{std::forward<rt::Locality>(last), 1, oid_, chunk};
     }
 
     size_type pos = chunk_size();
@@ -1204,7 +1204,7 @@ class array : public AbstractDataStructure<array<T, N>> {
 
     rt::Locality last(rt::numLocalities() - 1);
     pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-    return iterator(std::forward<rt::Locality>(last), pos, oid_, chunk);
+    return iterator{std::forward<rt::Locality>(last), pos, oid_, chunk};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -1215,7 +1215,7 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @return a ::const_iterator to the beginning of the sequence.
   constexpr const_iterator cbegin() const noexcept {
     if (rt::thisLocality() == rt::Locality(0)) {
-      return const_iterator(rt::Locality(0), 0, oid_, chunk_.get());
+      return const_iterator{rt::Locality(0), 0, oid_, chunk_.get()};
     }
 
     pointer chunk = nullptr;
@@ -1225,7 +1225,7 @@ class array : public AbstractDataStructure<array<T, N>> {
                            *result = This->chunk_.get();
                          },
                          GetGlobalID(), &chunk);
-    return const_iterator(rt::Locality(0), 0, oid_, chunk);
+    return const_iterator{rt::Locality(0), 0, oid_, chunk};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -1234,7 +1234,7 @@ class array : public AbstractDataStructure<array<T, N>> {
     if (N < rt::numLocalities()) {
       rt::Locality last(uint32_t(N - 1));
       pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-      return const_iterator(std::forward<rt::Locality>(last), 1, oid_, chunk);
+      return const_iterator{std::forward<rt::Locality>(last), 1, oid_, chunk};
     }
 
     size_type pos = chunk_size();
@@ -1242,7 +1242,7 @@ class array : public AbstractDataStructure<array<T, N>> {
 
     rt::Locality last(rt::numLocalities() - 1);
     pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-    return const_iterator(std::forward<rt::Locality>(last), pos, oid_, chunk);
+    return const_iterator{std::forward<rt::Locality>(last), pos, oid_, chunk};
   }
 
   /// @}
@@ -1273,7 +1273,7 @@ class array : public AbstractDataStructure<array<T, N>> {
     for (auto l = rt::Locality(0), end = rt::Locality(rt::numLocalities() - 1);
          l != end; ++l) {
       if (n < chunk) {
-        return reference(l, n, oid_);
+        return reference{l, n, oid_};
       }
 
       if (pivot_locality() == rt::Locality(0) || l < pivot_locality()) {
@@ -1283,7 +1283,7 @@ class array : public AbstractDataStructure<array<T, N>> {
       }
       n -= chunk;
     }
-    return reference(rt::Locality(rt::numLocalities() - 1), n, oid_);
+    return reference{rt::Locality(rt::numLocalities() - 1), n, oid_};
   }
 
   /// @brief Unchecked element access operator.
@@ -1292,7 +1292,7 @@ class array : public AbstractDataStructure<array<T, N>> {
     size_t chunk = chunk_size();
     for (auto l = rt::Locality(0), end = rt::Locality(rt::numLocalities() - 1);
          l != end; ++l) {
-      if (n < chunk) return const_reference(l, n, oid_);
+      if (n < chunk) return const_reference{l, n, oid_};
 
       if (pivot_locality() == rt::Locality(0) || l < pivot_locality()) {
         chunk = chunk_size();
@@ -1301,7 +1301,7 @@ class array : public AbstractDataStructure<array<T, N>> {
       }
       n -= chunk;
     }
-    return const_reference(rt::Locality(rt::numLocalities() - 1), n, oid_);
+    return const_reference{rt::Locality(rt::numLocalities() - 1), n, oid_};
   }
 
   /// @brief Checked element access operator.
