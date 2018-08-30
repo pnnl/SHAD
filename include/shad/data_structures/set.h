@@ -433,8 +433,8 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
   using local_iterator_type = lset_iterator<LSet, T>;
 
   set_iterator() {}
-  set_iterator(uint32_t locID, const OIDT setOID,
-               local_iterator_type& lit, T element) {
+  set_iterator(uint32_t locID, const OIDT setOID, local_iterator_type& lit,
+               T element) {
     data_ = {locID, setOID, lit, element};
   }
 
@@ -472,7 +472,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
 
   static set_iterator set_end(const SetT* setPtr) {
     local_iterator_type lend =
-                local_iterator_type::lset_end(&(setPtr->localSet_));
+        local_iterator_type::lset_end(&(setPtr->localSet_));
     set_iterator end(rt::numLocalities(), OIDT(0), lend, T());
     return end;
   }
@@ -480,9 +480,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
   bool operator==(const set_iterator& other) const {
     return (data_ == other.data_);
   }
-  bool operator!=(const set_iterator& other) const {
-    return !(*this == other);
-  }
+  bool operator!=(const set_iterator& other) const { return !(*this == other); }
 
   T operator*() const { return data_.element_; }
 
@@ -535,8 +533,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
     local_iterator_type begin_;
     local_iterator_type end_;
   };
-  static local_iterator_range local_range(set_iterator &B,
-                                          set_iterator &E) {
+  static local_iterator_range local_range(set_iterator& B, set_iterator& E) {
     auto setPtr = SetT::GetPtr(B.data_.oid_);
     local_iterator_type lbeg, lend;
     uint32_t thisLocId = static_cast<uint32_t>(rt::thisLocality());
@@ -552,19 +549,18 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
     }
     return local_iterator_range(lbeg, lend);
   }
-  static rt::localities_range localities(set_iterator &B, set_iterator &E) {
-    return rt::localities_range(
-        rt::Locality(B.data_.locId_),
-        rt::Locality(std::min<uint32_t>(rt::numLocalities(),
-                                        E.data_.locId_+ 1)));
+  static rt::localities_range localities(set_iterator& B, set_iterator& E) {
+    return rt::localities_range(rt::Locality(B.data_.locId_),
+                                rt::Locality(std::min<uint32_t>(
+                                    rt::numLocalities(), E.data_.locId_ + 1)));
   }
 
-  static set_iterator iterator_from_local(set_iterator &B,
-                                          set_iterator &E,
+  static set_iterator iterator_from_local(set_iterator& B, set_iterator& E,
                                           local_iterator_type itr) {
-    return set_iterator(static_cast<uint32_t>(rt::thisLocality()),
-                        B.data_.oid_, itr);
+    return set_iterator(static_cast<uint32_t>(rt::thisLocality()), B.data_.oid_,
+                        itr);
   }
+
  private:
   struct itData {
     itData() : oid_(0), lsetIt_(nullptr, 0, 0, nullptr, nullptr) {}
@@ -608,8 +604,7 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
     } else {
       itData outitd;
       for (uint32_t i = itd.locId_ + 1; i < rt::numLocalities(); ++i) {
-        rt::executeAtWithRet(rt::Locality(i),
-                             getLocBeginIt, itd.oid_, &outitd);
+        rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_, &outitd);
         if (outitd.locId_ != rt::numLocalities()) {
           // It Data is valid
           *res = outitd;

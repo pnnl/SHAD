@@ -657,7 +657,7 @@ class lset_iterator : public std::iterator<std::forward_iterator_tag, T> {
   using State = typename LSet::State;
   using Bucket = typename LSet::Bucket;
 
-  lset_iterator() {};
+  lset_iterator(){};
   lset_iterator(const LSet* setPtr, size_t bId, size_t pos, Bucket* cb,
                 Entry* ePtr)
       : setPtr_(setPtr),

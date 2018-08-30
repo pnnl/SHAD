@@ -61,7 +61,8 @@ class Hashmap : public AbstractDataStructure<
   friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                             const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                            const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
+                            const std::pair<KTYPE, VTYPE>,
+                            std::pair<KTYPE, VTYPE>>;
 
  public:
   using value_type = std::pair<KTYPE, VTYPE>;
@@ -663,7 +664,8 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   using value_type = T;
 
   map_iterator() {}
-  map_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit, T element) {
+  map_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit,
+               T element) {
     data_ = {locID, mapOID, lit, element};
   }
 
@@ -700,7 +702,8 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   static map_iterator map_end(const MapT *mapPtr) {
-    local_iterator_type lend = local_iterator_type::lmap_end(&(mapPtr->localMap_));
+    local_iterator_type lend =
+        local_iterator_type::lmap_end(&(mapPtr->localMap_));
     map_iterator end(rt::numLocalities(), OIDT(0), lend, T());
     return end;
   }
@@ -762,8 +765,7 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     local_iterator_type begin_;
     local_iterator_type end_;
   };
-  static local_iterator_range local_range(map_iterator &B,
-                                          map_iterator &E) {
+  static local_iterator_range local_range(map_iterator &B, map_iterator &E) {
     auto mapPtr = MapT::GetPtr(B.data_.oid_);
     local_iterator_type lbeg, lend;
     uint32_t thisLocId = static_cast<uint32_t>(rt::thisLocality());
@@ -780,18 +782,17 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     return local_iterator_range(lbeg, lend);
   }
   static rt::localities_range localities(map_iterator &B, map_iterator &E) {
-    return rt::localities_range(
-        rt::Locality(B.data_.locId_),
-        rt::Locality(std::min<uint32_t>(rt::numLocalities(),
-                                        E.data_.locId_+ 1)));
+    return rt::localities_range(rt::Locality(B.data_.locId_),
+                                rt::Locality(std::min<uint32_t>(
+                                    rt::numLocalities(), E.data_.locId_ + 1)));
   }
 
-  static map_iterator iterator_from_local(map_iterator &B,
-                                          map_iterator &E,
+  static map_iterator iterator_from_local(map_iterator &B, map_iterator &E,
                                           local_iterator_type itr) {
-    return map_iterator(static_cast<uint32_t>(rt::thisLocality()),
-                        B.data_.oid_, itr);
+    return map_iterator(static_cast<uint32_t>(rt::thisLocality()), B.data_.oid_,
+                        itr);
   }
+
  private:
   struct itData {
     itData() : oid_(0), lmapIt_(nullptr, 0, 0, nullptr, nullptr) {}
