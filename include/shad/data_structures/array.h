@@ -1493,7 +1493,7 @@ class array<T, N>::BaseArrayRef {
     return *this;
   }
 
-  bool operator==(const BaseArrayRef& O) const {
+  bool operator==(const BaseArrayRef &O) const {
     if (oid_ == O.oid_ && pos_ == O.pos_ && loc_ == O.loc_) return true;
     return this->get() == O.get();
   }
@@ -1771,9 +1771,10 @@ class alignas(64) array<T, N>::array_iterator {
 
     if (n < 0) return operator-=(-n);
 
-    size_t chunk = pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality()
-                   ? chunk_size() - 1
-                   : chunk_size();
+    size_t chunk =
+        pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality()
+            ? chunk_size() - 1
+            : chunk_size();
     if (n + offset_ >= chunk && rt::numLocalities() > 1) {
       ++locality_;
       n -= chunk - offset_;

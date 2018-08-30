@@ -520,7 +520,8 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
         auto res = std::search(arrayPtr->begin(), arrayPtr->end(),
                                subListPtr->begin(), subListPtr->end());
 
-        ASSERT_EQ(arrayPtr->at(kArraySize / 2), *(arrayPtr->begin() + (kArraySize / 2)));
+        ASSERT_EQ(arrayPtr->at(kArraySize / 2),
+                  *(arrayPtr->begin() + (kArraySize / 2)));
         ASSERT_EQ(res, arrayPtr->begin() + (kArraySize / 2))
             << shad::rt::thisLocality();
         ASSERT_EQ(*res, std::size_t(0)) << shad::rt::thisLocality();
