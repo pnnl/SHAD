@@ -1594,7 +1594,7 @@ class alignas(64) array<T, N>::ArrayRef
   }
 
   friend std::ostream &operator<<(std::ostream &stream, const ArrayRef i) {
-    stream << i.loc_ << " " << i.pos_;
+    stream << i.loc_ << " " << i.pos_ << " " << i.get();
     return stream;
   }
 };
