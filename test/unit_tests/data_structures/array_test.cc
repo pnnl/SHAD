@@ -531,3 +531,49 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
       },
       std::make_pair(subList->GetGlobalID(), array->GetGlobalID()));
 }
+
+TEST_F(ArrayTest, LocalRanges) {
+  using array_type = shad::impl::array<std::size_t, 42>;
+  using array_it = typename array_type::iterator;
+  using iterator_traits =
+         shad::distributed_iterator_traits<typename array_type::iterator>;
+  auto array = array_type::Create();
+  auto array2 = array_type::Create();
+
+  for (size_t i = 0; i < array->size(); ++i) {
+    array->at(i) = i;
+    array2->at(i) = i + 1;
+  }
+
+  auto first = array->begin();
+  auto last = array->end();
+  auto first2 = array2->begin();
+  auto localities = iterator_traits::localities(first, last);
+  auto startingLoc = localities.begin();
+  uint32_t numLoc = localities.size();
+
+  for (auto locality = startingLoc, end = localities.end();
+       locality != end; ++locality) {
+    shad::rt::executeAt(
+      locality,
+      [](const std::tuple<array_it, array_it, array_it>& args) {
+        auto gbegin = std::get<0>(args);
+        auto gend = std::get<1>(args);
+        auto local_range = iterator_traits::local_range(gbegin, gend);
+
+        auto begin = local_range.begin();
+        auto end = local_range.end();
+
+        auto it = iterator_traits::iterator_from_local(gbegin, gend, begin);
+        auto dist = std::distance(gbegin, it);
+
+        auto first2 = std::get<2>(args);
+        first2 += dist;
+
+        for (;begin != end; ++begin, ++it, ++first2) {
+          ASSERT_EQ((*begin+ 1lu), *first2);
+        }
+      },
+      std::make_tuple(first, last, first2));
+  }
+}
