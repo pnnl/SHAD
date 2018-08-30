@@ -61,14 +61,14 @@ class LocalSet {
   template <typename, typename>
   friend class AttrEdgesPair;
 
-  friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
+  friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
   friend class lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
   template <typename, typename, typename>
   friend class set_iterator;
 
  public:
   using value_type = T;
-  using iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
+  using iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
   using const_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
 
   /// @brief Constructor.

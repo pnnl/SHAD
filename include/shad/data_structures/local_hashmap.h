@@ -68,7 +68,7 @@ class LocalHashmap {
   template <typename, typename, typename, typename>
   friend class Hashmap;
   friend class lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
-                             std::pair<KTYPE, VTYPE>>;
+                             const std::pair<KTYPE, VTYPE>>;
   friend class lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
                              const std::pair<KTYPE, VTYPE>>;
   template <typename, typename, typename>
@@ -78,7 +78,7 @@ class LocalHashmap {
   using value_type = std::pair<KTYPE, VTYPE>;
   using iterator =
       lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
-                    std::pair<KTYPE, VTYPE>>;
+                    const std::pair<KTYPE, VTYPE>>;
   using const_iterator =
       lmap_iterator<LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>,
                     const std::pair<KTYPE, VTYPE>>;
