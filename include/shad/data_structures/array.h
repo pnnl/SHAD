@@ -1771,15 +1771,18 @@ class alignas(64) array<T, N>::array_iterator {
 
     if (n < 0) return operator-=(-n);
 
-    size_t chunk = rt::thisLocality() >= pivot_locality() ? chunk_size() - 1
-                                                          : chunk_size();
-    if (n > chunk && rt::numLocalities() > 1) {
+    size_t chunk = pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality()
+                   ? chunk_size() - 1
+                   : chunk_size();
+    if (n + offset_ >= chunk && rt::numLocalities() > 1) {
       ++locality_;
+      n -= chunk - offset_;
       offset_ = 0;
 
       for (auto l = locality_, end = rt::Locality(rt::numLocalities() - 1);
            l != end && n >= chunk; ++l) {
-        if (l >= pivot_locality()) chunk = chunk_size() - 1;
+        if (pivot_locality() != rt::Locality(0) && l >= pivot_locality())
+          chunk = chunk_size() - 1;
 
         n -= chunk;
         ++locality_;
