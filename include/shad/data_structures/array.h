@@ -1629,7 +1629,8 @@ class alignas(64) array<T, N>::ArrayRef<const U>
     return *this;
   }
 
-  operator value_type() const {
+
+  operator value_type() const {  // NOLINT
     return array<T, N>::template BaseArrayRef<U>::get();
   }
 
