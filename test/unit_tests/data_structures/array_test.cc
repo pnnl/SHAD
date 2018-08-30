@@ -459,6 +459,8 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
   array->at(array->size() - 2) = 0;
   array->at(array->size() - 1) = 2;
 
+  ASSERT_EQ(array->at(kArraySize / 2), *(array->begin() + kArraySize / 2));
+
   auto subList = shad::impl::array<std::size_t, 2>::Create();
   subList->at(0) = 0;
   subList->at(1) = 2;
@@ -499,15 +501,12 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
   ASSERT_EQ(*(first + 1), std::size_t(2));
   ASSERT_EQ((first + 1), two);
 
-  array->at(kArraySize - 1) = 2;
-  array->at(kArraySize - 2) = 0;
-
   auto last = std::find_end(array->begin(), array->end(), subList->begin(),
                             subList->end());
 
   ASSERT_EQ(*last, std::size_t(0));
   ASSERT_EQ(*(last + 1), std::size_t(2));
-  ASSERT_NE(two, last);
+  ASSERT_NE(first, last);
 
   shad::rt::executeOnAll(
       [](const std::pair<shad::impl::array<std::size_t, 2>::ObjectID,
@@ -521,6 +520,7 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
         auto res = std::search(arrayPtr->begin(), arrayPtr->end(),
                                subListPtr->begin(), subListPtr->end());
 
+        ASSERT_EQ(arrayPtr->at(kArraySize / 2), *(arrayPtr->begin() + (kArraySize / 2)));
         ASSERT_EQ(res, arrayPtr->begin() + (kArraySize / 2))
             << shad::rt::thisLocality();
         ASSERT_EQ(*res, std::size_t(0)) << shad::rt::thisLocality();
