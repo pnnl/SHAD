@@ -1320,25 +1320,18 @@ class array : public AbstractDataStructure<array<T, N>> {
 
   /// @brief the first element in the array.
   /// @return a ::reference to the element in position 0.
-  constexpr reference front() { return reference(rt::Locality(0), 0, oid_); }
+  constexpr reference front() { return *begin(); }
   /// @brief the first element in the array.
   /// @return a ::const_reference to the element in position 0.
-  constexpr const_reference front() const {
-    return const_reference(rt::Locality(0), 0, oid_);
-  }
+  constexpr const_reference front() const { return *cbegin(); }
 
   /// @brief the last element in the array.
   /// @return a ::reference to the element in position N - 1.
-  constexpr reference back() {
-    return reference(rt::Locality(rt::numLocalities() - 1), chunk_size() - 1,
-                     oid_);
-  }
+  constexpr reference back() { return *(end() - 1); }
   /// @brief the last element in the array.
   /// @return a ::const_reference to the element in position N - 1.
-  constexpr const_reference back() const {
-    return const_reference(rt::Locality(rt::numLocalities() - 1),
-                           chunk_size() - 1, oid_);
-  }
+  constexpr const_reference back() const {return *(cend() - 1); }
+
   /// @}
 
   /// @brief DataStructure identifier getter.
