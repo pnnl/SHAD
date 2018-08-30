@@ -1330,7 +1330,7 @@ class array : public AbstractDataStructure<array<T, N>> {
   constexpr reference back() { return *(end() - 1); }
   /// @brief the last element in the array.
   /// @return a ::const_reference to the element in position N - 1.
-  constexpr const_reference back() const {return *(cend() - 1); }
+  constexpr const_reference back() const { return *(cend() - 1); }
 
   /// @}
 
