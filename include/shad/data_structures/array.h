@@ -1183,15 +1183,7 @@ class array : public AbstractDataStructure<array<T, N>> {
     if (rt::thisLocality() == rt::Locality(0)) {
       return iterator{rt::Locality(0), 0, oid_, chunk_.get()};
     }
-
-    pointer chunk = nullptr;
-    rt::executeAtWithRet(rt::Locality(0),
-                         [](const ObjectID &ID, pointer *result) {
-                           auto This = array<T, N>::GetPtr(ID);
-                           *result = This->chunk_.get();
-                         },
-                         GetGlobalID(), &chunk);
-    return iterator(rt::Locality(0), 0, oid_, chunk);
+    return iterator(rt::Locality(0), 0, oid_, nullptr);
   }
 
   /// @brief The iterator to the beginning of the sequence.
