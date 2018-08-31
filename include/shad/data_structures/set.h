@@ -266,26 +266,24 @@ Set<T, ELEM_COMPARE>::Insert(const T& element) {
   size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
-  using res_t = std::pair<iterator, bool>;
   using itr_traits = distributed_iterator_traits<iterator>;
-  res_t res;
   if (targetLocality == rt::thisLocality()) {
     auto lres = localSet_.Insert(element);
     auto git = itr_traits::iterator_from_local(begin(), end(), lres.first);
-    res = std::make_pair(git, lres.second);
-  } else {
-    auto insertLambda =
-        [](const std::tuple<iterator, iterator, ObjectID, T>& args,
-           res_t* res_ptr) {
-          auto setPtr = SetT::GetPtr(std::get<2>(args));
-          auto lres = setPtr->localSet_.Insert(std::get<3>(args));
-          auto git = itr_traits::iterator_from_local(
-              std::get<0>(args), std::get<1>(args), lres.first);
-          *res_ptr = std::make_pair(git, lres.second);
-        };
-    rt::executeAtWithRet(targetLocality, insertLambda,
-                         std::make_tuple(begin(), end(), oid_, element), &res);
+    return std::make_pair(git, lres.second);
   }
+  std::pair<iterator, bool> res;
+  auto insertLambda =
+      [](const std::tuple<iterator, iterator, ObjectID, T>& args,
+         std::pair<iterator, bool>* res_ptr) {
+        auto setPtr = SetT::GetPtr(std::get<2>(args));
+        auto lres = setPtr->localSet_.Insert(std::get<3>(args));
+        auto git = itr_traits::iterator_from_local(
+            std::get<0>(args), std::get<1>(args), lres.first);
+        *res_ptr = std::make_pair(git, lres.second);
+      };
+  rt::executeAtWithRet(targetLocality, insertLambda,
+                       std::make_tuple(begin(), end(), oid_, element), &res);
   return res;
 }
 
