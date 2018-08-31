@@ -34,6 +34,31 @@
 constexpr int batch_size = 128;
 std::pair<int, int> kv(int x) { return std::make_pair(x, x); }
 
+template <typename OutputIterator>
+void insert_check_batch(shad::unordered_set<int> &cnt, OutputIterator ins,
+                        int first) {
+  std::vector<int> src;
+  for (auto i = batch_size; i > 0; --i) src.push_back(i);
+  std::copy(src.begin(), src.end(), ins);
+  for (auto i = batch_size; i > 0; --i) {
+    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
+                           cnt.end(), i) != cnt.end());
+  }
+}
+
+void insert_check_batch(shad::unordered_map<int, int> &cnt,
+                        typename shad::unordered_map<int, int>::iterator it,
+                        int first) {
+  std::vector<typename shad::unordered_map<int, int>::value_type> src;
+  for (auto i = batch_size; i > 0; --i) src.push_back(kv(i));
+  std::insert_iterator<shad::unordered_map<int, int>> ins(cnt, it);
+  std::copy(src.begin(), src.end(), ins);
+  for (auto i = batch_size; i > 0; --i) {
+    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
+                           cnt.end(), kv(i)) != cnt.end());
+  }
+}
+
 ///////////////////////////////////////
 //
 // shad::unordered_set
@@ -42,38 +67,17 @@ std::pair<int, int> kv(int x) { return std::make_pair(x, x); }
 TEST(shad_uset, insert_iterator) {
   using T = shad::unordered_set<int>;
   T cnt(3 * batch_size);
-  int first = 0;
 
   // insert into empty container, from begin
-  std::insert_iterator<T> ins_begin(cnt, cnt.begin());
-  for (auto i = batch_size; i > 0; --i) {
-    ins_begin = i;
-  }
-  for (auto i = batch_size; i > 0; --i) {
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), i) != cnt.end());
-  }
+  insert_check_batch(cnt, std::insert_iterator<T>(cnt, cnt.begin()), 0);
 
   // insert into non-empty container, from begin
-  first = batch_size;
-  for (auto i = batch_size; i > 0; --i) {
-    ins_begin = first + i;
-  }
-  for (auto i = batch_size; i > 0; --i) {
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), first + i) != cnt.end());
-  }
+  insert_check_batch(cnt, std::insert_iterator<T>(cnt, cnt.begin()),
+                     batch_size);
 
   // insert into non-empty container, from end
-  std::insert_iterator<T> ins_end(cnt, cnt.begin());
-  first = 2 * batch_size;
-  for (auto i = batch_size; i > 0; --i) {
-    ins_end = first + i;
-  }
-  for (auto i = batch_size; i > 0; --i) {
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), first + i) != cnt.end());
-  }
+  insert_check_batch(cnt, std::insert_iterator<T>(cnt, cnt.end()),
+                     2 * batch_size);
 }
 
 TEST(shad_uset, buffered_insert_iterator) {
@@ -140,29 +144,15 @@ TEST(shad_uset, buffered_insert_iterator) {
 TEST(shad_umap, insert_iterator) {
   using T = shad::unordered_map<int, int>;
   T cnt(3 * batch_size);
-  int first = 0;
 
   // insert into empty container, from begin
-  std::insert_iterator<T> ins_begin(cnt, cnt.begin());
-  for (auto i = batch_size; i > 0; --i) ins_begin = kv(i);
-  for (auto i = batch_size; i > 0; --i)
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), kv(i)) != cnt.end());
+  insert_check_batch(cnt, cnt.begin(), 0);
 
   // insert into non-empty container, from begin
-  first = batch_size;
-  for (auto i = batch_size; i > 0; --i) ins_begin = kv(first + i);
-  for (auto i = batch_size; i > 0; --i)
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), kv(first + i)) != cnt.end());
+  insert_check_batch(cnt, cnt.begin(), batch_size);
 
   // insert into non-empty container, from end
-  first = 2 * batch_size;
-  std::insert_iterator<T> ins_end(cnt, cnt.begin());
-  for (auto i = batch_size; i > 0; --i) ins_end = kv(first + i);
-  for (auto i = batch_size; i > 0; --i)
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), kv(first + i)) != cnt.end());
+  insert_check_batch(cnt, cnt.end(), 2 * batch_size);
 }
 
 TEST(shad_umap, buffered_insert_iterator) {
