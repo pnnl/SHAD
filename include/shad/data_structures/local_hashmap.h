@@ -94,7 +94,7 @@ class LocalHashmap {
   /// @brief Insert a key-value pair in the hashmap.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashMap.
-  /// @return pointer to the inserted value;
+  /// @return an iterator to the inserted value
   iterator Insert(const KTYPE &key, const VTYPE &value);
 
   template <typename ELTYPE>

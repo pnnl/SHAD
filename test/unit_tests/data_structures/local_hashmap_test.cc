@@ -34,7 +34,7 @@ class LocalHashmapTest : public ::testing::Test {
   LocalHashmapTest() : hmap(kNumBuckets) {}
   void SetUp() {}
   void TearDown() {}
-  static const uint64_t kToInsert = 16;
+  static const uint64_t kToInsert = 4096;
   static const uint64_t kNumBuckets = kToInsert / 16;
   static const uint64_t kKeysPerEntry = 3;
   static const uint64_t kValuesPerEntry = 5;
