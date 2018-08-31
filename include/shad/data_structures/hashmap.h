@@ -35,6 +35,7 @@
 #include "shad/data_structures/buffer.h"
 #include "shad/data_structures/compare_and_hash_utils.h"
 #include "shad/data_structures/local_hashmap.h"
+#include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
 namespace shad {
@@ -114,7 +115,8 @@ class Hashmap : public AbstractDataStructure<
   /// @brief Insert a key-value pair in the hashmap.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashmap.
-  void Insert(const KTYPE &key, const VTYPE &value);
+  /// @return an iterator to the inserted value
+  iterator Insert(const KTYPE &key, const VTYPE &value);
 
   /// @brief Asynchronously Insert a key-value pair in the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -360,21 +362,31 @@ inline size_t Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Size() const {
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
-inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(
-    const KTYPE &key, const VTYPE &value) {
+inline typename Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::iterator
+Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
+                                                          const VTYPE &value) {
+  using itr_traits = distributed_iterator_traits<iterator>;
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
+  iterator res;
 
   if (targetLocality == rt::thisLocality()) {
-    localMap_.Insert(key, value);
+    res = itr_traits::iterator_from_local(begin(), end(),
+                                          localMap_.Insert(key, value));
   } else {
-    auto insertLambda = [](const InsertArgs &args) {
+    auto insertLambda = [](const std::tuple<iterator, iterator, InsertArgs> &args_,
+                           iterator *res_ptr) {
+      auto &args(std::get<2>(args_));
       auto mapPtr = HmapT::GetPtr(args.oid);
-      mapPtr->localMap_.Insert(args.key, args.value);
+      *res_ptr = itr_traits::iterator_from_local(
+          std::get<0>(args_), std::get<1>(args_),
+          mapPtr->localMap_.Insert(args.key, args.value));
     };
-    InsertArgs args = {oid_, key, value};
-    rt::executeAt(targetLocality, insertLambda, args);
+    rt::executeAtWithRet(
+        targetLocality, insertLambda,
+        std::make_tuple(begin(), end(), InsertArgs{oid_, key, value}), &res);
   }
+  return res;
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
