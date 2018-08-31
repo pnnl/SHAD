@@ -135,10 +135,31 @@ class unordered_map {
 
   /// @defgroup Modifiers - todo
   /// @{
+  /// @brief Inserts a value into the container.
+  ///
+  /// The only difference with respect to the standard is that, in case the
+  /// container already contains an element with an equivalent key, the
+  /// insertion is performed anyway by overwriting the old value.
+  ///
+  /// @todo consider implementing the standard insertion policy
+  ///
+  /// @param value The value to be inserted.
+  /// @return an iterator to the inserted element.
   std::pair<iterator, bool> insert(const value_type &value) {
     return std::make_pair(ptr->Insert(value.first, value.second), true);
   }
 
+  /// @brief Inserts a value into the container.
+  ///
+  /// The only difference with respect to the standard is that, in case the
+  /// container already contains an element with an equivalent key, the
+  /// insertion is performed anyway by overwriting the old value.
+  ///
+  /// @todo consider implementing the standard insertion policy
+  ///
+  /// @param value The value to be inserted.
+  /// @return a pair consisting of an iterator to the inserted element and a
+  /// bool denoting whether the insertion took place (always true).
   iterator insert(const_iterator, const value_type &value) {
     return ptr->Insert(value.first, value.second);
   }

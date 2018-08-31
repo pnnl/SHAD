@@ -134,11 +134,24 @@ class unordered_set {
 
   /// @defgroup Modifiers - todo
   /// @{
+  /// @brief Inserts an element into the container, if the container does not
+  /// already contain an element with an equivalent key.
+  ///
+  /// @param value The value to be inserted.
+  /// @return a pair consisting of an iterator to the inserted element (or to
+  /// the element that prevented the insertion) and a bool denoting whether the
+  /// insertion took place.
   std::pair<iterator, bool> insert(const value_type &value) {
     return ptr->Insert(value);
   }
 
-  iterator insert(const_iterator, const value_type &value) {
+  /// @brief Inserts an element into the container, if the container does not
+  /// already contain an element with an equivalent key.
+  ///
+  /// @param value The value to be inserted.
+  /// @return an iterator to the inserted element, or to the element that
+  /// prevented the insertion.
+  iterator insert(const_iterator hint, const value_type &value) {
     return insert(value).first;
   }
   /// @}
