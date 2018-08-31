@@ -95,10 +95,10 @@ class LocalHashmap {
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashMap.
   /// @return pointer to the inserted value;
-  VTYPE *Insert(const KTYPE &key, const VTYPE &value);
+  iterator Insert(const KTYPE &key, const VTYPE &value);
 
   template <typename ELTYPE>
-  VTYPE *Insert(const KTYPE &key, const ELTYPE &value);
+  iterator Insert(const KTYPE &key, const ELTYPE &value);
 
   /// @brief Asynchronously Insert a key-value pair in the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -820,8 +820,9 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncErase(
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERTER>
-VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
-    const KTYPE &key, const VTYPE &value) {
+typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::iterator
+LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(const KTYPE &key,
+                                                          const VTYPE &value) {
   size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
 
@@ -836,7 +837,7 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
         InsertPolicy_(&entry->value, value);
         size_ += 1;
         entry->state = USED;
-        return &entry->value;
+        return iterator(this, bucketIdx, i, bucket, entry);
       } else {
         // Update of an existing entry
         while (entry->state == PENDING_INSERT) rt::impl::yield();
@@ -848,7 +849,7 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
 
           InsertPolicy_(&entry->value, value);
           entry->state = USED;
-          return &entry->value;
+          return iterator(this, bucketIdx, i, bucket, entry);
         }
       }
     }
@@ -868,7 +869,6 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
 
     bucket = bucket->next.get();
   }
-  return nullptr;
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
@@ -990,7 +990,8 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncApply(
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERTER>
 template <typename ELTYPE>
-VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
+typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::iterator
+LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
     const KTYPE &key, const ELTYPE &value) {
   size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
@@ -1006,7 +1007,7 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
         INSERTER::Insert(&entry->value, value);
         size_ += 1;
         entry->state = USED;
-        return &entry->value;
+        return iterator(this, bucketIdx, i, bucket, entry);
       } else {
         // Update of an existing entry
         while (entry->state == PENDING_INSERT) rt::impl::yield();
@@ -1018,7 +1019,7 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
 
           INSERTER::Insert(&entry->value, value);
           entry->state = USED;
-          return &entry->value;
+          return iterator(this, bucketIdx, i, bucket, entry);
         }
       }
     }
@@ -1038,7 +1039,6 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
 
     bucket = bucket->next.get();
   }
-  return nullptr;
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
