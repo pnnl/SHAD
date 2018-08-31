@@ -97,27 +97,24 @@ class AttributedEdgeIndexStorage {
 
   struct ElementInserter {
     void operator()(NeighborsStorageT *const lhs, const NeighborsStorageT &) {}
-    static bool Insert(NeighborsStorageT *const lhs, const DestT value) {
+    static void Insert(NeighborsStorageT *const lhs, const DestT value) {
       lhs->neighbors_.Insert(value);
-      return true;
     }
-    static bool Insert(NeighborsStorageT *const lhs,
+    static void Insert(NeighborsStorageT *const lhs,
                        const FlatEdgeList values) {
       if (values.overwrite) lhs->neighbors_.Reset(values.numValues);
       for (size_t i = 0; i < values.numValues; i++) {
         lhs->neighbors_.Insert(values.values[i]);
       }
-      return true;
     }
 
-    static bool Insert(NeighborsStorageT *const lhs,
+    static void Insert(NeighborsStorageT *const lhs,
                        const LocalEdgeListChunk &chunk) {
       if (chunk.overwrite) lhs->neighbors_.Reset(chunk.numDest);
       size_t chunkSize = std::min(chunk.numDest, chunk.destinations.size());
       for (size_t i = 0; i < chunkSize; i++) {
         lhs->neighbors_.Insert(chunk.destinations[i]);
       }
-      return true;
     }
   };
 

@@ -39,7 +39,7 @@
 namespace shad {
 
 namespace constants {
-constexpr size_t kDefaultNumEntriesPerBucket = 4096;
+constexpr size_t kDefaultNumEntriesPerBucket = 128;
 }
 
 template <typename LMap, typename T>
@@ -47,14 +47,8 @@ class lmap_iterator;
 
 template <typename T>
 struct Overwriter {
-  bool operator()(T *const lhs, const T &rhs) {
-    *lhs = std::move(rhs);
-    return true;
-  }
-  static bool Insert(T *const lhs, const T &rhs) {
-    *lhs = std::move(rhs);
-    return true;
-  }
+  void operator()(T *const lhs, const T &rhs) { *lhs = std::move(rhs); }
+  static void Insert(T *const lhs, const T &rhs) { *lhs = std::move(rhs); }
 };
 
 /// @brief The LocalHashmap data structure.
@@ -100,14 +94,11 @@ class LocalHashmap {
   /// @brief Insert a key-value pair in the hashmap.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashMap.
-  /// @return a pair object whose first element is an iterator pointing either
-  /// to the newly inserted element in the container or to the element whose key
-  /// is equivalent, and a bool value indicating whether the element was
-  /// successfully inserted or not.
-  std::pair<iterator, bool> Insert(const KTYPE &key, const VTYPE &value);
+  /// @return pointer to the inserted value;
+  VTYPE *Insert(const KTYPE &key, const VTYPE &value);
 
   template <typename ELTYPE>
-  std::pair<iterator, bool> Insert(const KTYPE &key, const ELTYPE &value);
+  VTYPE *Insert(const KTYPE &key, const ELTYPE &value);
 
   /// @brief Asynchronously Insert a key-value pair in the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -829,10 +820,8 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncErase(
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERTER>
-std::pair<typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::iterator,
-          bool>
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(const KTYPE &key,
-                                                          const VTYPE &value) {
+VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
+    const KTYPE &key, const VTYPE &value) {
   size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
 
@@ -844,11 +833,10 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(const KTYPE &key,
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         // First time insertion.
         entry->key = std::move(key);
-        bool inserted = InsertPolicy_(&entry->value, value);
+        InsertPolicy_(&entry->value, value);
         size_ += 1;
         entry->state = USED;
-        return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
-                              inserted);
+        return &entry->value;
       } else {
         // Update of an existing entry
         while (entry->state == PENDING_INSERT) rt::impl::yield();
@@ -858,10 +846,9 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(const KTYPE &key,
                                                PENDING_UPDATE))
             rt::impl::yield();
 
-          bool inserted = InsertPolicy_(&entry->value, value);
+          InsertPolicy_(&entry->value, value);
           entry->state = USED;
-          return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
-                                inserted);
+          return &entry->value;
         }
       }
     }
@@ -881,6 +868,7 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(const KTYPE &key,
 
     bucket = bucket->next.get();
   }
+  return nullptr;
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
@@ -1002,9 +990,7 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncApply(
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERTER>
 template <typename ELTYPE>
-std::pair<typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::iterator,
-          bool>
-LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
+VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
     const KTYPE &key, const ELTYPE &value) {
   size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
@@ -1017,11 +1003,10 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         // First time insertion.
         entry->key = std::move(key);
-        bool inserted = INSERTER::Insert(&entry->value, value);
+        INSERTER::Insert(&entry->value, value);
         size_ += 1;
         entry->state = USED;
-        return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
-                              inserted);
+        return &entry->value;
       } else {
         // Update of an existing entry
         while (entry->state == PENDING_INSERT) rt::impl::yield();
@@ -1031,10 +1016,9 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
                                                PENDING_UPDATE))
             rt::impl::yield();
 
-          bool inserted = INSERTER::Insert(&entry->value, value);
+          INSERTER::Insert(&entry->value, value);
           entry->state = USED;
-          return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
-                                inserted);
+          return &entry->value;
         }
       }
     }
@@ -1054,6 +1038,7 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(
 
     bucket = bucket->next.get();
   }
+  return nullptr;
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
