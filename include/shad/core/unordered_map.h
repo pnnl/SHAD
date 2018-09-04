@@ -49,7 +49,7 @@ namespace shad {
 /// @todo Allocator template parameter
 template <class Key, class T, class Hash = shad::hash<Key>>
 class unordered_map {
-  using hashmap_t = Hashmap<Key, T>;
+  using hashmap_t = Hashmap<Key, T, shad::MemCmp<Key>, shad::Updater<T>>;
 
   friend class buffered_insert_iterator<unordered_map>;
 
@@ -135,18 +135,26 @@ class unordered_map {
 
   /// @defgroup Modifiers - todo
   /// @{
+  /// @brief Inserts an element into the container, if the container does not
+  /// already contain an element with an equivalent key.
+
+  ///
+  /// @param value The value to be inserted.
+  /// @return a pair consisting of an iterator to the inserted element (or to
+  /// the element that prevented the insertion) and a bool denoting whether the
+  /// insertion took place.
   std::pair<iterator, bool> insert(const value_type &value) {
-    // todo avoid lookups by modifying Insert()
-    mapped_type buf;
-    if (!ptr->Lookup(value.first, &buf)) {
-      ptr->Insert(value.first, value.second);
-      return std::make_pair(std::find(begin(), end(), value), true);
-    }
-    return std::make_pair(std::find(begin(), end(), value), false);
+    return ptr->Insert(value.first, value.second);
   }
 
+  /// @brief Inserts an element into the container, if the container does not
+  /// already contain an element with an equivalent key.
+  ///
+  /// @param value The value to be inserted.
+  /// @return an iterator to the inserted element (or to the element that
+  /// prevented the insertion).
   iterator insert(const_iterator, const value_type &value) {
-    return insert(value).first;
+    return ptr->Insert(value.first, value.second).first;
   }
   /// @}
 

@@ -1544,7 +1544,8 @@ class alignas(64) array<T, N>::ArrayRef
   using difference_type = typename array<T, N>::difference_type;
   using ObjectID = typename array<T, N>::ObjectID;
 
-  ArrayRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk = nullptr)
+  ArrayRef(rt::Locality l, difference_type p, ObjectID oid,
+           pointer chunk = nullptr)
       : array<T, N>::template BaseArrayRef<U>(l, p, oid, chunk) {}
 
   ArrayRef(const ArrayRef &O) : array<T, N>::template BaseArrayRef<U>(O) {}
@@ -1914,8 +1915,13 @@ class alignas(64) array<T, N>::array_iterator {
       begin += B.offset_;
     }
 
-    typename array<T, N>::pointer end{arrayPtr->chunk_.get() +
-                                      arrayPtr->chunk_size()};
+    typename array_iterator::difference_type chunk = chunk_size();
+    if (pivot_locality() != rt::Locality(0) &&
+        rt::thisLocality() >= pivot_locality()) {
+      chunk -= 1;
+    }
+
+    typename array<T, N>::pointer end{arrayPtr->chunk_.get() + chunk};
     if (E.locality_ == rt::thisLocality()) {
       end = arrayPtr->chunk_.get() + E.offset_;
     }

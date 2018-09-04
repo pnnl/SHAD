@@ -78,24 +78,27 @@ class DefaultEdgeIndexStorage {
 
   struct ElementInserter {
     void operator()(NeighborsStorageT* const lhs, const NeighborsStorageT&) {}
-    static void Insert(NeighborsStorageT* const lhs, const DestT value) {
+    static bool Insert(NeighborsStorageT* const lhs, const DestT value, bool) {
       lhs->Insert(value);
+      return true;
     }
-    static void Insert(NeighborsStorageT* const lhs,
-                       const FlatEdgeList values) {
+    static bool Insert(NeighborsStorageT* const lhs,
+                       const FlatEdgeList values, bool) {
       if (values.overwrite) lhs->Reset(values.numValues);
       for (size_t i = 0; i < values.numValues; i++) {
         lhs->Insert(values.values[i]);
       }
+      return true;
     }
 
-    static void Insert(NeighborsStorageT* const lhs,
-                       const LocalEdgeListChunk& chunk) {
+    static bool Insert(NeighborsStorageT* const lhs,
+                       const LocalEdgeListChunk& chunk, bool) {
       if (chunk.overwrite) lhs->Reset(chunk.numDest);
       size_t chunkSize = std::min(chunk.numDest, chunk.destinations.size());
       for (size_t i = 0; i < chunkSize; i++) {
         lhs->Insert(chunk.destinations[i]);
       }
+      return true;
     }
   };
 

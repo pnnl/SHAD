@@ -82,7 +82,10 @@ class LocalSet {
 
   /// @brief Insert an element in the set.
   /// @param[in] element the element to insert.
-  void Insert(const T& element);
+  /// @return a pair consisting of an iterator to the inserted element (or to
+  /// the element that prevented the insertion) and a bool denoting whether the
+  /// insertion took place.
+  std::pair<iterator, bool> Insert(const T& element);
 
   /// @brief Asynchronously Insert an element in the set.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -552,7 +555,8 @@ void LocalSet<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
 }
 
 template <typename T, typename ELEM_COMPARE>
-void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
+std::pair<typename LocalSet<T, ELEM_COMPARE>::iterator, bool>
+LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
   size_t bucketIdx = shad::hash<T>{}(element) % numBuckets_;
   Bucket* bucket = &(buckets_array_[bucketIdx]);
 
@@ -565,11 +569,13 @@ void LocalSet<T, ELEM_COMPARE>::Insert(const T& element) {
         entry->element = std::move(element);
         ++size_;
         entry->state = USED;
-        return;
+        return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
+                              true);
       } else {
         while (entry->state == PENDING_INSERT) rt::impl::yield();
         if (ElemComp_(&entry->element, &element) == 0) {
-          return;
+          return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
+                                false);
         }
       }
     }

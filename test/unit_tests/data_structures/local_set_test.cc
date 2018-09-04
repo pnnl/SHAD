@@ -60,13 +60,22 @@ class LocalSetTest : public ::testing::Test {
     }
   }
 
+  static void CheckElement(typename shad::LocalSet<Entry>::iterator entry,
+                           const uint64_t key_seed) {
+    uint64_t i;
+    for (i = 0; i < kElementsPerEntry; ++i) {
+      ASSERT_EQ((*entry).element[i], (key_seed + i));
+    }
+  }
+
   // Returns the seed used for this key
   static uint64_t GetSeed(const Entry *entry) { return entry->element[0]; }
 
-  static void DoInsert(shad::LocalSet<Entry> *setPtr, const uint64_t key_seed) {
+  static std::pair<typename shad::LocalSet<Entry>::iterator, bool>
+  DoInsert(shad::LocalSet<Entry> *setPtr, const uint64_t key_seed) {
     Entry entry;
     FillEntry(&entry, key_seed);
-    setPtr->Insert(entry);
+    return setPtr->Insert(entry);
   }
 
   static void DoAsyncInsert(shad::rt::Handle &handle,
@@ -119,6 +128,25 @@ TEST_F(LocalSetTest, InsertFindTest) {
     ASSERT_TRUE(DoFind(&set, i));
   }
   ASSERT_FALSE(DoFind(&set, 1234567890));
+}
+
+TEST_F(LocalSetTest, InsertReturnTest) {
+  shad::LocalSet<Entry> set(kNumBuckets);
+  std::pair<typename shad::LocalSet<Entry>::iterator, bool> res;
+
+  // successful inserts
+  for (uint64_t i = 1; i <= kToInsert; i++) {
+    res = DoInsert(&set, i);
+    ASSERT_TRUE(res.second);
+    CheckElement(res.first, i);
+  }
+
+  // failing inserts
+  for (uint64_t i = 1; i <= kToInsert; i++) {
+	res = DoInsert(&set, i);
+    ASSERT_FALSE(res.second);
+    CheckElement(res.first, i);
+  }
 }
 
 TEST_F(LocalSetTest, AsyncInsertFindTest) {
