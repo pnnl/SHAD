@@ -449,6 +449,21 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
 
   array->fill(1);
 
+  auto subList = shad::impl::array<std::size_t, 2>::Create();
+  subList->at(0) = 0;
+  subList->at(1) = 2;
+  ASSERT_EQ(subList->at(0), std::size_t(0));
+  ASSERT_EQ(subList->at(1), std::size_t(2));
+
+  ASSERT_EQ(std::distance(array->begin(), array->end()), array->size());
+  ASSERT_EQ(std::distance(subList->begin(), subList->end()), subList->size());
+
+  ASSERT_EQ(std::distance(array->begin(), array->begin() + (kArraySize / 2)),
+            kArraySize / 2);
+  ASSERT_EQ(std::distance(array->end(), array->end() - (kArraySize / 2)),
+            -(std::ptrdiff_t(kArraySize) / 2))
+      << array->end() << (array->end() - (kArraySize / 2));
+
   std::size_t j = 0;
   for (auto itr = array->begin(), end = array->end(); itr < end; ++itr) ++j;
   ASSERT_EQ(j, array->size());
@@ -461,23 +476,8 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
 
   ASSERT_EQ(array->at(kArraySize / 2), *(array->begin() + kArraySize / 2));
 
-  auto subList = shad::impl::array<std::size_t, 2>::Create();
-  subList->at(0) = 0;
-  subList->at(1) = 2;
-
-  ASSERT_EQ(subList->at(0), std::size_t(0));
-  ASSERT_EQ(subList->at(1), std::size_t(2));
-
   auto max = std::max_element(array->begin(), array->end());
   ASSERT_EQ(*max, std::size_t(2));
-
-  ASSERT_EQ(std::distance(array->begin(), array->end()), array->size());
-  ASSERT_EQ(std::distance(subList->begin(), subList->end()), subList->size());
-
-  ASSERT_EQ(std::distance(array->begin(), array->begin() + (kArraySize / 2)),
-            kArraySize / 2);
-  ASSERT_EQ(std::distance(array->end(), array->end() - (kArraySize / 2)),
-            -(kArraySize / 2));
 
   auto zero = std::find(array->begin(), array->end(), std::size_t(0));
   ASSERT_EQ(*zero, std::size_t(0)) << zero << " " << array->begin();
@@ -487,19 +487,26 @@ TEST_F(ArrayTest, ArrayIteratorTraitTest) {
 
   {
     auto two = std::find(subList->begin(), subList->end(), std::size_t(2));
+    ASSERT_EQ(*two, array->at((kArraySize / 2) + 1));
+    ASSERT_EQ(*two, array->at(array->size() - 1));
     ASSERT_EQ(*two, std::size_t(2));
 
     auto zero = std::find(subList->begin(), subList->end(), std::size_t(0));
+    ASSERT_EQ(*zero, array->at(kArraySize / 2));
+    ASSERT_EQ(*zero, array->at(array->size() - 2));
     ASSERT_EQ(*zero, std::size_t(0));
   }
 
   auto first = std::search(array->begin(), array->end(), subList->begin(),
                            subList->end());
 
-  ASSERT_EQ(*first, std::size_t(0)) << *first;
+  ASSERT_NE(first, array->end());
+
   ASSERT_EQ(first, zero);
-  ASSERT_EQ(*(first + 1), std::size_t(2));
+  ASSERT_EQ(*first, std::size_t(0)) << *first;
+
   ASSERT_EQ((first + 1), two);
+  ASSERT_EQ(*(first + 1), std::size_t(2));
 
   auto last = std::find_end(array->begin(), array->end(), subList->begin(),
                             subList->end());
@@ -536,7 +543,7 @@ TEST_F(ArrayTest, LocalRanges) {
   using array_type = shad::impl::array<std::size_t, 42>;
   using array_it = typename array_type::iterator;
   using iterator_traits =
-         shad::distributed_iterator_traits<typename array_type::iterator>;
+      shad::distributed_iterator_traits<typename array_type::iterator>;
   auto array = array_type::Create();
   auto array2 = array_type::Create();
 
@@ -551,28 +558,28 @@ TEST_F(ArrayTest, LocalRanges) {
   auto localities = iterator_traits::localities(first, last);
   auto startingLoc = localities.begin();
 
-  for (auto locality = startingLoc, end = localities.end();
-       locality != end; ++locality) {
+  for (auto locality = startingLoc, end = localities.end(); locality != end;
+       ++locality) {
     shad::rt::executeAt(
-      locality,
-      [](const std::tuple<array_it, array_it, array_it>& args) {
-        auto gbegin = std::get<0>(args);
-        auto gend = std::get<1>(args);
-        auto local_range = iterator_traits::local_range(gbegin, gend);
+        locality,
+        [](const std::tuple<array_it, array_it, array_it> &args) {
+          auto gbegin = std::get<0>(args);
+          auto gend = std::get<1>(args);
+          auto local_range = iterator_traits::local_range(gbegin, gend);
 
-        auto begin = local_range.begin();
-        auto end = local_range.end();
+          auto begin = local_range.begin();
+          auto end = local_range.end();
 
-        auto it = iterator_traits::iterator_from_local(gbegin, gend, begin);
-        auto dist = std::distance(gbegin, it);
+          auto it = iterator_traits::iterator_from_local(gbegin, gend, begin);
+          auto dist = std::distance(gbegin, it);
 
-        auto first2 = std::get<2>(args);
-        first2 += dist;
+          auto first2 = std::get<2>(args);
+          first2 += dist;
 
-        for (;begin != end; ++begin, ++it, ++first2) {
-          ASSERT_EQ((*begin+ 1lu), *first2);
-        }
-      },
-      std::make_tuple(first, last, first2));
+          for (; begin != end; ++begin, ++it, ++first2) {
+            ASSERT_EQ((*begin + 1lu), *first2);
+          }
+        },
+        std::make_tuple(first, last, first2));
   }
 }

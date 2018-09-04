@@ -134,6 +134,18 @@ class Locality {
     return *this;
   }
 
+  Locality operator-(std::size_t n) {
+    Locality tmp = *this;
+    tmp.operator-=(1);
+    return tmp;
+  }
+
+  Locality operator+(std::size_t n) {
+    Locality tmp = *this;
+    tmp.operator+=(1);
+    return tmp;
+  }
+
  private:
   uint32_t id_;
 };
