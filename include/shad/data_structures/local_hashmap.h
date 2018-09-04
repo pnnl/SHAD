@@ -858,9 +858,8 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(const KTYPE &key,
 
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         // First time insertion.
-        bool same_key = (KeyComp_(&entry->key, &key) == 0);
         entry->key = std::move(key);
-        bool inserted = InsertPolicy_(&entry->value, value, same_key);
+        bool inserted = InsertPolicy_(&entry->value, value, false);
         size_ += 1;
         entry->state = USED;
         return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
@@ -1032,9 +1031,8 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(const KTYPE &key,
 
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         // First time insertion.
-        bool same_key = (KeyComp_(&entry->key, &key) == 0);
         entry->key = std::move(key);
-        auto inserted = INSERTER::Insert(&entry->value, value, same_key);
+        auto inserted = INSERTER::Insert(&entry->value, value, false);
         size_ += 1;
         entry->state = USED;
         return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
