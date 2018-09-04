@@ -1,11 +1,11 @@
 set(tests
+  iterator_test
   for_test
   unordered_set_test
   unordered_map_test
   std_algorithm_test
   std_numeric_test
   shad_algorithm_test
-  iterator_test
 )
 
 foreach(t ${tests})
