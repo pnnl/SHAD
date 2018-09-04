@@ -80,19 +80,33 @@ class LocalHashmapTest : public ::testing::Test {
     }
   }
 
+  static void CheckKeyValue(typename HashmapType::iterator entry,
+                            uint64_t key_seed, uint64_t value_seed) {
+    auto &obs_keys((*entry).first);
+    auto &obs_values((*entry).second);
+    Key exp_keys;
+    Value exp_values;
+    FillKey(&exp_keys, key_seed);
+    FillValue(&exp_values, value_seed);
+    for (uint64_t i = 0; i < kKeysPerEntry; ++i)
+      ASSERT_EQ(obs_keys.key[i], exp_keys.key[i]);
+    for (uint64_t i = 0; i < kValuesPerEntry; ++i)
+      ASSERT_EQ(obs_values.value[i], obs_values.value[i]);
+  }
+
   // Returns the seed used for this key
   static uint64_t GetSeed(const Key *keys) { return keys->key[0]; }
 
   // Returns the seed used for this value
   static uint64_t GetSeed(const Value *values) { return values->value[0]; }
 
-  static void DoInsert(HashmapType *h0, const uint64_t key_seed,
-                       const uint64_t value_seed) {
+  static std::pair<typename HashmapType::iterator, bool> DoInsert(
+      HashmapType *h0, const uint64_t key_seed, const uint64_t value_seed) {
     Key keys;
     Value values;
     FillKey(&keys, key_seed);
     FillValue(&values, value_seed);
-    h0->Insert(keys, values);
+    return (h0->Insert(keys, values));
   }
 
   static void DoAsyncInsert(shad::rt::Handle &handle, HashmapType *h0,
@@ -164,6 +178,25 @@ TEST_F(LocalHashmapTest, InsertLookupTest) {
     CheckValue(values, i + 11);
   }
   ASSERT_FALSE(DoLookup(&hmap, 1234567890, &values));
+}
+
+TEST_F(LocalHashmapTest, InsertReturnTest) {
+  HashmapType set(kNumBuckets);
+  uint64_t i;
+
+  // successful inserts
+  for (i = 1; i <= kToInsert; i++) {
+    auto res = DoInsert(&hmap, i, i + 11);
+    ASSERT_TRUE(res.second);
+    CheckKeyValue(res.first, i, i + 11);
+  }
+
+  // overwriting inserts
+  for (i = 1; i <= kToInsert; i++) {
+    auto res = DoInsert(&hmap, i, i + 11);
+    ASSERT_TRUE(res.second);
+    CheckKeyValue(res.first, i, i + 11);
+  }
 }
 
 TEST_F(LocalHashmapTest, AsyncInsertLookupTest) {

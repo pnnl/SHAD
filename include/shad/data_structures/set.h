@@ -35,6 +35,7 @@
 #include "shad/data_structures/buffer.h"
 #include "shad/data_structures/compare_and_hash_utils.h"
 #include "shad/data_structures/local_set.h"
+#include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
 namespace shad {
@@ -53,7 +54,7 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   template <typename>
   friend class AbstractDataStructure;
 
-  friend class set_iterator<Set<T, ELEM_COMPARE>, T, T>;
+  friend class set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
   friend class set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
 
  public:
@@ -64,9 +65,9 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   using ShadSetPtr = typename AbstractDataStructure<SetT>::SharedPtr;
   using BuffersVector = typename impl::BuffersVector<T, SetT>;
 
-  using iterator = set_iterator<Set<T, ELEM_COMPARE>, T, T>;
+  using iterator = set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
   using const_iterator = set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
-  using local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, T>;
+  using local_iterator = lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
   using const_local_iterator =
       lset_iterator<LocalSet<T, ELEM_COMPARE>, const T>;
   /// @brief Create method.
@@ -91,7 +92,10 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
 
   /// @brief Insert an element in the set.
   /// @param[in] element the element.
-  void Insert(const T& element);
+  /// @return a pair consisting of an iterator to the inserted element (or to
+  /// the element that prevented the insertion) and a bool denoting whether the
+  /// insertion took place.
+  std::pair<iterator, bool> Insert(const T& element);
 
   /// @brief Asynchronously Insert an element in the set.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -257,20 +261,30 @@ inline size_t Set<T, ELEM_COMPARE>::Size() const {
 }
 
 template <typename T, typename ELEM_COMPARE>
-inline void Set<T, ELEM_COMPARE>::Insert(const T& element) {
+inline std::pair<typename Set<T, ELEM_COMPARE>::iterator, bool>
+Set<T, ELEM_COMPARE>::Insert(const T& element) {
   size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
+  using itr_traits = distributed_iterator_traits<iterator>;
   if (targetLocality == rt::thisLocality()) {
-    localSet_.Insert(element);
-  } else {
-    auto insertLambda = [](const ExeAtArgs& args) {
-      auto setPtr = SetT::GetPtr(args.oid);
-      setPtr->localSet_.Insert(args.element);
-    };
-    ExeAtArgs args = {oid_, element};
-    rt::executeAt(targetLocality, insertLambda, args);
+    auto lres = localSet_.Insert(element);
+    auto git = itr_traits::iterator_from_local(begin(), end(), lres.first);
+    return std::make_pair(git, lres.second);
   }
+  std::pair<iterator, bool> res;
+  auto insertLambda =
+      [](const std::tuple<iterator, iterator, ObjectID, T>& args,
+         std::pair<iterator, bool>* res_ptr) {
+        auto setPtr = SetT::GetPtr(std::get<2>(args));
+        auto lres = setPtr->localSet_.Insert(std::get<3>(args));
+        auto git = itr_traits::iterator_from_local(
+            std::get<0>(args), std::get<1>(args), lres.first);
+        *res_ptr = std::make_pair(git, lres.second);
+      };
+  rt::executeAtWithRet(targetLocality, insertLambda,
+                       std::make_tuple(begin(), end(), oid_, element), &res);
+  return res;
 }
 
 template <typename T, typename ELEM_COMPARE>

@@ -1269,46 +1269,51 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @brief Unchecked element access operator.
   /// @return a ::reference to the n-th element in the array.
   constexpr reference operator[](size_type n) {
-    size_t chunk = chunk_size();
+    size_t chunk = 0;
+
     for (auto l = rt::Locality(0), end = rt::Locality(rt::numLocalities() - 1);
          l != end; ++l) {
-      if (n < chunk) {
-        difference_type position(n);
-        return reference{l, position, oid_};
+      if (pivot_locality() != rt::Locality(0) && l >= pivot_locality()) {
+        chunk = chunk_size() - 1;
+      } else {
+        chunk = chunk_size();
       }
 
-      if (pivot_locality() == rt::Locality(0) || l < pivot_locality()) {
-        chunk = chunk_size();
-      } else {
-        chunk = chunk_size() - 1;
+      if (n < chunk) {
+        difference_type position(n);
+        return reference{l, position, oid_, nullptr};
       }
+
       n -= chunk;
     }
     difference_type position(n);
-    return reference{rt::Locality(rt::numLocalities() - 1), position, oid_};
+    return reference{rt::Locality(rt::numLocalities() - 1), position, oid_,
+                     nullptr};
   }
 
   /// @brief Unchecked element access operator.
   /// @return a ::const_reference to the n-th element in the array.
   constexpr const_reference operator[](size_type n) const {
-    size_t chunk = chunk_size();
+    size_t chunk = 0;
+
     for (auto l = rt::Locality(0), end = rt::Locality(rt::numLocalities() - 1);
          l != end; ++l) {
-      if (n < chunk) {
-        difference_type position(n);
-        return const_reference{l, position, oid_};
+      if (pivot_locality() != rt::Locality(0) && l >= pivot_locality()) {
+        chunk = chunk_size() - 1;
+      } else {
+        chunk = chunk_size();
       }
 
-      if (pivot_locality() == rt::Locality(0) || l < pivot_locality()) {
-        chunk = chunk_size();
-      } else {
-        chunk = chunk_size() - 1;
+      if (n < chunk) {
+        difference_type position(n);
+        return const_reference{l, position, oid_, nullptr};
       }
+
       n -= chunk;
     }
     difference_type position(n);
     return const_reference{rt::Locality(rt::numLocalities() - 1), position,
-                           oid_};
+                           oid_, nullptr};
   }
 
   /// @brief Checked element access operator.
@@ -1465,8 +1470,7 @@ class array<T, N>::BaseArrayRef {
   difference_type pos_;
   rt::Locality loc_;
 
-  BaseArrayRef(rt::Locality l, difference_type p, ObjectID oid,
-               pointer chunk = nullptr)
+  BaseArrayRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
       : oid_(oid), chunk_(chunk), pos_(p), loc_(l) {}
 
   BaseArrayRef(const BaseArrayRef &O)
@@ -1544,8 +1548,7 @@ class alignas(64) array<T, N>::ArrayRef
   using difference_type = typename array<T, N>::difference_type;
   using ObjectID = typename array<T, N>::ObjectID;
 
-  ArrayRef(rt::Locality l, difference_type p, ObjectID oid,
-           pointer chunk = nullptr)
+  ArrayRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
       : array<T, N>::template BaseArrayRef<U>(l, p, oid, chunk) {}
 
   ArrayRef(const ArrayRef &O) : array<T, N>::template BaseArrayRef<U>(O) {}
@@ -1617,7 +1620,7 @@ class alignas(64) array<T, N>::ArrayRef<const U>
   using difference_type = typename array<T, N>::difference_type;
   using ObjectID = typename array<T, N>::ObjectID;
 
-  ArrayRef(rt::Locality l, std::size_t p, ObjectID oid, pointer chunk = nullptr)
+  ArrayRef(rt::Locality l, std::size_t p, ObjectID oid, pointer chunk)
       : array<T, N>::template BaseArrayRef<U>(l, p, oid, chunk) {}
 
   ArrayRef(const ArrayRef &O) : array<T, N>::template BaseArrayRef<U>(O) {}
@@ -1727,6 +1730,16 @@ class alignas(64) array<T, N>::array_iterator {
   reference operator*() { return reference(locality_, offset_, oid_, chunk_); }
 
   array_iterator &operator++() {
+    if (N < rt::numLocalities()) {
+      if (static_cast<uint32_t>(locality_) == (N - 1)) {
+        ++offset_;
+      } else {
+        ++locality_;
+        chunk_ = nullptr;
+      }
+      return *this;
+    }
+
     size_t chunk = chunk_size();
     if (pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality())
       chunk -= 1;
@@ -1777,13 +1790,14 @@ class alignas(64) array<T, N>::array_iterator {
         pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality()
             ? chunk_size() - 1
             : chunk_size();
-    if (n + offset_ >= chunk && rt::numLocalities() > 1) {
+    if (n + offset_ >= chunk && rt::numLocalities() > 1 &&
+        locality_ != rt::Locality(rt::numLocalities() - 1)) {
       ++locality_;
       n -= chunk - offset_;
       offset_ = 0;
 
       for (auto l = locality_, end = rt::Locality(rt::numLocalities() - 1);
-           l != end && n >= chunk; ++l) {
+           l <= end && n >= chunk; ++l) {
         if (pivot_locality() != rt::Locality(0) && l >= pivot_locality())
           chunk = chunk_size() - 1;
 
@@ -1803,30 +1817,30 @@ class alignas(64) array<T, N>::array_iterator {
 
     if (n < 0) return operator+=(-n);
 
-    if (n > offset_ && rt::numLocalities() > 1) {
-      size_t chunk = chunk_size();
-      n -= offset_;
-      offset_ = 0;
+    if (n > offset_ && rt::numLocalities() > 1 &&
+        locality_ != rt::Locality(0)) {
+      n -= offset_ + 1;
+      --locality_;
+      size_t chunk =
+          pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality()
+              ? chunk_size() - 1
+              : chunk_size();
+      offset_ = chunk - 1;
 
-      for (auto l = locality_, end = rt::Locality(0); l != end; --l) {
-        if (pivot_locality() != rt::Locality(0) && l >= pivot_locality()) {
-          chunk = chunk_size() - 1;
-        } else {
-          chunk = chunk_size();
+      auto l = locality_ - 1;
+      if (l != rt::Locality(0)) {
+        for (auto end = rt::Locality(0); locality_ > end && n > offset_;
+             --locality_) {
+          if (pivot_locality() != rt::Locality(0) && l >= pivot_locality()) {
+            chunk = chunk_size() - 1;
+          } else {
+            chunk = chunk_size();
+          }
+
+          n -= offset_ + 1;
+          offset_ = chunk - 1;
         }
-
-        if (n <= chunk) break;
-
-        n -= chunk;
-        --locality_;
       }
-
-      if (locality_ != rt::Locality(0)) {
-        --locality_;
-        offset_ = chunk;
-        --n;
-      }
-
       update_chunk_pointer();
     }
 
@@ -1852,10 +1866,12 @@ class alignas(64) array<T, N>::array_iterator {
   difference_type operator-(const array_iterator &O) const {
     if (oid_ != O.oid_) return std::numeric_limits<difference_type>::min();
 
-    if (*this > O) return -O.operator-(*this);
+    if (*this == O) return 0;
 
+    if (*this > O) return -O.operator-(*this);
     difference_type distance = 0;
     size_t chunk = 0;
+
     for (auto l = locality_, end = O.locality_; l <= end; ++l) {
       if (pivot_locality() != rt::Locality(0) && l >= pivot_locality()) {
         chunk = chunk_size() - 1;
@@ -1961,10 +1977,10 @@ class alignas(64) array<T, N>::array_iterator {
                          oid_, &chunk_);
   }
 
-  rt::Locality locality_{static_cast<uint32_t>(-1)};
-  ObjectID oid_{static_cast<std::size_t>(-1)};
-  difference_type offset_{-1};
-  mutable pointer chunk_{nullptr};
+  rt::Locality locality_;
+  ObjectID oid_;
+  difference_type offset_;
+  mutable pointer chunk_;
 };
 
 }  // namespace impl
