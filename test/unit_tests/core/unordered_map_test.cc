@@ -93,10 +93,10 @@ TEST(unordered_map, InsertReturnTest) {
     CheckKeyValue(res.first, i, i + 11);
   }
 
-  // overwriting
+  // failing inserts
   for (i = 1; i <= kToInsert; i++) {
     auto res = DoInsert(&c, i, i + 11);
-    ASSERT_TRUE(res.second);
+    ASSERT_FALSE(res.second);
     CheckKeyValue(res.first, i, i + 11);
   }
 }

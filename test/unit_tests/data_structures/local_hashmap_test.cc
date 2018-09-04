@@ -100,7 +100,7 @@ class LocalHashmapTest : public ::testing::Test {
   // Returns the seed used for this value
   static uint64_t GetSeed(const Value *values) { return values->value[0]; }
 
-  static typename HashmapType::iterator DoInsert(
+  static std::pair<typename HashmapType::iterator, bool> DoInsert(
       HashmapType *h0, const uint64_t key_seed, const uint64_t value_seed) {
     Key keys;
     Value values;
@@ -187,13 +187,15 @@ TEST_F(LocalHashmapTest, InsertReturnTest) {
   // successful inserts
   for (i = 1; i <= kToInsert; i++) {
     auto res = DoInsert(&hmap, i, i + 11);
-    CheckKeyValue(res, i, i + 11);
+    ASSERT_TRUE(res.second);
+    CheckKeyValue(res.first, i, i + 11);
   }
 
-  // overwriting
+  // overwriting inserts
   for (i = 1; i <= kToInsert; i++) {
     auto res = DoInsert(&hmap, i, i + 11);
-    CheckKeyValue(res, i, i + 11);
+    ASSERT_TRUE(res.second);
+    CheckKeyValue(res.first, i, i + 11);
   }
 }
 

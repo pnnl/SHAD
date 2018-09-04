@@ -60,7 +60,8 @@ class Hashmap : public AbstractDataStructure<
   template <typename>
   friend class AbstractDataStructure;
   friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
-                            const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
+                            const std::pair<KTYPE, VTYPE>,
+                            std::pair<KTYPE, VTYPE>>;
   friend class map_iterator<Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                             const std::pair<KTYPE, VTYPE>,
                             std::pair<KTYPE, VTYPE>>;
@@ -115,8 +116,9 @@ class Hashmap : public AbstractDataStructure<
   /// @brief Insert a key-value pair in the hashmap.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashmap.
-  /// @return an iterator to the inserted value
-  iterator Insert(const KTYPE &key, const VTYPE &value);
+  /// @return an iterator either to the inserted value or to the previously
+  /// inserted value that prevented the insertion.
+  std::pair<iterator, bool> Insert(const KTYPE &key, const VTYPE &value);
 
   /// @brief Asynchronously Insert a key-value pair in the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -362,26 +364,30 @@ inline size_t Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Size() const {
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
-inline typename Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::iterator
+inline std::pair<
+    typename Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::iterator, bool>
 Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
                                                           const VTYPE &value) {
   using itr_traits = distributed_iterator_traits<iterator>;
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
-  iterator res;
+  std::pair<iterator, bool> res;
 
   if (targetLocality == rt::thisLocality()) {
-    res = itr_traits::iterator_from_local(begin(), end(),
-                                          localMap_.Insert(key, value));
+    auto lres = localMap_.Insert(key, value);
+    res.first = itr_traits::iterator_from_local(begin(), end(), lres.first);
+    res.second = lres.second;
   } else {
-    auto insertLambda = [](const std::tuple<iterator, iterator, InsertArgs> &args_,
-                           iterator *res_ptr) {
-      auto &args(std::get<2>(args_));
-      auto mapPtr = HmapT::GetPtr(args.oid);
-      *res_ptr = itr_traits::iterator_from_local(
-          std::get<0>(args_), std::get<1>(args_),
-          mapPtr->localMap_.Insert(args.key, args.value));
-    };
+    auto insertLambda =
+        [](const std::tuple<iterator, iterator, InsertArgs> &args_,
+        		std::pair<iterator, bool> *res_ptr) {
+          auto &args(std::get<2>(args_));
+          auto mapPtr = HmapT::GetPtr(args.oid);
+          auto lres = mapPtr->localMap_.Insert(args.key, args.value);
+          res_ptr->first = itr_traits::iterator_from_local(
+              std::get<0>(args_), std::get<1>(args_), lres.first);
+          res_ptr->second = lres.second;
+        };
     rt::executeAtWithRet(
         targetLocality, insertLambda,
         std::make_tuple(begin(), end(), InsertArgs{oid_, key, value}), &res);
