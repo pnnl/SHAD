@@ -212,8 +212,10 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
 
   iterator begin() { return iterator::set_begin(this); }
   iterator end() { return iterator::set_end(this); }
-  const_iterator cbegin() { return const_iterator::set_begin(this); }
-  const_iterator cend() { return const_iterator::set_end(this); }
+  const_iterator cbegin() const { return const_iterator::set_begin(this); }
+  const_iterator cend() const { return const_iterator::set_end(this); }
+  const_iterator begin() const { return cbegin(); }
+  const_iterator end() const { return cend(); }
   local_iterator local_begin() {
     return local_iterator::lset_begin(&localSet_);
   }

@@ -110,16 +110,22 @@ class unordered_map {
   /// @{
   /// @brief The iterator to the beginning of the sequence.
   /// @return an ::iterator to the beginning of the sequence.
-  constexpr iterator begin() const noexcept { return ptr->begin(); }
+  iterator begin() noexcept { return impl()->begin(); }
   /// @brief The iterator to the beginning of the sequence.
   /// @return a ::const_iterator to the beginning of the sequence.
-  constexpr const_iterator cbegin() const noexcept { return ptr->cbegin(); }
-  /// @brief The iterator to the end of the sequence.
-  /// @return an ::iterator to the end of the sequence.
-  constexpr iterator end() const noexcept { return ptr->end(); }
+  const_iterator begin() const noexcept { return impl()->begin(); }
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return a ::const_iterator to the beginning of the sequence.
+  const_iterator cbegin() const noexcept { return impl()->cbegin(); }
   /// @brief The iterator to the end of the sequence.
   /// @return a ::const_iterator to the end of the sequence.
-  constexpr const_iterator cend() const noexcept { return ptr->cend(); }
+  iterator end() noexcept { return impl()->end(); }
+  /// @brief The iterator to the end of the sequence.
+  /// @return a ::const_iterator to the end of the sequence.
+  const_iterator end() const noexcept { return impl()->end(); }
+  /// @brief The iterator to the end of the sequence.
+  /// @return a ::const_iterator to the end of the sequence.
+  const_iterator cend() const noexcept { return impl()->cend(); }
   /// @}
 
   /// @defgroup Capacity
@@ -129,7 +135,7 @@ class unordered_map {
   bool empty() const noexcept { return size() == 0; }
   /// @brief The size of the container.
   /// @return the size of the container.
-  size_type size() const noexcept { return ptr->Size(); }
+  size_type size() const noexcept { return impl()->Size(); }
   // todo max_size
   /// @}
 
@@ -144,7 +150,7 @@ class unordered_map {
   /// the element that prevented the insertion) and a bool denoting whether the
   /// insertion took place.
   std::pair<iterator, bool> insert(const value_type &value) {
-    return ptr->Insert(value.first, value.second);
+    return impl()->Insert(value.first, value.second);
   }
 
   /// @brief Inserts an element into the container, if the container does not
@@ -154,7 +160,7 @@ class unordered_map {
   /// @return an iterator to the inserted element (or to the element that
   /// prevented the insertion).
   iterator insert(const_iterator, const value_type &value) {
-    return ptr->Insert(value.first, value.second).first;
+    return impl()->Insert(value.first, value.second).first;
   }
   /// @}
 
@@ -180,11 +186,13 @@ class unordered_map {
 
  private:
   std::shared_ptr<hashmap_t> ptr = nullptr;
+  const hashmap_t *impl() const { return ptr.get(); }
+  hashmap_t *impl() { return ptr.get(); }
 
   void buffered_insert(iterator, const value_type &value) {
-    ptr->BufferedInsert(value.first, value.second);
+    impl()->BufferedInsert(value.first, value.second);
   }
-  void buffered_flush() { ptr->WaitForBufferedInsert(); }
+  void buffered_flush() { impl()->WaitForBufferedInsert(); }
 };
 
 // todo operator==
