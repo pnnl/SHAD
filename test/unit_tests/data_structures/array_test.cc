@@ -369,6 +369,7 @@ TEST_F(ArrayTest, AsyncInsertAsyncForEachAndAsyncGet) {
   shad::Array<size_t>::Destroy(edsPtr->GetGlobalID());
 }
 
+#if 0
 TEST_F(ArrayTest, CreateNewArray) {
   auto arrayPtr = shad::impl::array<std::size_t, kArraySize>::Create();
 
@@ -583,3 +584,4 @@ TEST_F(ArrayTest, LocalRanges) {
         std::make_tuple(first, last, first2));
   }
 }
+#endif
