@@ -739,6 +739,130 @@ void generate(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
   impl::generate(std::forward<ExecutionPolicy>(policy), first, last, g);
 }
 
+namespace impl {
+
+template <typename ForwardIt, typename T>
+void replace(distributed_parallel_tag&& policy, ForwardIt first, ForwardIt last,
+             const T& old_value, const T& new_value) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+
+  rt::Handle H;
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::asyncExecuteAt(
+        H, locality,
+        [](rt::Handle&, const std::tuple<ForwardIt, ForwardIt, T, T>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto old_value = std::get<2>(args);
+          auto new_value = std::get<3>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          std::replace(local_range.begin(), local_range.end(), old_value,
+                       new_value);
+        },
+        std::make_tuple(first, last, old_value, new_value));
+  }
+
+  rt::waitForCompletion(H);
+}
+
+template <typename ForwardIt, typename T>
+void replace(distributed_sequential_tag&& policy, ForwardIt first,
+             ForwardIt last, const T& old_value, const T& new_value) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAt(locality,
+                  [](const std::tuple<ForwardIt, ForwardIt, T, T>& args) {
+                    auto begin = std::get<0>(args);
+                    auto end = std::get<1>(args);
+                    auto old_value = std::get<2>(args);
+                    auto new_value = std::get<3>(args);
+
+                    auto local_range = itr_traits::local_range(begin, end);
+                    std::replace(local_range.begin(), local_range.end(),
+                                 old_value, new_value);
+                  },
+                  std::make_tuple(first, last, old_value, new_value));
+  }
+}
+
+}  // namespace impl
+
+template <class ExecutionPolicy, class ForwardIt, class T>
+void replace(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+             const T& old_value, const T& new_value) {
+  impl::replace(std::forward<ExecutionPolicy>(policy), first, last, old_value,
+                new_value);
+}
+
+namespace impl {
+
+template <typename ForwardIt, typename UnaryPredicate, typename T>
+void replace_if(distributed_parallel_tag&& policy, ForwardIt first,
+                ForwardIt last, UnaryPredicate p, const T& new_value) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+
+  rt::Handle H;
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::asyncExecuteAt(
+        H, locality,
+        [](rt::Handle&,
+           const std::tuple<ForwardIt, ForwardIt, UnaryPredicate, T>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto p = std::get<2>(args);
+          auto new_value = std::get<3>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          std::replace_if(local_range.begin(), local_range.end(), p, new_value);
+        },
+        std::make_tuple(first, last, p, new_value));
+  }
+
+  rt::waitForCompletion(H);
+}
+
+template <typename ForwardIt, typename UnaryPredicate, typename T>
+void replace_if(distributed_sequential_tag&& policy, ForwardIt first,
+                ForwardIt last, UnaryPredicate p, const T& new_value) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAt(
+        locality,
+        [](const std::tuple<ForwardIt, ForwardIt, UnaryPredicate, T>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto p = std::get<2>(args);
+          auto new_value = std::get<3>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          std::replace_if(local_range.begin(), local_range.end(), p, new_value);
+        },
+        std::make_tuple(first, last, p, new_value));
+  }
+}
+
+}  // namespace impl
+
+template <class ExecutionPolicy, class ForwardIt, class UnaryPredicate, class T>
+void replace_if(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+                UnaryPredicate p, const T& new_value) {
+  impl::replace_if(std::forward<ExecutionPolicy>(policy), first, last, p,
+                   new_value);
+}
+
 }  // namespace shad
 
 #endif /* INCLUDE_SHAD_CORE_ALGORITHM_H */

@@ -253,6 +253,26 @@ void generate_(ForwardIt first, ForwardIt last, Generator g) {
   }
 }
 
+template <class ForwardIt, class T>
+void replace_(ForwardIt first, ForwardIt last, const T &old_value,
+              const T &new_value) {
+  for (; first != last; ++first) {
+    if (*first == old_value) {
+      *first = new_value;
+    }
+  }
+}
+
+template <class ForwardIt, class UnaryPredicate, class T>
+void replace_if_(ForwardIt first, ForwardIt last, UnaryPredicate p,
+                 const T &new_value) {
+  for (; first != last; ++first) {
+    if (p(*first)) {
+      *first = new_value;
+    }
+  }
+}
+
 }  // namespace shad_test_stl
 
 #endif
