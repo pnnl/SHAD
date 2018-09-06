@@ -278,14 +278,14 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @brief Checked element access operator.
   /// @return a ::reference to the n-th element in the array.
   constexpr reference at(size_type n) {
-    if (n > size()) throw std::out_of_range("Array::at()");
+    if (n >= size()) throw std::out_of_range("Array::at()");
     return operator[](n);
   }
 
   /// @brief Checked element access operator.
   /// @return a ::const_reference to the n-th element in the array.
   constexpr const_reference at(size_type n) const {
-    if (n > size()) throw std::out_of_range("Array::at() const");
+    if (n >= size()) throw std::out_of_range("Array::at() const");
     return operator[](n);
   }
 
