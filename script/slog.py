@@ -85,12 +85,13 @@ class SPlot:
         """
 		self.dir = _dir
 
-		if not os.path.exists(self.dir):
-			try:
-			    os.makedirs(self.dir)
-			except OSError as e:
-			    if e.errno != errno.EEXIST:
-			        raise
+        if not(self.dir == "/"):
+            if not os.path.exists(self.dir):
+                try:
+                    os.makedirs(self.dir)
+                except OSError as e:
+                    if e.errno != errno.EEXIST:
+                        raise
 
 	def getFileName(self, xlabel, ylabel):
         """This method generates file name based on axis label
@@ -222,7 +223,6 @@ class SPlot:
         """Line chart plot
             
             Parameters:
-            Parameters:
             x (list): Vector or list of x coordinate data
             y (list): Vector or list of y coordinate data
             xRange (list): Range of x coordinate data. x[0] is minimum data, x[1] is maximum data
@@ -310,7 +310,14 @@ class SPlot:
 
 # Data management layer
 class SLogAnalysis:
+    """ This is a data management class for logging. It reads the log files, process to make it Pandas data frame"""
 	def __init__(self, _dir="/", _fdir="/"):
+        """ Constructor for SLogAnalysis class
+            
+            Parameters:
+            _dir (string): The absolute path of the directory where the log files are saved. If the directory does not exists then system will create that directory.
+            _fdir (string): The absolute path of the directory where the plots will be saved. If the directory does not exists then system will create that directory.
+        """
 		self.dir = _dir
 		self.fileList = []
 		self.df = None
@@ -328,14 +335,32 @@ class SLogAnalysis:
 	#	self.fileList = [i for i in root.tk.splitlist(file_path)]
 
 	def __checkDir(self, _dir):
-		if not os.path.exists(_dir):
-			try:
-			    os.makedirs(_dir)
-			except OSError as e:
-			    if e.errno != errno.EEXIST:
-			        raise
+        """ This method is used to check whether the given directory is already exists or not. If directory does not exists that it will create a new one
+            
+            Parameters:
+            _dir (string): Absolute path. If directory is not a root directory (e.g. /) then it will create a new directory it it does ot exists
+            
+            """
+        if not(_dir == "/"):
+            if not os.path.exists(_dir):
+                try:
+                    os.makedirs(_dir)
+                except OSError as e:
+                    if e.errno != errno.EEXIST:
+                        raise
 
 	def getLogFiles(self, runtime="", locality=-1, startDate=None, endDate=None):
+        """The method is used to filter logging files based on following filters.
+            
+            Parameters:
+            runtime (string): Runtime of the system. E.g. GMT, TBB, etc
+            locality (int): Locality id
+            startDate (datetime): Search start date
+            endDate (datetime): Search end date
+            
+            Return:
+            list: List of logging files name with absolute path
+        """
 		_fileList = [f for f in listdir(self.dir) if isfile(join(self.dir, f))]
 		self.fileList = []
 
@@ -371,9 +396,11 @@ class SLogAnalysis:
 				[self.fileList.append(join(self.dir, f)) for f in _fileList if (fs + str(_date)) in f]
 
 	def __printFiles(self):
+        """This is a private method to print the filtered logging file list."""
 		print(self.fileList)
 
 	def readFiles(self):
+        """This method is used to read logging files and convert it to a Pandas data object."""
 		if len(self.fileList) > 0:
 			print("Starts processing JSON object...")
 			if isfile(self.tJSON):
@@ -403,6 +430,19 @@ class SLogAnalysis:
 
 
 	def eventFrequencyPlot(self, xlab="", ylab="", xRotation = 0, yRotation = 0, fullTitle="", fontSizeX=7, fontSizeY=7, xScale="", yScale=""):
+        """This method is used to plot event name vs frequency of an event
+            
+            Parameters:
+            xlab (string): Label text for x axis values
+            ylab (string): Label text for y axis values
+            xRotation (float): Rotation angle for x axis values
+            yRotation (float): Rotation angle for y axis values
+            fullTitle (string): Title of the image
+            fontSizeX (float): Font size of x axis texts
+            fontSizeY (float): Font size of y axis texts
+            xScale (float): Scale the x axis values (e.g. log)
+            yScale (float): Scale the y axis values (e.g. log)
+        """
 		if self.df is None:
 			self.readFiles();
 
@@ -412,6 +452,22 @@ class SLogAnalysis:
 			self.plot.barPlot(df_ENC['EN'], df_ENC['Counts'], xlabel=xlab, ylabel=ylab, xRot = xRotation, yRot = yRotation, title=fullTitle, xFontSize=fontSizeX, yFontSize=fontSizeY, scaleX=xScale, scaleY=yScale)
 
 	def eventMatricPlot(self, matricColName='ET', matricName='Execution time', matricUnit="s", xlab="", ylab="", xRotation = 0, yRotation = 0, fullTitle="", fontSizeX=7, fontSizeY=7, xScale="", yScale=""):
+    """This method is used to plot event name vs frequency of an event
+        
+        Parameters:
+        matricColName (string): Which matric we want to use (default: ET. Other values: IS, OS, LI)
+        matricName (string): Name of the matric that you choose (default:Execution time. Other values: Input size, Output size, Loop counter)
+        matricUnit (string): The unit of the selected matric (default: s. Other values: byte or b)
+        xlab (string): Label text for x axis values
+        ylab (string): Label text for y axis values
+        xRotation (float): Rotation angle for x axis values
+        yRotation (float): Rotation angle for y axis values
+        fullTitle (string): Title of the image
+        fontSizeX (float): Font size of x axis texts. Default value: 7
+        fontSizeY (float): Font size of y axis texts. Default value: 7
+        xScale (float): Scale the x axis values (e.g. log)
+        yScale (float): Scale the y axis values (e.g. log)
+        """
 		if self.df is None:
 			self.readFiles();
 
@@ -425,6 +481,12 @@ class SLogAnalysis:
 			self.plot.barPlot(df_ENT['EN'], df_ENT[cn], xlabel=xlab, ylabel=ylab, xRot = xRotation, yRot=yRotation, title=fullTitle, xFontSize=fontSizeX, yFontSize=fontSizeY, scaleX=xScale, scaleY=yScale)
 
 	def __timeDistanceofAnEvent(self, st=None, unit="s"):
+    """This method is used to create time difference based on unit value. For instance, if any event occurs at time t1 and the starting time is st then the time difference of this event is: (t2-st).
+        
+        Parameters:
+        st (datetime): Starting datetime in the time column values
+        unit (string): Unit of time. (default: s for second. Other values are: m/min for minutes, h/hr/hour for hours, d/day for days, mn/month for months)
+        """
 		if (st is None):
 			ats = sorted(self.df['TS'])
 			st = self.dateObj.formatDateTime(ats[0])
@@ -466,6 +528,41 @@ class SLogAnalysis:
 				_scaleX="", _scaleY="", showXMajorTics=True, showXMinorTics=False, xMajorTics=10, xMinorTics=5, showYMajorTics=True, 
 				showYMinorTics=False, yMajorTics=10, yMinorTics=5, alphaMajor=0.5, alphaMinor=0.2, _color='k', _lineType='-', 
 				_lineWidth=2, _fdpi=350, _showGrid=False, multiLine=False):
+        """This method is designed to analyze any matric for any specific event. I can also generate results for all matrics for an event or a specific matric for all events. It also has capability to generate seperate results for all events and all possible matrics. Beside that it can generate combined result. For instance, it can generate result for all matrics of an event in a simgle plot.
+            
+            Parameters:
+            en (string): Event name.
+            matr (string): Matric name.
+            ts (float): Time difference duing plotting time along x axis.
+            unit (string): Time unit. (default: s for second. Other values are: m/min for minutes, h/hr/hour for hours, d/day for days, mn/month for months)
+            _xlabel (string): Label text for x axis values
+            _ylabel (string): Label text for y axis values
+            _title (string): Title of the image
+            _xRot(float): Rotation angle for x axis values
+            _yRot (float): Rotation angle for y axis values
+            _xFontSize (float): Font size of x axis texts. Default value: 10
+            _yFontSize (float): Font size of y axis texts. Default value: 10
+            _save (boolean): True means want to save as image file and False means want to show image
+            _fileName (string): Name of the saved file name,
+            _scaleX (string): Scale the x axis values (e.g. log)
+            _scaleY (string): Scale the x] axis values (e.g. log)
+            showXMajorTics (boolean): True indicates that allow the grid to show major tics
+            showXMinorTics (boolean): True indicates that allow the grid to show minor tics
+            xMajorTics (int): Number of major tics
+            xMinorTics  (int): Number of minor tics
+            showYMajorTics (boolean): True indicates that allow the grid to show major ticsz
+            showYMinorTics (boolean): True indicates that allow the grid to show minor tics
+            yMajorTics (int): Number of major tics. Default value: 10
+            yMinorTics (int): Number of major tics. Default value: 5
+            alphaMajor (float): The depth of major axis. Default:0.5. Values ranges from 0 to 1.
+            alphaMinor (float): The depth of major axis. Default:0.2. Values ranges from 0 to 1.
+            _color (string): matplot color code. Default: k for black
+            _lineType (string): The appearance of the line. Default:'-',
+            _lineWidth (int): Width of a line. Default: 2
+            _fdpi (int): Frame DPI. Defailt value: 350
+            _showGrid (boolean): True means shows the picture in a grid fashion
+            multiLine (boolean): True indicates to show multiple plots in same frame.
+        """
 
 		if self.df is None:
 			self.readFiles();
@@ -584,7 +681,11 @@ class SLogAnalysis:
 
 # Class handles user request from command prompt
 class SLogMenu:
+    """This class parse command line arguments and call specific methods to generate results.
+    """
 	def __init__(self, argv):
+        """Default constructor for SLogMenu class
+        """
 		self.ldir = ''
 		self.fdir = ''
 		self.runtime = ''
@@ -610,6 +711,7 @@ class SLogMenu:
 		self.__parseArgs(argv)
 
 	def __helpMessage(self):
+        """This method shows the list of arguments that the system accepts"""
 		print('-h or --help: help message' + 
 	      		'\n-d: Directory of logging file [Required field]' + 
 	      		'\n-f: Directory of saved image [If not provided then it will use the location provided in -d. Directory must have write permission.]' +
@@ -633,12 +735,18 @@ class SLogMenu:
 	      		'\n')
 	
 	def __parseDateRange(self, dt):
+        """This method is used to parse the datetime string and convert it into start and end datetime
+            
+            Parameters:
+            dt (string): Two datetime string concatenated by character T. For instance:07-12-2016T09-03-2017.
+        """
 		dtl = dt.split("T")
 		self.startDT = self.dateObj.formatDateTime(dtl[0], "%m-%d-%Y").date()
 		self.endDT = self.dateObj.formatDateTime(dtl[1], "%m-%d-%Y").date()
 
 
 	def __parseArgs(self, argv):
+        """This method parses the supplied arguments from the terminal"""
 		try:
 			opts, args = getopt.getopt(argv, 'hd:f:r:l:', ["help","dt=","dtr=","ec","ecy=","emc","emcy=","emn=","emu=","em","emy=","en=","mn=","ti=","tu=","ml"])
 		except getopt.GetoptError as err:
@@ -697,6 +805,7 @@ class SLogMenu:
 			self.fdir = self.ldir
 
 	def __test(self):
+        """This method shows the argument values"""
 		print("log dir=",self.ldir)
 		print("img dir=", self.fdir)
 		print("runtime=",self.runtime)
@@ -717,6 +826,11 @@ class SLogMenu:
 		print("Time unit=", self.timeUnit)
 
 	def generateReport(self):
+    """This method does following operations:
+        
+        1. It creates pandas dataframe after reading the log files
+        2. It calls specidic report generating methods to generate report
+        """
 		self.__test()
 		logObj = SLogAnalysis(self.ldir, self.fdir)
 
@@ -782,6 +896,7 @@ class SLogMenu:
 
 # Main function
 if __name__ == "__main__":
+    """This is the main entry point of the system"""
 	menu = SLogMenu(sys.argv[1:])
 	menu.generateReport()
 
