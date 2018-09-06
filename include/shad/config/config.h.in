@@ -52,5 +52,6 @@ constexpr auto kShadPlatform = "@PLATFORM@";
 #cmakedefine HAVE_CPP_SIMPLE
 #cmakedefine HAVE_GMT
 #cmakedefine HAVE_TBB
+#cmakedefine HAVE_LOGGING // spdlog: This include added by methun
 
 #endif // INCLUDE_SHAD_CONFIG_H_
