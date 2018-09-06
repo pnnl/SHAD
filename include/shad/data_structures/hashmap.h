@@ -307,8 +307,10 @@ class Hashmap : public AbstractDataStructure<
 
   iterator begin() { return iterator::map_begin(this); }
   iterator end() { return iterator::map_end(this); }
-  const_iterator cbegin() { return const_iterator::map_begin(this); }
-  const_iterator cend() { return const_iterator::map_end(this); }
+  const_iterator cbegin() const { return const_iterator::map_begin(this); }
+  const_iterator cend() const { return const_iterator::map_end(this); }
+  const_iterator begin() const { return cbegin(); }
+  const_iterator end() const { return cend(); }
   local_iterator local_begin() {
     return local_iterator::lmap_begin(&localMap_);
   }

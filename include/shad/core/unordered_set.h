@@ -109,16 +109,22 @@ class unordered_set {
   /// @{
   /// @brief The iterator to the beginning of the sequence.
   /// @return an ::iterator to the beginning of the sequence.
-  constexpr iterator begin() const noexcept { return ptr->begin(); }
+  iterator begin() noexcept { return impl()->begin(); }
   /// @brief The iterator to the beginning of the sequence.
   /// @return a ::const_iterator to the beginning of the sequence.
-  constexpr const_iterator cbegin() const noexcept { return ptr->cbegin(); }
+  const_iterator begin() const noexcept { return impl()->begin(); }
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return a ::const_iterator to the beginning of the sequence.
+  const_iterator cbegin() const noexcept { return impl()->cbegin(); }
   /// @brief The iterator to the end of the sequence.
   /// @return an ::iterator to the end of the sequence.
-  constexpr iterator end() const noexcept { return ptr->end(); }
+  iterator end() noexcept { return impl()->end(); }
   /// @brief The iterator to the end of the sequence.
   /// @return a ::const_iterator to the end of the sequence.
-  constexpr const_iterator cend() const noexcept { return ptr->cend(); }
+  const_iterator end() const noexcept { return impl()->end(); }
+  /// @brief The iterator to the end of the sequence.
+  /// @return a ::const_iterator to the end of the sequence.
+  const_iterator cend() const noexcept { return impl()->cend(); }
   /// @}
 
   /// @defgroup Capacity
@@ -128,7 +134,7 @@ class unordered_set {
   bool empty() const noexcept { return size() == 0; }
   /// @brief The size of the container.
   /// @return the size of the container.
-  size_type size() const noexcept { return ptr->Size(); }
+  size_type size() const noexcept { return impl()->Size(); }
   // todo max_size
   /// @}
 
@@ -142,7 +148,7 @@ class unordered_set {
   /// the element that prevented the insertion) and a bool denoting whether the
   /// insertion took place.
   std::pair<iterator, bool> insert(const value_type &value) {
-    return ptr->Insert(value);
+    return impl()->Insert(value);
   }
 
   /// @brief Inserts an element into the container, if the container does not
@@ -178,9 +184,11 @@ class unordered_set {
 
  private:
   std::shared_ptr<set_t> ptr = nullptr;
+  const set_t *impl() const { return ptr.get(); }
+  set_t *impl() { return ptr.get(); }
 
-  void buffered_insert(iterator, const Key &k) { ptr->BufferedInsert(k); }
-  void buffered_flush() { ptr->WaitForBufferedInsert(); }
+  void buffered_insert(iterator, const Key &k) { impl()->BufferedInsert(k); }
+  void buffered_flush() { impl()->WaitForBufferedInsert(); }
 };
 
 // todo operator==
