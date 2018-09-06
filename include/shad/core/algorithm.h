@@ -39,6 +39,8 @@
 
 namespace shad {
 
+// Non-modifying sequence operations
+
 namespace impl {
 
 template <typename ForwardItr, typename UnaryPredicate>
@@ -617,6 +619,124 @@ template <typename ExecutionPolicy, typename InputItr, typename UnaryPredicate>
 typename shad::distributed_iterator_traits<InputItr>::difference_type count_if(
     ExecutionPolicy&& policy, InputItr first, InputItr last, UnaryPredicate p) {
   return impl::count_if(std::forward<ExecutionPolicy>(policy), first, last, p);
+}
+
+// Modifying sequence operations
+
+namespace impl {
+
+template <typename ForwardIt, typename T>
+void fill(distributed_parallel_tag&& policy, ForwardIt first, ForwardIt last,
+          const T& value) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+
+  rt::Handle H;
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::asyncExecuteAt(
+        H, locality,
+        [](rt::Handle&, const std::tuple<ForwardIt, ForwardIt, T>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto value = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          std::fill(local_range.begin(), local_range.end(), value);
+        },
+        std::make_tuple(first, last, value));
+  }
+
+  rt::waitForCompletion(H);
+}
+
+template <typename ForwardIt, typename T>
+void fill(distributed_sequential_tag&& policy, ForwardIt first, ForwardIt last,
+          const T& value) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAt(locality,
+                  [](const std::tuple<ForwardIt, ForwardIt, T>& args) {
+                    auto begin = std::get<0>(args);
+                    auto end = std::get<1>(args);
+                    auto value = std::get<2>(args);
+
+                    auto local_range = itr_traits::local_range(begin, end);
+                    std::fill(local_range.begin(), local_range.end(), value);
+                  },
+                  std::make_tuple(first, last, value));
+  }
+}
+
+}  // namespace impl
+
+template <class ExecutionPolicy, class ForwardIt, class T>
+void fill(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+          const T& value) {
+  impl::fill(std::forward<ExecutionPolicy>(policy), first, last, value);
+}
+
+namespace impl {
+
+template <typename ForwardIt, typename Generator>
+void generate(distributed_parallel_tag&& policy, ForwardIt first,
+              ForwardIt last, Generator generator) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+
+  rt::Handle H;
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::asyncExecuteAt(
+        H, locality,
+        [](rt::Handle&,
+           const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto generator = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, end);
+          std::generate(local_range.begin(), local_range.end(), generator);
+        },
+        std::make_tuple(first, last, generator));
+  }
+
+  rt::waitForCompletion(H);
+}
+
+template <typename ForwardIt, typename Generator>
+void generate(distributed_sequential_tag&& policy, ForwardIt first,
+              ForwardIt last, Generator generator) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAt(locality,
+                  [](const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
+                    auto begin = std::get<0>(args);
+                    auto end = std::get<1>(args);
+                    auto generator = std::get<2>(args);
+
+                    auto local_range = itr_traits::local_range(begin, end);
+                    std::generate(local_range.begin(), local_range.end(),
+                                  generator);
+                  },
+                  std::make_tuple(first, last, generator));
+  }
+}
+
+}  // namespace impl
+
+template <class ExecutionPolicy, class ForwardIt, class Generator>
+void generate(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+              Generator g) {
+  impl::generate(std::forward<ExecutionPolicy>(policy), first, last, g);
 }
 
 }  // namespace shad

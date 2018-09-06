@@ -342,6 +342,35 @@ TYPED_TEST(ATF, shad_find) {
 
 // search_n - todo
 
+// fill
+TYPED_TEST(ATF, shad_fill) {
+  uint64_t ds_sum = 0, dp_sum = 0;
+  shad::fill(shad::distributed_sequential_tag{}, this->in->begin(),
+             this->in->end(), 42);
+  for (auto x : *this->in) ds_sum += x;
+  shad::fill(shad::distributed_parallel_tag{}, this->in->begin(),
+             this->in->end(), 42);
+  for (auto x : *this->in) dp_sum += x;
+
+  ASSERT_EQ(ds_sum, dp_sum);
+  ASSERT_EQ(ds_sum, shad_test_stl::kNumElements * 42);
+}
+
+// generate
+TYPED_TEST(ATF, shad_generate) {
+  uint64_t ds_sum = 0, dp_sum = 0;
+  auto generator = []() { return 42; };
+  shad::generate(shad::distributed_sequential_tag{}, this->in->begin(),
+                 this->in->end(), generator);
+  for (auto x : *this->in) ds_sum += x;
+  shad::generate(shad::distributed_parallel_tag{}, this->in->begin(),
+                 this->in->end(), generator);
+  for (auto x : *this->in) dp_sum += x;
+
+  ASSERT_EQ(ds_sum, dp_sum);
+  ASSERT_EQ(ds_sum, shad_test_stl::kNumElements * 42);
+}
+
 ///////////////////////////////////////
 //
 // shad::unordered_set

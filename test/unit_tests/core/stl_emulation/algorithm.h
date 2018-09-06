@@ -239,6 +239,20 @@ std::pair<ForwardIt, ForwardIt> minmax_element_(ForwardIt first,
   return std::minmax_element(first, last, std::less<>());
 }
 
+template <class ForwardIt, class T>
+void fill_(ForwardIt first, ForwardIt last, const T &value) {
+  while (first != last) {
+    *first++ = value;
+  }
+}
+
+template <class ForwardIt, class Generator>
+void generate_(ForwardIt first, ForwardIt last, Generator g) {
+  while (first != last) {
+    *first++ = g();
+  }
+}
+
 }  // namespace shad_test_stl
 
 #endif

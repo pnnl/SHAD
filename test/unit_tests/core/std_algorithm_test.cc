@@ -255,6 +255,31 @@ TYPED_TEST(VTF, std_search) {
 
 // search_n - todo
 
+// fill
+TYPED_TEST(VTF, std_fill) {
+  uint64_t exp_sum = 0, obs_sum = 0;
+  std::fill(this->in->begin(), this->in->end(), 42);
+  for (auto x : *this->in) obs_sum += x;
+  shad_test_stl::fill_(this->in->begin(), this->in->end(), 42);
+  for (auto x : *this->in) exp_sum += x;
+
+  ASSERT_EQ(exp_sum, obs_sum);
+  ASSERT_EQ(obs_sum, shad_test_stl::kNumElements * 42);
+}
+
+// generate
+TYPED_TEST(VTF, std_generate) {
+  uint64_t exp_sum = 0, obs_sum = 0;
+  auto generator = []() { return 42; };
+  std::generate(this->in->begin(), this->in->end(), generator);
+  for (auto x : *this->in) obs_sum += x;
+  shad_test_stl::generate_(this->in->begin(), this->in->end(), generator);
+  for (auto x : *this->in) exp_sum += x;
+
+  ASSERT_EQ(exp_sum, obs_sum);
+  ASSERT_EQ(obs_sum, shad_test_stl::kNumElements * 42);
+}
+
 ///////////////////////////////////////
 //
 // std::array, shad::array
@@ -474,6 +499,31 @@ TYPED_TEST(ATF, std_search) {
 }
 
 // search_n - todo
+
+// fill
+TYPED_TEST(ATF, std_fill) {
+  uint64_t exp_sum = 0, obs_sum = 0;
+  std::fill(this->in->begin(), this->in->end(), 42);
+  for (auto x : *this->in) obs_sum += x;
+  shad_test_stl::fill_(this->in->begin(), this->in->end(), 42);
+  for (auto x : *this->in) exp_sum += x;
+
+  ASSERT_EQ(exp_sum, obs_sum);
+  ASSERT_EQ(obs_sum, shad_test_stl::kNumElements * 42);
+}
+
+// generate
+TYPED_TEST(ATF, std_generate) {
+  uint64_t exp_sum = 0, obs_sum = 0;
+  auto generator = []() { return 42; };
+  std::generate(this->in->begin(), this->in->end(), generator);
+  for (auto x : *this->in) obs_sum += x;
+  shad_test_stl::generate_(this->in->begin(), this->in->end(), generator);
+  for (auto x : *this->in) exp_sum += x;
+
+  ASSERT_EQ(exp_sum, obs_sum);
+  ASSERT_EQ(obs_sum, shad_test_stl::kNumElements * 42);
+}
 
 ///////////////////////////////////////
 //
