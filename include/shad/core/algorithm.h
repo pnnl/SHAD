@@ -143,13 +143,15 @@ const T& max(const T& a, const T& b, Compare comp) {
 
 template <class ForwardIt>
 ForwardIt max_element(ForwardIt first, ForwardIt last) {
-  return impl::max_element(distributed_sequential_tag{}, first, last);
+  return impl::max_element(distributed_sequential_tag{},
+                           first, last, std::greater<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt>
 ForwardIt max_element(ExecutionPolicy&& policy,
                       ForwardIt first, ForwardIt last) {
-  return impl::max_element(std::forward<ExecutionPolicy>(policy), first, last);
+  return impl::max_element(std::forward<ExecutionPolicy>(policy),
+                           first, last, std::greater<>());
 }
 
 template <class ForwardIt, class Compare>
@@ -185,13 +187,15 @@ const T& min( const T& a, const T& b, Compare comp) {
 
 template <class ForwardIt>
 ForwardIt min_element(ForwardIt first, ForwardIt last) {
-  return impl::min_element(distributed_sequential_tag{}, first, last);
+  return impl::min_element(distributed_sequential_tag{},
+                           first, last, std::less<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt>
 ForwardIt min_element(ExecutionPolicy&& policy,
                       ForwardIt first, ForwardIt last) {
-  return impl::min_element(std::forward<ExecutionPolicy>(policy), first, last);
+  return impl::min_element(std::forward<ExecutionPolicy>(policy),
+                           first, last, std::less<>());
 }
 
 template <class ForwardIt, class Compare>

@@ -39,91 +39,6 @@
 namespace shad {
 namespace impl {
 
-template <class ForwardIt>
-ForwardIt max_element(distributed_sequential_tag&& policy,
-                      ForwardIt first, ForwardIt last) {
-  if (first == last) return last;
-  using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
-  using value_t =
-    typename std::remove_const<typename itr_traits::value_type>::type;
-  using res_t = std::pair<ForwardIt, value_t>;
-  std::vector<res_t> res(localities.size());
-  auto args = std::make_tuple(first, last);
-  size_t i = 0;
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality, ++i) {
-    rt::executeAtWithRet(
-      locality,
-      [](const std::tuple<ForwardIt, ForwardIt>& args,
-          res_t* result) {
-        auto gbegin = std::get<0>(args);
-        auto gend = std::get<1>(args);
-        auto local_range = itr_traits::local_range(gbegin, gend);
-        auto begin = local_range.begin();
-        auto end = local_range.end();
-        auto lmax = std::max_element(begin, end);
-        ForwardIt gres = itr_traits::iterator_from_local(gbegin, gend, lmax);
-        *result = std::make_pair(gres, *lmax);
-      },
-      args, &res[i]);
-  }
-  auto it = res.begin();
-  ForwardIt result = it->first;
-  value_t max = it->second;
-  for (++it; it != res.end(); ++it) {
-    if (max < it->second) {
-      result = it->first;
-      max = it->second;
-    }
-  }
-  return result;
-}
-
-template <class ForwardIt>
-ForwardIt max_element(distributed_parallel_tag&& policy,
-                      ForwardIt first, ForwardIt last) {
-  if (first == last) return last;
-  using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
-  using value_t =
-    typename std::remove_const<typename itr_traits::value_type>::type;
-  using res_t = std::pair<ForwardIt, value_t>;
-  std::vector<res_t> res(localities.size());
-  size_t i = 0;
-  rt::Handle h;
-  auto args = std::make_tuple(first, last);
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality, ++i) {
-    rt::asyncExecuteAtWithRet(
-      h, locality,
-      [](rt::Handle&,
-         const std::tuple<ForwardIt, ForwardIt>& args,
-         res_t* result) {
-          auto gbegin = std::get<0>(args);
-          auto gend = std::get<1>(args);
-          auto local_range = itr_traits::local_range(gbegin, gend);
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto lmax = std::max_element(begin, end);
-          ForwardIt gres = itr_traits::iterator_from_local(gbegin, gend, lmax);
-          *result = std::make_pair(gres, *lmax);
-      },
-      args, &res[i]);
-  }
-  rt::waitForCompletion(h);
-  auto it = res.begin();
-  ForwardIt result = it->first;
-  value_t max = it->second;
-  for (++it; it != res.end(); ++it) {
-    if (max < it->second) {
-      result = it->first;
-      max = it->second;
-    }
-  }
-  return result;
-}
-
 template <class ForwardIt, class Compare>
 ForwardIt max_element(distributed_sequential_tag&& policy,
                       ForwardIt first, ForwardIt last, Compare comp) {
@@ -204,91 +119,6 @@ ForwardIt max_element(distributed_parallel_tag&& policy,
     if (comp(max, it->second)) {
       result = it->first;
       max = it->second;
-    }
-  }
-  return result;
-}
-
-template <class ForwardIt>
-ForwardIt min_element(distributed_sequential_tag&& policy,
-                      ForwardIt first, ForwardIt last) {
-  if (first == last) return last;
-  using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
-  using value_t =
-    typename std::remove_const<typename itr_traits::value_type>::type;
-  using res_t = std::pair<ForwardIt, value_t>;
-  std::vector<res_t> res(localities.size());
-  auto args = std::make_tuple(first, last);
-  size_t i = 0;
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality, ++i) {
-    rt::executeAtWithRet(
-      locality,
-      [](const std::tuple<ForwardIt, ForwardIt>& args,
-          res_t* result) {
-        auto gbegin = std::get<0>(args);
-        auto gend = std::get<1>(args);
-        auto local_range = itr_traits::local_range(gbegin, gend);
-        auto begin = local_range.begin();
-        auto end = local_range.end();
-        auto lmin = std::min_element(begin, end);
-        ForwardIt gres = itr_traits::iterator_from_local(gbegin, gend, lmin);
-        *result = std::make_pair(gres, *lmin);
-      },
-      args, &res[i]);
-  }
-  auto it = res.begin();
-  ForwardIt result = it->first;
-  value_t min = it->second;
-  for (++it; it != res.end(); ++it) {
-    if (min > it->second) {
-      result = it->first;
-      min = it->second;
-    }
-  }
-  return result;
-}
-
-template <class ForwardIt>
-ForwardIt min_element(distributed_parallel_tag&& policy,
-                      ForwardIt first, ForwardIt last) {
-  if (first == last) return last;
-  using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
-  using value_t =
-    typename std::remove_const<typename itr_traits::value_type>::type;
-  using res_t = std::pair<ForwardIt, value_t>;
-  std::vector<res_t> res(localities.size());
-  size_t i = 0;
-  rt::Handle h;
-  auto args = std::make_tuple(first, last);
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality, ++i) {
-    rt::asyncExecuteAtWithRet(
-      h, locality,
-      [](rt::Handle&,
-         const std::tuple<ForwardIt, ForwardIt>& args,
-         res_t* result) {
-          auto gbegin = std::get<0>(args);
-          auto gend = std::get<1>(args);
-          auto local_range = itr_traits::local_range(gbegin, gend);
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto lmin = std::min_element(begin, end);
-          ForwardIt gres = itr_traits::iterator_from_local(gbegin, gend, lmin);
-          *result = std::make_pair(gres, *lmin);
-      },
-      args, &res[i]);
-  }
-  rt::waitForCompletion(h);
-  auto it = res.begin();
-  ForwardIt result = it->first;
-  value_t min = it->second;
-  for (++it; it != res.end(); ++it) {
-    if (min > it->second) {
-      result = it->first;
-      min = it->second;
     }
   }
   return result;
@@ -521,7 +351,7 @@ minmax_element(distributed_sequential_tag&& policy,
           auto end = local_range.end();
           auto lminmax = std::minmax_element(begin, end, std::get<2>(args));
           ForwardIt minit = itr_traits::iterator_from_local(gbegin, gend,
-                                                          lminmax.first);
+                                                            lminmax.first);
           ForwardIt maxit = itr_traits::iterator_from_local(gbegin, gend,
                                                             lminmax.second);
           *result = std::make_pair(std::make_pair(*(lminmax.first),
@@ -579,7 +409,7 @@ minmax_element(distributed_parallel_tag&& policy,
           auto end = local_range.end();
           auto lminmax = std::minmax_element(begin, end, std::get<2>(args));
           ForwardIt minit = itr_traits::iterator_from_local(gbegin, gend,
-                                                          lminmax.first);
+                                                            lminmax.first);
           ForwardIt maxit = itr_traits::iterator_from_local(gbegin, gend,
                                                             lminmax.second);
           *result = std::make_pair(std::make_pair(*(lminmax.first),
