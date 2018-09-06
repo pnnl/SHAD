@@ -51,7 +51,7 @@ static void PrintParameters() {
 }
 
 template <typename duration_t>
-void print_time(std::string label, duration_t duration) {
+void print_time(const std::string &label, duration_t duration) {
   auto dc = duration.count();
   std::cout << "Time to execute " << label << ": " << dc
             << " ms, throughput:: ";
