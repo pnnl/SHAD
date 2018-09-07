@@ -16,6 +16,15 @@ SHAD is the Scalable High-Performance Algorithms and Data-structures C++ library
 SHAD is written in C++, and requires compiler support for (at least) C++ 11.
 To enable all of the SHAD's features, please review its [Install Dependencies](#install-dependencies) and [Runtime Systems](#runtime-systems) requirements.
 
+## How to cite SHAD
+In publications SHAD can be cited as:  
+V. G. Castellana and M. Minutoli, "SHAD: The Scalable High-Performance Algorithms and Data-Structures Library,"  
+18th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGRID), Washington, DC, USA, 2018.  
+[![SHAD_DOI_badge](https://img.shields.io/badge/DOI-https%3A%2F%2Fdoi.org%2F10.1109%2FCCGRID.2018.00071-blue.svg)](https://doi.org/10.1109/CCGRID.2018.00071)
+[![SHAD_BibTexview](https://img.shields.io/badge/BibTex-view-blue.svg)](https://dblp.org/rec/bibtex/conf/ccgrid/CastellanaM18)
+[![SHAD_BibTexdownload](https://img.shields.io/badge/BibTex-download-blue.svg)](https://dblp.org/rec/bib2/conf/ccgrid/CastellanaM18.bib)
+[![SHAD_RISdownload](https://img.shields.io/badge/RIS-download-blue.svg)](https://dblp.org/rec/ris/conf/ccgrid/CastellanaM18.ris)
+
 ## Build Instructions
 
 ### Install Dependencies
@@ -104,9 +113,10 @@ Once the documentation is build, you can open with your favorite web browser the
 ```
 open docs/doxygen/html/index.html  # From your build directory
 ```
-## Authors
+## SHAD Team
 Vito Giovanni Castellana <vitogiovanni.castellana@pnnl.gov>  
-Marco Minutoli <marco.minutoli@pnnl.gov>
+Marco Minutoli <marco.minutoli@pnnl.gov>  
+Maurizio Drocco <maurizio.drocco@pnnl.gov>
 
 ## Disclamer Notice
 This material was prepared as an account of work sponsored by an agency of the United States Government.  Neither the United States Government nor the United States Department of Energy, nor Battelle, nor any of their employees, nor any jurisdiction or organization that has cooperated in the development of these materials, makes any warranty, express or implied, or assumes any legal liability or responsibility for the accuracy, completeness, or usefulness or any information, apparatus, product, software, or process disclosed, or represents that its use would not infringe privately owned rights.
