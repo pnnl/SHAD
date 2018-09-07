@@ -579,7 +579,7 @@ class alignas(64) array<T, N>::ArrayRef<const U>
   using difference_type = typename array<T, N>::difference_type;
   using ObjectID = typename array<T, N>::ObjectID;
 
-  ArrayRef(rt::Locality l, std::size_t p, ObjectID oid, pointer chunk)
+  ArrayRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
       : array<T, N>::template BaseArrayRef<U>(l, p, oid, chunk) {}
 
   ArrayRef(const ArrayRef &O) : array<T, N>::template BaseArrayRef<U>(O) {}
