@@ -990,14 +990,14 @@ class array {
   explicit array() { ptr = array_t::Create(); }
 
   /// @brief Destructor.
-  ~array() { array_t::Destroy(ptr->GetGlobalID()); }
+  ~array() { array_t::Destroy(impl()->GetGlobalID()); }
 
   /// @brief The copy assignment operator.
   ///
   /// @param O The right-hand side of the operator.
   /// @return A reference to the left-hand side.
   array<T, N> &operator=(const array<T, N> &O) {
-    ptr->operator=(*O.ptr);
+    impl()->operator=(*O.ptr);
     return *this;
   }
 
@@ -1006,64 +1006,64 @@ class array {
 
   /// @brief Unchecked element access operator.
   /// @return a ::reference to the n-th element in the array.
-  constexpr reference operator[](size_type n) { return ptr->operator[](n); }
+  constexpr reference operator[](size_type n) { return impl()->operator[](n); }
 
   /// @brief Unchecked element access operator.
   /// @return a ::const_reference to the n-th element in the array.
   constexpr const_reference operator[](size_type n) const {
-    return ptr->operator[](n);
+    return impl()->operator[](n);
   }
 
   /// @brief Checked element access operator.
   /// @return a ::reference to the n-th element in the array.
-  constexpr reference at(size_type n) { return ptr->at(n); }
+  constexpr reference at(size_type n) { return impl()->at(n); }
 
   /// @brief Checked element access operator.
   /// @return a ::const_reference to the n-th element in the array.
-  constexpr const_reference at(size_type n) const { return ptr->at(n); }
+  constexpr const_reference at(size_type n) const { return impl()->at(n); }
 
   /// @brief the first element in the array.
   /// @return a ::reference to the element in position 0.
-  constexpr reference front() { return ptr->front(); }
+  constexpr reference front() { return impl()->front(); }
 
   /// @brief the first element in the array.
   /// @return a ::const_reference to the element in position 0.
-  constexpr const_reference front() const { return ptr->front(); }
+  constexpr const_reference front() const { return impl()->front(); }
 
   /// @brief the last element in the array.
   /// @return a ::reference to the element in position N - 1.
-  constexpr reference back() { return ptr->back(); }
+  constexpr reference back() { return impl()->back(); }
 
   /// @brief the last element in the array.
   /// @return a ::const_reference to the element in position N - 1.
-  constexpr const_reference back() const { return ptr->back(); }
+  constexpr const_reference back() const { return impl()->back(); }
   /// @}
 
   /// @defgroup Iterators
   /// @{
   /// @brief The iterator to the beginning of the sequence.
   /// @return an ::iterator to the beginning of the sequence.
-  constexpr iterator begin() noexcept { return ptr->begin(); }
+  constexpr iterator begin() noexcept { return impl()->begin(); }
 
   /// @brief The iterator to the beginning of the sequence.
   /// @return a ::const_iterator to the beginning of the sequence.
-  constexpr const_iterator begin() const noexcept { return ptr->begin(); }
+  constexpr const_iterator begin() const noexcept { return impl()->begin(); }
 
   /// @brief The iterator to the end of the sequence.
   /// @return an ::iterator to the end of the sequence.
-  constexpr iterator end() noexcept { return ptr->end(); }
+  constexpr iterator end() noexcept { return impl()->end(); }
 
   /// @brief The iterator to the end of the sequence.
   /// @return a ::const_iterator to the end of the sequence.
-  constexpr const_iterator end() const noexcept { return ptr->end(); }
+  constexpr const_iterator end() const noexcept { return impl()->end(); }
 
   /// @brief The iterator to the beginning of the sequence.
   /// @return a ::const_iterator to the beginning of the sequence.
-  constexpr const_iterator cbegin() const noexcept { return ptr->cbegin(); }
+  constexpr const_iterator cbegin() const noexcept { return impl()->cbegin(); }
 
   /// @brief The iterator to the end of the sequence.
   /// @return a ::const_iterator to the end of the sequence.
-  constexpr const_iterator cend() const noexcept { return ptr->cend(); }
+  constexpr const_iterator cend() const noexcept { return impl()->cend(); }
 
   // todo rbegin
   // todo crbegin
@@ -1075,15 +1075,15 @@ class array {
   /// @{
   /// @brief Empty test.
   /// @return true if empty (N=0), and false otherwise.
-  constexpr bool empty() const noexcept { return ptr->empty(); }
+  constexpr bool empty() const noexcept { return impl()->empty(); }
 
   /// @brief The size of the container.
   /// @return the size of the container (N).
-  constexpr size_type size() const noexcept { return ptr->size(); }
+  constexpr size_type size() const noexcept { return impl()->size(); }
 
   /// @brief The maximum size of the container.
   /// @return the maximum size of the container (N).
-  constexpr size_type max_size() const noexcept { return ptr->max_size(); }
+  constexpr size_type max_size() const noexcept { return impl()->max_size(); }
   /// @}
 
   /// @defgroup Operations
@@ -1091,18 +1091,26 @@ class array {
   /// @brief Fill the array with an input value.
   ///
   /// @param v The input value used to fill the array.
-  void fill(const value_type &v) { ptr->fill(v); }
+  void fill(const value_type &v) { impl()->fill(v); }
 
   /// @brief Swap the content of two array.
   ///
   /// @param O The array to swap the content with.
   void swap(array<T, N> &O) noexcept /* (std::is_nothrow_swappable_v<T>) */ {
-    ptr->swap(*O->ptr);
+    impl()->swap(*O->ptr);
   }
   /// @}
 
  private:
   std::shared_ptr<array_t> ptr = nullptr;
+
+  const array_t * impl() const {
+    return ptr.get();
+  }
+
+  array_t * impl() {
+    return ptr.get();
+  }
 
   friend bool operator==(const array &LHS, const array &RHS) {
     return *LHS.ptr == *RHS.ptr;
