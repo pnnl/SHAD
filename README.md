@@ -21,6 +21,8 @@ In publications SHAD can be cited as:
 V. G. Castellana and M. Minutoli, "SHAD: The Scalable High-Performance Algorithms and Data-Structures Library,"  
 18th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGRID), Washington, DC, USA, 2018.  
 [![SHAD_DOI_badge](https://img.shields.io/badge/DOI-https%3A%2F%2Fdoi.org%2F10.1109%2FCCGRID.2018.00071-blue.svg)](https://doi.org/10.1109/CCGRID.2018.00071)
+[![SHAD_BibTexview](https://img.shields.io/badge/BibTex-view-blue.svg)](https://dblp.org/rec/bibtex/conf/ccgrid/CastellanaM18)
+[![SHAD_BibTexdownload](https://img.shields.io/badge/BibTex-download-blue.svg)](https://dblp.org/rec/bib2/conf/ccgrid/CastellanaM18.bib)
 
 ## Build Instructions
 
