@@ -122,21 +122,6 @@ typename shad::distributed_iterator_traits<InputItr>::difference_type count_if(
 //                                              //
 // ---------------------------------------------//
 
-//  -------------  //
-//  |   max     |  //
-//  -------------  //
-// Same as std::max  
-
-template <class T>
-const T& max(const T& a, const T& b) {
-  return std::max<T>(a, b);
-}
-
-template <class T, class Compare>
-const T& max(const T& a, const T& b, Compare comp) {
-  return std::max<T, Compare>(a, b, comp);
-}
-
 //  ---------------  //
 //  | max_element |  //
 //  ---------------  //
@@ -164,21 +149,6 @@ ForwardIt max_element(ExecutionPolicy&& policy,
                       ForwardIt first, ForwardIt last, Compare comp ) {
   return impl::max_element(std::forward<ExecutionPolicy>(policy),
                            first, last, comp);
-}
-
-//  -------------  //
-//  |   min     |  //
-//  -------------  //
-// Same as std::min  
-
-template <class T>
-const T& min(const T& a, const T& b) {
-  return std::min<T>(a, b);
-}
-
-template <class T, class Compare>
-const T& min( const T& a, const T& b, Compare comp) {
-  return std::min<T, Compare>(a, b, comp);
 }
 
 //  ---------------  //
@@ -210,20 +180,6 @@ ForwardIt min_element(ExecutionPolicy&& policy,
                            first, last, comp);
 }
 
-//  -------------  //
-//  |   minmax  |  //
-//  -------------  //
-// Same as std::minmax
-
-template <class T>
-std::pair<const T&,const T&> minmax(const T& a, const T& b) {
-  return std::minmax<T>(a, b);
-}
-
-template <class T, class Compare>
-std::pair<const T&,const T&> minmax(const T& a, const T& b, Compare comp) {
-  return std::minmax<T, Compare>(a, b, comp);
-}
 
 //  ------------------  //
 //  | minmax_element |  //
@@ -253,22 +209,6 @@ std::pair<ForwardIt,ForwardIt> minmax_element(ExecutionPolicy&& policy,
   return impl::minmax_element(std::forward<ExecutionPolicy>(policy),
                            first, last, comp);
 }
-
-//  -------------  //
-//  |   clamp   |  //
-//  -------------  //
-// Same as std::clamp
-
-template<class T, class Compare>
-constexpr const T& clamp (const T& v, const T& lo, const T& hi, Compare comp) {
-  return comp(v, lo) ? lo : comp(hi, v) ? hi : v;
-}
-
-template<class T>
-constexpr const T& clamp( const T& v, const T& lo, const T& hi ) {
-  return clamp(v, lo, hi, std::less<T>());
-}
-
 }  // namespace shad
 
 #endif /* INCLUDE_SHAD_CORE_ALGORITHM_H */
