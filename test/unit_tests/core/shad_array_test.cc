@@ -72,8 +72,11 @@ TYPED_TEST_P(ArrayTest, Size) {
 
 TYPED_TEST_P(ArrayTest, AccessMethods) {
   using size_type = typename ArrayTest<TypeParam>::size_type;
+  using ArrayType = typename ArrayTest<TypeParam>::ArrayType;
 
   for (size_type i = 0; i < this->array_.size(); ++i) {
+    ASSERT_EQ(this->array_[i], i);
+    ASSERT_EQ(this->array_.at(i), i);
     ASSERT_EQ(this->array_[i], this->array_.at(i));
   }
 
@@ -88,10 +91,51 @@ TYPED_TEST_P(ArrayTest, AccessMethods) {
 
   ASSERT_EQ(this->array_[0], this->array_.front());
   ASSERT_EQ(this->array_[this->array_.size() - 1], this->array_.back());
+
+  // const_reference portion
+  using const_reference = typename ArrayType::const_reference;
+  const ArrayType & ref = this->array_;
+  for (size_type i = 0; i < this->array_.size(); ++i) {
+    const_reference first = ref[i];
+    const_reference second = ref.at(i);
+    ASSERT_EQ(first, i);
+    ASSERT_EQ(second, i);
+    ASSERT_EQ(first, second);
+  }
+
+  try {
+    const_reference _ = ref.at(this->array_.size());
+    FAIL();
+  } catch (std::out_of_range &) {
+    SUCCEED();
+  } catch (...) {
+    FAIL();
+  }
+
+  ASSERT_EQ(ref[0], ref.front());
+  ASSERT_EQ(ref[ref.size() - 1], ref.back());
 }
 
-REGISTER_TYPED_TEST_CASE_P(ArrayTest, HasTypeInterface, Size, AccessMethods);
+TYPED_TEST_P(ArrayTest, IteratorMovements) {
+  using ArrayType = typename ArrayTest<TypeParam>::ArrayType;
+
+  using iterator = typename ArrayType::iterator;
+
+  size_t i = 0;
+  for (iterator itr = this->array_.begin(), end = this->array_.end();
+       itr != end; ++itr, ++i) {
+    ASSERT_EQ(*itr, this->array_[i]);
+  }
+
+  i = this->array_.size() - 1;
+  for (iterator itr = this->array_.end() - 1, end = this->array_.begin();
+       itr >= end; --itr, --i) {
+    ASSERT_EQ(*itr, this->array_[i]);
+  }
+}
+
+REGISTER_TYPED_TEST_CASE_P(ArrayTest, HasTypeInterface, Size, AccessMethods, IteratorMovements);
 
 using ArrayTestTypes =
-    ::testing::Types<ArrayTestPair<char, 256>, ArrayTestPair<size_t, 125>>;
+    ::testing::Types<ArrayTestPair<int, 256>, ArrayTestPair<size_t, 125>>;
 INSTANTIATE_TYPED_TEST_CASE_P(ShadArray, ArrayTest, ArrayTestTypes);
