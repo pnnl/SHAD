@@ -50,6 +50,18 @@ static void PrintParameters() {
             << std::endl;
 }
 
+template <typename duration_t>
+void print_time(const std::string &label, duration_t duration) {
+  auto dc = duration.count();
+  std::cout << "Time to execute " << label << ": " << dc
+            << " ms, throughput:: ";
+  if (dc)
+    std::cout << (double)localhmap_perf_test::kNumKeys / dc * 1000;
+  else
+    std::cout << "N/A";
+  std::cout << " ops/s\n\n" << std::endl;
+}
+
 int main(int argc, char *argv[]) {
   if (shad::rt::numLocalities() != 1) {
     std::cout
@@ -117,7 +129,7 @@ int main(int argc, char *argv[]) {
   std::cout << "Local hashmap instance created" << std::endl;
 
   shad::rt::Handle handle;
-  auto duration = std::chrono::duration_cast<std::chrono::seconds>(
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       shad::measure<>::duration([&]() {
         shad::rt::asyncForEachAt(
             handle, shad::rt::thisLocality(),
@@ -129,11 +141,7 @@ int main(int argc, char *argv[]) {
         shad::rt::waitForCompletion(handle);
       }));
 
-  std::cout << "Time to populate the local hashmap instance: "
-            << duration.count() << "s, throughput:: "
-            << localhmap_perf_test::kNumKeys / duration.count()
-            << " insertions/s\n\n"
-            << std::endl;
+  print_time("Populate", duration);
 
   std::vector<std::vector<uint64_t> *> results(localhmap_perf_test::kNumKeys);
   auto ParallelLookup =
@@ -145,7 +153,7 @@ int main(int argc, char *argv[]) {
         mapPtr->AsyncLookup(handle, input[iter].first, &(resPtr->at(iter)));
       };
 
-  duration = std::chrono::duration_cast<std::chrono::seconds>(
+  duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       shad::measure<>::duration([&]() {
         shad::rt::asyncForEachAt(
             handle, shad::rt::thisLocality(), ParallelLookup,
@@ -153,13 +161,9 @@ int main(int argc, char *argv[]) {
         shad::rt::waitForCompletion(handle);
       }));
 
-  std::cout << "Time to perform Lookups: " << duration.count()
-            << "s, throughput:: "
-            << localhmap_perf_test::kNumKeys / duration.count()
-            << " lookups/s\n\n"
-            << std::endl;
+  print_time("Lookup", duration);
 
-  duration = std::chrono::duration_cast<std::chrono::seconds>(
+  duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       shad::measure<>::duration([&]() {
         for (size_t i = 0; i < localhmap_perf_test::kNumKeys; i++) {
           hmap.AsyncLookup(handle, input[i].first, &results[i]);
@@ -167,39 +171,27 @@ int main(int argc, char *argv[]) {
         shad::rt::waitForCompletion(handle);
       }));
 
-  std::cout << "Time to perform Async Lookups: " << duration.count()
-            << "s, throughput:: "
-            << localhmap_perf_test::kNumKeys / duration.count()
-            << " lookups/s\n\n"
-            << std::endl;
+  print_time("Async-Lookup", duration);
 
   auto AsyncForEachKeyLambda = [](shad::rt::Handle &,
                                   const std::vector<uint64_t> &) {};
 
-  duration = std::chrono::duration_cast<std::chrono::seconds>(
+  duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       shad::measure<>::duration([&]() {
         hmap.AsyncForEachKey(handle, AsyncForEachKeyLambda);
         shad::rt::waitForCompletion(handle);
       }));
 
-  std::cout << "Time to execute ForEachKey: " << duration.count()
-            << "s, throughput:: "
-            << localhmap_perf_test::kNumKeys / duration.count() << " ops/s\n\n"
-            << std::endl;
+  print_time("ForEachKey", duration);
 
   auto AsyncVisitLambda = [](shad::rt::Handle &, const std::vector<uint64_t> &,
                              std::vector<uint64_t> &) {};
 
-  duration = std::chrono::duration_cast<std::chrono::seconds>(
+  duration = std::chrono::duration_cast<std::chrono::milliseconds>(
       shad::measure<>::duration([&]() {
         hmap.AsyncForEachEntry(handle, AsyncVisitLambda);
         shad::rt::waitForCompletion(handle);
       }));
-
-  std::cout << "Time to execute Visit: " << duration.count()
-            << "s, throughput:: "
-            << localhmap_perf_test::kNumKeys / duration.count() << " ops/s\n\n"
-            << std::endl;
 
   return 0;
 }
