@@ -364,16 +364,19 @@ TYPED_TEST(ATF, shad_fill) {
 // generate
 TYPED_TEST(ATF, shad_generate) {
   uint64_t obs_sum = 0, exp_sum = 0;
-  auto generator = []() { return 42; };
+  uint64_t x = 0;
+  auto generator = [&x]() { return x++; };
 
   shad_test_stl::generate_(this->in->begin(), this->in->end(), generator);
-  for (auto x : *this->in) exp_sum += x;
+  for (auto x_ : *this->in) exp_sum += x_;
 
+  x = 0;
   shad::generate(shad::distributed_sequential_tag{}, this->in->begin(),
                  this->in->end(), generator);
-  for (auto x : *this->in) obs_sum += x;
+  for (auto x_ : *this->in) obs_sum += x_;
   ASSERT_EQ(obs_sum, exp_sum);
 
+  x = 0;
   obs_sum = 0;
   shad::generate(shad::distributed_parallel_tag{}, this->in->begin(),
                  this->in->end(), generator);
