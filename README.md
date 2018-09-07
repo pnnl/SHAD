@@ -19,7 +19,7 @@ To enable all of the SHAD's features, please review its [Install Dependencies](#
 ## How to cite SHAD
 In publications SHAD can be cited as:  
 V. G. Castellana and M. Minutoli, "SHAD: The Scalable High-Performance Algorithms and Data-Structures Library,"  
-2018 18th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGRID), Washington, DC, USA, 2018.  
+18th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGRID), Washington, DC, USA, 2018.  
 [![SHAD_DOI_badge](https://img.shields.io/badge/DOI-https%3A%2F%2Fdoi.org%2F10.1109%2FCCGRID.2018.00071-blue.svg)](https://doi.org/10.1109/CCGRID.2018.00071)
 
 ## Build Instructions
