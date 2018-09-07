@@ -23,6 +23,7 @@ V. G. Castellana and M. Minutoli, "SHAD: The Scalable High-Performance Algorithm
 [![SHAD_DOI_badge](https://img.shields.io/badge/DOI-https%3A%2F%2Fdoi.org%2F10.1109%2FCCGRID.2018.00071-blue.svg)](https://doi.org/10.1109/CCGRID.2018.00071)
 [![SHAD_BibTexview](https://img.shields.io/badge/BibTex-view-blue.svg)](https://dblp.org/rec/bibtex/conf/ccgrid/CastellanaM18)
 [![SHAD_BibTexdownload](https://img.shields.io/badge/BibTex-download-blue.svg)](https://dblp.org/rec/bib2/conf/ccgrid/CastellanaM18.bib)
+[![SHAD_RISdownload](https://img.shields.io/badge/RIS-download-blue.svg)](https://dblp.org/rec/ris/conf/ccgrid/CastellanaM18.ris)
 
 ## Build Instructions
 
