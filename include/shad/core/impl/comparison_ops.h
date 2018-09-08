@@ -35,6 +35,88 @@
 namespace shad {
 namespace impl {
 
+template <class ForwardIt1, class ForwardIt2, class BinaryPredicate>
+bool equal(distributed_sequential_tag&&, ForwardIt1 first1, ForwardIt1 last1,
+           ForwardIt2 first2, BinaryPredicate p) {
+  using itr_traits = distributed_iterator_traits<ForwardIt1>;
+  auto localities = itr_traits::localities(first1, last1);
+  auto res = std::make_pair(first2, true);
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<ForwardIt1, ForwardIt1, ForwardIt2,
+                            BinaryPredicate>& args,
+           std::pair<ForwardIt2, bool>* result) {
+          auto local_range = itr_traits::local_range(std::get<0>(args),
+                                                     std::get<1>(args));
+          auto lfirst1 = local_range.begin();
+          auto llast1 = local_range.end();
+          auto first2 = std::get<2>(args);
+          if (lfirst1 == llast1) {
+            *result = std::make_pair(first2, true);
+            return;
+          }
+          auto op = std::get<3>(args);
+          for (; lfirst1 != llast1; ++lfirst1, ++first2) {
+            if (!op(*lfirst1, *first2)) {
+              *result = std::make_pair(first2, false);
+              return;
+            }
+          }
+          *result = std::make_pair(first2, true);
+        },
+        std::make_tuple(first1, last1, res.first, p), &res);
+    if (!res.second) return false;
+  }
+  return true;
+}
+
+template <class ForwardIt1, class ForwardIt2, class BinaryPredicate>
+bool equal(distributed_parallel_tag&&, ForwardIt1 first1, ForwardIt1 last1,
+           ForwardIt2 first2, BinaryPredicate p) {
+  using itr_traits = distributed_iterator_traits<ForwardIt1>;
+  auto localities = itr_traits::localities(first1, last1);
+  bool res[localities.size()];
+  uint32_t i = 0;
+  rt::Handle h;
+  auto args = std::make_tuple(first1, last1, first2, p);
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality, ++i) {
+    rt::asyncExecuteAtWithRet(
+        h, locality,
+        [](rt::Handle&,
+           const std::tuple<ForwardIt1, ForwardIt1, ForwardIt2,
+                            BinaryPredicate>& args, bool* result) {
+          auto gfirst = std::get<0>(args);
+          auto glast = std::get<1>(args);
+          auto local_range = itr_traits::local_range(gfirst, glast);
+          auto lfirst1 = local_range.begin();
+          auto llast1 = local_range.end();
+          if (lfirst1 == llast1) {
+            *result = true;
+            return;
+          }
+          auto first2 = std::get<2>(args);
+          auto it = itr_traits::iterator_from_local(gfirst, glast, lfirst1);
+          first2 += (std::distance(gfirst, it));
+          auto op = std::get<3>(args);
+          for (; lfirst1 != llast1; ++lfirst1, ++first2) {
+            if (!op(*lfirst1, *first2)) {
+              *result = false;
+              return;
+            }
+          }
+          *result = true;
+        },
+        args, &res[i]);
+  }
+  rt::waitForCompletion(h);
+  for (auto val : res) {
+    if (!val) return false;
+  }
+  return true;
+}
 
 }  // namespace impl
 }  // namespace shad

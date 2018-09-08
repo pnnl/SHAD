@@ -35,6 +35,7 @@
 
 #include "shad/core/execution.h"
 #include "shad/distributed_iterator_traits.h"
+#include "shad/core/impl/comparison_ops.h"
 #include "shad/core/impl/minimum_maximum_ops.h"
 #include "shad/core/impl/non_modifyng_sequence_ops.h"
 #include "shad/runtime/runtime.h"
@@ -183,7 +184,7 @@ ForwardIt min_element(ExecutionPolicy&& policy,
 
 //  ------------------  //
 //  | minmax_element |  //
-//  ------------------ //
+//  ------------------  //
 
 template <class ForwardIt>
 std::pair<ForwardIt,ForwardIt> minmax_element(ForwardIt first,
@@ -207,8 +208,114 @@ template <class ExecutionPolicy, class ForwardIt, class Compare>
 std::pair<ForwardIt,ForwardIt> minmax_element(ExecutionPolicy&& policy,
                       ForwardIt first, ForwardIt last, Compare comp ) {
   return impl::minmax_element(std::forward<ExecutionPolicy>(policy),
-                           first, last, comp);
+                              first, last, comp);
 }
+
+// ---------------------------------------------//
+//                                              //
+//                 comparison_ops               //
+//                                              //
+// ---------------------------------------------//
+
+
+//  ------------------  //
+//  |      equal     |  //
+//  ------------------  //
+
+template <class InputIt1, class InputIt2>
+bool equal(InputIt1 first1, InputIt1 last1,
+           InputIt2 first2) {
+  return impl::equal(distributed_sequential_tag{},
+                     first1, last1, first2, std::equal_to<>());
+}
+
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2>
+bool equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
+           ForwardIt2 first2) {
+  return impl::equal(std::forward<ExecutionPolicy>(policy),
+                     first1, last1, first2, std::equal_to<>());
+}
+
+template <class InputIt1, class InputIt2, class BinaryPredicate>
+bool equal(InputIt1 first1, InputIt1 last1,
+           InputIt2 first2, BinaryPredicate p) {
+  return impl::equal(distributed_sequential_tag{},
+                     first1, last1, first2, p);
+}
+
+template <class ExecutionPolicy, class ForwardIt1,
+          class ForwardIt2, class BinaryPredicate>
+bool equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
+           ForwardIt2 first2, BinaryPredicate p) {
+  return impl::equal(std::forward<ExecutionPolicy>(policy),
+                     first1, last1, first2, p);
+}
+
+template <class InputIt1, class InputIt2>
+bool equal(InputIt1 first1, InputIt1 last1,
+           InputIt2 first2, InputIt2 last2) {
+  if (std::distance(first1, last1) != std::distance(first2, last2)) {
+    return false;
+  }
+  return impl::equal(distributed_sequential_tag{},
+                     first1, last1, first2, std::equal_to<>());
+}
+
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2>
+bool equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
+           ForwardIt2 first2, ForwardIt2 last2) {
+  if (std::distance(first1, last1) != std::distance(first2, last2)) {
+    return false;
+  }
+  return impl::equal(std::forward<ExecutionPolicy>(policy),
+                     first1, last1, first2, std::equal_to<>());
+}
+
+template <class InputIt1, class InputIt2, class BinaryPredicate>
+bool equal(InputIt1 first1, InputIt1 last1,
+           InputIt2 first2, InputIt2 last2, BinaryPredicate p) {
+  if (std::distance(first1, last1) != std::distance(first2, last2)) {
+    return false;
+  }
+  return impl::equal(distributed_sequential_tag{},
+                     first1, last1, first2, p);
+}
+
+template <class ExecutionPolicy, class ForwardIt1,
+          class ForwardIt2, class BinaryPredicate>
+bool equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
+           ForwardIt2 first2, ForwardIt2 last2, BinaryPredicate p ) {
+  if (std::distance(first1, last1) != std::distance(first2, last2)) {
+    return false;
+  }
+  return impl::equal(std::forward<ExecutionPolicy>(policy),
+                     first1, last1, first2, p);
+}
+
+//  -----------------------------  //
+//  |  lexicographical_compare  |  //
+//  -----------------------------  //
+
+template <class InputIt1, class InputIt2>
+bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
+                             InputIt2 first2, InputIt2 last2 );
+
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2>
+bool lexicographical_compare(ExecutionPolicy&& policy,
+                             ForwardIt1 first1, ForwardIt1 last1,
+                             ForwardIt2 first2, ForwardIt2 last2 );
+
+template <class InputIt1, class InputIt2, class Compare>
+bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
+                             InputIt2 first2, InputIt2 last2,
+                             Compare comp );
+
+template <class ExecutionPolicy,
+          class ForwardIt1, class ForwardIt2, class Compare>
+bool lexicographical_compare(ExecutionPolicy&& policy,
+                             ForwardIt1 first1, ForwardIt1 last1,
+                             ForwardIt2 first2, ForwardIt2 last2,
+                             Compare comp );
 }  // namespace shad
 
 #endif /* INCLUDE_SHAD_CORE_ALGORITHM_H */
