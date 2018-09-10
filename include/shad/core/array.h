@@ -694,7 +694,7 @@ class alignas(64) array<T, N>::array_iterator {
         ++offset_;
       } else {
         ++locality_;
-        chunk_ = nullptr;
+        update_chunk_pointer();
       }
       return *this;
     }
@@ -749,21 +749,25 @@ class alignas(64) array<T, N>::array_iterator {
         pivot_locality() != rt::Locality(0) && locality_ >= pivot_locality()
             ? chunk_size() - 1
             : chunk_size();
-    if (n + offset_ >= chunk && rt::numLocalities() > 1 &&
-        locality_ != rt::Locality(rt::numLocalities() - 1)) {
+
+    rt::Locality last = N < rt::numLocalities()
+                            ? rt::Locality(uint32_t(N - 1))
+                            : rt::Locality(rt::numLocalities() - 1);
+
+    if (n + offset_ >= chunk && rt::numLocalities() > 1 && locality_ != last) {
       ++locality_;
       n -= chunk - offset_;
       offset_ = 0;
 
-      for (auto l = locality_, end = rt::Locality(rt::numLocalities() - 1);
-           l <= end && n >= chunk; ++l) {
-        if (pivot_locality() != rt::Locality(0) && l >= pivot_locality())
+      for (auto end = last; locality_ < end; ++locality_) {
+        if (pivot_locality() != rt::Locality(0) &&
+            locality_ == pivot_locality())
           chunk = chunk_size() - 1;
 
-        n -= chunk;
-        ++locality_;
-      }
+        if (n < chunk) break;
 
+        n -= chunk;
+      }
       update_chunk_pointer();
     }
 
@@ -809,15 +813,11 @@ class alignas(64) array<T, N>::array_iterator {
   }
 
   array_iterator operator+(difference_type n) {
-    if (n == 0) return *this;
-
     array_iterator tmp(*this);
     return tmp.operator+=(n);
   }
 
   array_iterator operator-(difference_type n) {
-    if (n == 0) return *this;
-
     array_iterator tmp(*this);
     return tmp.operator-=(n);
   }
@@ -1104,13 +1104,9 @@ class array {
  private:
   std::shared_ptr<array_t> ptr = nullptr;
 
-  const array_t * impl() const {
-    return ptr.get();
-  }
+  const array_t *impl() const { return ptr.get(); }
 
-  array_t * impl() {
-    return ptr.get();
-  }
+  array_t *impl() { return ptr.get(); }
 
   friend bool operator==(const array &LHS, const array &RHS) {
     return *LHS.ptr == *RHS.ptr;

@@ -28,6 +28,7 @@
 #include "gtest/gtest.h"
 
 #include "shad/core/array.h"
+#include "shad/runtime/runtime.h"
 
 template <typename Type, std::size_t Size>
 struct ArrayTestPair {
@@ -94,7 +95,7 @@ TYPED_TEST_P(ArrayTest, AccessMethods) {
 
   // const_reference portion
   using const_reference = typename ArrayType::const_reference;
-  const ArrayType & ref = this->array_;
+  const ArrayType &ref = this->array_;
   for (size_type i = 0; i < this->array_.size(); ++i) {
     const_reference first = ref[i];
     const_reference second = ref.at(i);
@@ -121,7 +122,7 @@ TYPED_TEST_P(ArrayTest, IteratorMovements) {
 
   using iterator = typename ArrayType::iterator;
 
-  size_t i = 0;
+  ssize_t i = 0;
   for (iterator itr = this->array_.begin(), end = this->array_.end();
        itr != end; ++itr, ++i) {
     ASSERT_EQ(*itr, this->array_[i]);
@@ -132,10 +133,39 @@ TYPED_TEST_P(ArrayTest, IteratorMovements) {
        itr >= end; --itr, --i) {
     ASSERT_EQ(*itr, this->array_[i]);
   }
+
+  iterator b = this->array_.begin();
+  for (i = 0; i < this->array_.size();
+       i += shad::rt::numLocalities(), b += shad::rt::numLocalities()) {
+    ASSERT_EQ(*b, this->array_[i]);
+    ASSERT_EQ(*(this->array_.begin() + i), this->array_[i]);
+  }
+
+  iterator e = this->array_.end() - 1;
+  for (i = 0; i < this->array_.size();
+       i -= shad::rt::numLocalities(), e -= shad::rt::numLocalities()) {
+    ASSERT_EQ(*e, this->array_[this->array_.size() - (i + 1)]);
+    ASSERT_EQ(*(this->array_.end() - (i + 1)),
+              this->array_[this->array_.size() - (i + 1)]);
+  }
+
+  size_t pivot = this->array_.size() % shad::rt::numLocalities();
+  size_t block = this->array_.size() / shad::rt::numLocalities();
+  size_t offset = 0;
+  for (size_t i = 0; i < shad::rt::numLocalities();
+       ++i, offset += pivot != 0 && i >= pivot ? (block - 1) : block) {
+    if (offset < this->array_.size())
+      ASSERT_EQ(*(this->array_.begin() + offset), this->array_[offset]);
+    if (offset == this->array_.size())
+      ASSERT_EQ((this->array_.begin() + offset), this->array_.end());
+    ASSERT_EQ(*(this->array_.begin() + offset), offset);
+  }
 }
 
-REGISTER_TYPED_TEST_CASE_P(ArrayTest, HasTypeInterface, Size, AccessMethods, IteratorMovements);
+REGISTER_TYPED_TEST_CASE_P(ArrayTest, HasTypeInterface, Size, AccessMethods,
+                           IteratorMovements);
 
 using ArrayTestTypes =
-    ::testing::Types<ArrayTestPair<int, 256>, ArrayTestPair<size_t, 125>>;
+    ::testing::Types<ArrayTestPair<size_t, 900>, ArrayTestPair<size_t, 901>,
+                     ArrayTestPair<size_t, 902>, ArrayTestPair<size_t, 42>>;
 INSTANTIATE_TYPED_TEST_CASE_P(ShadArray, ArrayTest, ArrayTestTypes);
