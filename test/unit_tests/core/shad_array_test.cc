@@ -36,6 +36,9 @@ struct ArrayTestPair {
   constexpr static std::size_t size = Size;
 };
 
+template <typename Type, std::size_t Size>
+constexpr std::size_t ArrayTestPair<Type, Size>::size;
+
 template <typename PairType>
 class ArrayTest : public ::testing::Test {
  public:
