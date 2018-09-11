@@ -336,39 +336,28 @@ class TestFixture : public ::testing::Test {
 
  protected:
   virtual ~TestFixture() {}
+  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
   std::shared_ptr<T> in;
 };
 
 template <typename T>
 class VectorTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_vector_<T, true>{}(kNumElements); }
-
- protected:
-  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 
 template <typename T>
 class ArrayTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_array_<T, true>{}(); }
-
- protected:
-  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 
 template <typename T>
 class SetTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_set_<T, true>{}(kNumElements); }
-
- protected:
-  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 
 template <typename T>
 class MapTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_map_<T, true>{}(kNumElements); }
-
- protected:
-  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 }  // namespace shad_test_stl
 

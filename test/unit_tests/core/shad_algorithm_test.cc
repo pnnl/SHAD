@@ -344,59 +344,67 @@ TYPED_TEST(ATF, shad_find) {
 
 // fill
 TYPED_TEST(ATF, shad_fill) {
-  uint64_t obs_sum = 0, exp_sum = 0;
+  uint64_t obs_sum = 0, exp_sum = 0, pos;
 
   shad_test_stl::fill_(this->in->begin(), this->in->end(), 42);
-  for (auto x : *this->in) exp_sum += x;
+  pos = 1;
+  for (auto x : *this->in) exp_sum += pos++ * x;
 
   shad::fill(shad::distributed_sequential_tag{}, this->in->begin(),
              this->in->end(), 42);
-  for (auto x : *this->in) obs_sum += x;
+  pos = 1;
+  for (auto x : *this->in) obs_sum += pos++ * x;
   ASSERT_EQ(obs_sum, exp_sum);
 
   obs_sum = 0;
   shad::fill(shad::distributed_parallel_tag{}, this->in->begin(),
              this->in->end(), 42);
-  for (auto x : *this->in) obs_sum += x;
+  pos = 1;
+  for (auto x : *this->in) obs_sum += pos++ * x;
   ASSERT_EQ(obs_sum, exp_sum);
 }
 
 // generate
 TYPED_TEST(ATF, shad_generate) {
-  uint64_t obs_sum = 0, exp_sum = 0;
+  uint64_t obs_sum = 0, exp_sum = 0, pos;
   uint64_t x = 0;
   auto generator = [&x]() { return x++; };
 
   shad_test_stl::generate_(this->in->begin(), this->in->end(), generator);
-  for (auto x_ : *this->in) exp_sum += x_;
+  pos = 1;
+  for (auto x_ : *this->in) exp_sum += pos++ * x_;
 
   x = 0;
   shad::generate(shad::distributed_sequential_tag{}, this->in->begin(),
                  this->in->end(), generator);
-  for (auto x_ : *this->in) obs_sum += x_;
+  pos = 1;
+  for (auto x_ : *this->in) obs_sum += pos++ * x_;
   ASSERT_EQ(obs_sum, exp_sum);
 
   x = 0;
   obs_sum = 0;
   shad::generate(shad::distributed_parallel_tag{}, this->in->begin(),
                  this->in->end(), generator);
-  for (auto x : *this->in) obs_sum += x;
+  pos = 1;
+  for (auto x_ : *this->in) obs_sum += pos++ * x_;
   ASSERT_EQ(obs_sum, exp_sum);
 }
 
 // replace
 TYPED_TEST(ATF, shad_replace) {
-  uint64_t obs_sum = 0, exp_sum = 0;
+  uint64_t obs_sum = 0, exp_sum = 0, pos;
 
   shad_test_stl::replace_(this->in->begin(), this->in->end(), 42, 43);
   shad_test_stl::replace_(this->in->begin(), this->in->end(), 1024, 1025);
-  for (auto x : *this->in) exp_sum += x;
+  pos = 1;
+  for (auto x : *this->in) exp_sum += pos++ * x;
 
   shad::replace(shad::distributed_sequential_tag{}, this->in->begin(),
                 this->in->end(), 42, 43);
   shad::replace(shad::distributed_sequential_tag{}, this->in->begin(),
                 this->in->end(), 1024, 1025);
-  for (auto x : *this->in) obs_sum += x;
+  pos = 1;
+  for (auto x : *this->in) obs_sum += pos++ * x;
   ASSERT_EQ(obs_sum, exp_sum);
 
   obs_sum = 0;
@@ -404,27 +412,31 @@ TYPED_TEST(ATF, shad_replace) {
                 this->in->end(), 42, 43);
   shad::replace(shad::distributed_parallel_tag{}, this->in->begin(),
                 this->in->end(), 1024, 1025);
-  for (auto x : *this->in) obs_sum += x;
+  pos = 1;
+  for (auto x : *this->in) obs_sum += pos++ * x;
   ASSERT_EQ(obs_sum, exp_sum);
 }
 
 // replace_if
 TYPED_TEST(ATF, std_replace_if) {
-  uint64_t exp_sum = 0, obs_sum = 0;
+  uint64_t exp_sum = 0, obs_sum = 0, pos;
   auto pred = [](int x) { return (x % 3 == 0); };
 
   shad_test_stl::replace_if_(this->in->begin(), this->in->end(), pred, 3);
-  for (auto x : *this->in) exp_sum += x;
+  pos = 1;
+  for (auto x : *this->in) exp_sum += pos++ * x;
 
   shad::replace_if(shad::distributed_sequential_tag{}, this->in->begin(),
                    this->in->end(), pred, 3);
-  for (auto x : *this->in) obs_sum += x;
+  pos = 1;
+  for (auto x : *this->in) obs_sum += pos++ * x;
   ASSERT_EQ(obs_sum, exp_sum);
 
   obs_sum = 0;
   shad::replace_if(shad::distributed_parallel_tag{}, this->in->begin(),
                    this->in->end(), pred, 3);
-  for (auto x : *this->in) obs_sum += x;
+  pos = 1;
+  for (auto x : *this->in) obs_sum += pos++ * x;
   ASSERT_EQ(obs_sum, exp_sum);
 
   ASSERT_EQ(exp_sum, obs_sum);
