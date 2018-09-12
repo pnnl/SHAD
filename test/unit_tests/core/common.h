@@ -313,6 +313,12 @@ struct pair_acc {
   }
 };
 
+// increment-by-one function
+template <typename T>
+T inc(const T &x) {
+  return x + 1;
+}
+
 // test fixtures
 template <typename T>
 class TestFixture : public ::testing::Test {

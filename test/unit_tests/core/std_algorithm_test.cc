@@ -270,6 +270,31 @@ TYPED_TEST(VTF, std_fill) {
   ASSERT_EQ(exp_sum, obs_sum);
 }
 
+// transform
+TYPED_TEST(VTF, std_transform) {
+  using out_it_t = typename TypeParam::iterator;
+  using value_t = typename TypeParam::value_type;
+
+  uint64_t exp_sum = 0, obs_sum = 0, pos;
+  out_it_t exp_res, obs_res;
+  auto out = shad_test_stl::create_vector_<TypeParam, true>{}(
+      shad_test_stl::kNumElements);
+
+  exp_res =
+      shad_test_stl::transform_(this->in->begin(), this->in->end(),
+                                out->begin(), shad_test_stl::inc<value_t>);
+  pos = 1;
+  for (auto x : *out) exp_sum += pos++ * x;
+
+  obs_res = std::transform(this->in->begin(), this->in->end(), out->begin(),
+                           shad_test_stl::inc<value_t>);
+  pos = 1;
+  for (auto x : *out) obs_sum += pos++ * x;
+
+  ASSERT_EQ(exp_res, obs_res);
+  ASSERT_EQ(exp_sum, obs_sum);
+}
+
 // generate
 TYPED_TEST(VTF, std_generate) {
   uint64_t exp_sum = 0, obs_sum = 0, pos;
@@ -551,6 +576,30 @@ TYPED_TEST(ATF, std_fill) {
   pos = 1;
   for (auto x : *this->in) obs_sum += pos++ * x;
 
+  ASSERT_EQ(exp_sum, obs_sum);
+}
+
+// transform
+TYPED_TEST(ATF, std_transform) {
+  using out_it_t = typename TypeParam::iterator;
+  using value_t = typename TypeParam::value_type;
+
+  uint64_t exp_sum = 0, obs_sum = 0, pos;
+  out_it_t exp_res, obs_res;
+  auto out = shad_test_stl::create_array_<TypeParam, true>{}();
+
+  exp_res =
+      shad_test_stl::transform_(this->in->begin(), this->in->end(),
+                                out->begin(), shad_test_stl::inc<value_t>);
+  pos = 1;
+  for (auto x : *out) exp_sum += pos++ * x;
+
+  obs_res = std::transform(this->in->begin(), this->in->end(), out->begin(),
+                           shad_test_stl::inc<value_t>);
+  pos = 1;
+  for (auto x : *out) obs_sum += pos++ * x;
+
+  ASSERT_EQ(exp_res, obs_res);
   ASSERT_EQ(exp_sum, obs_sum);
 }
 

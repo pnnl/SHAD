@@ -85,6 +85,68 @@ void fill(distributed_sequential_tag&& policy, ForwardIt first, ForwardIt last,
   }
 }
 
+template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
+ForwardIt2 transform(distributed_parallel_tag&& policy, ForwardIt1 first1,
+                     ForwardIt1 last1, ForwardIt2 d_first,
+                     UnaryOperation unary_op) {
+  using itr_traits = distributed_iterator_traits<ForwardIt1>;
+  auto localities = itr_traits::localities(first1, last1);
+  std::vector<ForwardIt2> res(localities.size(), d_first);
+  auto res_it = res.begin();
+  rt::Handle h;
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality, ++res_it) {
+    rt::asyncExecuteAtWithRet(
+        h, locality,
+        [](rt::Handle&,
+           const std::tuple<ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation>&
+               args,
+           ForwardIt2* res_ptr) {
+          auto gbegin = std::get<0>(args);
+          auto gend = std::get<1>(args);
+          auto local_range = itr_traits::local_range(gbegin, gend);
+          auto begin = local_range.begin();
+          auto end = local_range.end();
+          auto it = itr_traits::iterator_from_local(gbegin, gend, begin);
+          auto d_first_ = std::get<2>(args);
+          std::advance(d_first_, std::distance(gbegin, it));
+          auto op = std::get<3>(args);
+
+          *res_ptr = std::transform(begin, end, d_first_, op);
+        },
+        std::make_tuple(first1, last1, d_first, unary_op), &(*res_it));
+  }
+  rt::waitForCompletion(h);
+  return res.back();
+}
+
+template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
+ForwardIt2 transform(distributed_sequential_tag&& policy, ForwardIt1 first1,
+                     ForwardIt1 last1, ForwardIt2 d_first,
+                     UnaryOperation unary_op) {
+  using itr_traits = distributed_iterator_traits<ForwardIt1>;
+  auto localities = itr_traits::localities(first1, last1);
+  ForwardIt2 res = d_first;
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation>&
+               args,
+           ForwardIt2* res_ptr) {
+          auto d_first_ = std::get<2>(args);
+          auto op = std::get<3>(args);
+          auto local_range =
+              itr_traits::local_range(std::get<0>(args), std::get<1>(args));
+          auto begin = local_range.begin();
+          auto end = local_range.end();
+          *res_ptr = std::transform(begin, end, d_first_, op);
+        },
+        std::make_tuple(first1, last1, res, unary_op), &res);
+  }
+  return res;
+}
+
 namespace generate_impl {
 template <typename ForwardIt>
 std::pair<std::shared_ptr<uint8_t>, size_t> prepare_buffer(

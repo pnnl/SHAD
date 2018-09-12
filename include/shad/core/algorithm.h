@@ -224,6 +224,15 @@ void fill(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
   impl::fill(std::forward<ExecutionPolicy>(policy), first, last, value);
 }
 
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
+          class UnaryOperation>
+ForwardIt2 transform(ExecutionPolicy&& policy, ForwardIt1 first1,
+                     ForwardIt1 last1, ForwardIt2 d_first,
+                     UnaryOperation unary_op) {
+  return impl::transform(std::forward<ExecutionPolicy>(policy), first1, last1,
+                         d_first, unary_op);
+}
+
 template <class ExecutionPolicy, class ForwardIt, class Generator>
 void generate(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
               Generator g) {
