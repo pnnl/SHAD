@@ -92,7 +92,7 @@ OutputIt inclusive_scan_(InputIt first, InputIt last, OutputIt d_first,
                          BinaryOperation binary_op, T init) {
   if (first == last) return d_first;
 
-  T sum = init + *first;
+  T sum = binary_op(std::move(init), *first);
   *d_first = sum;
 
   while (++first != last) {
@@ -110,8 +110,8 @@ OutputIt exclusive_scan_(InputIt first, InputIt last, OutputIt d_first, T init,
   T sum = init, bck = init;
 
   do {
-    bck = binary_op(std::move(sum), *first);  // std::move since C++20
     *d_first = sum;
+    bck = binary_op(std::move(sum), *first);  // std::move since C++20
     sum = bck;
     ++d_first;
   } while (++first != last);
