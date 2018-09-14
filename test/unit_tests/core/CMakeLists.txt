@@ -8,12 +8,14 @@ set(tests
   shad_algorithm_test
 )
 
+option(SHAD_PARTIAL_STD_TESTS "Avoid testing exotic functions from the STL" OFF)
+
 foreach(t ${tests})
   add_executable(${t} ${t}.cc)
-  if (SHAD_ENABLE_STD_REDUCE_TEST)
+  if (SHAD_PARTIAL_STD_TESTS)
     set_target_properties(
       ${t} PROPERTIES
-      COMPILE_FLAGS "-DSTD_REDUCE_TEST")
+      COMPILE_FLAGS "-DPARTIAL_STD_TESTS")
   endif()
   if (CLANG_TIDY_EXE)
     set_target_properties(

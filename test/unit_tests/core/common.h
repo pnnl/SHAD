@@ -38,10 +38,78 @@
 #include "shad/core/unordered_map.h"
 #include "shad/core/unordered_set.h"
 
+namespace std {
+template <class T1, class T2>
+struct negate<std::pair<T1, T2>> {
+  using T = std::pair<T1, T2>;
+  T operator()(const T &p1) {
+    return std::make_pair(std::negate<T1>{}(p1.first),
+                          std::negate<T2>{}(p1.second));
+  }
+};
+
+template <class T1, class T2>
+struct plus<std::pair<T1, T2>> {
+  using T = std::pair<T1, T2>;
+  T operator()(const T &p1, const T &p2) {
+    return std::make_pair(std::plus<T1>{}(p1.first, p2.first),
+                          std::plus<T2>{}(p1.second, p2.second));
+  }
+};
+
+template <class T1, class T2>
+struct multiplies<std::pair<T1, T2>> {
+  using T = std::pair<T1, T2>;
+  T operator()(const T &p1, const T &p2) {
+    return std::make_pair(std::multiplies<T1>{}(p1.first, p2.first),
+                          std::multiplies<T2>{}(p1.second, p2.second));
+  }
+};
+};  // namespace std
+
 namespace shad_test_stl {
 
 static constexpr size_t kNumElements = 1024;
 static constexpr size_t substr_len = 32;
+
+// test for ordering awareness
+template <typename T>
+struct is_ordered_container;
+
+template <typename U>
+struct is_ordered_container<std::vector<U>> {
+  static constexpr bool value = true;
+};
+
+template <typename U, size_t size>
+struct is_ordered_container<std::array<U, size>> {
+  static constexpr bool value = true;
+};
+
+template <typename U, size_t size>
+struct is_ordered_container<shad::array<U, size>> {
+  static constexpr bool value = true;
+};
+
+template <typename U>
+struct is_ordered_container<std::unordered_set<U>> {
+  static constexpr bool value = false;
+};
+
+template <typename U>
+struct is_ordered_container<shad::unordered_set<U>> {
+  static constexpr bool value = false;
+};
+
+template <typename U, typename V>
+struct is_ordered_container<std::unordered_map<U, V>> {
+  static constexpr bool value = false;
+};
+
+template <typename U, typename V>
+struct is_ordered_container<shad::unordered_map<U, V>> {
+  static constexpr bool value = false;
+};
 
 // container creation and expected checksum
 template <typename T, bool even>
@@ -305,13 +373,33 @@ template <typename T>
 std::function<bool(const T &)> is_odd_wrapper =
     [](const T &x) -> bool { return !is_even<T>{}(x); };
 
-// accumulate a pair into a numeric value
-template <typename acc_t, typename pair_t>
-struct pair_acc {
-  acc_t operator()(const acc_t &acc, const pair_t &kv) {
-    return acc + kv.second;
-  }
+// convert to a int64_t
+template <typename T>
+struct to_int64 {
+  int64_t operator()(const T &x) { return x; }
 };
+
+template <typename T1, typename T2>
+struct to_int64<std::pair<T1, T2>> {
+  int64_t operator()(const std::pair<T1, T2> &x) { return x.first + x.second; }
+};
+
+// checksums
+template <typename It>
+int64_t checksum(It first, It last) {
+  using val_t = typename It::value_type;
+  int64_t res = 0;
+  for (auto it = first; it != last; ++it) res += to_int64<val_t>{}(*it);
+  return res;
+}
+
+template <typename It>
+int64_t ordered_checksum(It first, It last) {
+  using val_t = typename It::value_type;
+  int64_t res = 0, pos = 1;
+  for (auto it = first; it != last; ++it) res += pos++ * to_int64<val_t>{}(*it);
+  return res;
+}
 
 // test fixtures
 template <typename T>
@@ -321,6 +409,34 @@ class TestFixture : public ::testing::Test {
   void test(F &&sub_f, F &&obj_f, args_... args) {
     auto obs = sub_f(in->begin(), in->end(), args...);
     auto exp = obj_f(in->begin(), in->end(), args...);
+    ASSERT_EQ(obs, exp);
+  }
+
+  template <typename F, typename... args_>
+  void test_void(F &&sub_f, F &&obj_f, args_... args) {
+    int64_t obs, exp;
+    bool ordered = is_ordered_container<T>::value;
+    sub_f(in->begin(), in->end(), args...);
+    obs = ordered ? ordered_checksum(in->begin(), in->end())
+                  : checksum(in->begin(), in->end());
+    obj_f(in->begin(), in->end(), args...);
+    exp = ordered ? ordered_checksum(in->begin(), in->end())
+                  : checksum(in->begin(), in->end());
+    ASSERT_EQ(obs, exp);
+  }
+
+  template <typename F, typename OutputIt, typename... args_>
+  void test_io(F &&sub_f, F &&obj_f, OutputIt sub_out_it, OutputIt obj_out_it,
+               args_... args) {
+    int64_t obs, exp;
+    OutputIt res;
+    bool ordered = is_ordered_container<T>::value;
+    res = sub_f(in->begin(), in->end(), sub_out_it, args...);
+    obs = ordered ? ordered_checksum(sub_out_it->begin(), res)
+                  : checksum(sub_out_it->begin(), res);
+    obj_f(in->begin(), in->end(), obj_out_it, args...);
+    exp = ordered ? ordered_checksum(obj_out_it->begin(), res)
+                  : checksum(sub_out_it->begin(), res);
     ASSERT_EQ(obs, exp);
   }
 
@@ -337,6 +453,8 @@ class TestFixture : public ::testing::Test {
  protected:
   virtual ~TestFixture() {}
   std::shared_ptr<T> in;
+
+  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 
 template <typename T>
@@ -344,31 +462,21 @@ class VectorTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_vector_<T, true>{}(kNumElements); }
 
  protected:
-  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 
 template <typename T>
 class ArrayTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_array_<T, true>{}(); }
-
- protected:
-  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 
 template <typename T>
 class SetTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_set_<T, true>{}(kNumElements); }
-
- protected:
-  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 
 template <typename T>
 class MapTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_map_<T, true>{}(kNumElements); }
-
- protected:
-  int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
 };
 }  // namespace shad_test_stl
 

@@ -48,17 +48,75 @@ using VTF = shad_test_stl::VectorTestFixture<T>;
 using VTF_TestTypes = ::testing::Types<std::vector<int>>;
 TYPED_TEST_CASE(VTF, VTF_TestTypes);
 
+TYPED_TEST(VTF, iota) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  this->test_void(std::iota<it_t, val_t>, shad_test_stl::iota_<it_t, val_t>, 0);
+}
+
 TYPED_TEST(VTF, accumulate) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
-  this->test(std::accumulate<it_t, val_t>,
-             shad_test_stl::accumulate_<it_t, val_t>, 0);
+  this->test(std::accumulate<it_t, val_t, std::plus<int>>,
+             shad_test_stl::accumulate_<it_t, val_t, std::plus<int>>, 0,
+             std::plus<int>{});
 }
 
-#ifdef STD_REDUCE_TEST
+TYPED_TEST(VTF, inner_product) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using combine_f = std::multiplies<val_t>;
+  using reduce_f = std::plus<val_t>;
+  auto other = shad_test_stl::create_vector_<TypeParam, false>{}(
+      shad_test_stl::kNumElements);
+  this->test(
+      std::inner_product<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad_test_stl::inner_product_<it_t, it_t, val_t, reduce_f, combine_f>,
+      other->begin(), 0, reduce_f{}, combine_f{});
+}
+
+// todo adjacent_difference
+// todo partial_sum
+// todo exclusive_scan
+// todo inclusive_scan
+
+#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(VTF, transform_reduce_two_containers) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using combine_f = std::multiplies<val_t>;
+  using reduce_f = std::plus<val_t>;
+  auto other = shad_test_stl::create_vector_<TypeParam, false>{}(
+      shad_test_stl::kNumElements);
+  this->test(
+      std::transform_reduce<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
+      other->begin(), 0, reduce_f{}, combine_f{});
+}
+#endif
+
+#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(VTF, transform_reduce_one_container) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test(std::transform_reduce<it_t, val_t, reduce_f, map_f>,
+             shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
+             reduce_f{}, map_f{});
+}
+#endif
+
+// todo transform_exclusive_scan
+// todo transform_inclusive_scan
+
+#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(VTF, std_reduce) {
   using it_t = typeof(this->in->begin());
-  this->test(std::reduce<it_t>, shad_test_stl::reduce_<it_t>);
+  using val_t = typename it_t::value_type;
+  using reduce_f = std::plus<val_t>;
+  this->test(std::reduce<it_t, val_t, reduce_f>,
+             shad_test_stl::reduce_<it_t, val_t, reduce_f>, 0, reduce_f{});
 }
 #endif
 
@@ -75,17 +133,74 @@ using ATF_TestTypes =
                      shad::array<int, shad_test_stl::kNumElements>>;
 TYPED_TEST_CASE(ATF, ATF_TestTypes);
 
+// todo
+// TYPED_TEST(ATF, iota) {
+//  using it_t = typeof(this->in->begin());
+//  using val_t = typename TypeParam::value_type;
+//  this->test_void(std::iota<it_t, val_t>, shad_test_stl::iota_<it_t, val_t>,
+//  0);
+//}
+
 TYPED_TEST(ATF, accumulate) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
-  this->test(std::accumulate<it_t, val_t>,
-             shad_test_stl::accumulate_<it_t, val_t>, 0);
+  this->test(std::accumulate<it_t, val_t, std::plus<int>>,
+             shad_test_stl::accumulate_<it_t, val_t, std::plus<int>>, 0,
+             std::plus<int>{});
 }
 
-#ifdef STD_REDUCE_TEST
+TYPED_TEST(ATF, inner_product) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using combine_f = std::multiplies<val_t>;
+  using reduce_f = std::plus<val_t>;
+  auto other = shad_test_stl::create_array_<TypeParam, false>{}();
+  this->test(
+      std::inner_product<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad_test_stl::inner_product_<it_t, it_t, val_t, reduce_f, combine_f>,
+      other->begin(), 0, reduce_f{}, combine_f{});
+}
+
+// todo adjacent_difference
+// todo partial_sum
+// todo exclusive_scan
+// todo inclusive_scan
+
+#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(ATF, transform_reduce_two_containers) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using combine_f = std::multiplies<val_t>;
+  using reduce_f = std::plus<val_t>;
+  auto other = shad_test_stl::create_array_<TypeParam, false>{}();
+  this->test(
+      std::transform_reduce<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
+      other->begin(), 0, reduce_f{}, combine_f{});
+}
+#endif
+
+#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(ATF, transform_reduce_one_container) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test(std::transform_reduce<it_t, val_t, reduce_f, map_f>,
+             shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
+             reduce_f{}, map_f{});
+}
+#endif
+
+// todo transform_exclusive_scan
+// todo transform_inclusive_scan
+
+#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(ATF, std_reduce) {
   using it_t = typeof(this->in->begin());
-  this->test(std::reduce<it_t>, shad_test_stl::reduce_<it_t>);
+  using reduce_f = std::plus<int>;
+  this->test(std::reduce<it_t, int, reduce_f>,
+             shad_test_stl::reduce_<it_t, int, reduce_f>, 0, reduce_f{});
 }
 #endif
 
@@ -104,14 +219,65 @@ TYPED_TEST_CASE(STF, STF_TestTypes);
 TYPED_TEST(STF, accumulate) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
-  this->test(std::accumulate<it_t, val_t>,
-             shad_test_stl::accumulate_<it_t, val_t>, 0);
+  this->test(std::accumulate<it_t, val_t, std::plus<int>>,
+             shad_test_stl::accumulate_<it_t, val_t, std::plus<int>>, 0,
+             std::plus<int>{});
 }
 
-#ifdef STD_REDUCE_TEST
+TYPED_TEST(STF, inner_product) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using combine_f = std::multiplies<val_t>;
+  using reduce_f = std::plus<val_t>;
+  auto other = shad_test_stl::create_set_<TypeParam, false>{}(
+      shad_test_stl::kNumElements);
+  this->test(
+      std::inner_product<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad_test_stl::inner_product_<it_t, it_t, val_t, reduce_f, combine_f>,
+      other->begin(), 0, reduce_f{}, combine_f{});
+}
+
+// todo adjacent_difference
+// todo partial_sum
+// todo exclusive_scan
+// todo inclusive_scan
+
+#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(STF, transform_reduce_two_containers) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using combine_f = std::multiplies<val_t>;
+  using reduce_f = std::plus<val_t>;
+  auto other = shad_test_stl::create_set_<TypeParam, false>{}(
+      shad_test_stl::kNumElements);
+  this->test(
+      std::transform_reduce<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
+      other->begin(), 0, reduce_f{}, combine_f{});
+}
+#endif
+
+#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(STF, transform_reduce_one_container) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test(std::transform_reduce<it_t, val_t, reduce_f, map_f>,
+             shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
+             reduce_f{}, map_f{});
+}
+#endif
+
+// todo transform_exclusive_scan
+// todo transform_inclusive_scan
+
+#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(STF, std_reduce) {
   using it_t = typeof(this->in->begin());
-  this->test(std::reduce<it_t>, shad_test_stl::reduce_<it_t>);
+  using reduce_f = std::plus<int>;
+  this->test(std::reduce<it_t, int, reduce_f>,
+             shad_test_stl::reduce_<it_t, int, reduce_f>, 0, reduce_f{});
 }
 #endif
 
@@ -130,14 +296,71 @@ TYPED_TEST_CASE(MTF, MTF_TestTypes);
 TYPED_TEST(MTF, accumulate) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
-  using op_t = shad_test_stl::pair_acc<int, val_t>;
-  this->test(std::accumulate<it_t, int, op_t>,
-             shad_test_stl::accumulate_<it_t, int, op_t>, 0, op_t{});
+  auto op_t = [](int64_t acc, const val_t &p) {
+    return acc + shad_test_stl::to_int64<val_t>{}(p);
+  };
+  this->test(std::accumulate<it_t, int64_t, typeof(op_t)>,
+             shad_test_stl::accumulate_<it_t, int64_t, typeof(op_t)>, 0, op_t);
 }
 
-#ifdef STD_REDUCE_TEST
+TYPED_TEST(MTF, inner_product) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using acc_t = std::pair<int, int>;
+  using combine_f = std::multiplies<val_t>;
+  using reduce_f = std::plus<val_t>;
+  auto other = shad_test_stl::create_map_<TypeParam, false>{}(
+      shad_test_stl::kNumElements);
+  this->test(
+      std::inner_product<it_t, it_t, acc_t, reduce_f, combine_f>,
+      shad_test_stl::inner_product_<it_t, it_t, acc_t, reduce_f, combine_f>,
+      this->in->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
+}
+
+// todo adjacent_difference
+// todo partial_sum
+// todo exclusive_scan
+// todo inclusive_scan
+
+#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(MTF, transform_reduce_two_containers) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using acc_t = std::pair<int, int>;
+  using combine_f = std::multiplies<val_t>;
+  using reduce_f = std::plus<val_t>;
+  auto other = shad_test_stl::create_map_<TypeParam, false>{}(
+      shad_test_stl::kNumElements);
+  this->test(
+      std::transform_reduce<it_t, it_t, acc_t, reduce_f, combine_f>,
+      shad_test_stl::transform_reduce_<it_t, it_t, acc_t, reduce_f, combine_f>,
+      other->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
+}
+#endif
+
+#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(MTF, transform_reduce_one_container) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using acc_t = std::pair<int, int>;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test(std::transform_reduce<it_t, acc_t, reduce_f, map_f>,
+             shad_test_stl::transform_reduce_<it_t, acc_t, reduce_f, map_f>,
+             std::make_pair(0, 0), reduce_f{}, map_f{});
+}
+#endif
+
+// todo transform_exclusive_scan
+// todo transform_inclusive_scan
+
+#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(MTF, std_reduce) {
   using it_t = typeof(this->in->begin());
-  this->test(std::reduce<it_t>, shad_test_stl::reduce_<it_t>);
+  using acc_t = std::pair<int, int>;
+  using reduce_f = std::plus<acc_t>;
+  this->test(std::reduce<it_t, acc_t, reduce_f>,
+             shad_test_stl::reduce_<it_t, acc_t, reduce_f>,
+             std::make_pair(0, 0), reduce_f{});
 }
 #endif
