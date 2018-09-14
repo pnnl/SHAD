@@ -94,8 +94,8 @@ TYPED_TEST(VTF, partial_sum) {
                            sum_f{});
 }
 
-// todo double-check STL parameter ordering for exclusive/inclusive_scan
 #ifndef PARTIAL_STD_TESTS
+// todo double-check STL parameter ordering for exclusive/inclusive_scan
 TYPED_TEST(VTF, inclusive_scan) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -126,9 +126,7 @@ TYPED_TEST(VTF, transform_reduce_two_containers) {
       shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
       other->begin(), 0, reduce_f{}, combine_f{});
 }
-#endif
 
-#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(VTF, transform_reduce_one_container) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -138,12 +136,31 @@ TYPED_TEST(VTF, transform_reduce_one_container) {
              shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
              reduce_f{}, map_f{});
 }
-#endif
 
-// todo transform_exclusive_scan
-// todo transform_inclusive_scan
+TYPED_TEST(VTF, transform_inclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test_io_assignment(
+      std::transform_inclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
+      shad_test_stl::transform_inclusive_scan_<it_t, it_t, val_t, reduce_f,
+                                               map_f>,
+      reduce_f{}, map_f{}, 0);
+}
 
-#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(VTF, transform_exclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test_io_assignment(
+      std::transform_exclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
+      shad_test_stl::transform_exclusive_scan_<it_t, it_t, val_t, reduce_f,
+                                               map_f>,
+      0, reduce_f{}, map_f{});
+}
+
 TYPED_TEST(VTF, std_reduce) {
   using it_t = typeof(this->in->begin());
   using val_t = typename it_t::value_type;
@@ -242,9 +259,7 @@ TYPED_TEST(ATF, transform_reduce_two_containers) {
       shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
       other->begin(), 0, reduce_f{}, combine_f{});
 }
-#endif
 
-#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(ATF, transform_reduce_one_container) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -254,12 +269,31 @@ TYPED_TEST(ATF, transform_reduce_one_container) {
              shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
              reduce_f{}, map_f{});
 }
-#endif
 
-// todo transform_exclusive_scan
-// todo transform_inclusive_scan
+TYPED_TEST(ATF, transform_inclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test_io_assignment(
+      std::transform_inclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
+      shad_test_stl::transform_inclusive_scan_<it_t, it_t, val_t, reduce_f,
+                                               map_f>,
+      reduce_f{}, map_f{}, 0);
+}
 
-#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(ATF, transform_exclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test_io_assignment(
+      std::transform_exclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
+      shad_test_stl::transform_exclusive_scan_<it_t, it_t, val_t, reduce_f,
+                                               map_f>,
+      0, reduce_f{}, map_f{});
+}
+
 TYPED_TEST(ATF, std_reduce) {
   using it_t = typeof(this->in->begin());
   using reduce_f = std::plus<int>;
@@ -355,9 +389,7 @@ TYPED_TEST(STF, transform_reduce_two_containers) {
       shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
       other->begin(), 0, reduce_f{}, combine_f{});
 }
-#endif
 
-#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(STF, transform_reduce_one_container) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -367,12 +399,33 @@ TYPED_TEST(STF, transform_reduce_one_container) {
              shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
              reduce_f{}, map_f{});
 }
-#endif
 
-// todo transform_exclusive_scan
-// todo transform_inclusive_scan
+TYPED_TEST(STF, transform_inclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test_io_inserters(
+      std::transform_inclusive_scan<it_t, out_it_t, val_t, reduce_f, map_f>,
+      shad_test_stl::transform_inclusive_scan_<it_t, out_it_t, val_t, reduce_f,
+                                               map_f>,
+      reduce_f{}, map_f{}, 0);
+}
 
-#ifndef PARTIAL_STD_TESTS
+TYPED_TEST(STF, transform_exclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  using reduce_f = std::plus<val_t>;
+  this->test_io_inserters(
+      std::transform_exclusive_scan<it_t, out_it_t, val_t, reduce_f, map_f>,
+      shad_test_stl::transform_exclusive_scan_<it_t, out_it_t, val_t, reduce_f,
+                                               map_f>,
+      0, reduce_f{}, map_f{});
+}
+
 TYPED_TEST(STF, std_reduce) {
   using it_t = typeof(this->in->begin());
   using reduce_f = std::plus<int>;

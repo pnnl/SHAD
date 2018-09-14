@@ -107,12 +107,11 @@ OutputIt exclusive_scan_(InputIt first, InputIt last, OutputIt d_first, T init,
                          BinaryOperation binary_op) {
   if (first == last) return d_first;
 
-  T sum = init, bck = init;
+  T sum = std::move(init);
 
   do {
     *d_first = sum;
-    bck = binary_op(std::move(sum), *first);  // std::move since C++20
-    sum = bck;
+    sum = binary_op(std::move(sum), *first);  // std::move since C++20
     ++d_first;
   } while (++first != last);
   return ++d_first;
@@ -140,16 +139,38 @@ T transform_reduce_(InputIt first, InputIt last, T init, BinaryOp binop,
 // todo transform_exclusive_scan_
 template <class InputIt, class OutputIt, class T, class BinaryOperation,
           class UnaryOperation>
-OutputIt transform_exclusive_scan(InputIt first, InputIt last, OutputIt d_first,
-                                  T init, BinaryOperation binary_op,
-                                  UnaryOperation unary_op);
+OutputIt transform_exclusive_scan_(InputIt first, InputIt last,
+                                   OutputIt d_first, T init,
+                                   BinaryOperation binary_op,
+                                   UnaryOperation unary_op) {
+  if (first == last) return d_first;
 
-// todo transform_inclusive_scan_
-template <class InputIt, class OutputIt, class BinaryOperation,
-          class UnaryOperation, class T>
-OutputIt transform_inclusive_scan(InputIt first, InputIt last, OutputIt d_first,
-                                  BinaryOperation binary_op,
-                                  UnaryOperation unary_op, T init);
+  T sum = unary_op(std::move(init));
+
+  do {
+    *d_first = sum;
+    sum = binary_op(std::move(sum), unary_op(*first));  // std::move since C++20
+    ++d_first;
+  } while (++first != last);
+  return ++d_first;
+}
+
+template <class InputIt, class OutputIt, class T, class BinaryOperation,
+          class UnaryOperation>
+OutputIt transform_inclusive_scan_(InputIt first, InputIt last,
+                                   OutputIt d_first, BinaryOperation binary_op,
+                                   UnaryOperation unary_op, T init) {
+  if (first == last) return d_first;
+
+  T sum = binary_op(std::move(init), unary_op(*first));
+  *d_first = sum;
+
+  while (++first != last) {
+    sum = binary_op(std::move(sum), unary_op(*first));  // std::move since C++20
+    *++d_first = sum;
+  }
+  return ++d_first;
+}
 
 template <class InputIt, class T, class BinaryOp>
 T reduce_(InputIt first, InputIt last, T init, BinaryOp binary_op) {
