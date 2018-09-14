@@ -342,6 +342,8 @@ TYPED_TEST(ATF, shad_find) {
 
 // search_n - todo
 
+// todo fill, transform, generate, replace, replace_if
+
 ///////////////////////////////////////
 //
 // shad::unordered_set
@@ -649,6 +651,8 @@ TYPED_TEST(STF, shad_find) {
 
 // search_n - todo
 
+// todo transform, generate
+
 ///////////////////////////////////////
 //
 // shad::unordered_map
@@ -953,5 +957,7 @@ TYPED_TEST(MTF, shad_find) {
 // todo adjacent_find
 // todo search
 #endif
+
+// todo transform, generate
 
 // search_n - todo

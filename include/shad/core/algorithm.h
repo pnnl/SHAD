@@ -34,13 +34,13 @@
 #include <vector>
 
 #include "shad/core/execution.h"
-#include "shad/distributed_iterator_traits.h"
 #include "shad/core/impl/minimum_maximum_ops.h"
+#include "shad/core/impl/modifyng_sequence_ops.h"
 #include "shad/core/impl/non_modifyng_sequence_ops.h"
+#include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
 namespace shad {
-
 //  TODO non_modifyng_sequence_ops/for_each_n
 //  TODO non_modifyng_sequence_ops/mismatch
 //  TODO non_modifyng_sequence_ops/find_end
@@ -54,7 +54,7 @@ namespace shad {
 //          non_modifyng_sequence_ops           //
 //                                              //
 // ---------------------------------------------//
-  
+
 template <typename ExecutionPolicy, typename ForwardItr,
           typename UnaryPredicate>
 bool all_of(ExecutionPolicy&& policy, ForwardItr first, ForwardItr last,
@@ -128,27 +128,27 @@ typename shad::distributed_iterator_traits<InputItr>::difference_type count_if(
 
 template <class ForwardIt>
 ForwardIt max_element(ForwardIt first, ForwardIt last) {
-  return impl::max_element(distributed_sequential_tag{},
-                           first, last, std::greater<>());
+  return impl::max_element(distributed_sequential_tag{}, first, last,
+                           std::greater<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt>
-ForwardIt max_element(ExecutionPolicy&& policy,
-                      ForwardIt first, ForwardIt last) {
-  return impl::max_element(std::forward<ExecutionPolicy>(policy),
-                           first, last, std::greater<>());
+ForwardIt max_element(ExecutionPolicy&& policy, ForwardIt first,
+                      ForwardIt last) {
+  return impl::max_element(std::forward<ExecutionPolicy>(policy), first, last,
+                           std::greater<>());
 }
 
 template <class ForwardIt, class Compare>
-ForwardIt max_element(ForwardIt first, ForwardIt last, Compare comp ) {
+ForwardIt max_element(ForwardIt first, ForwardIt last, Compare comp) {
   return impl::max_element(distributed_sequential_tag{}, first, last, comp);
 }
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
-ForwardIt max_element(ExecutionPolicy&& policy,
-                      ForwardIt first, ForwardIt last, Compare comp ) {
-  return impl::max_element(std::forward<ExecutionPolicy>(policy),
-                           first, last, comp);
+ForwardIt max_element(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+                      Compare comp) {
+  return impl::max_element(std::forward<ExecutionPolicy>(policy), first, last,
+                           comp);
 }
 
 //  ---------------  //
@@ -157,57 +157,100 @@ ForwardIt max_element(ExecutionPolicy&& policy,
 
 template <class ForwardIt>
 ForwardIt min_element(ForwardIt first, ForwardIt last) {
-  return impl::min_element(distributed_sequential_tag{},
-                           first, last, std::less<>());
+  return impl::min_element(distributed_sequential_tag{}, first, last,
+                           std::less<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt>
-ForwardIt min_element(ExecutionPolicy&& policy,
-                      ForwardIt first, ForwardIt last) {
-  return impl::min_element(std::forward<ExecutionPolicy>(policy),
-                           first, last, std::less<>());
+ForwardIt min_element(ExecutionPolicy&& policy, ForwardIt first,
+                      ForwardIt last) {
+  return impl::min_element(std::forward<ExecutionPolicy>(policy), first, last,
+                           std::less<>());
 }
 
 template <class ForwardIt, class Compare>
-ForwardIt min_element(ForwardIt first, ForwardIt last, Compare comp ) {
+ForwardIt min_element(ForwardIt first, ForwardIt last, Compare comp) {
   return impl::min_element(distributed_sequential_tag{}, first, last, comp);
 }
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
-ForwardIt min_element(ExecutionPolicy&& policy,
-                      ForwardIt first, ForwardIt last, Compare comp ) {
-  return impl::min_element(std::forward<ExecutionPolicy>(policy),
-                           first, last, comp);
+ForwardIt min_element(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+                      Compare comp) {
+  return impl::min_element(std::forward<ExecutionPolicy>(policy), first, last,
+                           comp);
 }
-
 
 //  ------------------  //
 //  | minmax_element |  //
 //  ------------------ //
 
 template <class ForwardIt>
-std::pair<ForwardIt,ForwardIt> minmax_element(ForwardIt first,
-                                              ForwardIt last) {
+std::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first,
+                                               ForwardIt last) {
   return impl::minmax_element(distributed_sequential_tag{}, first, last);
 }
 
 template <class ExecutionPolicy, class ForwardIt>
-std::pair<ForwardIt,ForwardIt> minmax_element(ExecutionPolicy&& policy,
-                      ForwardIt first, ForwardIt last) {
-  return impl::minmax_element(std::forward<ExecutionPolicy>(policy), first, last);
+std::pair<ForwardIt, ForwardIt> minmax_element(ExecutionPolicy&& policy,
+                                               ForwardIt first,
+                                               ForwardIt last) {
+  return impl::minmax_element(std::forward<ExecutionPolicy>(policy), first,
+                              last);
 }
 
 template <class ForwardIt, class Compare>
-std::pair<ForwardIt,ForwardIt> minmax_element(ForwardIt first, ForwardIt last,
-                                              Compare comp ) {
+std::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first, ForwardIt last,
+                                               Compare comp) {
   return impl::minmax_element(distributed_sequential_tag{}, first, last, comp);
 }
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
-std::pair<ForwardIt,ForwardIt> minmax_element(ExecutionPolicy&& policy,
-                      ForwardIt first, ForwardIt last, Compare comp ) {
-  return impl::minmax_element(std::forward<ExecutionPolicy>(policy),
-                           first, last, comp);
+std::pair<ForwardIt, ForwardIt> minmax_element(ExecutionPolicy&& policy,
+                                               ForwardIt first, ForwardIt last,
+                                               Compare comp) {
+  return impl::minmax_element(std::forward<ExecutionPolicy>(policy), first,
+                              last, comp);
+}
+
+// ---------------------------------------------//
+//                                              //
+//            modifyng_sequence_ops             //
+//                                              //
+// ---------------------------------------------//
+
+template <class ExecutionPolicy, class ForwardIt, class T>
+void fill(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+          const T& value) {
+  impl::fill(std::forward<ExecutionPolicy>(policy), first, last, value);
+}
+
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
+          class UnaryOperation>
+ForwardIt2 transform(ExecutionPolicy&& policy, ForwardIt1 first1,
+                     ForwardIt1 last1, ForwardIt2 d_first,
+                     UnaryOperation unary_op) {
+  return impl::transform(std::forward<ExecutionPolicy>(policy), first1, last1,
+                         d_first, unary_op);
+}
+
+template <class ExecutionPolicy, class ForwardIt, class Generator>
+void generate(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+              Generator g) {
+  impl::generate(std::forward<ExecutionPolicy>(policy), first, last, g);
+}
+
+template <class ExecutionPolicy, class ForwardIt, class T>
+void replace(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+             const T& old_value, const T& new_value) {
+  impl::replace(std::forward<ExecutionPolicy>(policy), first, last, old_value,
+                new_value);
+}
+
+template <class ExecutionPolicy, class ForwardIt, class UnaryPredicate, class T>
+void replace_if(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+                UnaryPredicate p, const T& new_value) {
+  impl::replace_if(std::forward<ExecutionPolicy>(policy), first, last, p,
+                   new_value);
 }
 }  // namespace shad
 
