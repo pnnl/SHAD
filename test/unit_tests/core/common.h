@@ -58,6 +58,15 @@ struct plus<std::pair<T1, T2>> {
 };
 
 template <class T1, class T2>
+struct minus<std::pair<T1, T2>> {
+  using T = std::pair<T1, T2>;
+  T operator()(const T &p1, const T &p2) {
+    return std::make_pair(std::minus<T1>{}(p1.first, p2.first),
+                          std::minus<T2>{}(p1.second, p2.second));
+  }
+};
+
+template <class T1, class T2>
 struct multiplies<std::pair<T1, T2>> {
   using T = std::pair<T1, T2>;
   T operator()(const T &p1, const T &p2) {
@@ -71,45 +80,6 @@ namespace shad_test_stl {
 
 static constexpr size_t kNumElements = 1024;
 static constexpr size_t substr_len = 32;
-
-// test for ordering awareness
-template <typename T>
-struct is_ordered_container;
-
-template <typename U>
-struct is_ordered_container<std::vector<U>> {
-  static constexpr bool value = true;
-};
-
-template <typename U, size_t size>
-struct is_ordered_container<std::array<U, size>> {
-  static constexpr bool value = true;
-};
-
-template <typename U, size_t size>
-struct is_ordered_container<shad::array<U, size>> {
-  static constexpr bool value = true;
-};
-
-template <typename U>
-struct is_ordered_container<std::unordered_set<U>> {
-  static constexpr bool value = false;
-};
-
-template <typename U>
-struct is_ordered_container<shad::unordered_set<U>> {
-  static constexpr bool value = false;
-};
-
-template <typename U, typename V>
-struct is_ordered_container<std::unordered_map<U, V>> {
-  static constexpr bool value = false;
-};
-
-template <typename U, typename V>
-struct is_ordered_container<shad::unordered_map<U, V>> {
-  static constexpr bool value = false;
-};
 
 // container creation and expected checksum
 template <typename T, bool even>
@@ -387,7 +357,7 @@ struct to_int64<std::pair<T1, T2>> {
 // checksums
 template <typename It>
 int64_t checksum(It first, It last) {
-  using val_t = typename It::value_type;
+  using val_t = typename std::iterator_traits<It>::value_type;
   int64_t res = 0;
   for (auto it = first; it != last; ++it) res += to_int64<val_t>{}(*it);
   return res;
@@ -395,7 +365,7 @@ int64_t checksum(It first, It last) {
 
 template <typename It>
 int64_t ordered_checksum(It first, It last) {
-  using val_t = typename It::value_type;
+  using val_t = typename std::iterator_traits<It>::value_type;
   int64_t res = 0, pos = 1;
   for (auto it = first; it != last; ++it) res += pos++ * to_int64<val_t>{}(*it);
   return res;
@@ -412,32 +382,22 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
-  template <typename F, typename... args_>
-  void test_void(F &&sub_f, F &&obj_f, args_... args) {
+  template <typename F, typename checksum_t, typename... args_>
+  void test_void(F &&sub_f, F &&obj_f, checksum_t checksum_f, args_... args) {
     int64_t obs, exp;
-    bool ordered = is_ordered_container<T>::value;
     sub_f(in->begin(), in->end(), args...);
-    obs = ordered ? ordered_checksum(in->begin(), in->end())
-                  : checksum(in->begin(), in->end());
+    obs = checksum_f(in->begin(), in->end());
     obj_f(in->begin(), in->end(), args...);
-    exp = ordered ? ordered_checksum(in->begin(), in->end())
-                  : checksum(in->begin(), in->end());
+    exp = checksum_f(in->begin(), in->end());
     ASSERT_EQ(obs, exp);
   }
 
   template <typename F, typename OutputIt, typename... args_>
-  void test_io(F &&sub_f, F &&obj_f, OutputIt sub_out_it, OutputIt obj_out_it,
-               args_... args) {
+  void run_io(F &&sub_f, F &&obj_f, OutputIt sub_out_it, OutputIt obj_out_it,
+              args_... args) {
     int64_t obs, exp;
-    OutputIt res;
-    bool ordered = is_ordered_container<T>::value;
-    res = sub_f(in->begin(), in->end(), sub_out_it, args...);
-    obs = ordered ? ordered_checksum(sub_out_it->begin(), res)
-                  : checksum(sub_out_it->begin(), res);
+    sub_f(in->begin(), in->end(), sub_out_it, args...);
     obj_f(in->begin(), in->end(), obj_out_it, args...);
-    exp = ordered ? ordered_checksum(obj_out_it->begin(), res)
-                  : checksum(sub_out_it->begin(), res);
-    ASSERT_EQ(obs, exp);
   }
 
   template <typename ExecutionPolicy, typename FS, typename FO,

@@ -51,7 +51,8 @@ TYPED_TEST_CASE(VTF, VTF_TestTypes);
 TYPED_TEST(VTF, iota) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
-  this->test_void(std::iota<it_t, val_t>, shad_test_stl::iota_<it_t, val_t>, 0);
+  this->test_void(std::iota<it_t, val_t>, shad_test_stl::iota_<it_t, val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, 0);
 }
 
 TYPED_TEST(VTF, accumulate) {
@@ -75,7 +76,22 @@ TYPED_TEST(VTF, inner_product) {
       other->begin(), 0, reduce_f{}, combine_f{});
 }
 
-// todo adjacent_difference
+TYPED_TEST(VTF, adjacent_difference) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using diff_f = std::minus<val_t>;
+  auto out1 = shad_test_stl::create_vector_<TypeParam, false>{}(
+      shad_test_stl::kNumElements);
+  auto out2 = shad_test_stl::create_vector_<TypeParam, false>{}(
+      shad_test_stl::kNumElements);
+  this->run_io(std::adjacent_difference<it_t, it_t, diff_f>,
+               shad_test_stl::adjacent_difference_<it_t, it_t, diff_f>,
+               out1->begin(), out2->begin(), diff_f{});
+  auto obs = shad_test_stl::ordered_checksum(out1->begin(), out1->end());
+  auto exp = shad_test_stl::ordered_checksum(out2->begin(), out2->end());
+  ASSERT_EQ(obs, exp);
+}
+
 // todo partial_sum
 // todo exclusive_scan
 // todo inclusive_scan
@@ -161,7 +177,20 @@ TYPED_TEST(ATF, inner_product) {
       other->begin(), 0, reduce_f{}, combine_f{});
 }
 
-// todo adjacent_difference
+TYPED_TEST(ATF, adjacent_difference) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using diff_f = std::minus<val_t>;
+  auto out1 = shad_test_stl::create_array_<TypeParam, false>{}();
+  auto out2 = shad_test_stl::create_array_<TypeParam, false>{}();
+  this->run_io(std::adjacent_difference<it_t, it_t, diff_f>,
+               shad_test_stl::adjacent_difference_<it_t, it_t, diff_f>,
+               out1->begin(), out2->begin(), diff_f{});
+  auto obs = shad_test_stl::ordered_checksum(out1->begin(), out1->end());
+  auto exp = shad_test_stl::ordered_checksum(out2->begin(), out2->end());
+  ASSERT_EQ(obs, exp);
+}
+
 // todo partial_sum
 // todo exclusive_scan
 // todo inclusive_scan
@@ -237,7 +266,22 @@ TYPED_TEST(STF, inner_product) {
       other->begin(), 0, reduce_f{}, combine_f{});
 }
 
-// todo adjacent_difference
+TYPED_TEST(STF, adjacent_difference) {
+  using it_t = typename TypeParam::iterator;
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using diff_f = std::minus<val_t>;
+  auto out1 = shad_test_stl::create_set_<TypeParam, false>{}(0);
+  auto out2 = shad_test_stl::create_set_<TypeParam, false>{}(0);
+  out_it_t out1_it(*out1, out1->begin()), out2_it(*out2, out2->begin());
+  this->run_io(std::adjacent_difference<it_t, out_it_t, diff_f>,
+               shad_test_stl::adjacent_difference_<it_t, out_it_t, diff_f>,
+               out1_it, out2_it, diff_f{});
+  auto obs = shad_test_stl::checksum(out1->begin(), out1->end());
+  auto exp = shad_test_stl::checksum(out2->begin(), out2->end());
+  ASSERT_EQ(obs, exp);
+}
+
 // todo partial_sum
 // todo exclusive_scan
 // todo inclusive_scan
@@ -289,8 +333,8 @@ TYPED_TEST(STF, std_reduce) {
 template <typename T>
 using MTF = shad_test_stl::MapTestFixture<T>;
 
-using MTF_TestTypes = ::testing::Types<std::unordered_map<int, int>,
-                                       shad::unordered_map<int, int>>;
+using MTF_TestTypes = ::testing::Types<std::unordered_map<int, int>/*,
+                                       shad::unordered_map<int, int>*/>;
 TYPED_TEST_CASE(MTF, MTF_TestTypes);
 
 TYPED_TEST(MTF, accumulate) {
@@ -317,7 +361,8 @@ TYPED_TEST(MTF, inner_product) {
       this->in->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
 }
 
-// todo adjacent_difference
+// todo adjacent_difference - not compiling
+
 // todo partial_sum
 // todo exclusive_scan
 // todo inclusive_scan
