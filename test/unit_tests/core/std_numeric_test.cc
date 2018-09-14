@@ -94,10 +94,26 @@ TYPED_TEST(VTF, partial_sum) {
                            sum_f{});
 }
 
-// todo exclusive_scan
-// todo inclusive_scan
-
+// todo double-check STL parameter ordering for exclusive/inclusive_scan
 #ifndef PARTIAL_STD_TESTS
+TYPED_TEST(VTF, inclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using sum_f = std::plus<val_t>;
+  this->test_io_assignment(
+      std::inclusive_scan<it_t, it_t, val_t, sum_f>,
+      shad_test_stl::inclusive_scan_<it_t, it_t, val_t, sum_f>, sum_f{}, 0);
+}
+
+TYPED_TEST(VTF, exclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using sum_f = std::plus<val_t>;
+  this->test_io_assignment(
+      std::exclusive_scan<it_t, it_t, val_t, sum_f>,
+      shad_test_stl::exclusive_scan_<it_t, it_t, val_t, sum_f>, 0, sum_f{});
+}
+
 TYPED_TEST(VTF, transform_reduce_two_containers) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -196,10 +212,26 @@ TYPED_TEST(ATF, partial_sum) {
                            sum_f{});
 }
 
-// todo exclusive_scan
-// todo inclusive_scan
-
+// todo double-check STL parameter ordering for exclusive/inclusive_scan
 #ifndef PARTIAL_STD_TESTS
+TYPED_TEST(ATF, inclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using sum_f = std::plus<val_t>;
+  this->test_io_assignment(
+      std::inclusive_scan<it_t, it_t, val_t, sum_f>,
+      shad_test_stl::inclusive_scan_<it_t, it_t, val_t, sum_f>, sum_f{}, 0);
+}
+
+TYPED_TEST(ATF, exclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using sum_f = std::plus<val_t>;
+  this->test_io_assignment(
+      std::exclusive_scan<it_t, it_t, val_t, sum_f>,
+      shad_test_stl::exclusive_scan_<it_t, it_t, val_t, sum_f>, 0, sum_f{});
+}
+
 TYPED_TEST(ATF, transform_reduce_two_containers) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -290,10 +322,28 @@ TYPED_TEST(STF, partial_sum) {
                           sum_f{});
 }
 
-// todo exclusive_scan
-// todo inclusive_scan
-
+// todo double-check STL parameter ordering for exclusive/inclusive_scan
 #ifndef PARTIAL_STD_TESTS
+TYPED_TEST(STF, inclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using sum_f = std::plus<val_t>;
+  this->test_io_inserters(
+      std::inclusive_scan<it_t, out_it_t, val_t, sum_f>,
+      shad_test_stl::inclusive_scan_<it_t, out_it_t, val_t, sum_f>, sum_f{}, 0);
+}
+
+TYPED_TEST(STF, exclusive_scan) {
+  using it_t = typeof(this->in->begin());
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using sum_f = std::plus<val_t>;
+  this->test_io_inserters(
+      std::exclusive_scan<it_t, out_it_t, val_t, sum_f>,
+      shad_test_stl::exclusive_scan_<it_t, out_it_t, val_t, sum_f>, 0, sum_f{});
+}
+
 TYPED_TEST(STF, transform_reduce_two_containers) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -368,13 +418,12 @@ TYPED_TEST(MTF, inner_product) {
       this->in->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
 }
 
+#ifndef PARTIAL_STD_TESTS
 // todo adjacent_difference - not compiling
 // todo partial sum - not compiling
+// todo exclusive_scan - not compiling
+// todo inclusive_scan - not compiling
 
-// todo exclusive_scan
-// todo inclusive_scan
-
-#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(MTF, transform_reduce_two_containers) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
