@@ -166,13 +166,12 @@ using ATF_TestTypes =
                      shad::array<int, shad_test_stl::kNumElements>>;
 TYPED_TEST_CASE(ATF, ATF_TestTypes);
 
-// todo
-// TYPED_TEST(ATF, iota) {
-//  using it_t = typeof(this->in->begin());
-//  using val_t = typename TypeParam::value_type;
-//  this->test_void(std::iota<it_t, val_t>, shad_test_stl::iota_<it_t, val_t>,
-//  0);
-//}
+TYPED_TEST(ATF, iota) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  this->test_void(std::iota<it_t, val_t>, shad_test_stl::iota_<it_t, val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, 0);
+}
 
 TYPED_TEST(ATF, accumulate) {
   using it_t = typeof(this->in->begin());
