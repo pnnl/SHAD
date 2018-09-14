@@ -392,12 +392,29 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
-  template <typename F, typename OutputIt, typename... args_>
-  void run_io(F &&sub_f, F &&obj_f, OutputIt sub_out_it, OutputIt obj_out_it,
-              args_... args) {
-    int64_t obs, exp;
-    sub_f(in->begin(), in->end(), sub_out_it, args...);
-    obj_f(in->begin(), in->end(), obj_out_it, args...);
+  template <typename F, typename... args_>
+  void test_io_inserters(F &&sub_f, F &&obj_f, args_... args) {
+    using out_it_t = std::insert_iterator<T>;
+    auto out1 = create_output_container(0);
+    auto out2 = create_output_container(0);
+    out_it_t out1_it(*out1, out1->begin()), out2_it(*out2, out2->begin());
+    sub_f(in->begin(), in->end(), out1_it, args...);
+    obj_f(in->begin(), in->end(), out2_it, args...);
+    auto obs = checksum(out1->begin(), out1->end());
+    auto exp = checksum(out2->begin(), out2->end());
+    ASSERT_EQ(obs, exp);
+  }
+
+  template <typename F, typename... args_>
+  void test_io_assignment(F &&sub_f, F &&obj_f, args_... args) {
+    using out_it_t = std::insert_iterator<T>;
+    auto out1 = create_output_container(in->size());
+    auto out2 = create_output_container(in->size());
+    sub_f(in->begin(), in->end(), out1->begin(), args...);
+    obj_f(in->begin(), in->end(), out2->begin(), args...);
+    auto obs = checksum(out1->begin(), out1->end());
+    auto exp = checksum(out2->begin(), out2->end());
+    ASSERT_EQ(obs, exp);
   }
 
   template <typename ExecutionPolicy, typename FS, typename FO,
@@ -415,28 +432,39 @@ class TestFixture : public ::testing::Test {
   std::shared_ptr<T> in;
 
   int64_t expected_checksum() { return expected_checksum_<true>(kNumElements); }
+  virtual std::shared_ptr<T> create_output_container(size_t) = 0;
 };
 
 template <typename T>
 class VectorTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_vector_<T, true>{}(kNumElements); }
-
- protected:
+  std::shared_ptr<T> create_output_container(size_t size) {
+    return create_vector_<T, false>{}(size);
+  }
 };
 
 template <typename T>
 class ArrayTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_array_<T, true>{}(); }
+  std::shared_ptr<T> create_output_container(size_t) {
+    return create_array_<T, false>{}();
+  }
 };
 
 template <typename T>
 class SetTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_set_<T, true>{}(kNumElements); }
+  std::shared_ptr<T> create_output_container(size_t size) {
+    return create_set_<T, false>{}(size);
+  }
 };
 
 template <typename T>
 class MapTestFixture : public TestFixture<T> {
   void SetUp() { this->in = create_map_<T, true>{}(kNumElements); }
+  std::shared_ptr<T> create_output_container(size_t size) {
+    return create_map_<T, false>{}(size);
+  }
 };
 }  // namespace shad_test_stl
 
