@@ -429,6 +429,52 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
+  template <typename ExecutionPolicy, typename FS, typename FO,
+            typename checksum_t, typename... args_>
+  void test_void_with_policy(ExecutionPolicy &&policy, FS &&sub_f, FO &&obj_f,
+                             checksum_t checksum_f, args_... args) {
+    int64_t obs, exp;
+    sub_f(std::forward<ExecutionPolicy>(policy), in->begin(), in->end(),
+          args...);
+    obs = checksum_f(in->begin(), in->end());
+    obj_f(in->begin(), in->end(), args...);
+    exp = checksum_f(in->begin(), in->end());
+    ASSERT_EQ(obs, exp);
+  }
+
+  template <typename ExecutionPolicy, typename FS, typename FO,
+            typename checksum_t, typename... args_>
+  void test_io_inserters_with_policy(ExecutionPolicy &&policy, FS &&sub_f,
+                                     FO &&obj_f, checksum_t checksum_f,
+                                     args_... args) {
+    using out_it_t = std::insert_iterator<T>;
+    auto out1 = create_output_container(0);
+    auto out2 = create_output_container(0);
+    out_it_t out1_it(*out1, out1->begin()), out2_it(*out2, out2->begin());
+    sub_f(std::forward<ExecutionPolicy>(policy), in->begin(), in->end(),
+          out1_it, args...);
+    obj_f(in->begin(), in->end(), out2_it, args...);
+    auto obs = checksum(out1->begin(), out1->end());
+    auto exp = checksum(out2->begin(), out2->end());
+    ASSERT_EQ(obs, exp);
+  }
+
+  template <typename ExecutionPolicy, typename FS, typename FO,
+            typename checksum_t, typename... args_>
+  void test_io_assignment_with_policy(ExecutionPolicy &&policy, FS &&sub_f,
+                                      FO &&obj_f, checksum_t checksum_f,
+                                      args_... args) {
+    using out_it_t = std::insert_iterator<T>;
+    auto out1 = create_output_container(in->size());
+    auto out2 = create_output_container(in->size());
+    sub_f(std::forward<ExecutionPolicy>(policy), in->begin(), in->end(),
+          out1->begin(), args...);
+    obj_f(in->begin(), in->end(), out2->begin(), args...);
+    auto obs = checksum(out1->begin(), out1->end());
+    auto exp = checksum(out2->begin(), out2->end());
+    ASSERT_EQ(obs, exp);
+  }
+
  protected:
   virtual ~TestFixture() {}
   std::shared_ptr<T> in;
