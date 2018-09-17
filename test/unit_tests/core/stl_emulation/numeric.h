@@ -117,7 +117,6 @@ OutputIt exclusive_scan_(InputIt first, InputIt last, OutputIt d_first, T init,
   return ++d_first;
 }
 
-// todo transform_reduce_ over two collections
 template <class InputIt1, class InputIt2, class T, class BinaryOp1,
           class BinaryOp2>
 T transform_reduce_(InputIt1 first1, InputIt1 last1, InputIt2 first2, T init,
@@ -125,7 +124,6 @@ T transform_reduce_(InputIt1 first1, InputIt1 last1, InputIt2 first2, T init,
   return inner_product_(first1, last1, first2, init, binary_op1, binary_op2);
 }
 
-// todo transform_reduce_ over one collections
 template <class InputIt, class T, class BinaryOp, class UnaryOp>
 T transform_reduce_(InputIt first, InputIt last, T init, BinaryOp binop,
                     UnaryOp unary_op) {
@@ -136,7 +134,6 @@ T transform_reduce_(InputIt first, InputIt last, T init, BinaryOp binop,
   return inner_product_(first, last, first, init, binop, combine_f);
 }
 
-// todo transform_exclusive_scan_
 template <class InputIt, class OutputIt, class T, class BinaryOperation,
           class UnaryOperation>
 OutputIt transform_exclusive_scan_(InputIt first, InputIt last,

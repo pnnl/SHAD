@@ -95,7 +95,6 @@ TYPED_TEST(VTF, partial_sum) {
 }
 
 #ifndef PARTIAL_STD_TESTS
-// todo double-check STL parameter ordering for exclusive/inclusive_scan
 TYPED_TEST(VTF, inclusive_scan) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -228,7 +227,6 @@ TYPED_TEST(ATF, partial_sum) {
                            sum_f{});
 }
 
-// todo double-check STL parameter ordering for exclusive/inclusive_scan
 #ifndef PARTIAL_STD_TESTS
 TYPED_TEST(ATF, inclusive_scan) {
   using it_t = typeof(this->in->begin());
@@ -355,7 +353,6 @@ TYPED_TEST(STF, partial_sum) {
                           sum_f{});
 }
 
-// todo double-check STL parameter ordering for exclusive/inclusive_scan
 #ifndef PARTIAL_STD_TESTS
 TYPED_TEST(STF, inclusive_scan) {
   using it_t = typeof(this->in->begin());
