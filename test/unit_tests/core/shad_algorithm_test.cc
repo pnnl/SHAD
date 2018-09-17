@@ -342,7 +342,92 @@ TYPED_TEST(ATF, shad_find) {
 
 // search_n - todo
 
-// todo fill, transform, generate, replace, replace_if
+// fill
+TYPED_TEST(ATF, shad_fill) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  this->test_void_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::fill<shad::distributed_sequential_tag, it_t, val_t>,
+      shad_test_stl::fill_<it_t, val_t>, shad_test_stl::ordered_checksum<it_t>,
+      42);
+  this->test_void_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::fill<shad::distributed_parallel_tag, it_t, val_t>,
+      shad_test_stl::fill_<it_t, val_t>, shad_test_stl::ordered_checksum<it_t>,
+      42);
+}
+
+// transform
+TYPED_TEST(ATF, shad_transform) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  this->test_io_assignment_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::transform<shad::distributed_sequential_tag, it_t, it_t, map_f>,
+      shad_test_stl::transform_<it_t, it_t, map_f>,
+      shad_test_stl::ordered_checksum<it_t>, map_f{});
+  this->test_io_assignment_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::transform<shad::distributed_parallel_tag, it_t, it_t, map_f>,
+      shad_test_stl::transform_<it_t, it_t, map_f>,
+      shad_test_stl::ordered_checksum<it_t>, map_f{});
+}
+
+// generate
+TYPED_TEST(ATF, shad_generate) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  int x = 42;
+  auto generator = [&x]() { return x = std::negate<val_t>{}(x); };
+  this->test_void_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::generate<shad::distributed_sequential_tag, it_t, typeof(generator)>,
+      shad_test_stl::generate_<it_t, typeof(generator)>,
+      shad_test_stl::ordered_checksum<it_t>, generator);
+  this->test_void_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::generate<shad::distributed_parallel_tag, it_t, typeof(generator)>,
+      shad_test_stl::generate_<it_t, typeof(generator)>,
+      shad_test_stl::ordered_checksum<it_t>, generator);
+}
+
+// replace
+TYPED_TEST(ATF, shad_replace) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  this->test_void_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::replace<shad::distributed_sequential_tag, it_t, val_t>,
+      shad_test_stl::replace_<it_t, val_t>,
+      shad_test_stl::ordered_checksum<it_t>, 42, 43);
+  this->test_void_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::replace<shad::distributed_parallel_tag, it_t, val_t>,
+      shad_test_stl::replace_<it_t, val_t>,
+      shad_test_stl::ordered_checksum<it_t>, 42, 43);
+}
+
+// replace_if
+TYPED_TEST(ATF, shad_replace_if) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  uint64_t exp_sum = 0, obs_sum = 0, pos;
+  auto pred = [](int x) { return (x % 3 == 0); };
+  this->test_void_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::replace_if<shad::distributed_sequential_tag, it_t, typeof(pred),
+                       val_t>,
+      shad_test_stl::replace_if_<it_t, typeof(pred), val_t>,
+      shad_test_stl::ordered_checksum<it_t>, pred, 3);
+  this->test_void_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::replace_if<shad::distributed_parallel_tag, it_t, typeof(pred),
+                       val_t>,
+      shad_test_stl::replace_if_<it_t, typeof(pred), val_t>,
+      shad_test_stl::ordered_checksum<it_t>, pred, 3);
+}
 
 ///////////////////////////////////////
 //
@@ -651,7 +736,25 @@ TYPED_TEST(STF, shad_find) {
 
 // search_n - todo
 
-// todo transform, generate
+// todo transform not compiling due to std::advance
+#if 0
+TYPED_TEST(STF, shad_transform) {
+  using it_t = typeof(this->in->begin());
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  this->test_io_inserters_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::transform<shad::distributed_sequential_tag, it_t, out_it_t, map_f>,
+      shad_test_stl::transform_<it_t, out_it_t, map_f>,
+      shad_test_stl::checksum<it_t>, map_f{});
+  this->test_io_inserters_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::transform<shad::distributed_parallel_tag, it_t, out_it_t, map_f>,
+      shad_test_stl::transform_<it_t, out_it_t, map_f>,
+      shad_test_stl::checksum<it_t>, map_f{});
+}
+#endif
 
 ///////////////////////////////////////
 //
@@ -958,6 +1061,24 @@ TYPED_TEST(MTF, shad_find) {
 // todo search
 #endif
 
-// todo transform, generate
-
 // search_n - todo
+
+// todo transform not compiling due to std::advance
+#if 0
+TYPED_TEST(MTF, shad_transform) {
+  using it_t = typeof(this->in->begin());
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  this->test_io_inserters_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::transform<shad::distributed_sequential_tag, it_t, out_it_t, map_f>,
+      shad_test_stl::transform_<it_t, out_it_t, map_f>,
+      shad_test_stl::checksum<it_t>, map_f{});
+  this->test_io_inserters_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::transform<shad::distributed_parallel_tag, it_t, out_it_t, map_f>,
+      shad_test_stl::transform_<it_t, out_it_t, map_f>,
+      shad_test_stl::checksum<it_t>, map_f{});
+}
+#endif

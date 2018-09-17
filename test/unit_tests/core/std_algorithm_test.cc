@@ -270,7 +270,7 @@ TYPED_TEST(VTF, std_transform) {
   using map_f = std::negate<val_t>;
   this->test_io_assignment(std::transform<it_t, it_t, map_f>,
                            shad_test_stl::transform_<it_t, it_t, map_f>,
-                           map_f{});
+                           shad_test_stl::ordered_checksum<it_t>, map_f{});
 }
 
 // generate
@@ -539,7 +539,7 @@ TYPED_TEST(ATF, std_transform) {
   using map_f = std::negate<val_t>;
   this->test_io_assignment(std::transform<it_t, it_t, map_f>,
                            shad_test_stl::transform_<it_t, it_t, map_f>,
-                           map_f{});
+                           shad_test_stl::ordered_checksum<it_t>, map_f{});
 }
 
 // generate
@@ -555,35 +555,22 @@ TYPED_TEST(ATF, std_generate) {
 
 // replace
 TYPED_TEST(ATF, std_replace) {
-  uint64_t exp_sum = 0, obs_sum = 0, pos;
-
-  shad_test_stl::replace_(this->in->begin(), this->in->end(), 42, 43);
-  shad_test_stl::replace_(this->in->begin(), this->in->end(), 1024, 1025);
-  pos = 1;
-  for (auto x : *this->in) exp_sum += pos++ * x;
-
-  std::replace(this->in->begin(), this->in->end(), 42, 43);
-  std::replace(this->in->begin(), this->in->end(), 1024, 1025);
-  pos = 1;
-  for (auto x : *this->in) obs_sum += pos++ * x;
-
-  ASSERT_EQ(exp_sum, obs_sum);
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  this->test_void(std::replace<it_t, val_t>,
+                  shad_test_stl::replace_<it_t, val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, 42, 43);
 }
 
 // replace_if
 TYPED_TEST(ATF, std_replace_if) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
   uint64_t exp_sum = 0, obs_sum = 0, pos;
   auto pred = [](int x) { return (x % 3 == 0); };
-
-  shad_test_stl::replace_if_(this->in->begin(), this->in->end(), pred, 3);
-  pos = 1;
-  for (auto x : *this->in) exp_sum += pos++ * x;
-
-  std::replace_if(this->in->begin(), this->in->end(), pred, 3);
-  pos = 1;
-  for (auto x : *this->in) obs_sum += pos++ * x;
-
-  ASSERT_EQ(exp_sum, obs_sum);
+  this->test_void(std::replace_if<it_t, typeof(pred), val_t>,
+                  shad_test_stl::replace_if_<it_t, typeof(pred), val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, pred, 3);
 }
 
 ///////////////////////////////////////
@@ -807,7 +794,7 @@ TYPED_TEST(STF, std_transform) {
   using map_f = std::negate<val_t>;
   this->test_io_inserters(std::transform<it_t, out_it_t, map_f>,
                           shad_test_stl::transform_<it_t, out_it_t, map_f>,
-                          map_f{});
+                          shad_test_stl::checksum<it_t>, map_f{});
 }
 
 ///////////////////////////////////////
@@ -1033,5 +1020,5 @@ TYPED_TEST(MTF, std_transform) {
   using map_f = std::negate<val_t>;
   this->test_io_inserters(std::transform<it_t, out_it_t, map_f>,
                           shad_test_stl::transform_<it_t, out_it_t, map_f>,
-                          map_f{});
+                          shad_test_stl::checksum<it_t>, map_f{});
 }
