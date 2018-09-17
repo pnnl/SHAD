@@ -392,8 +392,9 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
-  template <typename F, typename... args_>
-  void test_io_inserters(F &&sub_f, F &&obj_f, args_... args) {
+  template <typename F, typename checksum_t, typename... args_>
+  void test_io_inserters(F &&sub_f, F &&obj_f, checksum_t checksum_f,
+                         args_... args) {
     using out_it_t = std::insert_iterator<T>;
     auto out1 = create_output_container(0);
     auto out2 = create_output_container(0);
@@ -405,8 +406,9 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
-  template <typename F, typename... args_>
-  void test_io_assignment(F &&sub_f, F &&obj_f, args_... args) {
+  template <typename F, typename checksum_t, typename... args_>
+  void test_io_assignment(F &&sub_f, F &&obj_f, checksum_t checksum_f,
+                          args_... args) {
     using out_it_t = std::insert_iterator<T>;
     auto out1 = create_output_container(in->size());
     auto out2 = create_output_container(in->size());

@@ -82,7 +82,8 @@ TYPED_TEST(VTF, adjacent_difference) {
   using diff_f = std::minus<val_t>;
   this->test_io_assignment(
       std::adjacent_difference<it_t, it_t, diff_f>,
-      shad_test_stl::adjacent_difference_<it_t, it_t, diff_f>, diff_f{});
+      shad_test_stl::adjacent_difference_<it_t, it_t, diff_f>,
+      shad_test_stl::ordered_checksum<it_t>, diff_f{});
 }
 
 TYPED_TEST(VTF, partial_sum) {
@@ -91,7 +92,7 @@ TYPED_TEST(VTF, partial_sum) {
   using sum_f = std::plus<val_t>;
   this->test_io_assignment(std::partial_sum<it_t, it_t, sum_f>,
                            shad_test_stl::partial_sum_<it_t, it_t, sum_f>,
-                           sum_f{});
+                           shad_test_stl::ordered_checksum<it_t>, sum_f{});
 }
 
 #ifndef PARTIAL_STD_TESTS
@@ -101,7 +102,8 @@ TYPED_TEST(VTF, inclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_assignment(
       std::inclusive_scan<it_t, it_t, val_t, sum_f>,
-      shad_test_stl::inclusive_scan_<it_t, it_t, val_t, sum_f>, sum_f{}, 0);
+      shad_test_stl::inclusive_scan_<it_t, it_t, val_t, sum_f>,
+      shad_test_stl::ordered_checksum<it_t>, sum_f{}, 0);
 }
 
 TYPED_TEST(VTF, exclusive_scan) {
@@ -110,7 +112,8 @@ TYPED_TEST(VTF, exclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_assignment(
       std::exclusive_scan<it_t, it_t, val_t, sum_f>,
-      shad_test_stl::exclusive_scan_<it_t, it_t, val_t, sum_f>, 0, sum_f{});
+      shad_test_stl::exclusive_scan_<it_t, it_t, val_t, sum_f>,
+      shad_test_stl::ordered_checksum<it_t>, 0, sum_f{});
 }
 
 TYPED_TEST(VTF, transform_reduce_two_containers) {
@@ -145,7 +148,7 @@ TYPED_TEST(VTF, transform_inclusive_scan) {
       std::transform_inclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_inclusive_scan_<it_t, it_t, val_t, reduce_f,
                                                map_f>,
-      reduce_f{}, map_f{}, 0);
+      shad_test_stl::ordered_checksum<it_t>, reduce_f{}, map_f{}, 0);
 }
 
 TYPED_TEST(VTF, transform_exclusive_scan) {
@@ -157,7 +160,7 @@ TYPED_TEST(VTF, transform_exclusive_scan) {
       std::transform_exclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_exclusive_scan_<it_t, it_t, val_t, reduce_f,
                                                map_f>,
-      0, reduce_f{}, map_f{});
+      shad_test_stl::ordered_checksum<it_t>, 0, reduce_f{}, map_f{});
 }
 
 TYPED_TEST(VTF, std_reduce) {
@@ -215,7 +218,8 @@ TYPED_TEST(ATF, adjacent_difference) {
   using diff_f = std::minus<val_t>;
   this->test_io_assignment(
       std::adjacent_difference<it_t, it_t, diff_f>,
-      shad_test_stl::adjacent_difference_<it_t, it_t, diff_f>, diff_f{});
+      shad_test_stl::adjacent_difference_<it_t, it_t, diff_f>,
+      shad_test_stl::ordered_checksum<it_t>, diff_f{});
 }
 
 TYPED_TEST(ATF, partial_sum) {
@@ -224,7 +228,7 @@ TYPED_TEST(ATF, partial_sum) {
   using sum_f = std::plus<val_t>;
   this->test_io_assignment(std::partial_sum<it_t, it_t, sum_f>,
                            shad_test_stl::partial_sum_<it_t, it_t, sum_f>,
-                           sum_f{});
+                           shad_test_stl::ordered_checksum<it_t>, sum_f{});
 }
 
 #ifndef PARTIAL_STD_TESTS
@@ -234,7 +238,8 @@ TYPED_TEST(ATF, inclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_assignment(
       std::inclusive_scan<it_t, it_t, val_t, sum_f>,
-      shad_test_stl::inclusive_scan_<it_t, it_t, val_t, sum_f>, sum_f{}, 0);
+      shad_test_stl::inclusive_scan_<it_t, it_t, val_t, sum_f>,
+      shad_test_stl::ordered_checksum<it_t>, sum_f{}, 0);
 }
 
 TYPED_TEST(ATF, exclusive_scan) {
@@ -243,7 +248,8 @@ TYPED_TEST(ATF, exclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_assignment(
       std::exclusive_scan<it_t, it_t, val_t, sum_f>,
-      shad_test_stl::exclusive_scan_<it_t, it_t, val_t, sum_f>, 0, sum_f{});
+      shad_test_stl::exclusive_scan_<it_t, it_t, val_t, sum_f>,
+      shad_test_stl::ordered_checksum<it_t>, 0, sum_f{});
 }
 
 TYPED_TEST(ATF, transform_reduce_two_containers) {
@@ -277,7 +283,7 @@ TYPED_TEST(ATF, transform_inclusive_scan) {
       std::transform_inclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_inclusive_scan_<it_t, it_t, val_t, reduce_f,
                                                map_f>,
-      reduce_f{}, map_f{}, 0);
+      shad_test_stl::ordered_checksum<it_t>, reduce_f{}, map_f{}, 0);
 }
 
 TYPED_TEST(ATF, transform_exclusive_scan) {
@@ -289,7 +295,7 @@ TYPED_TEST(ATF, transform_exclusive_scan) {
       std::transform_exclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_exclusive_scan_<it_t, it_t, val_t, reduce_f,
                                                map_f>,
-      0, reduce_f{}, map_f{});
+      shad_test_stl::ordered_checksum<it_t>, 0, reduce_f{}, map_f{});
 }
 
 TYPED_TEST(ATF, std_reduce) {
@@ -340,7 +346,8 @@ TYPED_TEST(STF, adjacent_difference) {
   using diff_f = std::minus<val_t>;
   this->test_io_inserters(
       std::adjacent_difference<it_t, out_it_t, diff_f>,
-      shad_test_stl::adjacent_difference_<it_t, out_it_t, diff_f>, diff_f{});
+      shad_test_stl::adjacent_difference_<it_t, out_it_t, diff_f>,
+      shad_test_stl::checksum<it_t>, diff_f{});
 }
 
 TYPED_TEST(STF, partial_sum) {
@@ -350,7 +357,7 @@ TYPED_TEST(STF, partial_sum) {
   using sum_f = std::plus<val_t>;
   this->test_io_inserters(std::partial_sum<it_t, out_it_t, sum_f>,
                           shad_test_stl::partial_sum_<it_t, out_it_t, sum_f>,
-                          sum_f{});
+                          shad_test_stl::checksum<it_t>, sum_f{});
 }
 
 #ifndef PARTIAL_STD_TESTS
@@ -361,7 +368,8 @@ TYPED_TEST(STF, inclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_inserters(
       std::inclusive_scan<it_t, out_it_t, val_t, sum_f>,
-      shad_test_stl::inclusive_scan_<it_t, out_it_t, val_t, sum_f>, sum_f{}, 0);
+      shad_test_stl::inclusive_scan_<it_t, out_it_t, val_t, sum_f>,
+      shad_test_stl::checksum<it_t>, sum_f{}, 0);
 }
 
 TYPED_TEST(STF, exclusive_scan) {
@@ -371,7 +379,8 @@ TYPED_TEST(STF, exclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_inserters(
       std::exclusive_scan<it_t, out_it_t, val_t, sum_f>,
-      shad_test_stl::exclusive_scan_<it_t, out_it_t, val_t, sum_f>, 0, sum_f{});
+      shad_test_stl::exclusive_scan_<it_t, out_it_t, val_t, sum_f>,
+      shad_test_stl::checksum<it_t>, 0, sum_f{});
 }
 
 TYPED_TEST(STF, transform_reduce_two_containers) {
@@ -407,7 +416,7 @@ TYPED_TEST(STF, transform_inclusive_scan) {
       std::transform_inclusive_scan<it_t, out_it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_inclusive_scan_<it_t, out_it_t, val_t, reduce_f,
                                                map_f>,
-      reduce_f{}, map_f{}, 0);
+      shad_test_stl::checksum<it_t>, reduce_f{}, map_f{}, 0);
 }
 
 TYPED_TEST(STF, transform_exclusive_scan) {
@@ -420,7 +429,7 @@ TYPED_TEST(STF, transform_exclusive_scan) {
       std::transform_exclusive_scan<it_t, out_it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_exclusive_scan_<it_t, out_it_t, val_t, reduce_f,
                                                map_f>,
-      0, reduce_f{}, map_f{});
+      shad_test_stl::checksum<it_t>, 0, reduce_f{}, map_f{});
 }
 
 TYPED_TEST(STF, std_reduce) {
@@ -486,9 +495,7 @@ TYPED_TEST(MTF, transform_reduce_two_containers) {
       shad_test_stl::transform_reduce_<it_t, it_t, acc_t, reduce_f, combine_f>,
       other->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
 }
-#endif
 
-#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(MTF, transform_reduce_one_container) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -499,12 +506,10 @@ TYPED_TEST(MTF, transform_reduce_one_container) {
              shad_test_stl::transform_reduce_<it_t, acc_t, reduce_f, map_f>,
              std::make_pair(0, 0), reduce_f{}, map_f{});
 }
-#endif
 
 // todo transform_exclusive_scan
 // todo transform_inclusive_scan
 
-#ifndef PARTIAL_STD_TESTS
 TYPED_TEST(MTF, std_reduce) {
   using it_t = typeof(this->in->begin());
   using acc_t = std::pair<int, int>;
