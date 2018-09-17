@@ -7,6 +7,7 @@ set(tests
   std_algorithm_test
   std_numeric_test
   shad_algorithm_test
+  shad_numeric_test
 )
 
 option(SHAD_PARTIAL_STD_TESTS "Avoid testing exotic functions from the STL" OFF)
