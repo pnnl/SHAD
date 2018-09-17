@@ -92,12 +92,14 @@ TYPED_TEST(ATF, adjacent_difference) {
   using diff_f = std::minus<val_t>;
   this->test_io_assignment_with_policy(
       shad::distributed_sequential_tag{},
-      shad::adjacent_difference<it_t, it_t, diff_f>,
+      shad::adjacent_difference<shad::distributed_sequential_tag, it_t, it_t,
+                                diff_f>,
       shad_test_stl::adjacent_difference_<it_t, it_t, diff_f>,
       shad_test_stl::ordered_checksum<it_t>, diff_f{});
   this->test_io_assignment_with_policy(
       shad::distributed_parallel_tag{},
-      shad::adjacent_difference<it_t, it_t, diff_f>,
+      shad::adjacent_difference<shad::distributed_parallel_tag, it_t, it_t,
+                                diff_f>,
       shad_test_stl::adjacent_difference_<it_t, it_t, diff_f>,
       shad_test_stl::ordered_checksum<it_t>, diff_f{});
 }
@@ -108,12 +110,14 @@ TYPED_TEST(ATF, inclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_assignment_with_policy(
       shad::distributed_sequential_tag{},
-      shad::inclusive_scan<it_t, it_t, val_t, sum_f>,
+      shad::inclusive_scan<shad::distributed_sequential_tag, it_t, it_t, val_t,
+                           sum_f>,
       shad_test_stl::inclusive_scan_<it_t, it_t, val_t, sum_f>,
       shad_test_stl::ordered_checksum<it_t>, sum_f{}, 0);
   this->test_io_assignment_with_policy(
       shad::distributed_parallel_tag{},
-      shad::inclusive_scan<it_t, it_t, val_t, sum_f>,
+      shad::inclusive_scan<shad::distributed_parallel_tag, it_t, it_t, val_t,
+                           sum_f>,
       shad_test_stl::inclusive_scan_<it_t, it_t, val_t, sum_f>,
       shad_test_stl::ordered_checksum<it_t>, sum_f{}, 0);
 }
@@ -124,12 +128,14 @@ TYPED_TEST(ATF, exclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_assignment_with_policy(
       shad::distributed_sequential_tag{},
-      shad::exclusive_scan<it_t, it_t, val_t, sum_f>,
+      shad::exclusive_scan<shad::distributed_sequential_tag, it_t, it_t, val_t,
+                           sum_f>,
       shad_test_stl::exclusive_scan_<it_t, it_t, val_t, sum_f>,
       shad_test_stl::ordered_checksum<it_t>, 0, sum_f{});
   this->test_io_assignment_with_policy(
       shad::distributed_parallel_tag{},
-      shad::exclusive_scan<it_t, it_t, val_t, sum_f>,
+      shad::exclusive_scan<shad::distributed_parallel_tag, it_t, it_t, val_t,
+                           sum_f>,
       shad_test_stl::exclusive_scan_<it_t, it_t, val_t, sum_f>,
       shad_test_stl::ordered_checksum<it_t>, 0, sum_f{});
 }
@@ -142,12 +148,14 @@ TYPED_TEST(ATF, transform_reduce_two_containers) {
   auto other = shad_test_stl::create_array_<TypeParam, false>{}();
   this->test_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_reduce<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad::transform_reduce<shad::distributed_sequential_tag, it_t, it_t,
+                             val_t, reduce_f, combine_f>,
       shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
       other->begin(), 0, reduce_f{}, combine_f{});
   this->test_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_reduce<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad::transform_reduce<shad::distributed_parallel_tag, it_t, it_t, val_t,
+                             reduce_f, combine_f>,
       shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
       other->begin(), 0, reduce_f{}, combine_f{});
 }
@@ -159,12 +167,14 @@ TYPED_TEST(ATF, transform_reduce_one_container) {
   using reduce_f = std::plus<val_t>;
   this->test_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_reduce<it_t, val_t, reduce_f, map_f>,
+      shad::transform_reduce<shad::distributed_sequential_tag, it_t, val_t,
+                             reduce_f, map_f>,
       shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
       reduce_f{}, map_f{});
   this->test_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_reduce<it_t, val_t, reduce_f, map_f>,
+      shad::transform_reduce<shad::distributed_parallel_tag, it_t, val_t,
+                             reduce_f, map_f>,
       shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
       reduce_f{}, map_f{});
 }
@@ -176,13 +186,15 @@ TYPED_TEST(ATF, transform_inclusive_scan) {
   using reduce_f = std::plus<val_t>;
   this->test_io_assignment_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_inclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
+      shad::transform_inclusive_scan<shad::distributed_sequential_tag, it_t,
+                                     it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_inclusive_scan_<it_t, it_t, val_t, reduce_f,
                                                map_f>,
       shad_test_stl::ordered_checksum<it_t>, reduce_f{}, map_f{}, 0);
   this->test_io_assignment_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_inclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
+      shad::transform_inclusive_scan<shad::distributed_parallel_tag, it_t, it_t,
+                                     val_t, reduce_f, map_f>,
       shad_test_stl::transform_inclusive_scan_<it_t, it_t, val_t, reduce_f,
                                                map_f>,
       shad_test_stl::ordered_checksum<it_t>, reduce_f{}, map_f{}, 0);
@@ -195,13 +207,15 @@ TYPED_TEST(ATF, transform_exclusive_scan) {
   using reduce_f = std::plus<val_t>;
   this->test_io_assignment_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_exclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
+      shad::transform_exclusive_scan<shad::distributed_sequential_tag, it_t,
+                                     it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_exclusive_scan_<it_t, it_t, val_t, reduce_f,
                                                map_f>,
       shad_test_stl::ordered_checksum<it_t>, 0, reduce_f{}, map_f{});
   this->test_io_assignment_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_exclusive_scan<it_t, it_t, val_t, reduce_f, map_f>,
+      shad::transform_exclusive_scan<shad::distributed_parallel_tag, it_t, it_t,
+                                     val_t, reduce_f, map_f>,
       shad_test_stl::transform_exclusive_scan_<it_t, it_t, val_t, reduce_f,
                                                map_f>,
       shad_test_stl::ordered_checksum<it_t>, 0, reduce_f{}, map_f{});
@@ -211,11 +225,14 @@ TYPED_TEST(ATF, std_reduce) {
   using it_t = typeof(this->in->begin());
   using reduce_f = std::plus<int>;
   this->test_with_policy(
-      shad::distributed_sequential_tag{}, shad::reduce<it_t, int, reduce_f>,
+      shad::distributed_sequential_tag{},
+      shad::reduce<shad::distributed_sequential_tag, it_t, int, reduce_f>,
       shad_test_stl::reduce_<it_t, int, reduce_f>, 0, reduce_f{});
-  this->test_with_policy(
-      shad::distributed_parallel_tag{}, shad::reduce<it_t, int, reduce_f>,
-      shad_test_stl::reduce_<it_t, int, reduce_f>, 0, reduce_f{});
+  this->test_with_policy(shad::distributed_parallel_tag{},
+                         shad::reduce<it_t, int, reduce_f>,
+                         shad_test_stl::reduce_<shad::distributed_parallel_tag,
+                                                it_t, int, reduce_f>,
+                         0, reduce_f{});
 }
 #endif
 
@@ -269,12 +286,14 @@ TYPED_TEST(STF, adjacent_difference) {
   using diff_f = std::minus<val_t>;
   this->test_io_inserters_with_policy(
       shad::distributed_sequential_tag{},
-      shad::adjacent_difference<it_t, out_it_t, diff_f>,
+      shad::adjacent_difference<shad::distributed_sequential_tag, it_t,
+                                out_it_t, diff_f>,
       shad_test_stl::adjacent_difference_<it_t, out_it_t, diff_f>,
       shad_test_stl::checksum<it_t>, diff_f{});
   this->test_io_inserters_with_policy(
       shad::distributed_parallel_tag{},
-      shad::adjacent_difference<it_t, out_it_t, diff_f>,
+      shad::adjacent_difference<shad::distributed_parallel_tag, it_t, out_it_t,
+                                diff_f>,
       shad_test_stl::adjacent_difference_<it_t, out_it_t, diff_f>,
       shad_test_stl::checksum<it_t>, diff_f{});
 }
@@ -286,12 +305,14 @@ TYPED_TEST(STF, inclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_inserters_with_policy(
       shad::distributed_sequential_tag{},
-      shad::inclusive_scan<it_t, out_it_t, val_t, sum_f>,
+      shad::inclusive_scan<shad::distributed_sequential_tag, it_t, out_it_t,
+                           val_t, sum_f>,
       shad_test_stl::inclusive_scan_<it_t, out_it_t, val_t, sum_f>,
       shad_test_stl::checksum<it_t>, sum_f{}, 0);
   this->test_io_inserters_with_policy(
       shad::distributed_parallel_tag{},
-      shad::inclusive_scan<it_t, out_it_t, val_t, sum_f>,
+      shad::inclusive_scan<shad::distributed_parallel_tag, it_t, out_it_t,
+                           val_t, sum_f>,
       shad_test_stl::inclusive_scan_<it_t, out_it_t, val_t, sum_f>,
       shad_test_stl::checksum<it_t>, sum_f{}, 0);
 }
@@ -303,12 +324,14 @@ TYPED_TEST(STF, exclusive_scan) {
   using sum_f = std::plus<val_t>;
   this->test_io_inserters_with_policy(
       shad::distributed_sequential_tag{},
-      shad::exclusive_scan<it_t, out_it_t, val_t, sum_f>,
+      shad::exclusive_scan<shad::distributed_sequential_tag, it_t, out_it_t,
+                           val_t, sum_f>,
       shad_test_stl::exclusive_scan_<it_t, out_it_t, val_t, sum_f>,
       shad_test_stl::checksum<it_t>, 0, sum_f{});
   this->test_io_inserters_with_policy(
       shad::distributed_parallel_tag{},
-      shad::exclusive_scan<it_t, out_it_t, val_t, sum_f>,
+      shad::exclusive_scan<shad::distributed_parallel_tag, it_t, out_it_t,
+                           val_t, sum_f>,
       shad_test_stl::exclusive_scan_<it_t, out_it_t, val_t, sum_f>,
       shad_test_stl::checksum<it_t>, 0, sum_f{});
 }
@@ -322,12 +345,14 @@ TYPED_TEST(STF, transform_reduce_two_containers) {
       shad_test_stl::kNumElements);
   this->test_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_reduce<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad::transform_reduce<shad::distributed_sequential_tag, it_t, it_t,
+                             val_t, reduce_f, combine_f>,
       shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
       other->begin(), 0, reduce_f{}, combine_f{});
   this->test_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_reduce<it_t, it_t, val_t, reduce_f, combine_f>,
+      shad::transform_reduce<shad::distributed_parallel_tag, it_t, it_t, val_t,
+                             reduce_f, combine_f>,
       shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
       other->begin(), 0, reduce_f{}, combine_f{});
 }
@@ -339,12 +364,14 @@ TYPED_TEST(STF, transform_reduce_one_container) {
   using reduce_f = std::plus<val_t>;
   this->test_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_reduce<it_t, val_t, reduce_f, map_f>,
+      shad::transform_reduce<shad::distributed_sequential_tag, it_t, val_t,
+                             reduce_f, map_f>,
       shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
       reduce_f{}, map_f{});
   this->test_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_reduce<it_t, val_t, reduce_f, map_f>,
+      shad::transform_reduce<shad::distributed_parallel_tag, it_t, val_t,
+                             reduce_f, map_f>,
       shad_test_stl::transform_reduce_<it_t, val_t, reduce_f, map_f>, 0,
       reduce_f{}, map_f{});
 }
@@ -357,13 +384,15 @@ TYPED_TEST(STF, transform_inclusive_scan) {
   using reduce_f = std::plus<val_t>;
   this->test_io_inserters_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_inclusive_scan<it_t, out_it_t, val_t, reduce_f, map_f>,
+      shad::transform_inclusive_scan<shad::distributed_sequential_tag, it_t,
+                                     out_it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_inclusive_scan_<it_t, out_it_t, val_t, reduce_f,
                                                map_f>,
       shad_test_stl::checksum<it_t>, reduce_f{}, map_f{}, 0);
   this->test_io_inserters_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_inclusive_scan<it_t, out_it_t, val_t, reduce_f, map_f>,
+      shad::transform_inclusive_scan<shad::distributed_parallel_tag, it_t,
+                                     out_it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_inclusive_scan_<it_t, out_it_t, val_t, reduce_f,
                                                map_f>,
       shad_test_stl::checksum<it_t>, reduce_f{}, map_f{}, 0);
@@ -377,13 +406,15 @@ TYPED_TEST(STF, transform_exclusive_scan) {
   using reduce_f = std::plus<val_t>;
   this->test_io_inserters_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_exclusive_scan<it_t, out_it_t, val_t, reduce_f, map_f>,
+      shad::transform_exclusive_scan<shad::distributed_sequential_tag, it_t,
+                                     out_it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_exclusive_scan_<it_t, out_it_t, val_t, reduce_f,
                                                map_f>,
       shad_test_stl::checksum<it_t>, 0, reduce_f{}, map_f{});
   this->test_io_inserters_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_exclusive_scan<it_t, out_it_t, val_t, reduce_f, map_f>,
+      shad::transform_exclusive_scan<shad::distributed_parallel_tag, it_t,
+                                     out_it_t, val_t, reduce_f, map_f>,
       shad_test_stl::transform_exclusive_scan_<it_t, out_it_t, val_t, reduce_f,
                                                map_f>,
       shad_test_stl::checksum<it_t>, 0, reduce_f{}, map_f{});
@@ -393,10 +424,12 @@ TYPED_TEST(STF, std_reduce) {
   using it_t = typeof(this->in->begin());
   using reduce_f = std::plus<int>;
   this->test_with_policy(
-      shad::distributed_sequential_tag{}, shad::reduce<it_t, int, reduce_f>,
+      shad::distributed_sequential_tag{},
+      shad::reduce<shad::distributed_sequential_tag, it_t, int, reduce_f>,
       shad_test_stl::reduce_<it_t, int, reduce_f>, 0, reduce_f{});
   this->test_with_policy(
-      shad::distributed_parallel_tag{}, shad::reduce<it_t, int, reduce_f>,
+      shad::distributed_parallel_tag{},
+      shad::reduce<shad::distributed_parallel_tag, it_t, int, reduce_f>,
       shad_test_stl::reduce_<it_t, int, reduce_f>, 0, reduce_f{});
 }
 #endif
@@ -452,12 +485,14 @@ TYPED_TEST(MTF, transform_reduce_two_containers) {
       shad_test_stl::kNumElements);
   this->test_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_reduce<it_t, it_t, acc_t, reduce_f, combine_f>,
+      shad::transform_reduce<shad::distributed_sequential_tag, it_t, it_t,
+                             acc_t, reduce_f, combine_f>,
       shad_test_stl::transform_reduce_<it_t, it_t, acc_t, reduce_f, combine_f>,
       other->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
   this->test_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_reduce<it_t, it_t, acc_t, reduce_f, combine_f>,
+      shad::transform_reduce<shad::distributed_parallel_tag, it_t, it_t, acc_t,
+                             reduce_f, combine_f>,
       shad_test_stl::transform_reduce_<it_t, it_t, acc_t, reduce_f, combine_f>,
       other->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
 }
@@ -470,12 +505,14 @@ TYPED_TEST(MTF, transform_reduce_one_container) {
   using reduce_f = std::plus<val_t>;
   this->test_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform_reduce<it_t, acc_t, reduce_f, map_f>,
+      shad::transform_reduce<shad::distributed_sequential_tag, it_t, acc_t,
+                             reduce_f, map_f>,
       shad_test_stl::transform_reduce_<it_t, acc_t, reduce_f, map_f>,
       std::make_pair(0, 0), reduce_f{}, map_f{});
   this->test_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform_reduce<it_t, acc_t, reduce_f, map_f>,
+      shad::transform_reduce<shad::distributed_parallel_tag, it_t, acc_t,
+                             reduce_f, map_f>,
       shad_test_stl::transform_reduce_<it_t, acc_t, reduce_f, map_f>,
       std::make_pair(0, 0), reduce_f{}, map_f{});
 }
@@ -487,14 +524,16 @@ TYPED_TEST(MTF, std_reduce) {
   using it_t = typeof(this->in->begin());
   using acc_t = std::pair<int, int>;
   using reduce_f = std::plus<acc_t>;
-  this->test_with_policy(shad::distributed_sequential_tag{},
-                         shad::reduce<it_t, acc_t, reduce_f>,
-                         shad_test_stl::reduce_<it_t, acc_t, reduce_f>,
-                         std::make_pair(0, 0), reduce_f{});
-  this->test_with_policy(shad::distributed_parallel_tag{},
-                         shad::reduce<it_t, acc_t, reduce_f>,
-                         shad_test_stl::reduce_<it_t, acc_t, reduce_f>,
-                         std::make_pair(0, 0), reduce_f{});
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::reduce<shad::distributed_sequential_tag, it_t, acc_t, reduce_f>,
+      shad_test_stl::reduce_<it_t, acc_t, reduce_f>, std::make_pair(0, 0),
+      reduce_f{});
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::reduce<shad::distributed_parallel_tag, it_t, acc_t, reduce_f>,
+      shad_test_stl::reduce_<it_t, acc_t, reduce_f>, std::make_pair(0, 0),
+      reduce_f{});
 }
 #endif
 
