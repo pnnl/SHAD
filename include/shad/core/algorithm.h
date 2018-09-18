@@ -126,11 +126,11 @@ typename shad::distributed_iterator_traits<InputItr>::difference_type count_if(
 //  | max_element |  //
 //  ---------------  //
 
-template <class ForwardIt>
-ForwardIt max_element(ForwardIt first, ForwardIt last) {
-  return impl::max_element(distributed_sequential_tag{},
-                           first, last, std::greater<>());
-}
+//template <class ForwardIt>
+//ForwardIt max_element(ForwardIt first, ForwardIt last) {
+//  return impl::max_element(distributed_sequential_tag{},
+//                           first, last, std::greater<>());
+//}
 
 template <class ExecutionPolicy, class ForwardIt>
 ForwardIt max_element(ExecutionPolicy&& policy,
@@ -139,10 +139,10 @@ ForwardIt max_element(ExecutionPolicy&& policy,
                            first, last, std::greater<>());
 }
 
-template <class ForwardIt, class Compare>
-ForwardIt max_element(ForwardIt first, ForwardIt last, Compare comp ) {
-  return impl::max_element(distributed_sequential_tag{}, first, last, comp);
-}
+//template <class ForwardIt, class Compare>
+//ForwardIt max_element(ForwardIt first, ForwardIt last, Compare comp ) {
+//  return impl::max_element(distributed_sequential_tag{}, first, last, comp);
+//}
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
 ForwardIt max_element(ExecutionPolicy&& policy,
@@ -155,11 +155,11 @@ ForwardIt max_element(ExecutionPolicy&& policy,
 //  | min_element |  //
 //  ---------------  //
 
-template <class ForwardIt>
-ForwardIt min_element(ForwardIt first, ForwardIt last) {
-  return impl::min_element(distributed_sequential_tag{},
-                           first, last, std::less<>());
-}
+//template <class ForwardIt>
+//ForwardIt min_element(ForwardIt first, ForwardIt last) {
+//  return impl::min_element(distributed_sequential_tag{},
+//                           first, last, std::less<>());
+//}
 
 template <class ExecutionPolicy, class ForwardIt>
 ForwardIt min_element(ExecutionPolicy&& policy,
@@ -168,10 +168,10 @@ ForwardIt min_element(ExecutionPolicy&& policy,
                            first, last, std::less<>());
 }
 
-template <class ForwardIt, class Compare>
-ForwardIt min_element(ForwardIt first, ForwardIt last, Compare comp ) {
-  return impl::min_element(distributed_sequential_tag{}, first, last, comp);
-}
+//template <class ForwardIt, class Compare>
+//ForwardIt min_element(ForwardIt first, ForwardIt last, Compare comp ) {
+//  return impl::min_element(distributed_sequential_tag{}, first, last, comp);
+//}
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
 ForwardIt min_element(ExecutionPolicy&& policy,
@@ -185,11 +185,11 @@ ForwardIt min_element(ExecutionPolicy&& policy,
 //  | minmax_element |  //
 //  ------------------ //
 
-template <class ForwardIt>
-std::pair<ForwardIt,ForwardIt> minmax_element(ForwardIt first,
-                                              ForwardIt last) {
-  return impl::minmax_element(distributed_sequential_tag{}, first, last);
-}
+//template <class ForwardIt>
+//std::pair<ForwardIt,ForwardIt> minmax_element(ForwardIt first,
+//                                              ForwardIt last) {
+//  return impl::minmax_element(distributed_sequential_tag{}, first, last);
+//}
 
 template <class ExecutionPolicy, class ForwardIt>
 std::pair<ForwardIt,ForwardIt> minmax_element(ExecutionPolicy&& policy,
@@ -197,11 +197,11 @@ std::pair<ForwardIt,ForwardIt> minmax_element(ExecutionPolicy&& policy,
   return impl::minmax_element(std::forward<ExecutionPolicy>(policy), first, last);
 }
 
-template <class ForwardIt, class Compare>
-std::pair<ForwardIt,ForwardIt> minmax_element(ForwardIt first, ForwardIt last,
-                                              Compare comp ) {
-  return impl::minmax_element(distributed_sequential_tag{}, first, last, comp);
-}
+//template <class ForwardIt, class Compare>
+//std::pair<ForwardIt,ForwardIt> minmax_element(ForwardIt first, ForwardIt last,
+//                                              Compare comp ) {
+//  return impl::minmax_element(distributed_sequential_tag{}, first, last, comp);
+//}
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
 std::pair<ForwardIt,ForwardIt> minmax_element(ExecutionPolicy&& policy,
