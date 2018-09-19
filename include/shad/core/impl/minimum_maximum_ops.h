@@ -39,6 +39,7 @@
 namespace shad {
 namespace impl {
 
+// todo drop DefaultConstructible requirement
 template <class ForwardIt, class Compare>
 ForwardIt max_element(distributed_sequential_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
@@ -67,17 +68,19 @@ ForwardIt max_element(distributed_sequential_tag&& policy, ForwardIt first,
           if (gres != gend)
             *result = std::make_pair(gres, *lmax);
           else
-            *result = std::make_pair(gres, std::numeric_limits<value_t>::min());
+            *result = std::make_pair(gres, value_t{});
         },
         args, &res[i]);
   }
 
   auto res_it = std::max_element(
-      res.begin(), res.end(),
-      [](const res_t& x, const res_t& y) { return x.second < y.second; });
+      res.begin(), res.end(), [&](const res_t& x, const res_t& y) {
+        return y.first != last && comp(x.second, y.second);
+      });
   return res_it->first;
 }
 
+// todo drop DefaultConstructible requirement
 template <class ForwardIt, class Compare>
 ForwardIt max_element(distributed_parallel_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
@@ -107,17 +110,19 @@ ForwardIt max_element(distributed_parallel_tag&& policy, ForwardIt first,
           if (gres != gend)
             *result = std::make_pair(gres, *lmax);
           else
-            *result = std::make_pair(gres, std::numeric_limits<value_t>::min());
+            *result = std::make_pair(gres, value_t{});
         },
         args, &res[i]);
   }
   rt::waitForCompletion(h);
   auto res_it = std::max_element(
-      res.begin(), res.end(),
-      [](const res_t& x, const res_t& y) { return x.second < y.second; });
+      res.begin(), res.end(), [&](const res_t& x, const res_t& y) {
+        return y.first != last && comp(x.second, y.second);
+      });
   return res_it->first;
 }
 
+// todo drop DefaultConstructible requirement
 template <class ForwardIt, class Compare>
 ForwardIt min_element(distributed_sequential_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
@@ -146,16 +151,18 @@ ForwardIt min_element(distributed_sequential_tag&& policy, ForwardIt first,
           if (gres != gend)
             *result = std::make_pair(gres, *lmin);
           else
-            *result = std::make_pair(gres, std::numeric_limits<value_t>::max());
+            *result = std::make_pair(gres, value_t{});
         },
         args, &res[i]);
   }
   auto res_it = std::min_element(
-      res.begin(), res.end(),
-      [](const res_t& x, const res_t& y) { return x.second < y.second; });
+      res.begin(), res.end(), [&](const res_t& x, const res_t& y) {
+        return x.first != last && comp(x.second, y.second);
+      });
   return res_it->first;
 }
 
+// todo drop DefaultConstructible requirement
 template <class ForwardIt, class Compare>
 ForwardIt min_element(distributed_parallel_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
@@ -185,17 +192,19 @@ ForwardIt min_element(distributed_parallel_tag&& policy, ForwardIt first,
           if (gres != gend)
             *result = std::make_pair(gres, *lmin);
           else
-            *result = std::make_pair(gres, std::numeric_limits<value_t>::max());
+            *result = std::make_pair(gres, value_t{});
         },
         args, &res[i]);
   }
   rt::waitForCompletion(h);
   auto res_it = std::min_element(
-      res.begin(), res.end(),
-      [](const res_t& x, const res_t& y) { return x.second < y.second; });
+      res.begin(), res.end(), [&](const res_t& x, const res_t& y) {
+        return x.first != last && comp(x.second, y.second);
+      });
   return res_it->first;
 }
 
+// todo drop DefaultConstructible requirement
 template <class ForwardIt, class Compare>
 std::pair<ForwardIt, ForwardIt> minmax_element(
     distributed_sequential_tag&& policy, ForwardIt first, ForwardIt last,
@@ -232,22 +241,20 @@ std::pair<ForwardIt, ForwardIt> minmax_element(
                 std::make_pair(*(lminmax.first), *(lminmax.second)),
                 std::make_pair(minit, maxit));
           } else {
-            *result = std::make_pair(
-                std::make_pair(std::numeric_limits<value_t>::max(),
-                               std::numeric_limits<value_t>::min()),
-                std::make_pair(minit, maxit));
+            *result = std::make_pair(std::make_pair(value_t{}, value_t{}),
+                                     std::make_pair(minit, maxit));
           }
         },
         args, &res[i]);
   }
-  auto res_min = std::min_element(res.begin(), res.end(),
-                                  [](const res_t& x, const res_t& y) {
-                                    return x.first.first < y.first.first;
-                                  });
-  auto res_max = std::max_element(res.begin(), res.end(),
-                                  [](const res_t& x, const res_t& y) {
-                                    return x.first.second < y.first.second;
-                                  });
+  auto res_min = std::min_element(
+      res.begin(), res.end(), [&](const res_t& x, const res_t& y) {
+        return x.second.first != last && comp(x.first.first, y.first.first);
+      });
+  auto res_max = std::max_element(
+      res.begin(), res.end(), [&](const res_t& x, const res_t& y) {
+        return y.second.first != last && comp(x.first.second, y.first.second);
+      });
   return std::make_pair(res_min->second.first, res_max->second.second);
 }
 
@@ -287,23 +294,21 @@ std::pair<ForwardIt, ForwardIt> minmax_element(
                 std::make_pair(*(lminmax.first), *(lminmax.second)),
                 std::make_pair(minit, maxit));
           } else {
-            *result = std::make_pair(
-                std::make_pair(std::numeric_limits<value_t>::max(),
-                               std::numeric_limits<value_t>::min()),
-                std::make_pair(minit, maxit));
+            *result = std::make_pair(std::make_pair(value_t{}, value_t{}),
+                                     std::make_pair(minit, maxit));
           }
         },
         args, &res[i]);
   }
   rt::waitForCompletion(h);
-  auto res_min = std::min_element(res.begin(), res.end(),
-                                  [](const res_t& x, const res_t& y) {
-                                    return x.first.first < y.first.first;
-                                  });
-  auto res_max = std::max_element(res.begin(), res.end(),
-                                  [](const res_t& x, const res_t& y) {
-                                    return x.first.second < y.first.second;
-                                  });
+  auto res_min = std::min_element(
+      res.begin(), res.end(), [&](const res_t& x, const res_t& y) {
+        return x.second.first != last && comp(x.first.first, y.first.first);
+      });
+  auto res_max = std::max_element(
+      res.begin(), res.end(), [&](const res_t& x, const res_t& y) {
+        return y.second.first != last && comp(x.first.second, y.first.second);
+      });
   return std::make_pair(res_min->second.first, res_max->second.second);
 }
 
