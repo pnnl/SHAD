@@ -258,6 +258,7 @@ std::pair<ForwardIt, ForwardIt> minmax_element(
   return std::make_pair(res_min->second.first, res_max->second.second);
 }
 
+// todo drop DefaultConstructible requirement
 template <class ForwardIt, class Compare>
 std::pair<ForwardIt, ForwardIt> minmax_element(
     distributed_parallel_tag&& policy, ForwardIt first, ForwardIt last,
