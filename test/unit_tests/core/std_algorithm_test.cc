@@ -277,8 +277,7 @@ TYPED_TEST(VTF, std_transform) {
 TYPED_TEST(VTF, std_generate) {
   using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
-  int x = 42;
-  auto generator = [&x]() { return x = std::negate<val_t>{}(x); };
+  auto generator = [n = 42]() mutable { return n = std::negate<val_t>{}(n); };
   this->test_void(std::generate<it_t, typeof(generator)>,
                   shad_test_stl::generate_<it_t, typeof(generator)>,
                   shad_test_stl::ordered_checksum<it_t>, generator);
@@ -546,8 +545,7 @@ TYPED_TEST(ATF, std_transform) {
 TYPED_TEST(ATF, std_generate) {
   using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
-  int x = 42;
-  auto generator = [&x]() { return x = std::negate<val_t>{}(x); };
+  auto generator = [n = 42]() mutable { return n = std::negate<val_t>{}(n); };
   this->test_void(std::generate<it_t, typeof(generator)>,
                   shad_test_stl::generate_<it_t, typeof(generator)>,
                   shad_test_stl::ordered_checksum<it_t>, generator);

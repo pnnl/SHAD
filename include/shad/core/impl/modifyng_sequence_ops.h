@@ -31,7 +31,6 @@
 #include <tuple>
 
 #include "shad/core/execution.h"
-#include "shad/core/impl/utils.h"
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
@@ -147,73 +146,38 @@ ForwardIt2 transform(distributed_sequential_tag&& policy, ForwardIt1 first1,
   return res;
 }
 
-namespace generate_impl {
-template <typename ForwardIt>
-std::pair<std::shared_ptr<uint8_t>, size_t> prepare_buffer(
-    const ForwardIt first, const ForwardIt last,
-    typename std::iterator_traits<ForwardIt>::difference_type range_len) {
-  // prepare the argument buffer
-  size_t val_size = sizeof(typename ForwardIt::value_type);
-  size_t buf_len = range_len * val_size + 2 * sizeof(ForwardIt);
-  std::shared_ptr<uint8_t> sp(new uint8_t[buf_len],
-                              std::default_delete<uint8_t[]>());
-  auto it_buf_ptr =
-      reinterpret_cast<ForwardIt*>(sp.get() + range_len * val_size);
-  it_buf_ptr[0] = first;
-  it_buf_ptr[1] = last;
-
-  return std::make_pair(sp, buf_len);
-}
-
-template <typename ForwardIt>
-void kernel(const uint8_t* argsBuffer, const uint32_t buf_len) {
-  using T = typename ForwardIt::value_type;
-  using itr_traits = distributed_iterator_traits<ForwardIt>;
-  const auto value_buf_ptr = reinterpret_cast<const T*>(argsBuffer);
-  const auto it_buf_ptr = reinterpret_cast<const ForwardIt*>(
-      argsBuffer + buf_len - 2 * sizeof(ForwardIt));
-  auto begin = it_buf_ptr[0];
-  auto end = it_buf_ptr[1];
-  auto local_range = itr_traits::local_range(begin, end);
-
-  std::copy(value_buf_ptr, reinterpret_cast<const T*>(it_buf_ptr),
-            local_range.begin());
-}
-}  // namespace generate_impl
-
 template <typename ForwardIt, typename Generator>
 void generate(distributed_parallel_tag&& policy, ForwardIt first,
               ForwardIt last, Generator generator) {
   using T = typename ForwardIt::value_type;
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   auto localities = itr_traits::localities(first, last);
-  using difference_type = typename itr_traits::difference_type;
-
-  auto range_lengths = local_range_lenghts(first, last);
-  auto len_it = range_lengths.begin();
 
   rt::Handle H;
-  std::vector<std::shared_ptr<uint8_t>> buf_ptrs;
   for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality, ++len_it) {
-    // prepare the arguments
-    auto args = generate_impl::prepare_buffer(first, last, *len_it);
-    buf_ptrs.push_back(args.first);
-    auto value_buf_ptr = reinterpret_cast<T*>(args.first.get());
-    for (difference_type i = 0; i < *len_it; ++i)
-      value_buf_ptr[i] = generator();
-
-    // execute the remote store
+       locality != end; ++locality) {
     rt::asyncExecuteAt(
         H, locality,
-        [](rt::Handle&, const uint8_t* argsBuffer, const uint32_t buf_len) {
-          generate_impl::kernel<ForwardIt>(argsBuffer, buf_len);
+        [](rt::Handle&,
+           const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto generator = std::get<2>(args);
+          auto local_range = itr_traits::local_range(begin, end);
+          auto lbegin = local_range.begin();
+          auto lend = local_range.end();
+
+          // call the generator to align with the offset
+          auto it = itr_traits::iterator_from_local(begin, end, lbegin);
+          for (auto calls = std::distance(begin, it); calls; --calls)
+            auto tmp = generator();
+
+          std::generate(lbegin, lend, generator);
         },
-        args.first, args.second);
+        std::make_tuple(first, last, generator));
   }
 
   rt::waitForCompletion(H);
-  buf_ptrs.clear();
 }
 
 template <typename ForwardIt, typename Generator>
@@ -222,23 +186,27 @@ void generate(distributed_sequential_tag&& policy, ForwardIt first,
   using T = typename ForwardIt::value_type;
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   auto localities = itr_traits::localities(first, last);
-  using difference_type = typename itr_traits::difference_type;
-  difference_type range_len;
-
-  auto range_lengths = local_range_lenghts(first, last);
-  auto len_it = range_lengths.begin();
 
   for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality, ++len_it) {
-    // prepare the arguments
-    auto args = generate_impl::prepare_buffer(first, last, *len_it);
-    auto value_buf_ptr = reinterpret_cast<T*>(args.first.get());
-    for (difference_type i = 0; i < *len_it; ++i)
-      value_buf_ptr[i] = generator();
+       locality != end; ++locality) {
+    rt::executeAt(locality,
+                  [](const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
+                    auto begin = std::get<0>(args);
+                    auto end = std::get<1>(args);
+                    auto generator = std::get<2>(args);
+                    auto local_range = itr_traits::local_range(begin, end);
+                    auto lbegin = local_range.begin();
+                    auto lend = local_range.end();
 
-    // execute the remote store
-    rt::executeAt(locality, generate_impl::kernel<ForwardIt>, args.first,
-                  args.second);
+                    // call the generator to align with the offset
+                    auto it =
+                        itr_traits::iterator_from_local(begin, end, lbegin);
+                    for (auto calls = std::distance(begin, it); calls; --calls)
+                      auto tmp = generator();
+
+                    std::generate(lbegin, lend, generator);
+                  },
+                  std::make_tuple(first, last, generator));
   }
 }
 
