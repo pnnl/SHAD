@@ -735,8 +735,7 @@ TYPED_TEST(STF, shad_find) {
 
 // search_n - todo
 
-// todo transform not compiling due to std::advance
-#if 0
+// transform
 TYPED_TEST(STF, shad_transform) {
   using it_t = typeof(this->in->begin());
   using out_it_t = std::insert_iterator<TypeParam>;
@@ -753,7 +752,6 @@ TYPED_TEST(STF, shad_transform) {
       shad_test_stl::transform_<it_t, out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 }
-#endif
 
 ///////////////////////////////////////
 //
@@ -1062,7 +1060,6 @@ TYPED_TEST(MTF, shad_find) {
 
 // search_n - todo
 
-// todo transform not compiling due to std::advance
 #if 0
 TYPED_TEST(MTF, shad_transform) {
   using it_t = typeof(this->in->begin());

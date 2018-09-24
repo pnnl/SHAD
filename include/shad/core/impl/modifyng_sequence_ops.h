@@ -31,6 +31,7 @@
 #include <tuple>
 
 #include "shad/core/execution.h"
+#include "shad/core/impl/utils.h"
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
@@ -108,7 +109,7 @@ ForwardIt2 transform(distributed_parallel_tag&& policy, ForwardIt1 first1,
           auto end = local_range.end();
           auto it = itr_traits::iterator_from_local(gbegin, gend, begin);
           auto d_first_ = std::get<2>(args);
-          std::advance(d_first_, std::distance(gbegin, it));
+          advance_output_iterator(d_first_, gbegin, it);
           auto op = std::get<3>(args);
 
           *res_ptr = std::transform(begin, end, d_first_, op);
