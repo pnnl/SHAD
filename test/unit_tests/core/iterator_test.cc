@@ -32,7 +32,7 @@
 #include "shad/core/unordered_set.h"
 
 constexpr int batch_size = 128;
-std::pair<int, int> kv(int x) { return std::make_pair(x, x); }
+static auto kv(int x) { return std::make_pair(x, x); }
 
 template <typename OutputIterator>
 void insert_check_batch(shad::unordered_set<int> &cnt, OutputIterator ins,
@@ -46,12 +46,11 @@ void insert_check_batch(shad::unordered_set<int> &cnt, OutputIterator ins,
   }
 }
 
-void insert_check_batch(shad::unordered_map<int, int> &cnt,
-                        typename shad::unordered_map<int, int>::iterator it,
+template <typename OutputIterator>
+void insert_check_batch(shad::unordered_map<int, int> &cnt, OutputIterator ins,
                         int first) {
   std::vector<typename shad::unordered_map<int, int>::value_type> src;
   for (auto i = batch_size; i > 0; --i) src.push_back(kv(i));
-  std::insert_iterator<shad::unordered_map<int, int>> ins(cnt, it);
   std::copy(src.begin(), src.end(), ins);
   for (auto i = batch_size; i > 0; --i) {
     ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
@@ -146,13 +145,15 @@ TEST(shad_umap, insert_iterator) {
   T cnt(3 * batch_size);
 
   // insert into empty container, from begin
-  insert_check_batch(cnt, cnt.begin(), 0);
+  insert_check_batch(cnt, std::insert_iterator<T>(cnt, cnt.begin()), 0);
 
   // insert into non-empty container, from begin
-  insert_check_batch(cnt, cnt.begin(), batch_size);
+  insert_check_batch(cnt, std::insert_iterator<T>(cnt, cnt.begin()),
+                     batch_size);
 
   // insert into non-empty container, from end
-  insert_check_batch(cnt, cnt.end(), 2 * batch_size);
+  insert_check_batch(cnt, std::insert_iterator<T>(cnt, cnt.end()),
+                     2 * batch_size);
 }
 
 TEST(shad_umap, buffered_insert_iterator) {

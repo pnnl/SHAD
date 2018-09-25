@@ -111,7 +111,6 @@ ForwardIt2 transform(distributed_parallel_tag&& policy, ForwardIt1 first1,
           auto d_first_ = std::get<2>(args);
           advance_output_iterator(d_first_, gbegin, it);
           auto op = std::get<3>(args);
-
           *res_ptr = std::transform(begin, end, d_first_, op);
         },
         std::make_tuple(first1, last1, d_first, unary_op), &(*res_it));

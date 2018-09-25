@@ -447,10 +447,10 @@ class TestFixture : public ::testing::Test {
   void test_io_inserters_with_policy(ExecutionPolicy &&policy, FS &&sub_f,
                                      FO &&obj_f, checksum_t checksum_f,
                                      args_... args) {
-    using out_it_t = std::insert_iterator<T>;
     auto out1 = create_output_container(0);
     auto out2 = create_output_container(0);
-    out_it_t out1_it(*out1, out1->begin()), out2_it(*out2, out2->begin());
+    shad::insert_iterator<T> out1_it(*out1, out1->begin());
+    std::insert_iterator<T> out2_it(*out2, out2->begin());
     sub_f(std::forward<ExecutionPolicy>(policy), in->begin(), in->end(),
           out1_it, args...);
     obj_f(in->begin(), in->end(), out2_it, args...);

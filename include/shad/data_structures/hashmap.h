@@ -322,6 +322,20 @@ class Hashmap : public AbstractDataStructure<
     return const_local_iterator::lmap_end(&localMap_);
   }
 
+  std::pair<iterator, bool> insert(const value_type &value) {
+    return Insert(value.first, value.second);
+  }
+
+  std::pair<iterator, bool> insert(const_iterator, const value_type &value) {
+    return insert(value);
+  }
+
+  void buffered_insert(iterator, const value_type &value) {
+    BufferedInsert(value.first, value.second);
+  }
+
+  void buffered_flush() { WaitForBufferedInsert(); }
+
  private:
   ObjectID oid_;
   LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> localMap_;

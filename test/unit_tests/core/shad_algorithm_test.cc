@@ -816,18 +816,21 @@ TYPED_TEST(STF, shad_find) {
 // transform
 TYPED_TEST(STF, shad_transform) {
   using it_t = typeof(this->in->begin());
-  using out_it_t = std::insert_iterator<TypeParam>;
+  using shad_out_it_t = shad::insert_iterator<TypeParam>;
+  using std_out_it_t = std::insert_iterator<TypeParam>;
   using val_t = typename TypeParam::value_type;
   using map_f = std::negate<val_t>;
   this->test_io_inserters_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform<shad::distributed_sequential_tag, it_t, out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, out_it_t, map_f>,
+      shad::transform<shad::distributed_sequential_tag, it_t, shad_out_it_t,
+                      map_f>,
+      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
   this->test_io_inserters_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform<shad::distributed_parallel_tag, it_t, out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, out_it_t, map_f>,
+      shad::transform<shad::distributed_parallel_tag, it_t, shad_out_it_t,
+                      map_f>,
+      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 }
 
@@ -1177,21 +1180,22 @@ TYPED_TEST(MTF, shad_find) {
 
 // search_n - todo
 
-#if 0
 TYPED_TEST(MTF, shad_transform) {
   using it_t = typeof(this->in->begin());
-  using out_it_t = std::insert_iterator<TypeParam>;
+  using shad_out_it_t = shad::insert_iterator<TypeParam>;
+  using std_out_it_t = std::insert_iterator<TypeParam>;
   using val_t = typename TypeParam::value_type;
   using map_f = std::negate<val_t>;
   this->test_io_inserters_with_policy(
       shad::distributed_sequential_tag{},
-      shad::transform<shad::distributed_sequential_tag, it_t, out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, out_it_t, map_f>,
+      shad::transform<shad::distributed_sequential_tag, it_t, shad_out_it_t,
+                      map_f>,
+      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
   this->test_io_inserters_with_policy(
       shad::distributed_parallel_tag{},
-      shad::transform<shad::distributed_parallel_tag, it_t, out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, out_it_t, map_f>,
+      shad::transform<shad::distributed_parallel_tag, it_t, shad_out_it_t,
+                      map_f>,
+      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 }
-#endif
