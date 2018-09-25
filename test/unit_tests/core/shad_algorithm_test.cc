@@ -46,9 +46,48 @@ using ATF_TestTypes =
     ::testing::Types<shad::array<int, shad_test_stl::kNumElements>>;
 TYPED_TEST_CASE(ATF, ATF_TestTypes);
 
-#if SHAD_COMPLETE_STL
-// todo min_element, max_element, minmax_element
-#endif
+// min_element, max_element, minmax_element
+TYPED_TEST(ATF, shad_min_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::min_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::min_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::min_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::min_element_<it_t>);
+}
+
+TYPED_TEST(ATF, shad_max_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::max_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::max_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::max_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::max_element_<it_t>);
+}
+
+TYPED_TEST(ATF, shad_minmax_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::minmax_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::minmax_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::minmax_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::minmax_element_<it_t>);
+}
 
 // find_if, find_if_not
 TYPED_TEST(ATF, shad_find_if) {
@@ -439,9 +478,48 @@ using STF = shad_test_stl::SetTestFixture<T>;
 using STF_TestTypes = ::testing::Types<shad::unordered_set<int>>;
 TYPED_TEST_CASE(STF, STF_TestTypes);
 
-#if SHAD_COMPLETE_STL
-// todo min_element, max_element, minmax_element
-#endif
+// min_element, max_element, minmax_element
+TYPED_TEST(STF, shad_min_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::min_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::min_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::min_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::min_element_<it_t>);
+}
+
+TYPED_TEST(STF, shad_max_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::max_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::max_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::max_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::max_element_<it_t>);
+}
+
+TYPED_TEST(STF, shad_minmax_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::minmax_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::minmax_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::minmax_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::minmax_element_<it_t>);
+}
 
 // find_if, find_if_not
 TYPED_TEST(STF, shad_find_if) {
@@ -764,9 +842,48 @@ using MTF = shad_test_stl::MapTestFixture<T>;
 using MTF_TestTypes = ::testing::Types<shad::unordered_map<int, int>>;
 TYPED_TEST_CASE(MTF, MTF_TestTypes);
 
-#if SHAD_COMPLETE_STL
-// todo min_element, max_element, minmax_element
-#endif
+// min_element, max_element, minmax_element
+TYPED_TEST(MTF, shad_min_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::min_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::min_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::min_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::min_element_<it_t>);
+}
+
+TYPED_TEST(MTF, shad_max_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::max_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::max_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::max_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::max_element_<it_t>);
+}
+
+TYPED_TEST(MTF, shad_minmax_element) {
+  using it_t = typename TypeParam::iterator;
+
+  this->test_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::minmax_element<shad::distributed_sequential_tag, it_t>,
+      shad_test_stl::minmax_element_<it_t>);
+
+  this->test_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::minmax_element<shad::distributed_parallel_tag, it_t>,
+      shad_test_stl::minmax_element_<it_t>);
+}
 
 // find_if, find_if_not
 TYPED_TEST(MTF, shad_find_if) {

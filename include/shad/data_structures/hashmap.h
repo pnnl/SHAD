@@ -382,7 +382,7 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
   } else {
     auto insertLambda =
         [](const std::tuple<iterator, iterator, InsertArgs> &args_,
-        		std::pair<iterator, bool> *res_ptr) {
+           std::pair<iterator, bool> *res_ptr) {
           auto &args(std::get<2>(args_));
           auto mapPtr = HmapT::GetPtr(args.oid);
           auto lres = mapPtr->localMap_.Insert(args.key, args.value);
@@ -690,7 +690,12 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   map_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit) {
-    data_ = itData(locID, mapOID, lit, *lit);
+    auto mapPtr = MapT::GetPtr(mapOID);
+    const LMap *lmapPtr = &(mapPtr->localMap_);
+    if (lit != local_iterator_type::lmap_end(lmapPtr))
+      data_ = itData(locID, mapOID, lit, *lit);
+    else
+      *this = map_end(mapPtr.get());
   }
 
   static map_iterator map_begin(const MapT *mapPtr) {
