@@ -93,8 +93,8 @@ template <typename ExecutionPolicy, typename ForwardItr,
           typename UnaryPredicate>
 ForwardItr find_if_not(ExecutionPolicy&& policy, ForwardItr first,
                        ForwardItr last, UnaryPredicate p) {
-  return impl::find_if(std::forward<ExecutionPolicy>(policy), first, last,
-                       std::unary_negate<UnaryPredicate>(p));
+  return impl::find_if_not(std::forward<ExecutionPolicy>(policy), first, last,
+                           p);
 }
 
 template <typename ExecutionPolicy, typename ForwardItr,
