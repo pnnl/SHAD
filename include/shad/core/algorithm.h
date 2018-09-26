@@ -325,9 +325,10 @@ lexicographical_compare(ExecutionPolicy&& policy, ForwardIt1 first1,
 };
 
 template <class InputIt1, class InputIt2, class Compare>
-bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
-                             InputIt2 first2, InputIt2 last2,
-                             Compare comp ) {
+std::enable_if_t<!shad::is_execution_policy<InputIt1>::value,  bool>
+lexicographical_compare(InputIt1 first1, InputIt1 last1,
+                        InputIt2 first2, InputIt2 last2,
+                        Compare comp ) {
   return impl::lexicographical_compare(distributed_sequential_tag{}, first1,
                                        last1, first2, last2, comp);
 }
