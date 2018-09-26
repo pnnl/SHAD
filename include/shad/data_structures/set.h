@@ -455,7 +455,12 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   set_iterator(uint32_t locID, const OIDT setOID, local_iterator_type& lit) {
-    data_ = itData(locID, setOID, lit, *lit);
+    auto setPtr = SetT::GetPtr(setOID);
+    const LSet* lsetPtr = &(setPtr->localSet_);
+    if (lit != local_iterator_type::lset_end(lsetPtr))
+      data_ = itData(locID, setOID, lit, *lit);
+    else
+      *this = set_end(setPtr.get());
   }
 
   static set_iterator set_begin(const SetT* setPtr) {
