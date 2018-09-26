@@ -212,8 +212,10 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
 
   iterator begin() { return iterator::set_begin(this); }
   iterator end() { return iterator::set_end(this); }
-  const_iterator cbegin() { return const_iterator::set_begin(this); }
-  const_iterator cend() { return const_iterator::set_end(this); }
+  const_iterator cbegin() const { return const_iterator::set_begin(this); }
+  const_iterator cend() const { return const_iterator::set_end(this); }
+  const_iterator begin() const { return cbegin(); }
+  const_iterator end() const { return cend(); }
   local_iterator local_begin() {
     return local_iterator::lset_begin(&localSet_);
   }
@@ -453,7 +455,12 @@ class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   set_iterator(uint32_t locID, const OIDT setOID, local_iterator_type& lit) {
-    data_ = itData(locID, setOID, lit, *lit);
+    auto setPtr = SetT::GetPtr(setOID);
+    const LSet* lsetPtr = &(setPtr->localSet_);
+    if (lit != local_iterator_type::lset_end(lsetPtr))
+      data_ = itData(locID, setOID, lit, *lit);
+    else
+      *this = set_end(setPtr.get());
   }
 
   static set_iterator set_begin(const SetT* setPtr) {

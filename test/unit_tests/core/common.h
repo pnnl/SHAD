@@ -191,7 +191,7 @@ struct subseq_from_<shad::unordered_set<U>> {
   using T = shad::unordered_set<U>;
   std::shared_ptr<T> operator()(std::shared_ptr<T> in, size_t start_idx,
                                 size_t len) {
-    assert(start_idx < in->Size());
+    assert(start_idx < in->size());
     auto first = it_seek_(in, start_idx);
     auto res = std::make_shared<T>(len);
     {
@@ -229,7 +229,7 @@ struct subseq_from_<shad::unordered_map<U, V>> {
   using T = shad::unordered_map<U, V>;
   std::shared_ptr<T> operator()(std::shared_ptr<T> in, size_t start_idx,
                                 size_t len) {
-    assert(start_idx < (*in).Size());
+    assert(start_idx < (*in).size());
     auto first = it_seek_(in, start_idx);
     auto res = std::make_shared<T>(len);
     std::unordered_map<U, V> x;

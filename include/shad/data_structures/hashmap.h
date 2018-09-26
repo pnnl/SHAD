@@ -307,8 +307,10 @@ class Hashmap : public AbstractDataStructure<
 
   iterator begin() { return iterator::map_begin(this); }
   iterator end() { return iterator::map_end(this); }
-  const_iterator cbegin() { return const_iterator::map_begin(this); }
-  const_iterator cend() { return const_iterator::map_end(this); }
+  const_iterator cbegin() const { return const_iterator::map_begin(this); }
+  const_iterator cend() const { return const_iterator::map_end(this); }
+  const_iterator begin() const { return cbegin(); }
+  const_iterator end() const { return cend(); }
   local_iterator local_begin() {
     return local_iterator::lmap_begin(&localMap_);
   }
@@ -380,7 +382,7 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
   } else {
     auto insertLambda =
         [](const std::tuple<iterator, iterator, InsertArgs> &args_,
-        		std::pair<iterator, bool> *res_ptr) {
+           std::pair<iterator, bool> *res_ptr) {
           auto &args(std::get<2>(args_));
           auto mapPtr = HmapT::GetPtr(args.oid);
           auto lres = mapPtr->localMap_.Insert(args.key, args.value);
@@ -688,7 +690,12 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   map_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit) {
-    data_ = itData(locID, mapOID, lit, *lit);
+    auto mapPtr = MapT::GetPtr(mapOID);
+    const LMap *lmapPtr = &(mapPtr->localMap_);
+    if (lit != local_iterator_type::lmap_end(lmapPtr))
+      data_ = itData(locID, mapOID, lit, *lit);
+    else
+      *this = map_end(mapPtr.get());
   }
 
   static map_iterator map_begin(const MapT *mapPtr) {
