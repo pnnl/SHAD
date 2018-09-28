@@ -77,7 +77,8 @@ bool equal(distributed_parallel_tag&&, ForwardIt1 first1, ForwardIt1 last1,
            ForwardIt2 first2, BinaryPredicate p) {
   using itr_traits = distributed_iterator_traits<ForwardIt1>;
   auto localities = itr_traits::localities(first1, last1);
-  bool res[localities.size()];
+  auto ls = localities.size();
+  bool res[ls];
   uint32_t i = 0;
   rt::Handle h;
   auto args = std::make_tuple(first1, last1, first2, p);
@@ -112,9 +113,7 @@ bool equal(distributed_parallel_tag&&, ForwardIt1 first1, ForwardIt1 last1,
         args, &res[i]);
   }
   rt::waitForCompletion(h);
-  for (auto val : res) {
-    if (!val) return false;
-  }
+  std::all_of(&res[0], &res[ls], [](bool v) -> bool { return v; });
   return true;
 }
 
@@ -154,9 +153,6 @@ bool lexicographical_compare(distributed_sequential_tag&&,
             }
             if (op(*first2, *lfirst1)) {
               *result = std::make_pair(first2, false);
-              size_t v1 = *lfirst1;
-              size_t v2 = *first2;
-              printf("False?: %lu, %lu\n", v1, v2);
               return;
             }
           }
@@ -176,7 +172,8 @@ bool lexicographical_compare(distributed_parallel_tag&&,
                              BinaryPredicate p) {
   using itr_traits = distributed_iterator_traits<ForwardIt1>;
   auto localities = itr_traits::localities(first1, last1);
-  bool res[localities.size()];
+  auto ls = localities.size();
+  bool res[ls];
   uint32_t i = 0;
   rt::Handle h;
   auto args = std::make_tuple(first1, last1, first2, last2, p);
@@ -210,9 +207,6 @@ bool lexicographical_compare(distributed_parallel_tag&&,
             }
             if (op(*first2, *lfirst1)) {
               *result = false;
-              size_t v1 = *lfirst1;
-              size_t v2 = *first2;
-              printf("False?: %lu, %lu\n", v1, v2);
               return;
             }
           }
@@ -221,9 +215,7 @@ bool lexicographical_compare(distributed_parallel_tag&&,
         args, &res[i]);
   }
   rt::waitForCompletion(h);
-  for (auto val : res) {
-    if (!val) return false;
-  }
+  std::all_of(&res[0], &res[ls], [](bool v) -> bool { return v; });
   return true;
 }
 
