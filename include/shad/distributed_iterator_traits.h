@@ -58,6 +58,18 @@ struct distributed_iterator_traits : public std::iterator_traits<Iterator> {
   }
 };
 
+template <typename T, typename = void>
+struct is_distributed_iterator {
+   static constexpr bool value = false;
+};
+
+template <typename T>
+struct is_distributed_iterator<T, typename std::enable_if<!std::is_same<
+                                  typename distributed_iterator_traits<T>
+                                  ::value_type, void>::value>::type> {
+   static constexpr bool value = true;
+};
+
 }  // namespace shad
 
 #endif /* INCLUDE_SHAD_DISTRIBUTED_ITERATOR_TRAIT_H */
