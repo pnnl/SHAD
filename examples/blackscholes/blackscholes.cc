@@ -42,11 +42,8 @@
 // The array size must be equal to the number of lines in the input file.
 constexpr size_t n_options = 1 << 16;
 
-using options_t = shad::array<option_t, n_options>;
-using prices_t = shad::array<price_t, n_options>;
-
-options_t read_options(const std::string &fname) {
-  options_t options;
+shad::array<option_t, n_options> read_options(const std::string &fname) {
+  shad::array<option_t, n_options> options;
   std::ifstream in_file(fname);
   assert(in_file.is_open());
   size_t i = 0;
@@ -58,23 +55,23 @@ options_t read_options(const std::string &fname) {
   return options;
 }
 
-price_t reference(const options_t &in) {
+price_t reference(const shad::array<option_t, n_options> &in) {
   price_t max_price = std::numeric_limits<price_t>::min();
   for (auto opt : in) max_price = std::max(max_price, black_scholes(opt));
   return max_price;
 }
 
-price_t std_algorithms(const options_t &in) {
+price_t std_algorithms(const shad::array<option_t, n_options> &in) {
   price_t max_price;
-  prices_t prices;
+  shad::array<price_t, n_options> prices;
   std::transform(in.begin(), in.end(), prices.begin(), black_scholes);
   auto max_price_it = std::max_element(prices.begin(), prices.end());
   return *max_price_it;
 }
 
-price_t shad_algorithms(const options_t &in) {
+price_t shad_algorithms(const shad::array<option_t, n_options> &in) {
   price_t max_price;
-  prices_t prices;
+  shad::array<price_t, n_options> prices;
   shad::transform(shad::distributed_parallel_tag{}, in.begin(), in.end(),
                   prices.begin(), black_scholes);
   auto max_price_it = shad::max_element(shad::distributed_parallel_tag{},
