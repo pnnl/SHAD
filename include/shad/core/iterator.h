@@ -94,9 +94,8 @@ class insert_iterator
 /// into a distributed container for which it was constructed, at the position
 /// pointed to by the supplied iterator. The buffered insertion is performed
 /// whenever the iterator (whether dereferenced or not) is assigned to. The
-/// buffer to be flushed into the container when the flush() function is called
-/// and also upon destruction. Incrementing the shad::buffered_insert_iterator
-/// is a no-op.
+/// buffer to be flushed into the container when the flush() function is called.
+/// Incrementing the shad::buffered_insert_iterator is a no-op.
 ///
 /// @tparam Container The type of the distributed container.
 template <typename Container>
@@ -136,12 +135,9 @@ class buffered_insert_iterator
   }
 
   /// @brief Flushes pending insertions to the container.
-  void flush() { local_container_ptr_->buffered_flush(); }
-
-  /// @brief Destructor.
-  ///
-  /// The destruction flushes all pending insertions into the container.
-  ~buffered_insert_iterator() { flush(); }
+  void flush() {
+    if (local_container_ptr_) local_container_ptr_->buffered_flush();
+  }
 
   buffered_insert_iterator& operator*() { return *this; }
   buffered_insert_iterator& operator++() { return *this; }
