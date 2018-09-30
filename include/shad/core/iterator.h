@@ -116,22 +116,7 @@ class buffered_insert_iterator
   buffered_insert_iterator(Container& container, Iterator iterator)
       : global_id_(container.global_id()),
         iterator_(iterator),
-        locality_(rt::thisLocality()) {
-    local_container_ptr_ = Container::from_global_id(global_id_);
-  }
-
-  /// @brief Copy constructor.
-  ///
-  /// @param copy the insert_iterator to be copied
-  buffered_insert_iterator(const buffered_insert_iterator& copy)
-      : global_id_(copy.global_id_),
-        iterator_(copy.iterator_),
-        locality_(rt::thisLocality()),
-        local_container_ptr_(copy.local_container_ptr_) {
-    if (locality_ != copy.locality_) {
-      local_container_ptr_ = Container::from_global_id(global_id_);
-    }
-  }
+        locality_(rt::thisLocality()) {}
 
   /// @brief The assignment operator.
   ///
@@ -142,6 +127,10 @@ class buffered_insert_iterator
   ///
   /// @return A self reference.
   buffered_insert_iterator& operator=(const value_type& value) {
+    if (!local_container_ptr_ || locality_ != rt::thisLocality()) {
+      locality_ = rt::thisLocality();
+      local_container_ptr_ = Container::from_global_id(global_id_);
+    }
     local_container_ptr_->buffered_insert(iterator_, value);
     return *this;
   }
@@ -152,7 +141,7 @@ class buffered_insert_iterator
   /// @brief Destructor.
   ///
   /// The destruction flushes all pending insertions into the container.
-  ~buffered_insert_iterator() { local_container_ptr_->buffered_flush(); }
+  ~buffered_insert_iterator() { flush(); }
 
   buffered_insert_iterator& operator*() { return *this; }
   buffered_insert_iterator& operator++() { return *this; }
