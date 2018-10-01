@@ -36,6 +36,7 @@
 #include "shad/core/execution.h"
 #include "shad/core/impl/comparison_ops.h"
 #include "shad/core/impl/minimum_maximum_ops.h"
+#include "shad/core/impl/modifyng_sequence_ops.h"
 #include "shad/core/impl/non_modifyng_sequence_ops.h"
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
@@ -219,10 +220,50 @@ std::pair<ForwardIt, ForwardIt> minmax_element(ExecutionPolicy&& policy,
 
 // ---------------------------------------------//
 //                                              //
-//                 comparison_ops               //
+//            modifyng_sequence_ops             //
 //                                              //
 // ---------------------------------------------//
 
+template <class ExecutionPolicy, class ForwardIt, class T>
+void fill(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+          const T& value) {
+  impl::fill(std::forward<ExecutionPolicy>(policy), first, last, value);
+}
+
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
+          class UnaryOperation>
+ForwardIt2 transform(ExecutionPolicy&& policy, ForwardIt1 first1,
+                     ForwardIt1 last1, ForwardIt2 d_first,
+                     UnaryOperation unary_op) {
+  return impl::transform(std::forward<ExecutionPolicy>(policy), first1, last1,
+                         d_first, unary_op);
+}
+
+template <class ExecutionPolicy, class ForwardIt, class Generator>
+void generate(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+              Generator g) {
+  impl::generate(std::forward<ExecutionPolicy>(policy), first, last, g);
+}
+
+template <class ExecutionPolicy, class ForwardIt, class T>
+void replace(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+             const T& old_value, const T& new_value) {
+  impl::replace(std::forward<ExecutionPolicy>(policy), first, last, old_value,
+                new_value);
+}
+
+template <class ExecutionPolicy, class ForwardIt, class UnaryPredicate, class T>
+void replace_if(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
+                UnaryPredicate p, const T& new_value) {
+  impl::replace_if(std::forward<ExecutionPolicy>(policy), first, last, p,
+                   new_value);
+}
+
+// ---------------------------------------------//
+//                                              //
+//                 comparison_ops               //
+//                                              //
+// ---------------------------------------------//
 
 //  ------------------  //
 //  |      equal     |  //

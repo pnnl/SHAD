@@ -322,6 +322,20 @@ class Hashmap : public AbstractDataStructure<
     return const_local_iterator::lmap_end(&localMap_);
   }
 
+  std::pair<iterator, bool> insert(const value_type &value) {
+    return Insert(value.first, value.second);
+  }
+
+  std::pair<iterator, bool> insert(const_iterator, const value_type &value) {
+    return insert(value);
+  }
+
+  void buffered_insert(iterator, const value_type &value) {
+    BufferedInsert(value.first, value.second);
+  }
+
+  void buffered_flush() { WaitForBufferedInsert(); }
+
  private:
   ObjectID oid_;
   LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> localMap_;
@@ -681,7 +695,7 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   using OIDT = typename MapT::ObjectID;
   using LMap = typename MapT::LMapT;
   using local_iterator_type = lmap_iterator<LMap, T>;
-  using value_type = T;
+  using value_type = NonConstT;
 
   map_iterator() {}
   map_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit,

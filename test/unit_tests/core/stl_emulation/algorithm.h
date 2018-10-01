@@ -239,6 +239,49 @@ std::pair<ForwardIt, ForwardIt> minmax_element_(ForwardIt first,
   return std::minmax_element(first, last, std::less<>());
 }
 
+template <class ForwardIt, class T>
+void fill_(ForwardIt first, ForwardIt last, const T &value) {
+  while (first != last) {
+    *first++ = value;
+  }
+}
+
+template <class InputIt, class OutputIt, class UnaryOperation>
+OutputIt transform_(InputIt first1, InputIt last1, OutputIt d_first,
+                   UnaryOperation unary_op) {
+  while (first1 != last1) {
+    *d_first++ = unary_op(*first1++);
+  }
+  return d_first;
+}
+
+template <class ForwardIt, class Generator>
+void generate_(ForwardIt first, ForwardIt last, Generator g) {
+  while (first != last) {
+    *first++ = g();
+  }
+}
+
+template <class ForwardIt, class T>
+void replace_(ForwardIt first, ForwardIt last, const T &old_value,
+              const T &new_value) {
+  for (; first != last; ++first) {
+    if (*first == old_value) {
+      *first = new_value;
+    }
+  }
+}
+
+template <class ForwardIt, class UnaryPredicate, class T>
+void replace_if_(ForwardIt first, ForwardIt last, UnaryPredicate p,
+                 const T &new_value) {
+  for (; first != last; ++first) {
+    if (p(*first)) {
+      *first = new_value;
+    }
+  }
+}
+
 }  // namespace shad_test_stl
 
 #endif
