@@ -143,7 +143,7 @@ class buffered_insert_iterator
   buffered_insert_iterator& operator++(int) { return *this; }
 
  private:
-  typename internal_container_t::ObjectID global_id_;
+  const typename internal_container_t::ObjectID global_id_;
   Iterator iterator_;
   internal_container_t* local_container_ptr_ = nullptr;
   rt::Locality locality_;
