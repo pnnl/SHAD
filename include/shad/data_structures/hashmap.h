@@ -330,11 +330,14 @@ class Hashmap : public AbstractDataStructure<
     return insert(value);
   }
 
-  void buffered_insert(iterator, const value_type &value) {
-    BufferedInsert(value.first, value.second);
+  void buffered_async_insert(rt::Handle &h, iterator, const value_type &value) {
+    BufferedAsyncInsert(h, value.first, value.second);
   }
 
-  void buffered_flush() { WaitForBufferedInsert(); }
+  void buffered_async_flush(rt::Handle &h) {
+    rt::waitForCompletion(h);
+    WaitForBufferedInsert();
+  }
 
  private:
   ObjectID oid_;
