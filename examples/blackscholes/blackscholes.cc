@@ -32,6 +32,7 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <cassert>
 
 #include "shad/core/algorithm.h"
 #include "shad/core/array.h"
