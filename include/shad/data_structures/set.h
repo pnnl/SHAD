@@ -227,6 +227,18 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
     return const_local_iterator::lset_end(&localSet_);
   }
 
+  std::pair<iterator, bool> insert(const value_type& value) {
+    return Insert(value);
+  }
+
+  std::pair<iterator, bool> insert(const_iterator, const value_type& value) {
+    return insert(value);
+  }
+
+  void buffered_insert(iterator, const T& k) { BufferedInsert(k); }
+
+  void buffered_flush() { WaitForBufferedInsert(); }
+
  private:
   ObjectID oid_;
   LocalSet<T, ELEM_COMPARE> localSet_;
@@ -443,7 +455,7 @@ void Set<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
 template <typename SetT, typename T, typename NonConstT>
 class set_iterator : public std::iterator<std::forward_iterator_tag, T> {
  public:
-  using value_type = T;
+  using value_type = NonConstT;
   using OIDT = typename SetT::ObjectID;
   using LSet = typename SetT::LSetT;
   using local_iterator_type = lset_iterator<LSet, T>;

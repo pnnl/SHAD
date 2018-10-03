@@ -51,6 +51,7 @@ template <class Key, class T, class Hash = shad::hash<Key>>
 class unordered_map {
   using hashmap_t = Hashmap<Key, T, shad::MemCmp<Key>, shad::Updater<T>>;
 
+  friend class insert_iterator<unordered_map>;
   friend class buffered_insert_iterator<unordered_map>;
 
  public:
@@ -143,14 +144,13 @@ class unordered_map {
   /// @{
   /// @brief Inserts an element into the container, if the container does not
   /// already contain an element with an equivalent key.
-
   ///
   /// @param value The value to be inserted.
   /// @return a pair consisting of an iterator to the inserted element (or to
   /// the element that prevented the insertion) and a bool denoting whether the
   /// insertion took place.
   std::pair<iterator, bool> insert(const value_type &value) {
-    return impl()->Insert(value.first, value.second);
+    return impl()->insert(value);
   }
 
   /// @brief Inserts an element into the container, if the container does not
@@ -159,8 +159,8 @@ class unordered_map {
   /// @param value The value to be inserted.
   /// @return an iterator to the inserted element (or to the element that
   /// prevented the insertion).
-  iterator insert(const_iterator, const value_type &value) {
-    return impl()->Insert(value.first, value.second).first;
+  iterator insert(const_iterator it, const value_type &value) {
+    return impl()->insert(it, value).first;
   }
   /// @}
 
@@ -185,14 +185,16 @@ class unordered_map {
   /// @}
 
  private:
+  using internal_container_t = hashmap_t;
+  using oid_t = typename internal_container_t::ObjectID;
+  oid_t global_id() { return impl()->GetGlobalID(); }
+  static internal_container_t *from_global_id(oid_t oid) {
+    return internal_container_t::GetPtr(oid).get();
+  }
+
   std::shared_ptr<hashmap_t> ptr = nullptr;
   const hashmap_t *impl() const { return ptr.get(); }
   hashmap_t *impl() { return ptr.get(); }
-
-  void buffered_insert(iterator, const value_type &value) {
-    impl()->BufferedInsert(value.first, value.second);
-  }
-  void buffered_flush() { impl()->WaitForBufferedInsert(); }
 };
 
 // todo operator==

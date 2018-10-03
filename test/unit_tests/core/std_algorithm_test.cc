@@ -255,6 +255,54 @@ TYPED_TEST(VTF, std_search) {
 
 // search_n - todo
 
+// fill
+TYPED_TEST(VTF, std_fill) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  this->test_void(std::fill<it_t, val_t>, shad_test_stl::fill_<it_t, val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, 42);
+}
+
+// transform
+TYPED_TEST(VTF, std_transform) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  this->test_io_assignment(std::transform<it_t, it_t, map_f>,
+                           shad_test_stl::transform_<it_t, it_t, map_f>,
+                           shad_test_stl::ordered_checksum<it_t>, map_f{});
+}
+
+// generate
+TYPED_TEST(VTF, std_generate) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  auto generator = [n = 42]() mutable { return n = std::negate<val_t>{}(n); };
+  this->test_void(std::generate<it_t, typeof(generator)>,
+                  shad_test_stl::generate_<it_t, typeof(generator)>,
+                  shad_test_stl::ordered_checksum<it_t>, generator);
+}
+
+// replace
+TYPED_TEST(VTF, std_replace) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  this->test_void(std::replace<it_t, val_t>,
+                  shad_test_stl::replace_<it_t, val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, 42, 43);
+}
+
+// replace_if
+TYPED_TEST(VTF, std_replace_if) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  auto pred = [](int x) { return (x % 3 == 0); };
+
+  this->test_void(std::replace_if<it_t, typeof(pred), val_t>,
+                  shad_test_stl::replace_if_<it_t, typeof(pred), val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, pred, 3);
+}
+
 ///////////////////////////////////////
 //
 // std::array, shad::array
@@ -475,6 +523,54 @@ TYPED_TEST(ATF, std_search) {
 
 // search_n - todo
 
+// fill
+TYPED_TEST(ATF, std_fill) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  this->test_void(std::fill<it_t, val_t>, shad_test_stl::fill_<it_t, val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, 42);
+}
+
+// transform
+TYPED_TEST(ATF, std_transform) {
+  using it_t = typeof(this->in->begin());
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  this->test_io_assignment(std::transform<it_t, it_t, map_f>,
+                           shad_test_stl::transform_<it_t, it_t, map_f>,
+                           shad_test_stl::ordered_checksum<it_t>, map_f{});
+}
+
+// generate
+TYPED_TEST(ATF, std_generate) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  auto generator = [n = 42]() mutable { return n = std::negate<val_t>{}(n); };
+  this->test_void(std::generate<it_t, typeof(generator)>,
+                  shad_test_stl::generate_<it_t, typeof(generator)>,
+                  shad_test_stl::ordered_checksum<it_t>, generator);
+}
+
+// replace
+TYPED_TEST(ATF, std_replace) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  this->test_void(std::replace<it_t, val_t>,
+                  shad_test_stl::replace_<it_t, val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, 42, 43);
+}
+
+// replace_if
+TYPED_TEST(ATF, std_replace_if) {
+  using it_t = typename TypeParam::iterator;
+  using val_t = typename TypeParam::value_type;
+  uint64_t exp_sum = 0, obs_sum = 0, pos;
+  auto pred = [](int x) { return (x % 3 == 0); };
+  this->test_void(std::replace_if<it_t, typeof(pred), val_t>,
+                  shad_test_stl::replace_if_<it_t, typeof(pred), val_t>,
+                  shad_test_stl::ordered_checksum<it_t>, pred, 3);
+}
+
 ///////////////////////////////////////
 //
 // std::unordered_set, shad::unordered_set
@@ -687,6 +783,17 @@ TYPED_TEST(STF, std_search) {
 }
 
 // search_n - todo
+
+// transform
+TYPED_TEST(STF, std_transform) {
+  using it_t = typeof(this->in->begin());
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  this->test_io_inserters(std::transform<it_t, out_it_t, map_f>,
+                          shad_test_stl::transform_<it_t, out_it_t, map_f>,
+                          shad_test_stl::checksum<it_t>, map_f{});
+}
 
 ///////////////////////////////////////
 //
@@ -902,3 +1009,14 @@ TYPED_TEST(MTF, std_search) {
 }
 
 // search_n - todo
+
+// transform
+TYPED_TEST(MTF, std_transform) {
+  using it_t = typeof(this->in->begin());
+  using out_it_t = std::insert_iterator<TypeParam>;
+  using val_t = typename TypeParam::value_type;
+  using map_f = std::negate<val_t>;
+  this->test_io_inserters(std::transform<it_t, out_it_t, map_f>,
+                          shad_test_stl::transform_<it_t, out_it_t, map_f>,
+                          shad_test_stl::checksum<it_t>, map_f{});
+}
