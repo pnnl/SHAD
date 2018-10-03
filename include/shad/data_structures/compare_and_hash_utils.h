@@ -32,6 +32,8 @@
 #include <type_traits>
 #include <vector>
 
+#include "shad/core/type_traits.h"
+
 namespace shad {
 
 /// @brief Comparison functor.
@@ -173,13 +175,7 @@ uint64_t HashFunction(const std::vector<KeyTy> &key, uint8_t seed) {
   return hash;
 }
 
-template <class T>
-struct is_std_hashable
-    : std::integral_constant<bool, std::is_arithmetic<T>::value ||
-                                       std::is_pointer<T>::value ||
-                                       std::is_same<T, std::string>::value> {};
-
-template <typename Key, bool = is_std_hashable<Key>::value>
+template <typename Key, bool=is_std_hashable<Key>::value>
 struct hash {
   size_t operator()(const Key &k) const noexcept { return hasher(k); }
   std::hash<Key> hasher;

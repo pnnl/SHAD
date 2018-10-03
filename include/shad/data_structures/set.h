@@ -226,6 +226,18 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
     return const_local_iterator::lset_end(&localSet_);
   }
 
+  std::pair<iterator, bool> insert(const value_type& value) {
+    return Insert(value);
+  }
+
+  std::pair<iterator, bool> insert(const_iterator, const value_type& value) {
+    return insert(value);
+  }
+
+  void buffered_insert(iterator, const T& k) { BufferedInsert(k); }
+
+  void buffered_flush() { WaitForBufferedInsert(); }
+
  private:
   ObjectID oid_;
   LocalSet<T, ELEM_COMPARE> localSet_;

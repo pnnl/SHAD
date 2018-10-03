@@ -22,25 +22,22 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_SHAD_CORE_EXECUTION_H
-#define INCLUDE_SHAD_CORE_EXECUTION_H
+#ifndef INCLUDE_SHAD_CORE_TYPE_TRAITS_H
+#define INCLUDE_SHAD_CORE_TYPE_TRAITS_H
 
+#include <functional>
 #include <type_traits>
 
 namespace shad {
 
-struct distributed_sequential_tag {};
-struct distributed_parallel_tag {};
-
-template <class ExecutionPolicy>
-struct is_execution_policy :
+template <class T>
+struct is_std_hashable :
          std::integral_constant<bool,
-                                std::is_same<ExecutionPolicy,
-                                          distributed_sequential_tag>::value ||
-                                std::is_same<ExecutionPolicy,
-                                          distributed_parallel_tag>::value>{
+                                std::is_arithmetic<T>::value ||
+                                std::is_pointer<T>::value ||
+                                std::is_same<T, std::string>::value>{
 };
 
 }  // namespace shad
 
-#endif /* INCLUDE_SHAD_CORE_EXECUTION_H */
+#endif /* INCLUDE_SHAD_CORE_TYPE_TRAITS_H */

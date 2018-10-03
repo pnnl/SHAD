@@ -139,10 +139,9 @@ struct create_set_<shad::unordered_set<U>, even> {
   using T = shad::unordered_set<U>;
   std::shared_ptr<T> operator()(size_t size) {
     auto res = std::make_shared<T>(size);
-    {
-      shad::buffered_insert_iterator<T> ins(*res, res->end());
-      for (size_t i = 0; i < size; ++i) ins = (2 * i + !even);
-    }
+    shad::buffered_insert_iterator<T> ins(*res, res->end());
+    for (size_t i = 0; i < size; ++i) ins = (2 * i + !even);
+    ins.flush();
     return res;
   }
 };
@@ -162,10 +161,9 @@ struct create_map_<shad::unordered_map<U, V>, even> {
   using T = shad::unordered_map<U, V>;
   std::shared_ptr<T> operator()(size_t size) {
     auto res = std::make_shared<T>(size);
-    {
-      shad::buffered_insert_iterator<T> ins(*res, res->begin());
-      for (size_t i = 0; i < size; i++) ins = std::make_pair(i, 2 * i + !even);
-    }
+    shad::buffered_insert_iterator<T> ins(*res, res->begin());
+    for (size_t i = 0; i < size; i++) ins = std::make_pair(i, 2 * i + !even);
+    ins.flush();
     return res;
   }
 };
@@ -232,14 +230,13 @@ struct subseq_from_<shad::unordered_set<U>> {
     assert(start_idx < in->size());
     auto first = it_seek_(in, start_idx);
     auto res = std::make_shared<T>(len);
-    {
-      shad::buffered_insert_iterator<T> ins(*res, res->end());
-      for (size_t i = 0; i < len; ++i) {
-        assert(first != in->end());
-        ins = *first;
-        ++first;
-      }
+    shad::buffered_insert_iterator<T> ins(*res, res->end());
+    for (size_t i = 0; i < len; ++i) {
+      assert(first != in->end());
+      ins = *first;
+      ++first;
     }
+    ins.flush();
     return res;
   }
 };
@@ -271,14 +268,13 @@ struct subseq_from_<shad::unordered_map<U, V>> {
     auto first = it_seek_(in, start_idx);
     auto res = std::make_shared<T>(len);
     std::unordered_map<U, V> x;
-    {
-      shad::buffered_insert_iterator<T> ins(*res, res->end());
-      for (size_t i = 0; i < len; ++i) {
-        assert(first != in->end());
-        ins = std::make_pair((*first).first, (*first).second);
-        ++first;
-      }
+    shad::buffered_insert_iterator<T> ins(*res, res->end());
+    for (size_t i = 0; i < len; ++i) {
+      assert(first != in->end());
+      ins = std::make_pair((*first).first, (*first).second);
+      ++first;
     }
+    ins.flush();
     return res;
   }
 };
@@ -447,10 +443,10 @@ class TestFixture : public ::testing::Test {
   void test_io_inserters_with_policy(ExecutionPolicy &&policy, FS &&sub_f,
                                      FO &&obj_f, checksum_t checksum_f,
                                      args_... args) {
-    using out_it_t = std::insert_iterator<T>;
     auto out1 = create_output_container(0);
     auto out2 = create_output_container(0);
-    out_it_t out1_it(*out1, out1->begin()), out2_it(*out2, out2->begin());
+    shad::insert_iterator<T> out1_it(*out1, out1->begin());
+    std::insert_iterator<T> out2_it(*out2, out2->begin());
     sub_f(std::forward<ExecutionPolicy>(policy), in->begin(), in->end(),
           out1_it, args...);
     obj_f(in->begin(), in->end(), out2_it, args...);
