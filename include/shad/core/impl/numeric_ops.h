@@ -204,6 +204,7 @@ template <class InputIt, class OutputIt, class BinaryOperation>
 OutputIt adjacent_difference(distributed_parallel_tag&& policy,
                              InputIt first, InputIt last,
                              OutputIt d_first, BinaryOperation op) {
+  if (first == last) return d_first;
   using itr_traits = distributed_iterator_traits<InputIt>;
   auto localities = itr_traits::localities(first, last);
   using value_t = typename itr_traits::value_type;
@@ -1249,7 +1250,7 @@ OutputIt transform_inclusive_scan(distributed_parallel_tag&& policy,
   OutputIt chunk_end = d_first;
   using outitr_traits = distributed_iterator_traits<OutputIt>;
   for (i=1; i<numLoc; ++i) {
-    chunk_end = res[i].first;
+    chunk_end = res[i].first;eprecated in C++17
     auto d_localities = outitr_traits::localities(d_f, chunk_end);
     auto d_startingLoc = d_localities.begin();
     for (auto locality = d_startingLoc, end = d_localities.end();
