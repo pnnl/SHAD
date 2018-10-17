@@ -813,8 +813,7 @@ TYPED_TEST(STF, shad_find) {
 
 // search_n - todo
 
-// transform - FIXME
-#if 0
+// transform
 TYPED_TEST(STF, shad_transform) {
   using it_t = typeof(this->in->begin());
   using shad_out_it_t = shad::insert_iterator<TypeParam>;
@@ -834,7 +833,6 @@ TYPED_TEST(STF, shad_transform) {
       shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 }
-#endif
 
 ///////////////////////////////////////
 //
@@ -1182,8 +1180,7 @@ TYPED_TEST(MTF, shad_find) {
 
 // search_n - todo
 
-// transform - FIXME
-#if 0
+// transform
 TYPED_TEST(MTF, shad_transform) {
   using it_t = typeof(this->in->begin());
   using shad_out_it_t = shad::insert_iterator<TypeParam>;
@@ -1203,4 +1200,3 @@ TYPED_TEST(MTF, shad_transform) {
       shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 }
-#endif
