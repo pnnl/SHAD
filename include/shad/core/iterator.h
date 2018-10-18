@@ -113,6 +113,8 @@ class buffered_insert_iterator
   buffered_insert_iterator(Container& container, Iterator iterator)
       : global_id_(container.global_id()), iterator_(iterator) {}
 
+  //~buffered_insert_iterator() { flush(); }
+
   /// @brief The assignment operator.
   ///
   /// The assignment operator inserts a value (through buffering) and advance
@@ -125,6 +127,8 @@ class buffered_insert_iterator
     if (!local_container_ptr_ || locality_ != rt::thisLocality()) {
       locality_ = rt::thisLocality();
       local_container_ptr_ = Container::from_global_id(global_id_);
+      rt::Handle h;
+      handle_ = h;
     }
     local_container_ptr_->buffered_async_insert(handle_, iterator_, value);
     return *this;
