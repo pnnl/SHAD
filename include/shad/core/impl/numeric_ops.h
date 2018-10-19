@@ -1190,7 +1190,7 @@ OutputIt transform_inclusive_scan(distributed_sequential_tag&& policy,
         std::make_tuple(first, last, res.first, res.second, op, uop),
                         &res);
   }
-  return res.second;
+  return res.first;
 }
 
 template <class InputIt, class OutputIt,
