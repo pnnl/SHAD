@@ -1228,5 +1228,4 @@ TYPED_TEST(MTF, shad_transform) {
                       shad_buffered_out_it_t, map_f>,
       shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
-#endif
 }
