@@ -91,7 +91,7 @@ TYPED_TEST(ATF, shad_minmax_element) {
 
 // find_if, find_if_not
 TYPED_TEST(ATF, shad_find_if) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // found
@@ -128,7 +128,7 @@ TYPED_TEST(ATF, shad_find_if) {
 }
 
 TYPED_TEST(ATF, shad_find_if_not) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
   auto even_pred_t = shad_test_stl::is_even_wrapper<value_t>;
   auto odd_pred_t = shad_test_stl::is_odd_wrapper<value_t>;
@@ -161,7 +161,7 @@ TYPED_TEST(ATF, shad_find_if_not) {
 
 // all_of, any_of, none_of
 TYPED_TEST(ATF, shad_all_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // true
@@ -198,7 +198,7 @@ TYPED_TEST(ATF, shad_all_of) {
 }
 
 TYPED_TEST(ATF, shad_any_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // true
@@ -235,7 +235,7 @@ TYPED_TEST(ATF, shad_any_of) {
 }
 
 TYPED_TEST(ATF, shad_none_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // false
@@ -275,7 +275,7 @@ TYPED_TEST(ATF, shad_none_of) {
 
 // count, count_if
 TYPED_TEST(ATF, shad_count) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // occurring
@@ -304,7 +304,7 @@ TYPED_TEST(ATF, shad_count) {
 }
 
 TYPED_TEST(ATF, shad_count_if) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // all
@@ -344,7 +344,7 @@ TYPED_TEST(ATF, shad_count_if) {
 
 // find
 TYPED_TEST(ATF, shad_find) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // occurring
@@ -381,7 +381,7 @@ TYPED_TEST(ATF, shad_find) {
 
 // search_n - todo
 
-// fill
+/ fill
 TYPED_TEST(ATF, shad_fill) {
   using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
@@ -399,7 +399,7 @@ TYPED_TEST(ATF, shad_fill) {
 
 // transform
 TYPED_TEST(ATF, shad_transform) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
   using map_f = std::negate<val_t>;
   this->test_io_assignment_with_policy(
@@ -523,7 +523,7 @@ TYPED_TEST(STF, shad_minmax_element) {
 
 // find_if, find_if_not
 TYPED_TEST(STF, shad_find_if) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // found
@@ -560,7 +560,7 @@ TYPED_TEST(STF, shad_find_if) {
 }
 
 TYPED_TEST(STF, shad_find_if_not) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
   auto even_pred_t = shad_test_stl::is_even_wrapper<value_t>;
   auto odd_pred_t = shad_test_stl::is_odd_wrapper<value_t>;
@@ -593,7 +593,7 @@ TYPED_TEST(STF, shad_find_if_not) {
 
 // all_of, any_of, none_of
 TYPED_TEST(STF, shad_all_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // true
@@ -630,7 +630,7 @@ TYPED_TEST(STF, shad_all_of) {
 }
 
 TYPED_TEST(STF, shad_any_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // true
@@ -667,7 +667,7 @@ TYPED_TEST(STF, shad_any_of) {
 }
 
 TYPED_TEST(STF, shad_none_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // false
@@ -707,7 +707,7 @@ TYPED_TEST(STF, shad_none_of) {
 
 // count, count_if
 TYPED_TEST(STF, shad_count) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // occurring
@@ -736,7 +736,7 @@ TYPED_TEST(STF, shad_count) {
 }
 
 TYPED_TEST(STF, shad_count_if) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // all
@@ -776,7 +776,7 @@ TYPED_TEST(STF, shad_count_if) {
 
 // find
 TYPED_TEST(STF, shad_find) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // occurring
@@ -813,39 +813,40 @@ TYPED_TEST(STF, shad_find) {
 
 // search_n - todo
 
-// transform
+/ transform
 TYPED_TEST(STF, shad_transform) {
-  using it_t = typeof(this->in->begin());
-  using shad_out_it_t = shad::insert_iterator<TypeParam>;
-  using std_out_it_t = std::insert_iterator<TypeParam>;
+  using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
   using map_f = std::negate<val_t>;
-  this->template test_io_inserters_with_policy<shad_out_it_t>(
+  this->template test_io_inserters_with_policy<
+      shad::insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
-      shad::transform<shad::distributed_sequential_tag, it_t, shad_out_it_t,
-                      map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
+      shad::transform<shad::distributed_sequential_tag, it_t,
+                      shad::insert_iterator<TypeParam>, map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
-  this->template test_io_inserters_with_policy<shad_out_it_t>(
+  this->template test_io_inserters_with_policy<
+      shad::insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
-      shad::transform<shad::distributed_parallel_tag, it_t, shad_out_it_t,
-                      map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
+      shad::transform<shad::distributed_parallel_tag, it_t,
+                      shad::insert_iterator<TypeParam>, map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 
   // buffered insert iterator
-  using shad_buffered_out_it_t = shad::buffered_insert_iterator<TypeParam>;
-  this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
+  this->template test_io_inserters_with_policy<
+      shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t,
-                      shad_buffered_out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
+                      shad::buffered_insert_iterator<TypeParam>, map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
-  this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
+  this->template test_io_inserters_with_policy<
+      shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
-                      shad_buffered_out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
+                      shad::buffered_insert_iterator<TypeParam>, map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 }
 
@@ -905,7 +906,7 @@ TYPED_TEST(MTF, shad_minmax_element) {
 
 // find_if, find_if_not
 TYPED_TEST(MTF, shad_find_if) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // found
@@ -942,7 +943,7 @@ TYPED_TEST(MTF, shad_find_if) {
 }
 
 TYPED_TEST(MTF, shad_find_if_not) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
   auto even_pred_t = shad_test_stl::is_even_wrapper<value_t>;
   auto odd_pred_t = shad_test_stl::is_odd_wrapper<value_t>;
@@ -975,7 +976,7 @@ TYPED_TEST(MTF, shad_find_if_not) {
 
 // all_of, any_of, none_of
 TYPED_TEST(MTF, shad_all_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // true
@@ -1012,7 +1013,7 @@ TYPED_TEST(MTF, shad_all_of) {
 }
 
 TYPED_TEST(MTF, shad_any_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // true
@@ -1049,7 +1050,7 @@ TYPED_TEST(MTF, shad_any_of) {
 }
 
 TYPED_TEST(MTF, shad_none_of) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // false
@@ -1089,7 +1090,7 @@ TYPED_TEST(MTF, shad_none_of) {
 
 // count, count_if
 TYPED_TEST(MTF, shad_count) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // occurring
@@ -1118,7 +1119,7 @@ TYPED_TEST(MTF, shad_count) {
 }
 
 TYPED_TEST(MTF, shad_count_if) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // all
@@ -1158,7 +1159,7 @@ TYPED_TEST(MTF, shad_count_if) {
 
 // find
 TYPED_TEST(MTF, shad_find) {
-  using it_t = typeof(this->in->begin());
+  using it_t = typename TypeParam::iterator;
   using value_t = typename TypeParam::value_type;
 
   // occurring
@@ -1195,37 +1196,38 @@ TYPED_TEST(MTF, shad_find) {
 
 // search_n - todo
 
-TYPED_TEST(MTF, shad_transform) {
-  using it_t = typeof(this->in->begin());
-  using shad_out_it_t = shad::insert_iterator<TypeParam>;
-  using std_out_it_t = std::insert_iterator<TypeParam>;
+YPED_TEST(MTF, shad_transform) {
+  using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
   using map_f = std::negate<val_t>;
-  this->template test_io_inserters_with_policy<shad_out_it_t>(
+  this->template test_io_inserters_with_policy<
+      shad::insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
-      shad::transform<shad::distributed_sequential_tag, it_t, shad_out_it_t,
-                      map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
+      shad::transform<shad::distributed_sequential_tag, it_t,
+                      shad::insert_iterator<TypeParam>, map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
-  this->template test_io_inserters_with_policy<shad_out_it_t>(
+  this->template test_io_inserters_with_policy<
+      shad::insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
-      shad::transform<shad::distributed_parallel_tag, it_t, shad_out_it_t,
-                      map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
+      shad::transform<shad::distributed_parallel_tag, it_t,
+                      shad::insert_iterator<TypeParam>, map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 
   // buffered insert iterator
-  using shad_buffered_out_it_t = shad::buffered_insert_iterator<TypeParam>;
-  this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
+  this->template test_io_inserters_with_policy<
+      shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t,
-                      shad_buffered_out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
+                      shad::buffered_insert_iterator<TypeParam>, map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
-  this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
+  this->template test_io_inserters_with_policy<
+      shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
-                      shad_buffered_out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
+                      shad::buffered_insert_iterator<TypeParam>, map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 }
