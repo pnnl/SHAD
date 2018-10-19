@@ -841,14 +841,12 @@ TYPED_TEST(STF, shad_transform) {
                       shad_buffered_out_it_t, map_f>,
       shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
-#if 0
   this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
                       shad_buffered_out_it_t, map_f>,
       shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
-#endif
 }
 
 ///////////////////////////////////////
@@ -1216,7 +1214,6 @@ TYPED_TEST(MTF, shad_transform) {
       shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
 
-#if 0
   // buffered insert iterator
   using shad_buffered_out_it_t = shad::buffered_insert_iterator<TypeParam>;
   this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
@@ -1231,5 +1228,4 @@ TYPED_TEST(MTF, shad_transform) {
                       shad_buffered_out_it_t, map_f>,
       shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
       shad_test_stl::checksum<it_t>, map_f{});
-#endif
 }

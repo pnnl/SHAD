@@ -112,7 +112,7 @@ ForwardIt2 transform(distributed_parallel_tag&& policy, ForwardIt1 first1,
           advance_output_iterator(d_first_, gbegin, it);
           auto op = std::get<3>(args);
           *res_ptr = std::transform(begin, end, d_first_, op);
-          flush_iterator(d_first_);
+          flush_iterator(*res_ptr);
         },
         std::make_tuple(first1, last1, d_first, unary_op), &(*res_it));
   }
@@ -141,7 +141,7 @@ ForwardIt2 transform(distributed_sequential_tag&& policy, ForwardIt1 first1,
           auto begin = local_range.begin();
           auto end = local_range.end();
           *res_ptr = std::transform(begin, end, d_first_, op);
-          flush_iterator(d_first_);
+          flush_iterator(*res_ptr);
         },
         std::make_tuple(first1, last1, res, unary_op), &res);
   }
