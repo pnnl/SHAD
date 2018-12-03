@@ -70,6 +70,21 @@ struct is_distributed_iterator<T, typename std::enable_if<!std::is_same<
    static constexpr bool value = true;
 };
 
+template <typename Iterator>
+struct distributed_random_access_iterator_trait :
+      public distributed_iterator_traits<Iterator> {
+  using value_type = typename distributed_iterator_traits<Iterator>::value_type;
+  using pointer = typename distributed_iterator_traits<Iterator>::pointer;
+  using reference = typename distributed_iterator_traits<Iterator>::reference;
+  using iterator_category =
+      typename distributed_iterator_traits<Iterator>::iterator_category;
+
+  using block_type = std::tuple<rt::Locality, Iterator, Iterator>;
+
+  static std::vector<block_type>
+  contiguos_block_list(Iterator begin, Iterator end);
+};
+
 }  // namespace shad
 
 #endif /* INCLUDE_SHAD_DISTRIBUTED_ITERATOR_TRAIT_H */
