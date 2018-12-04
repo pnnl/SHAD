@@ -78,11 +78,12 @@ struct distributed_random_access_iterator_trait :
   using reference = typename distributed_iterator_traits<Iterator>::reference;
   using iterator_category =
       typename distributed_iterator_traits<Iterator>::iterator_category;
+  using distribution_range = typename Iterator::distribution_range;
 
-  using block_type = std::tuple<rt::Locality, Iterator, Iterator>;
-
-  static std::vector<block_type>
-  contiguos_block_list(Iterator begin, Iterator end);
+  static distribution_range
+  distribution(Iterator begin, Iterator end) {
+    return Iterator::distribution(begin, end);
+  }
 };
 
 }  // namespace shad
