@@ -52,6 +52,7 @@ template <class Key, class Hash = shad::hash<Key>>
 class unordered_set {
   using set_t = Set<Key>;
 
+  friend class insert_iterator<unordered_set>;
   friend class buffered_insert_iterator<unordered_set>;
 
  public:
@@ -148,7 +149,7 @@ class unordered_set {
   /// the element that prevented the insertion) and a bool denoting whether the
   /// insertion took place.
   std::pair<iterator, bool> insert(const value_type &value) {
-    return impl()->Insert(value);
+    return impl()->insert(value);
   }
 
   /// @brief Inserts an element into the container, if the container does not
@@ -158,7 +159,7 @@ class unordered_set {
   /// @return an iterator to the inserted element, or to the element that
   /// prevented the insertion.
   iterator insert(const_iterator hint, const value_type &value) {
-    return insert(value).first;
+    return impl()->insert(hint, value).first;
   }
   /// @}
 
@@ -183,12 +184,16 @@ class unordered_set {
   /// @}
 
  private:
+  using internal_container_t = set_t;
+  using oid_t = typename internal_container_t::ObjectID;
+  oid_t global_id() { return impl()->GetGlobalID(); }
+  static internal_container_t *from_global_id(oid_t oid) {
+    return internal_container_t::GetPtr(oid).get();
+  }
+
   std::shared_ptr<set_t> ptr = nullptr;
   const set_t *impl() const { return ptr.get(); }
   set_t *impl() { return ptr.get(); }
-
-  void buffered_insert(iterator, const Key &k) { impl()->BufferedInsert(k); }
-  void buffered_flush() { impl()->WaitForBufferedInsert(); }
 };
 
 // todo operator==

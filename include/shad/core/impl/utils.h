@@ -22,25 +22,31 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_SHAD_CORE_EXECUTION_H
-#define INCLUDE_SHAD_CORE_EXECUTION_H
+#ifndef INCLUDE_SHAD_CORE_IMPL_UTILS_H
+#define INCLUDE_SHAD_CORE_IMPL_UTILS_H
 
-#include <type_traits>
+#include <algorithm>
+#include <functional>
+#include <iterator>
+#include "shad/core/iterator.h"
+#include "shad/distributed_iterator_traits.h"
+#include "shad/runtime/runtime.h"
 
 namespace shad {
+namespace impl {
 
-struct distributed_sequential_tag {};
-struct distributed_parallel_tag {};
+template <typename It, typename It2>
+void advance_output_iterator(It &it, It2 first, It2 last) {
+  std::advance(it, std::distance(first, last));
+}
 
-template <class ExecutionPolicy>
-struct is_execution_policy :
-         std::integral_constant<bool,
-                                std::is_same<ExecutionPolicy,
-                                          distributed_sequential_tag>::value ||
-                                std::is_same<ExecutionPolicy,
-                                          distributed_parallel_tag>::value>{
-};
+template <typename T, typename It2>
+void advance_output_iterator(shad::insert_iterator<T>, It2, It2) {}
 
+template <typename T, typename It2>
+void advance_output_iterator(shad::buffered_insert_iterator<T>, It2, It2) {}
+
+}  // namespace impl
 }  // namespace shad
 
-#endif /* INCLUDE_SHAD_CORE_EXECUTION_H */
+#endif /* INCLUDE_SHAD_CORE_IMPL_UTILS_H */
