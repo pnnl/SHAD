@@ -113,6 +113,8 @@ class buffered_insert_iterator
   buffered_insert_iterator(Container& container, Iterator iterator)
       : global_id_(container.global_id()), iterator_(iterator) {}
 
+  //~buffered_insert_iterator() { flush(); }
+
   /// @brief The assignment operator.
   ///
   /// The assignment operator inserts a value (through buffering) and advance
