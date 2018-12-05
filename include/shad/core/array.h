@@ -932,7 +932,7 @@ class alignas(64) array<T, N>::array_iterator {
     }
 
     // Last block:
-    if (begin.locality_ != end.locality_)
+    if (end.offset_ != 0 && begin.locality_ != end.locality_)
       result.push_back(std::make_pair(end.locality_, end.offset_));
 
     return result;
