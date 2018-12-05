@@ -637,6 +637,8 @@ class alignas(64) array<T, N>::array_iterator {
 
   using local_iterator_type = pointer;
 
+  using distribution_range = std::vector<std::pair<rt::Locality, size_t>>;
+
   /// @brief Constructor.
   array_iterator(rt::Locality &&l, difference_type offset, ObjectID oid,
                  pointer chunk)
@@ -901,6 +903,39 @@ class alignas(64) array<T, N>::array_iterator {
       end = arrayPtr->chunk_.get() + E.offset_;
     }
     return local_iterator_range(begin, end);
+  }
+
+  static distribution_range
+      distribution(array_iterator &begin, array_iterator &end) {
+    distribution_range result;
+
+    // First block:
+    typename array_iterator::difference_type start_block_size = chunk_size();
+    if (pivot_locality() != rt::Locality(0) &&
+        begin.locality_ >= pivot_locality()) {
+      start_block_size -= 1;
+    }
+    if (begin.locality_ == end.locality_)
+      start_block_size = end.offset_;
+    result.push_back(std::make_pair(begin.locality_,
+                                    start_block_size - begin.offset_));
+
+    // Middle blocks:
+    for (auto locality = begin.locality_ + 1;
+         locality < end.locality_; ++locality) {
+      typename array_iterator::difference_type inner_block_size = chunk_size();
+      if (pivot_locality() != rt::Locality(0) &&
+          locality >= pivot_locality()) {
+        inner_block_size -= 1;
+      }
+      result.push_back(std::make_pair(locality, inner_block_size));
+    }
+
+    // Last block:
+    if (end.offset_ != 0 && begin.locality_ != end.locality_)
+      result.push_back(std::make_pair(end.locality_, end.offset_));
+
+    return result;
   }
 
   static rt::localities_range localities(array_iterator &B, array_iterator &E) {
