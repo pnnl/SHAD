@@ -915,11 +915,13 @@ class alignas(64) array<T, N>::array_iterator {
         begin.locality_ >= pivot_locality()) {
       start_block_size -= 1;
     }
+    if (begin.locality_ == end.locality_)
+      start_block_size = end.offset_;
     result.push_back(std::make_pair(begin.locality_,
-                                    start_block_size - begin.offset_ + 1));
+                                    start_block_size - begin.offset_));
 
     // Middle blocks:
-    for (auto locality = begin.locality_;
+    for (auto locality = begin.locality_ + 1;
          locality < end.locality_; ++locality) {
       typename array_iterator::difference_type inner_block_size = chunk_size();
       if (pivot_locality() != rt::Locality(0) &&
@@ -930,7 +932,8 @@ class alignas(64) array<T, N>::array_iterator {
     }
 
     // Last block:
-    result.push_back(std::make_pair(end.locality_, end.offset_));
+    if (begin.locality_ != end.locality_)
+      result.push_back(std::make_pair(end.locality_, end.offset_));
 
     return result;
   }
