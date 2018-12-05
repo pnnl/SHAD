@@ -355,8 +355,10 @@ class Hashmap : public AbstractDataStructure<
  protected:
   Hashmap(ObjectID oid, const size_t numEntries)
       : oid_(oid),
-        localMap_(
-            std::max(numEntries / constants::kDefaultNumEntriesPerBucket, 1lu)),
+        localMap_(std::max(
+            numEntries /
+                (constants::kDefaultNumEntriesPerBucket * rt::numLocalities()),
+            1lu)),
         buffers_(oid) {}
 };
 
