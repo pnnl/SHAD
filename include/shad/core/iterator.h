@@ -150,6 +150,17 @@ class buffered_insert_iterator
   rt::Locality locality_;
 };
 
+// compile-time test for block-contiguous property
+template<typename It>
+struct is_block_contiguous {
+	static constexpr std::true_type value{};
+};
+
+template<typename T>
+struct is_block_contiguous<shad::insert_iterator<T>> {
+	static constexpr std::false_type value{};
+};
+
 }  // namespace shad
 
 #endif /* INCLUDE_SHAD_CORE_ITERATOR_H_ */

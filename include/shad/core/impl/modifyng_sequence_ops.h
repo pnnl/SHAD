@@ -144,9 +144,9 @@ ForwardIt2 block_contiguous_kernel(rt::Locality l,
   return d_last;  // todo double check
 }
 
-// distributed-sequential kernel for insert-iterators
+// distributed-sequential kernel for non-block-contiguous output-iterators
 template <class ForwardIt1, class T, class UnaryOperation>
-void dseq_kernel(ForwardIt1 first, ForwardIt1 last,
+void dseq_kernel(std::false_type, ForwardIt1 first, ForwardIt1 last,
                  shad::insert_iterator<T> d_first,
                  shad::insert_iterator<T>* res_ptr, UnaryOperation op) {
   using itr_traits1 = distributed_iterator_traits<ForwardIt1>;
@@ -156,9 +156,9 @@ void dseq_kernel(ForwardIt1 first, ForwardIt1 last,
   *res_ptr = std::transform(begin, end, d_first, op);
 }
 
-// distributed-sequential kernel assuming output-iterator is block-contiguous
+// distributed-sequential kernel for block-contiguous output-iterators
 template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
-void dseq_kernel(ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
+void dseq_kernel(std::true_type, ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
                  ForwardIt2* res_ptr, UnaryOperation op) {
   using itr_traits1 = distributed_iterator_traits<ForwardIt1>;
   using itr_traits2 = distributed_random_access_iterator_trait<ForwardIt2>;
@@ -179,9 +179,9 @@ void dseq_kernel(ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
   *res_ptr = d_last;
 }
 
-// distributed-parallel kernel for insert-iterators
+// distributed-parallel kernel for non-block-contiguous output-iterators
 template <class ForwardIt1, class T, class UnaryOperation>
-void dpar_kernel(ForwardIt1 first, ForwardIt1 last,
+void dpar_kernel(std::false_type, ForwardIt1 first, ForwardIt1 last,
                  shad::insert_iterator<T> d_first,
                  shad::insert_iterator<T>* res_ptr, UnaryOperation op) {
   using itr_traits1 = distributed_iterator_traits<ForwardIt1>;
@@ -192,9 +192,9 @@ void dpar_kernel(ForwardIt1 first, ForwardIt1 last,
   *res_ptr = std::transform(begin, end, d_first, op);
 }
 
-// distributed-parallel kernel assuming output-iterator is block-contiguous
+// distributed-parallel kernel for block-contiguous output-iterators
 template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
-void dpar_kernel(ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
+void dpar_kernel(std::true_type, ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
                  ForwardIt2* res_ptr, UnaryOperation op) {
   using itr_traits1 = distributed_iterator_traits<ForwardIt1>;
   using itr_traits2 = distributed_random_access_iterator_trait<ForwardIt2>;
@@ -205,7 +205,6 @@ void dpar_kernel(ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
   auto d_last = d_first;
   std::advance(d_last, std::distance(loc_first, loc_range.end()));
   auto dmap = itr_traits2::distribution(d_first, d_last);
-
   auto loc_last = loc_first;
   for (auto i : dmap) {
     auto l = i.first;
@@ -216,6 +215,21 @@ void dpar_kernel(ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
     std::advance(d_first, i.second);
   }
   *res_ptr = d_last;
+}
+
+// dispatchers
+template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
+void dseq_kernel(ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
+                 ForwardIt2* res_ptr, UnaryOperation op) {
+  dseq_kernel(is_block_contiguous<ForwardIt2>::value, first, last, d_first,
+              res_ptr, op);
+}
+
+template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
+void dpar_kernel(ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
+                 ForwardIt2* res_ptr, UnaryOperation op) {
+  dpar_kernel(is_block_contiguous<ForwardIt2>::value, first, last, d_first,
+              res_ptr, op);
 }
 
 }  // namespace transform_impl
