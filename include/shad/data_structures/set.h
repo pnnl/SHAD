@@ -327,11 +327,7 @@ template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::BufferedInsert(const T& element) {
   size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
-  if (targetLocality == rt::thisLocality()) {
-    localSet_.Insert(element);
-  } else {
-    buffers_.Insert(element, targetLocality);
-  }
+  buffers_.Insert(element, targetLocality);
 }
 
 template <typename T, typename ELEM_COMPARE>
@@ -339,11 +335,7 @@ inline void Set<T, ELEM_COMPARE>::BufferedAsyncInsert(rt::Handle& handle,
                                                       const T& element) {
   size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
-  if (targetLocality == rt::thisLocality()) {
-    localSet_.AsyncInsert(handle, element);
-  } else {
-    buffers_.AsyncInsert(handle, element, targetLocality);
-  }
+  buffers_.AsyncInsert(handle, element, targetLocality);
 }
 
 template <typename T, typename ELEM_COMPARE>

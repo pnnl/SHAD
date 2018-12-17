@@ -134,8 +134,10 @@ class buffered_insert_iterator
 
   /// @brief Flushes pending insertions to the container.
   void flush() {
-    if (local_container_ptr_ && locality_ == rt::thisLocality())
+    if (local_container_ptr_ != nullptr && locality_ == rt::thisLocality()) {
+      // if(!handle_.IsNull()) FIXME
       local_container_ptr_->buffered_async_flush(handle_);
+    }
   }
 
   buffered_insert_iterator& operator*() { return *this; }
