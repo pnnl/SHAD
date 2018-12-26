@@ -450,7 +450,7 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE,
                                                         const VTYPE &value) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
-  buffers_.AsyncInsert(handle, entry, targetLocality);
+  buffers_.AsyncInsert(handle, EntryT(key, value), targetLocality);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
