@@ -111,7 +111,7 @@ class buffered_insert_iterator
   /// @param container The container into which the iterator inserts.
   /// @param iterator The position at which the iterator starts to insert.
   buffered_insert_iterator(Container& container, Iterator iterator)
-      : global_id_(container.global_id()), iterator_(iterator) {}
+      : global_id_(container.global_id()) {}
 
   /// @brief The assignment operator.
   ///
@@ -128,7 +128,7 @@ class buffered_insert_iterator
       rt::Handle h;
       handle_ = h;
     }
-    local_container_ptr_->buffered_async_insert(handle_, iterator_, value);
+    local_container_ptr_->buffered_async_insert(handle_, value);
     return *this;
   }
 
@@ -146,7 +146,6 @@ class buffered_insert_iterator
 
  private:
   typename internal_container_t::ObjectID global_id_;
-  Iterator iterator_;
   internal_container_t* local_container_ptr_ = nullptr;
   rt::Locality locality_;
   rt::Handle handle_;
