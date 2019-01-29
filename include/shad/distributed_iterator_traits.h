@@ -70,6 +70,22 @@ struct is_distributed_iterator<T, typename std::enable_if<!std::is_same<
    static constexpr bool value = true;
 };
 
+template <typename Iterator>
+struct distributed_random_access_iterator_trait :
+      public distributed_iterator_traits<Iterator> {
+  using value_type = typename distributed_iterator_traits<Iterator>::value_type;
+  using pointer = typename distributed_iterator_traits<Iterator>::pointer;
+  using reference = typename distributed_iterator_traits<Iterator>::reference;
+  using iterator_category =
+      typename distributed_iterator_traits<Iterator>::iterator_category;
+  using distribution_range = typename Iterator::distribution_range;
+
+  static distribution_range
+  distribution(Iterator begin, Iterator end) {
+    return Iterator::distribution(begin, end);
+  }
+};
+
 }  // namespace shad
 
 #endif /* INCLUDE_SHAD_DISTRIBUTED_ITERATOR_TRAIT_H */
