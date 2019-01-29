@@ -45,10 +45,10 @@ template <typename Container>
 class insert_iterator
     : public std::iterator<std::output_iterator_tag, void, void, void, void> {
   using Iterator = typename Container::iterator;
-  using value_type = typename Container::value_type;
   using internal_container_t = typename Container::internal_container_t;
 
  public:
+  using value_type = typename Container::value_type;
   using container_type = Container;
 
   /// @brief Constructor.
@@ -102,10 +102,10 @@ template <typename Container>
 class buffered_insert_iterator
     : public std::iterator<std::output_iterator_tag, void, void, void, void> {
   using Iterator = typename Container::iterator;
-  using value_type = typename Container::value_type;
   using internal_container_t = typename Container::internal_container_t;
 
  public:
+  using value_type = typename Container::value_type;
   using container_type = Container;
 
   /// @brief Constructor.
