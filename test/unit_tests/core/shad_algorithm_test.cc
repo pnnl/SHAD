@@ -32,8 +32,6 @@
 #include "common.h"
 #include "stl_emulation/algorithm.h"
 
-#define SHAD_COMPLETE_STL 0
-
 ///////////////////////////////////////
 //
 // shad::array
@@ -372,12 +370,10 @@ TYPED_TEST(ATF, shad_find) {
       shad_test_stl::find_<it_t, value_t>, 1);
 }
 
-#if SHAD_COMPLETE_STL
 // todo find_end
 // todo find_first_of
 // todo adjacent_find
 // todo search
-#endif
 
 // search_n - todo
 
@@ -804,12 +800,10 @@ TYPED_TEST(STF, shad_find) {
       shad_test_stl::find_<it_t, value_t>, 1);
 }
 
-#if SHAD_COMPLETE_STL
 // todo find_end
 // todo find_first_of
 // todo adjacent_find
 // todo search
-#endif
 
 // search_n - todo
 
@@ -1171,12 +1165,10 @@ TYPED_TEST(MTF, shad_find) {
       shad_test_stl::find_<it_t, value_t>, std::make_pair(0, 1));
 }
 
-#if SHAD_COMPLETE_STL
 // todo find_end
 // todo find_first_of
 // todo adjacent_find
 // todo search
-#endif
 
 // search_n - todo
 
