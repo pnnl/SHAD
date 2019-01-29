@@ -269,7 +269,7 @@ ForwardItr find_if(distributed_sequential_tag&& policy, ForwardItr first,
     rt::executeAtWithRet(
         locality,
         [](const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
-            ForwardItr* result) {
+           ForwardItr* result) {
           auto begin = std::get<0>(args);
           *result = std::get<1>(args);
           auto predicate = std::get<2>(args);
@@ -309,8 +309,8 @@ ForwardItr find_if(distributed_parallel_tag&& policy, ForwardItr first,
     rt::asyncExecuteAtWithRet(
         H, locality,
         [](rt::Handle&,
-            const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
-            ForwardItr* result) {
+           const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
+           ForwardItr* result) {
           auto begin = std::get<0>(args);
           *result = std::get<1>(args);
           auto predicate = std::get<2>(args);
@@ -352,7 +352,7 @@ ForwardItr find_if_not(distributed_sequential_tag&& policy, ForwardItr first,
     rt::executeAtWithRet(
         locality,
         [](const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
-            ForwardItr* result) {
+           ForwardItr* result) {
           auto begin = std::get<0>(args);
           *result = std::get<1>(args);
           auto predicate = std::get<2>(args);
@@ -392,8 +392,8 @@ ForwardItr find_if_not(distributed_parallel_tag&& policy, ForwardItr first,
     rt::asyncExecuteAtWithRet(
         H, locality,
         [](rt::Handle&,
-            const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
-            ForwardItr* result) {
+           const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
+           ForwardItr* result) {
           auto begin = std::get<0>(args);
           *result = std::get<1>(args);
           auto predicate = std::get<2>(args);

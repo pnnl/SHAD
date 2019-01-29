@@ -130,8 +130,8 @@ typename shad::distributed_iterator_traits<InputItr>::difference_type count_if(
 
 template <class ForwardIt>
 ForwardIt max_element(ForwardIt first, ForwardIt last) {
- return impl::max_element(distributed_sequential_tag{},
-                          first, last, std::greater<>());
+  return impl::max_element(distributed_sequential_tag{}, first, last,
+                           std::greater<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt>
@@ -143,8 +143,8 @@ max_element(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last) {
 
 template <class ForwardIt, class Compare>
 std::enable_if_t<!shad::is_execution_policy<ForwardIt>::value, ForwardIt>
-max_element(ForwardIt first, ForwardIt last, Compare comp ) {
- return impl::max_element(distributed_sequential_tag{}, first, last, comp);
+max_element(ForwardIt first, ForwardIt last, Compare comp) {
+  return impl::max_element(distributed_sequential_tag{}, first, last, comp);
 }
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
@@ -160,14 +160,13 @@ ForwardIt max_element(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
 
 template <class ForwardIt>
 ForwardIt min_element(ForwardIt first, ForwardIt last) {
- return impl::min_element(distributed_sequential_tag{},
-                          first, last, std::less<>());
+  return impl::min_element(distributed_sequential_tag{}, first, last,
+                           std::less<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt>
 std::enable_if_t<shad::is_execution_policy<ExecutionPolicy>::value, ForwardIt>
-min_element(ExecutionPolicy&& policy, ForwardIt first,
-            ForwardIt last) {
+min_element(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last) {
   return min_element(std::forward<ExecutionPolicy>(policy), first, last,
                      std::less<typename ForwardIt::value_type>());
 }
@@ -175,7 +174,7 @@ min_element(ExecutionPolicy&& policy, ForwardIt first,
 template <class ForwardIt, class Compare>
 std::enable_if_t<!shad::is_execution_policy<ForwardIt>::value, ForwardIt>
 min_element(ForwardIt first, ForwardIt last, Compare comp) {
- return impl::min_element(distributed_sequential_tag{}, first, last, comp);
+  return impl::min_element(distributed_sequential_tag{}, first, last, comp);
 }
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
@@ -190,14 +189,14 @@ ForwardIt min_element(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
 //  ------------------  //
 
 template <class ForwardIt>
-std::pair<ForwardIt,ForwardIt> minmax_element(ForwardIt first,
-                                              ForwardIt last) {
- return impl::minmax_element(distributed_sequential_tag{}, first, last);
+std::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first,
+                                               ForwardIt last) {
+  return impl::minmax_element(distributed_sequential_tag{}, first, last);
 }
 
 template <class ExecutionPolicy, class ForwardIt>
 std::enable_if_t<shad::is_execution_policy<ExecutionPolicy>::value,
-                                           std::pair<ForwardIt,ForwardIt>>
+                 std::pair<ForwardIt, ForwardIt>>
 minmax_element(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last) {
   return minmax_element(std::forward<ExecutionPolicy>(policy), first, last,
                         std::less<typename ForwardIt::value_type>());
@@ -205,9 +204,9 @@ minmax_element(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last) {
 
 template <class ForwardIt, class Compare>
 std::enable_if_t<!shad::is_execution_policy<ForwardIt>::value,
-                                           std::pair<ForwardIt,ForwardIt>>
-minmax_element(ForwardIt first, ForwardIt last, Compare comp ) {
- return impl::minmax_element(distributed_sequential_tag{}, first, last, comp);
+                 std::pair<ForwardIt, ForwardIt>>
+minmax_element(ForwardIt first, ForwardIt last, Compare comp) {
+  return impl::minmax_element(distributed_sequential_tag{}, first, last, comp);
 }
 
 template <class ExecutionPolicy, class ForwardIt, class Compare>
@@ -270,78 +269,75 @@ void replace_if(ExecutionPolicy&& policy, ForwardIt first, ForwardIt last,
 //  ------------------  //
 
 template <class InputIt1, class InputIt2>
-bool equal(InputIt1 first1, InputIt1 last1,
-           InputIt2 first2) {
-  return impl::equal(distributed_sequential_tag{},
-                     first1, last1, first2, std::equal_to<>());
+bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2) {
+  return impl::equal(distributed_sequential_tag{}, first1, last1, first2,
+                     std::equal_to<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2>
-std::enable_if_t<shad::is_execution_policy<ExecutionPolicy>::value, bool>
-equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
-      ForwardIt2 first2) {
-  return impl::equal(std::forward<ExecutionPolicy>(policy),
-                     first1, last1, first2, std::equal_to<>());
+std::enable_if_t<shad::is_execution_policy<ExecutionPolicy>::value, bool> equal(
+    ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
+    ForwardIt2 first2) {
+  return impl::equal(std::forward<ExecutionPolicy>(policy), first1, last1,
+                     first2, std::equal_to<>());
 }
 
 template <class InputIt1, class InputIt2, class BinaryPredicate>
-std::enable_if_t<!std::is_same<InputIt2, BinaryPredicate>::value, bool>
-equal(InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p) {
-  return impl::equal(distributed_sequential_tag{},
-                     first1, last1, first2, p);
+std::enable_if_t<!std::is_same<InputIt2, BinaryPredicate>::value, bool> equal(
+    InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p) {
+  return impl::equal(distributed_sequential_tag{}, first1, last1, first2, p);
 }
 
-template <class ExecutionPolicy, class ForwardIt1,
-          class ForwardIt2, class BinaryPredicate>
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
+          class BinaryPredicate>
 std::enable_if_t<(shad::is_execution_policy<ExecutionPolicy>::value &&
-                  !std::is_same<ForwardIt2, BinaryPredicate>::value), bool>
+                  !std::is_same<ForwardIt2, BinaryPredicate>::value),
+                 bool>
 equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
       ForwardIt2 first2, BinaryPredicate p) {
-  return impl::equal(std::forward<ExecutionPolicy>(policy),
-                     first1, last1, first2, p);
+  return impl::equal(std::forward<ExecutionPolicy>(policy), first1, last1,
+                     first2, p);
 }
 
 template <class InputIt1, class InputIt2>
-bool equal(InputIt1 first1, InputIt1 last1,
-           InputIt2 first2, InputIt2 last2) {
+bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2) {
   if (std::distance(first1, last1) != std::distance(first2, last2)) {
     return false;
   }
-  return impl::equal(distributed_sequential_tag{},
-                     first1, last1, first2, std::equal_to<>());
+  return impl::equal(distributed_sequential_tag{}, first1, last1, first2,
+                     std::equal_to<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2>
-std::enable_if_t<shad::is_execution_policy<ExecutionPolicy>::value, bool>
-equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
-      ForwardIt2 first2, ForwardIt2 last2) {
+std::enable_if_t<shad::is_execution_policy<ExecutionPolicy>::value, bool> equal(
+    ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
+    ForwardIt2 first2, ForwardIt2 last2) {
   if (std::distance(first1, last1) != std::distance(first2, last2)) {
     return false;
   }
-  return impl::equal(std::forward<ExecutionPolicy>(policy),
-                     first1, last1, first2, std::equal_to<>());
+  return impl::equal(std::forward<ExecutionPolicy>(policy), first1, last1,
+                     first2, std::equal_to<>());
 }
 
 template <class InputIt1, class InputIt2, class BinaryPredicate>
-std::enable_if_t<!std::is_same<InputIt2, BinaryPredicate>::value, bool>
-equal(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2,
-      BinaryPredicate p) {
+std::enable_if_t<!std::is_same<InputIt2, BinaryPredicate>::value, bool> equal(
+    InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2,
+    BinaryPredicate p) {
   if (std::distance(first1, last1) != std::distance(first2, last2)) {
     return false;
   }
-  return impl::equal(distributed_sequential_tag{},
-                     first1, last1, first2, p);
+  return impl::equal(distributed_sequential_tag{}, first1, last1, first2, p);
 }
 
-template <class ExecutionPolicy, class ForwardIt1,
-          class ForwardIt2, class BinaryPredicate>
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
+          class BinaryPredicate>
 bool equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
-           ForwardIt2 first2, ForwardIt2 last2, BinaryPredicate p ) {
+           ForwardIt2 first2, ForwardIt2 last2, BinaryPredicate p) {
   if (std::distance(first1, last1) != std::distance(first2, last2)) {
     return false;
   }
-  return impl::equal(std::forward<ExecutionPolicy>(policy),
-                     first1, last1, first2, p);
+  return impl::equal(std::forward<ExecutionPolicy>(policy), first1, last1,
+                     first2, p);
 }
 
 //  -----------------------------  //
@@ -349,37 +345,34 @@ bool equal(ExecutionPolicy&& policy, ForwardIt1 first1, ForwardIt1 last1,
 //  -----------------------------  //
 
 template <class InputIt1, class InputIt2>
-bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
-                             InputIt2 first2, InputIt2 last2 ) {
+bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2,
+                             InputIt2 last2) {
   return impl::lexicographical_compare(distributed_sequential_tag{}, first1,
                                        last1, first2, last2, std::less<>());
 }
 
 template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2>
-std::enable_if_t<shad::is_execution_policy<ExecutionPolicy>::value,  bool>
+std::enable_if_t<shad::is_execution_policy<ExecutionPolicy>::value, bool>
 lexicographical_compare(ExecutionPolicy&& policy, ForwardIt1 first1,
-                        ForwardIt1 last1, ForwardIt2 first2,
-                        ForwardIt2 last2 ) {
+                        ForwardIt1 last1, ForwardIt2 first2, ForwardIt2 last2) {
   return impl::lexicographical_compare(std::forward<ExecutionPolicy>(policy),
                                        first1, last1, first2, last2,
                                        std::less<>());
 };
 
 template <class InputIt1, class InputIt2, class Compare>
-std::enable_if_t<!shad::is_execution_policy<InputIt1>::value,  bool>
-lexicographical_compare(InputIt1 first1, InputIt1 last1,
-                        InputIt2 first2, InputIt2 last2,
-                        Compare comp ) {
+std::enable_if_t<!shad::is_execution_policy<InputIt1>::value, bool>
+lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2,
+                        InputIt2 last2, Compare comp) {
   return impl::lexicographical_compare(distributed_sequential_tag{}, first1,
                                        last1, first2, last2, comp);
 }
 
-template <class ExecutionPolicy,
-          class ForwardIt1, class ForwardIt2, class Compare>
-bool lexicographical_compare(ExecutionPolicy&& policy,
-                             ForwardIt1 first1, ForwardIt1 last1,
-                             ForwardIt2 first2, ForwardIt2 last2,
-                             Compare comp ) {
+template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
+          class Compare>
+bool lexicographical_compare(ExecutionPolicy&& policy, ForwardIt1 first1,
+                             ForwardIt1 last1, ForwardIt2 first2,
+                             ForwardIt2 last2, Compare comp) {
   return impl::lexicographical_compare(std::forward<ExecutionPolicy>(policy),
                                        first1, last1, first2, last2, comp);
 }
