@@ -257,8 +257,10 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
  protected:
   Set(ObjectID oid, const size_t numEntries)
       : oid_(oid),
-        localSet_(std::max(
-            numEntries / constants::kSetDefaultNumEntriesPerBucket, 1lu)),
+        localSet_(
+            std::max(numEntries / (constants::kSetDefaultNumEntriesPerBucket *
+                                   rt::numLocalities()),
+                     1lu)),
         buffers_(oid) {}
 };
 
