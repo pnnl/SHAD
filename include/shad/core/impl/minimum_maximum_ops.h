@@ -36,6 +36,8 @@
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
+#include "impl_patterns.h"
+
 namespace shad {
 namespace impl {
 
@@ -80,7 +82,6 @@ ForwardIt max_element(distributed_sequential_tag&& policy, ForwardIt first,
   return res_it->first;
 }
 
-// todo drop DefaultConstructible requirement
 template <class ForwardIt, class Compare>
 ForwardIt max_element(distributed_parallel_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
@@ -100,17 +101,31 @@ ForwardIt max_element(distributed_parallel_tag&& policy, ForwardIt first,
         h, locality,
         [](rt::Handle&, const std::tuple<ForwardIt, ForwardIt, Compare>& args,
            res_t* result) {
+          using local_iterator_t = typename itr_traits::local_iterator_type;
           auto gbegin = std::get<0>(args);
           auto gend = std::get<1>(args);
-          auto local_range = itr_traits::local_range(gbegin, gend);
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto lmax = std::max_element(begin, end, std::get<2>(args));
+          auto op = std::get<2>(args);
+
+          // map
+          auto nil_val = itr_traits::local_range(gbegin, gend).end();
+          auto map_res = local_map(
+              gbegin, gend,
+              // map kernel
+              [&](local_iterator_t begin, local_iterator_t end) {
+                return std::max_element(begin, end, op);
+              },
+              nil_val);
+
+          // reduce
+          auto lmax = *std::max_element(
+              map_res.begin(), map_res.end(),
+              [&](const local_iterator_t& x, const local_iterator_t& y) {
+                return y != nil_val && op(*x, *y);
+              });
           ForwardIt gres = itr_traits::iterator_from_local(gbegin, gend, lmax);
-          if (gres != gend)
-            *result = std::make_pair(gres, *lmax);
-          else
-            *result = std::make_pair(gres, value_t{});
+
+          // local solution
+          *result = std::make_pair(gres, lmax != nil_val ? *lmax : value_t{});
         },
         args, &res[i]);
   }
@@ -162,7 +177,6 @@ ForwardIt min_element(distributed_sequential_tag&& policy, ForwardIt first,
   return res_it->first;
 }
 
-// todo drop DefaultConstructible requirement
 template <class ForwardIt, class Compare>
 ForwardIt min_element(distributed_parallel_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
@@ -182,17 +196,31 @@ ForwardIt min_element(distributed_parallel_tag&& policy, ForwardIt first,
         h, locality,
         [](rt::Handle&, const std::tuple<ForwardIt, ForwardIt, Compare>& args,
            res_t* result) {
+          using local_iterator_t = typename itr_traits::local_iterator_type;
           auto gbegin = std::get<0>(args);
           auto gend = std::get<1>(args);
-          auto local_range = itr_traits::local_range(gbegin, gend);
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto lmin = std::min_element(begin, end, std::get<2>(args));
+          auto op = std::get<2>(args);
+
+          // map
+          auto nil_val = itr_traits::local_range(gbegin, gend).end();
+          auto map_res = local_map(
+              gbegin, gend,
+              // map kernel
+              [&](local_iterator_t begin, local_iterator_t end) {
+                return std::min_element(begin, end, op);
+              },
+              nil_val);
+
+          // reduce
+          auto lmin = *std::min_element(
+              map_res.begin(), map_res.end(),
+              [&](const local_iterator_t& x, const local_iterator_t& y) {
+                return x != nil_val && op(*x, *y);
+              });
           ForwardIt gres = itr_traits::iterator_from_local(gbegin, gend, lmin);
-          if (gres != gend)
-            *result = std::make_pair(gres, *lmin);
-          else
-            *result = std::make_pair(gres, value_t{});
+
+          // local solution
+          *result = std::make_pair(gres, lmin != nil_val ? *lmin : value_t{});
         },
         args, &res[i]);
   }
@@ -280,24 +308,46 @@ std::pair<ForwardIt, ForwardIt> minmax_element(
         h, locality,
         [](rt::Handle&, const std::tuple<ForwardIt, ForwardIt, Compare>& args,
            res_t* result) {
+          using local_iterator_t = typename itr_traits::local_iterator_type;
           auto gbegin = std::get<0>(args);
           auto gend = std::get<1>(args);
-          auto local_range = itr_traits::local_range(gbegin, gend);
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto lminmax = std::minmax_element(begin, end, std::get<2>(args));
-          ForwardIt minit =
-              itr_traits::iterator_from_local(gbegin, gend, lminmax.first);
-          ForwardIt maxit =
-              itr_traits::iterator_from_local(gbegin, gend, lminmax.second);
-          if (minit != gend) {
-            *result = std::make_pair(
-                std::make_pair(*(lminmax.first), *(lminmax.second)),
-                std::make_pair(minit, maxit));
-          } else {
-            *result = std::make_pair(std::make_pair(value_t{}, value_t{}),
-                                     std::make_pair(minit, maxit));
-          }
+          auto op = std::get<2>(args);
+
+          // map
+          auto nil_val = itr_traits::local_range(gbegin, gend).end();
+          auto map_res = local_map(
+              gbegin, gend,
+              // map kernel
+              [&](local_iterator_t begin, local_iterator_t end) {
+                return std::minmax_element(begin, end, op);
+              },
+              std::make_pair(nil_val, nil_val));
+
+          // reduce
+          auto map_res_min =
+              std::min_element(
+                  map_res.begin(), map_res.end(),
+                  [&](const std::pair<local_iterator_t, local_iterator_t>& x,
+                      const std::pair<local_iterator_t, local_iterator_t>& y) {
+                    return x.first != nil_val && op(*x.first, *y.first);
+                  })
+                  ->first;
+          auto map_res_max =
+              std::max_element(
+                  map_res.begin(), map_res.end(),
+                  [&](const std::pair<local_iterator_t, local_iterator_t>& x,
+                      const std::pair<local_iterator_t, local_iterator_t>& y) {
+                    return y.second != nil_val && op(*x.second, *y.second);
+                  })
+                  ->second;
+
+          // local solution
+          *result = std::make_pair(
+              std::make_pair(map_res_min != nil_val ? *map_res_min : value_t{},
+                             map_res_max != nil_val ? *map_res_max : value_t{}),
+              std::make_pair(
+                  itr_traits::iterator_from_local(gbegin, gend, map_res_min),
+                  itr_traits::iterator_from_local(gbegin, gend, map_res_max)));
         },
         args, &res[i]);
   }
