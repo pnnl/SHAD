@@ -56,9 +56,7 @@ class insert_iterator
   /// @param container The container into which the iterator inserts.
   /// @param iterator The position at which the iterator starts to insert.
   insert_iterator(Container& container, Iterator iterator)
-      : global_id_(container.global_id()),
-        iterator_(iterator),
-        locality_(rt::thisLocality()) {}
+      : global_id_(container.global_id()), iterator_(iterator) {}
 
   /// @brief The assignment operator.
   ///
@@ -113,9 +111,7 @@ class buffered_insert_iterator
   /// @param container The container into which the iterator inserts.
   /// @param iterator The position at which the iterator starts to insert.
   buffered_insert_iterator(Container& container, Iterator iterator)
-      : global_id_(container.global_id()),
-        iterator_(iterator),
-        locality_(rt::thisLocality()) {}
+      : global_id_(container.global_id()) {}
 
   /// @brief The assignment operator.
   ///
@@ -129,14 +125,19 @@ class buffered_insert_iterator
     if (!local_container_ptr_ || locality_ != rt::thisLocality()) {
       locality_ = rt::thisLocality();
       local_container_ptr_ = Container::from_global_id(global_id_);
+      rt::Handle h;
+      handle_ = h;
     }
-    local_container_ptr_->buffered_insert(iterator_, value);
+    local_container_ptr_->buffered_async_insert(handle_, value);
     return *this;
   }
 
   /// @brief Flushes pending insertions to the container.
   void flush() {
-    if (local_container_ptr_) local_container_ptr_->buffered_flush();
+    if (local_container_ptr_ != nullptr && locality_ == rt::thisLocality()) {
+      // if(!handle_.IsNull()) FIXME
+      local_container_ptr_->buffered_async_flush(handle_);
+    }
   }
 
   buffered_insert_iterator& operator*() { return *this; }
@@ -145,9 +146,9 @@ class buffered_insert_iterator
 
  private:
   typename internal_container_t::ObjectID global_id_;
-  Iterator iterator_;
   internal_container_t* local_container_ptr_ = nullptr;
   rt::Locality locality_;
+  rt::Handle handle_;
 };
 
 // compile-time test for block-contiguous property
