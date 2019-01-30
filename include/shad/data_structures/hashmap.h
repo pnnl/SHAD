@@ -330,11 +330,14 @@ class Hashmap : public AbstractDataStructure<
     return insert(value);
   }
 
-  void buffered_insert(iterator, const value_type &value) {
-    BufferedInsert(value.first, value.second);
+  void buffered_async_insert(rt::Handle &h, const value_type &value) {
+    BufferedAsyncInsert(h, value.first, value.second);
   }
 
-  void buffered_flush() { WaitForBufferedInsert(); }
+  void buffered_async_flush(rt::Handle &h) {
+    rt::waitForCompletion(h);
+    WaitForBufferedInsert();
+  }
 
  private:
   ObjectID oid_;
@@ -436,11 +439,7 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BufferedInsert(
     const KTYPE &key, const VTYPE &value) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
-  if (targetLocality == rt::thisLocality()) {
-    localMap_.Insert(key, value);
-  } else {
-    buffers_.Insert(EntryT(key, value), targetLocality);
-  }
+  buffers_.Insert(EntryT(key, value), targetLocality);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
@@ -451,12 +450,7 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE,
                                                         const VTYPE &value) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
-  if (targetLocality == rt::thisLocality()) {
-    localMap_.AsyncInsert(handle, key, value);
-  } else {
-    EntryT entry(key, value);
-    buffers_.AsyncInsert(handle, entry, targetLocality);
-  }
+  buffers_.AsyncInsert(handle, EntryT(key, value), targetLocality);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
