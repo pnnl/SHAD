@@ -73,16 +73,17 @@ void fill(distributed_sequential_tag&& policy, ForwardIt first, ForwardIt last,
 
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
-    rt::executeAt(locality,
-                  [](const std::tuple<ForwardIt, ForwardIt, T>& args) {
-                    auto begin = std::get<0>(args);
-                    auto end = std::get<1>(args);
-                    auto value = std::get<2>(args);
+    rt::executeAt(
+        locality,
+        [](const std::tuple<ForwardIt, ForwardIt, T>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto value = std::get<2>(args);
 
-                    auto local_range = itr_traits::local_range(begin, end);
-                    std::fill(local_range.begin(), local_range.end(), value);
-                  },
-                  std::make_tuple(first, last, value));
+          auto local_range = itr_traits::local_range(begin, end);
+          std::fill(local_range.begin(), local_range.end(), value);
+        },
+        std::make_tuple(first, last, value));
   }
 }
 
@@ -97,9 +98,9 @@ struct gen_args_t {
 };
 
 template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
-ForwardIt2 block_contiguous_kernel(rt::Locality l,
-                                   ForwardIt1 first, ForwardIt1 last,
-                                   ForwardIt2 d_first, UnaryOperation op) {
+ForwardIt2 block_contiguous_kernel(rt::Locality l, ForwardIt1 first,
+                                   ForwardIt1 last, ForwardIt2 d_first,
+                                   UnaryOperation op) {
   using itr_traits1 = std::iterator_traits<ForwardIt1>;
   using itr_traits2 = distributed_iterator_traits<ForwardIt2>;
   using args_t = gen_args_t<ForwardIt2>;
@@ -145,10 +146,9 @@ ForwardIt2 block_contiguous_kernel(rt::Locality l,
 }
 
 // distributed-sequential kernel for non-block-contiguous output-iterators
-template <class ForwardIt1, class T, class UnaryOperation>
+template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
 void dseq_kernel(std::false_type, ForwardIt1 first, ForwardIt1 last,
-                 shad::insert_iterator<T> d_first,
-                 shad::insert_iterator<T>* res_ptr, UnaryOperation op) {
+                 ForwardIt2 d_first, ForwardIt2* res_ptr, UnaryOperation op) {
   using itr_traits1 = distributed_iterator_traits<ForwardIt1>;
   auto local_range = itr_traits1::local_range(first, last);
   auto begin = local_range.begin();
@@ -158,8 +158,8 @@ void dseq_kernel(std::false_type, ForwardIt1 first, ForwardIt1 last,
 
 // distributed-sequential kernel for block-contiguous output-iterators
 template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
-void dseq_kernel(std::true_type, ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
-                 ForwardIt2* res_ptr, UnaryOperation op) {
+void dseq_kernel(std::true_type, ForwardIt1 first, ForwardIt1 last,
+                 ForwardIt2 d_first, ForwardIt2* res_ptr, UnaryOperation op) {
   using itr_traits1 = distributed_iterator_traits<ForwardIt1>;
   using itr_traits2 = distributed_random_access_iterator_trait<ForwardIt2>;
   auto loc_range = itr_traits1::local_range(first, last);
@@ -180,10 +180,9 @@ void dseq_kernel(std::true_type, ForwardIt1 first, ForwardIt1 last, ForwardIt2 d
 }
 
 // distributed-parallel kernel for non-block-contiguous output-iterators
-template <class ForwardIt1, class T, class UnaryOperation>
+template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
 void dpar_kernel(std::false_type, ForwardIt1 first, ForwardIt1 last,
-                 shad::insert_iterator<T> d_first,
-                 shad::insert_iterator<T>* res_ptr, UnaryOperation op) {
+                 ForwardIt2 d_first, ForwardIt2* res_ptr, UnaryOperation op) {
   using itr_traits1 = distributed_iterator_traits<ForwardIt1>;
   auto local_range = itr_traits1::local_range(first, last);
   auto begin = local_range.begin();
@@ -194,8 +193,8 @@ void dpar_kernel(std::false_type, ForwardIt1 first, ForwardIt1 last,
 
 // distributed-parallel kernel for block-contiguous output-iterators
 template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
-void dpar_kernel(std::true_type, ForwardIt1 first, ForwardIt1 last, ForwardIt2 d_first,
-                 ForwardIt2* res_ptr, UnaryOperation op) {
+void dpar_kernel(std::true_type, ForwardIt1 first, ForwardIt1 last,
+                 ForwardIt2 d_first, ForwardIt2* res_ptr, UnaryOperation op) {
   using itr_traits1 = distributed_iterator_traits<ForwardIt1>;
   using itr_traits2 = distributed_random_access_iterator_trait<ForwardIt2>;
   auto loc_range = itr_traits1::local_range(first, last);
@@ -335,24 +334,24 @@ void generate(distributed_sequential_tag&& policy, ForwardIt first,
 
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
-    rt::executeAt(locality,
-                  [](const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
-                    auto begin = std::get<0>(args);
-                    auto end = std::get<1>(args);
-                    auto generator = std::get<2>(args);
-                    auto local_range = itr_traits::local_range(begin, end);
-                    auto lbegin = local_range.begin();
-                    auto lend = local_range.end();
+    rt::executeAt(
+        locality,
+        [](const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto generator = std::get<2>(args);
+          auto local_range = itr_traits::local_range(begin, end);
+          auto lbegin = local_range.begin();
+          auto lend = local_range.end();
 
-                    // call the generator to align with the offset
-                    auto it =
-                        itr_traits::iterator_from_local(begin, end, lbegin);
-                    for (auto calls = std::distance(begin, it); calls; --calls)
-                      generator();
+          // call the generator to align with the offset
+          auto it = itr_traits::iterator_from_local(begin, end, lbegin);
+          for (auto calls = std::distance(begin, it); calls; --calls)
+            generator();
 
-                    std::generate(lbegin, lend, generator);
-                  },
-                  std::make_tuple(first, last, generator));
+          std::generate(lbegin, lend, generator);
+        },
+        std::make_tuple(first, last, generator));
   }
 }
 
@@ -392,18 +391,19 @@ void replace(distributed_sequential_tag&& policy, ForwardIt first,
 
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
-    rt::executeAt(locality,
-                  [](const std::tuple<ForwardIt, ForwardIt, T, T>& args) {
-                    auto begin = std::get<0>(args);
-                    auto end = std::get<1>(args);
-                    auto old_value = std::get<2>(args);
-                    auto new_value = std::get<3>(args);
+    rt::executeAt(
+        locality,
+        [](const std::tuple<ForwardIt, ForwardIt, T, T>& args) {
+          auto begin = std::get<0>(args);
+          auto end = std::get<1>(args);
+          auto old_value = std::get<2>(args);
+          auto new_value = std::get<3>(args);
 
-                    auto local_range = itr_traits::local_range(begin, end);
-                    std::replace(local_range.begin(), local_range.end(),
-                                 old_value, new_value);
-                  },
-                  std::make_tuple(first, last, old_value, new_value));
+          auto local_range = itr_traits::local_range(begin, end);
+          std::replace(local_range.begin(), local_range.end(), old_value,
+                       new_value);
+        },
+        std::make_tuple(first, last, old_value, new_value));
   }
 }
 

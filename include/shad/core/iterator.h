@@ -44,11 +44,12 @@ namespace shad {
 template <typename Container>
 class insert_iterator
     : public std::iterator<std::output_iterator_tag, void, void, void, void> {
+ protected:
   using Iterator = typename Container::iterator;
-  using value_type = typename Container::value_type;
   using internal_container_t = typename Container::internal_container_t;
 
  public:
+  using value_type = typename Container::value_type;
   using container_type = Container;
 
   /// @brief Constructor.
@@ -79,7 +80,7 @@ class insert_iterator
   insert_iterator& operator++() { return *this; }
   insert_iterator& operator++(int) { return *this; }
 
- private:
+ protected:
   typename internal_container_t::ObjectID global_id_;
   Iterator iterator_;
   internal_container_t* local_container_ptr_ = nullptr;
@@ -97,21 +98,21 @@ class insert_iterator
 ///
 /// @tparam Container The type of the distributed container.
 template <typename Container>
-class buffered_insert_iterator
-    : public std::iterator<std::output_iterator_tag, void, void, void, void> {
-  using Iterator = typename Container::iterator;
-  using value_type = typename Container::value_type;
-  using internal_container_t = typename Container::internal_container_t;
+class buffered_insert_iterator : public insert_iterator<Container> {
+  using base_t = insert_iterator<Container>;
+  using Iterator = typename base_t::Iterator;
+  using internal_container_t = typename base_t::internal_container_t;
 
  public:
-  using container_type = Container;
+  using value_type = typename base_t::value_type;
+  using container_type = typename base_t::container_type;
 
   /// @brief Constructor.
   ///
   /// @param container The container into which the iterator inserts.
   /// @param iterator The position at which the iterator starts to insert.
   buffered_insert_iterator(Container& container, Iterator iterator)
-      : global_id_(container.global_id()) {}
+      : base_t(container, iterator) {}
 
   /// @brief The assignment operator.
   ///
@@ -122,21 +123,22 @@ class buffered_insert_iterator
   ///
   /// @return A self reference.
   buffered_insert_iterator& operator=(const value_type& value) {
-    if (!local_container_ptr_ || locality_ != rt::thisLocality()) {
-      locality_ = rt::thisLocality();
-      local_container_ptr_ = Container::from_global_id(global_id_);
+    if (!this->local_container_ptr_ || this->locality_ != rt::thisLocality()) {
+      this->locality_ = rt::thisLocality();
+      this->local_container_ptr_ = Container::from_global_id(this->global_id_);
       rt::Handle h;
       handle_ = h;
     }
-    local_container_ptr_->buffered_async_insert(handle_, value);
+    this->local_container_ptr_->buffered_async_insert(handle_, value);
     return *this;
   }
 
   /// @brief Flushes pending insertions to the container.
   void flush() {
-    if (local_container_ptr_ != nullptr && locality_ == rt::thisLocality()) {
+    if (this->local_container_ptr_ != nullptr &&
+        this->locality_ == rt::thisLocality()) {
       // if(!handle_.IsNull()) FIXME
-      local_container_ptr_->buffered_async_flush(handle_);
+      this->local_container_ptr_->buffered_async_flush(handle_);
     }
   }
 
@@ -145,21 +147,23 @@ class buffered_insert_iterator
   buffered_insert_iterator& operator++(int) { return *this; }
 
  private:
-  typename internal_container_t::ObjectID global_id_;
-  internal_container_t* local_container_ptr_ = nullptr;
-  rt::Locality locality_;
   rt::Handle handle_;
 };
 
 // compile-time test for block-contiguous property
-template<typename It>
+template <typename It>
 struct is_block_contiguous {
-	static constexpr std::true_type value{};
+  static constexpr std::true_type value{};
 };
 
-template<typename T>
-struct is_block_contiguous<shad::insert_iterator<T>> {
-	static constexpr std::false_type value{};
+template <typename Container>
+struct is_block_contiguous<shad::insert_iterator<Container>> {
+  static constexpr std::false_type value{};
+};
+
+template <typename Container>
+struct is_block_contiguous<shad::buffered_insert_iterator<Container>> {
+  static constexpr std::false_type value{};
 };
 
 }  // namespace shad
