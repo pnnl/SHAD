@@ -46,7 +46,9 @@ ForwardIt max_element(distributed_sequential_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   using value_t = typename itr_traits::value_type;
+#if __cpp_static_assert >= 200410
   static_assert(std::is_default_constructible<value_t>::value);
+#endif
 
   if (first == last) return last;
 
@@ -84,7 +86,9 @@ ForwardIt max_element(distributed_parallel_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   using value_t = typename itr_traits::value_type;
+#if __cpp_static_assert >= 200410
   static_assert(std::is_default_constructible<value_t>::value);
+#endif
 
   if (first == last) return last;
 
@@ -137,7 +141,9 @@ ForwardIt min_element(distributed_sequential_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   using value_t = typename itr_traits::value_type;
+#if __cpp_static_assert >= 200410
   static_assert(std::is_default_constructible<value_t>::value);
+#endif
 
   if (first == last) return last;
 
@@ -175,7 +181,9 @@ ForwardIt min_element(distributed_parallel_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   using value_t = typename itr_traits::value_type;
+#if __cpp_static_assert >= 200410
   static_assert(std::is_default_constructible<value_t>::value);
+#endif
 
   if (first == last) return last;
 
@@ -229,7 +237,9 @@ std::pair<ForwardIt, ForwardIt> minmax_element(
     Compare comp) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   using value_t = typename itr_traits::value_type;
+#if __cpp_static_assert >= 200410
   static_assert(std::is_default_constructible<value_t>::value);
+#endif
 
   struct sol_t {
     ForwardIt min, max;
@@ -286,7 +296,9 @@ std::pair<ForwardIt, ForwardIt> minmax_element(
   if (first == last) return std::make_pair(last, last);
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   using value_t = typename itr_traits::value_type;
+#if __cpp_static_assert >= 200410
   static_assert(std::is_default_constructible<value_t>::value);
+#endif
 
   struct sol_t {
     ForwardIt min, max;

@@ -101,16 +101,6 @@ auto distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// local_folding_map applies map_kernel over the local portion.
-//
-////////////////////////////////////////////////////////////////////////////////
-template <typename ForwardIt, typename MapF>
-auto local_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
-  return map_kernel(first, last);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
 // distributed_map applies map_kernel to each local portion and returns an
 // iterable collection of partial results (one for each locality that owns a
 // portion of the input range).
@@ -122,9 +112,13 @@ template <typename ForwardIt, typename MapF, typename... Args>
 auto distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
                      Args&&... args) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
   using mapped_t = typename std::result_of<MapF&(
       const ForwardIt&, const ForwardIt&, Args...)>::type;
+#if __cpp_static_assert >= 200410
+  static_assert(std::is_default_constructible<mapped_t>::value);
+#endif
+
+  auto localities = itr_traits::localities(first, last);
   size_t i = 0;
   rt::Handle h;
   auto d_args = std::make_tuple(map_kernel, first, last, args...);
@@ -155,6 +149,9 @@ template <typename ForwardIt, typename MapF>
 auto local_map(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
   using mapped_t =
       typename std::result_of<MapF&(const ForwardIt&, const ForwardIt&)>::type;
+#if __cpp_static_assert >= 200410
+  static_assert(std::is_default_constructible<mapped_t>::value);
+#endif
 
   // allocate partial results
   auto range_len = std::distance(first, last);
