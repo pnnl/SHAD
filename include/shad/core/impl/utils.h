@@ -41,10 +41,18 @@ void advance_output_iterator(It &it, It2 first, It2 last) {
 }
 
 template <typename T, typename It2>
-void advance_output_iterator(shad::insert_iterator<T>, It2, It2) {}
+void advance_output_iterator(shad::insert_iterator<T> &, It2, It2) {}
 
 template <typename T, typename It2>
 void advance_output_iterator(shad::buffered_insert_iterator<T>, It2, It2) {}
+
+template <typename It>
+void flush_iterator(It &) {}
+
+template <typename T>
+void flush_iterator(shad::buffered_insert_iterator<T> &it) {
+  it.flush();
+}
 
 }  // namespace impl
 }  // namespace shad
