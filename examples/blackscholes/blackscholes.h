@@ -111,8 +111,6 @@ fptype BlkSchlsEqEuroNoDiv(fptype sptprice, fptype strike, fptype rate,
   fptype FutureValueX;
   fptype NofXd1;
   fptype NofXd2;
-  fptype NegNofXd1;
-  fptype NegNofXd2;
 
   xRiskFreeRate = rate;
   xVolatility = volatility;
@@ -145,8 +143,8 @@ fptype BlkSchlsEqEuroNoDiv(fptype sptprice, fptype strike, fptype rate,
   if (otype == 0) {
     OptionPrice = (sptprice * NofXd1) - (FutureValueX * NofXd2);
   } else {
-    NegNofXd1 = (1.0 - NofXd1);
-    NegNofXd2 = (1.0 - NofXd2);
+    fptype NegNofXd1 = (1.0 - NofXd1);
+    fptype NegNofXd2 = (1.0 - NofXd2);
     OptionPrice = (FutureValueX * NegNofXd2) - (sptprice * NegNofXd1);
   }
 
