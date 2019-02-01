@@ -29,16 +29,16 @@
 // Some input datasets for this example can be found in the PARSEC distribution.
 
 #include <algorithm>
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <limits>
-#include <cassert>
 
 #include "shad/core/algorithm.h"
 #include "shad/core/array.h"
 #include "shad/util/measure.h"
 
-#include "blackscholes.h"
+#include "blackscholes_wrap.h"
 
 // The array size must be equal to the number of lines in the input file.
 constexpr size_t n_options = 1 << 16;
