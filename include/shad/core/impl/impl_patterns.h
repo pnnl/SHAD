@@ -42,6 +42,13 @@ namespace impl {
 #include <type_traits>
 #include <utility>
 
+////////////////////////////////////////////////////////////////////////////////
+//
+// apply_from is an utility function that performs compile-time unpacking of
+// elements [i,N) from a N-ary tuple and invokes a callable on the unpacked
+// elements.
+//
+////////////////////////////////////////////////////////////////////////////////
 template <size_t i, size_t N>
 struct Apply {
   template <typename F, typename T, typename... A>
