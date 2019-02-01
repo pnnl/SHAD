@@ -41,7 +41,6 @@
 namespace shad {
 namespace impl {
 
-// contract:
 template <class ForwardIt, class Compare>
 ForwardIt max_element(distributed_sequential_tag&& policy, ForwardIt first,
                       ForwardIt last, Compare comp) {
