@@ -264,7 +264,7 @@ std::pair<ForwardIt, ForwardIt> minmax_element(
         }
         if (lminmax.second != nil_val &&
             (partial_solution.max == last ||
-             comp(*lminmax.second, partial_solution.max_val))) {
+             comp(partial_solution.max_val, *lminmax.second))) {
           auto gmax =
               itr_traits::iterator_from_local(first, last, lminmax.second);
           res.max = gmax;
