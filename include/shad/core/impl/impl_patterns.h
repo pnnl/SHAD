@@ -114,9 +114,8 @@ auto distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   using mapped_t = typename std::result_of<MapF&(
       const ForwardIt&, const ForwardIt&, Args...)>::type;
-#if __cpp_static_assert >= 200410
-  static_assert(std::is_default_constructible<mapped_t>::value);
-#endif
+  static_assert(std::is_default_constructible<mapped_t>::value,
+                "distributed_map requires DefaultConstructible value type");
 
   auto localities = itr_traits::localities(first, last);
   size_t i = 0;
@@ -149,9 +148,8 @@ template <typename ForwardIt, typename MapF>
 auto local_map(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
   using mapped_t =
       typename std::result_of<MapF&(const ForwardIt&, const ForwardIt&)>::type;
-#if __cpp_static_assert >= 200410
-  static_assert(std::is_default_constructible<mapped_t>::value);
-#endif
+  static_assert(std::is_default_constructible<mapped_t>::value,
+                "local_map requires DefaultConstructible value type");
 
   // allocate partial results
   auto range_len = std::distance(first, last);
