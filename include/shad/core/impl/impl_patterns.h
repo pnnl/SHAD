@@ -30,17 +30,13 @@
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
 
 namespace shad {
 namespace impl {
-
-#include <cstddef>
-#include <tuple>
-#include <type_traits>
-#include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -80,8 +76,8 @@ inline auto apply_from(F&& f, T&& t) {
 //
 ////////////////////////////////////////////////////////////////////////////////
 template <typename ForwardIt, typename MapF, typename S, typename... Args>
-auto distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
-                             const S& init_sol, Args&&... args) {
+S distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
+                          const S& init_sol, Args&&... args) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   auto localities = itr_traits::localities(first, last);
   auto res = init_sol;
@@ -101,10 +97,9 @@ auto distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
 
 template <typename ForwardIt, typename MapF, typename HaltF, typename S,
           typename... Args>
-auto distributed_folding_map_early_termination(ForwardIt first, ForwardIt last,
-                                               MapF&& map_kernel, HaltF&& halt,
-                                               const S& init_sol,
-                                               Args&&... args) {
+S distributed_folding_map_early_termination(ForwardIt first, ForwardIt last,
+                                            MapF&& map_kernel, HaltF&& halt,
+                                            const S& init_sol, Args&&... args) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   auto localities = itr_traits::localities(first, last);
   auto res = init_sol;
@@ -134,15 +129,18 @@ auto distributed_folding_map_early_termination(ForwardIt first, ForwardIt last,
 ////////////////////////////////////////////////////////////////////////////////
 // TODO specialize mapped_t to support lambdas returning bool
 template <typename ForwardIt, typename MapF, typename... Args>
-auto distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
-                     Args&&... args) {
+std::vector<
+    typename std::result_of<MapF&(ForwardIt, ForwardIt, Args&&...)>::type>
+distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
+                Args&&... args) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  using mapped_t = typename std::result_of<MapF&(
-      const ForwardIt&, const ForwardIt&, Args...)>::type;
+  using mapped_t =
+      typename std::result_of<MapF&(ForwardIt, ForwardIt, Args && ...)>::type;
   static_assert(std::is_default_constructible<mapped_t>::value,
                 "distributed_map requires DefaultConstructible value type");
-  static_assert(!std::is_same<mapped_t, bool>::value,
-                "distributed-map kernels returning bool are not supported (yet)");
+  static_assert(
+      !std::is_same<mapped_t, bool>::value,
+      "distributed-map kernels returning bool are not supported (yet)");
 
   auto localities = itr_traits::localities(first, last);
   size_t i = 0;
@@ -171,12 +169,16 @@ auto distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
 //  The return type of map_kernel must be DefaultConstructible.
 //
 ////////////////////////////////////////////////////////////////////////////////
+// TODO specialize mapped_t to support lambdas returning bool
 template <typename ForwardIt, typename MapF>
-auto local_map(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
-  using mapped_t =
-      typename std::result_of<MapF&(const ForwardIt&, const ForwardIt&)>::type;
+std::vector<typename std::result_of<MapF&(ForwardIt, ForwardIt)>::type>
+local_map(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
+  using mapped_t = typename std::result_of<MapF&(ForwardIt, ForwardIt)>::type;
   static_assert(std::is_default_constructible<mapped_t>::value,
                 "local_map requires DefaultConstructible value type");
+  static_assert(
+      !std::is_same<mapped_t, bool>::value,
+      "distributed-map kernels returning bool are not supported (yet)");
 
   // allocate partial results
   auto range_len = std::distance(first, last);

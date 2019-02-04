@@ -203,11 +203,11 @@ ForwardIt min_element(distributed_parallel_tag&& policy, ForwardIt first,
 
         // local reduce
         auto nil_val = itr_traits::local_range(first, last).end();
-        auto lmin_it = std::min_element(
-            map_res.begin(), map_res.end(),
-            [&](const local_iterator_t& x, const local_iterator_t& y) {
-              return x != nil_val && comp(*x, *y);
-            });
+        auto lmin_it =
+            std::min_element(map_res.begin(), map_res.end(),
+                             [&](local_iterator_t x, local_iterator_t y) {
+                               return x != nil_val && comp(*x, *y);
+                             });
 
         // local solution
         auto lmin = lmin_it != map_res.end() ? *lmin_it : nil_val;

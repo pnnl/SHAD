@@ -29,6 +29,7 @@
 #include <cstdint>
 #include <functional>
 #include <iterator>
+#include <cstddef>
 
 #include "shad/core/execution.h"
 #include "shad/distributed_iterator_traits.h"
@@ -85,7 +86,7 @@ bool all_of(distributed_parallel_tag&& policy, ForwardItr first,
             // range
             lrange.begin(), lrange.end(),
             // kernel
-            [&](local_iterator_t b, local_iterator_t e) {
+            [&](const local_iterator_t &b, const local_iterator_t &e) -> uint8_t {
               return std::all_of(b, e, p);
             });
 
@@ -146,7 +147,7 @@ bool any_of(distributed_parallel_tag&& policy, ForwardItr first,
             // range
             lrange.begin(), lrange.end(),
             // kernel
-            [&](local_iterator_t b, local_iterator_t e) {
+            [&](local_iterator_t b, local_iterator_t e) -> uint8_t {
               return std::any_of(b, e, p);
             });
 
