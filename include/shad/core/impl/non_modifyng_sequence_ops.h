@@ -381,7 +381,7 @@ void for_each(distributed_sequential_tag&& policy, ForwardItr first,
       // range
       first, last,
       // kernel
-      [](ForwardItr first, ForwardItr last, nullptr_t, UnaryPredicate p) {
+      [](ForwardItr first, ForwardItr last, std::nullptr_t, UnaryPredicate p) {
         // local processing
         auto lrange = itr_traits::local_range(first, last);
         auto local_res = std::for_each(lrange.begin(), lrange.end(), p);
