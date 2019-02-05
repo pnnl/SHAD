@@ -95,6 +95,24 @@ S distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   return res;
 }
 
+template <typename ForwardIt, typename MapF, typename... Args>
+void distributed_folding_map_void(ForwardIt first, ForwardIt last,
+                                  MapF&& map_kernel, Args&&... args) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    auto d_args = std::make_tuple(map_kernel, first, last, args...);
+    rt::executeAt(
+        locality,
+        [](const typeof(d_args)& d_args) {
+          apply_from<1>(::std::get<0>(d_args),
+                        ::std::forward<typeof(d_args)>(d_args));
+        },
+        d_args);
+  }
+}
+
 template <typename ForwardIt, typename MapF, typename HaltF, typename S,
           typename... Args>
 S distributed_folding_map_early_termination(ForwardIt first, ForwardIt last,
@@ -161,6 +179,27 @@ distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   return res;
 }
 
+template <typename ForwardIt, typename MapF, typename... Args>
+void distributed_map_void(ForwardIt first, ForwardIt last, MapF&& map_kernel,
+                          Args&&... args) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  auto localities = itr_traits::localities(first, last);
+  size_t i = 0;
+  rt::Handle h;
+  auto d_args = std::make_tuple(map_kernel, first, last, args...);
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality, ++i) {
+    rt::asyncExecuteAt(
+        h, locality,
+        [](rt::Handle&, const typeof(d_args)& d_args) {
+          apply_from<1>(::std::get<0>(d_args),
+                        ::std::forward<typeof(d_args)>(d_args));
+        },
+        d_args);
+  }
+  rt::waitForCompletion(h);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 // local_map applies map_kernel over a partitioning of a local portion and
@@ -219,6 +258,44 @@ local_map(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
   }
 
   return map_res;
+}
+
+template <typename ForwardIt, typename MapF>
+void local_map_void(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
+  // allocate partial results
+  auto range_len = std::distance(first, last);
+  auto n_blocks = std::min(rt::impl::getConcurrency(), (size_t)range_len);
+
+  if (n_blocks) {
+    auto block_size = (range_len + n_blocks - 1) / n_blocks;
+
+    rt::Handle map_h;
+    for (size_t block_id = 0; block_id < n_blocks; ++block_id) {
+      auto map_args =
+          std::make_tuple(block_id, block_size, first, last, map_kernel);
+      rt::asyncExecuteAt(
+          map_h, rt::thisLocality(),
+          [](rt::Handle&, const typeof(map_args)& map_args) {
+            size_t block_id = std::get<0>(map_args);
+            size_t block_size = std::get<1>(map_args);
+            auto begin = std::get<2>(map_args);
+            auto end = std::get<3>(map_args);
+            auto map_kernel = std::get<4>(map_args);
+            // iteration-block boundaries
+            auto block_begin = begin;
+            std::advance(block_begin, block_id * block_size);
+            auto block_end = block_begin;
+            if (std::distance(block_begin, end) < block_size)
+              block_end = end;
+            else
+              std::advance(block_end, block_size);
+            // map over the block
+            map_kernel(block_begin, block_end);
+          },
+          map_args);
+    }
+    rt::waitForCompletion(map_h);
+  }
 }
 
 }  // namespace impl

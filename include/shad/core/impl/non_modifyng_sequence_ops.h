@@ -26,10 +26,10 @@
 #define INCLUDE_SHAD_CORE_IMPL_NON_MODIFYING_SEQUENCE_OPS_H
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <iterator>
-#include <cstddef>
 
 #include "shad/core/execution.h"
 #include "shad/distributed_iterator_traits.h"
@@ -86,9 +86,8 @@ bool all_of(distributed_parallel_tag&& policy, ForwardItr first,
             // range
             lrange.begin(), lrange.end(),
             // kernel
-            [&](const local_iterator_t &b, const local_iterator_t &e) -> uint8_t {
-              return std::all_of(b, e, p);
-            });
+            [&](const local_iterator_t& b, const local_iterator_t& e)
+                -> uint8_t { return std::all_of(b, e, p); });
 
         // local reduce
         return std::all_of(map_res.begin(), map_res.end(),
@@ -377,17 +376,15 @@ void for_each(distributed_sequential_tag&& policy, ForwardItr first,
               ForwardItr last, UnaryPredicate p) {
   using itr_traits = distributed_iterator_traits<ForwardItr>;
 
-  return distributed_folding_map(
+  distributed_folding_map_void(
       // range
       first, last,
       // kernel
-      [](ForwardItr first, ForwardItr last, std::nullptr_t, UnaryPredicate p) {
+      [](ForwardItr first, ForwardItr last, UnaryPredicate p) {
         // local processing
         auto lrange = itr_traits::local_range(first, last);
-        auto local_res = std::for_each(lrange.begin(), lrange.end(), p);
+        std::for_each(lrange.begin(), lrange.end(), p);
       },
-      // initial solution
-      nullptr,
       // map arguments
       p);
 }
@@ -396,10 +393,9 @@ template <typename ForwardItr, typename UnaryPredicate>
 void for_each(distributed_parallel_tag&& policy, ForwardItr first,
               ForwardItr last, UnaryPredicate p) {
   using itr_traits = distributed_iterator_traits<ForwardItr>;
-  using value_t = typename itr_traits::value_type;
 
   // distributed map
-  auto map_res = distributed_map(
+  distributed_map_void(
       // range
       first, last,
       // kernel
@@ -409,7 +405,7 @@ void for_each(distributed_parallel_tag&& policy, ForwardItr first,
         // local map
         auto lrange = itr_traits::local_range(first, last);
 
-        local_map(
+        local_map_void(
             // range
             lrange.begin(), lrange.end(),
             // kernel
