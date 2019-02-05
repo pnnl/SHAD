@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <numeric>
 
 #include "shad/core/execution.h"
 #include "shad/distributed_iterator_traits.h"
