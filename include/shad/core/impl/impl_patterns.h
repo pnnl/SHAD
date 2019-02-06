@@ -65,7 +65,7 @@ struct Apply<i, i> {
 
 template <size_t i, typename F, typename T>
 inline auto apply_from(F&& f, T&& t) {
-  return Apply<i, ::std::tuple_size< ::std::decay_t<T> >::value>::apply(
+  return Apply<i, ::std::tuple_size<::std::decay_t<T>>::value>::apply(
       ::std::forward<F>(f), ::std::forward<T>(t));
 }
 
@@ -73,6 +73,8 @@ inline auto apply_from(F&& f, T&& t) {
 //
 // distributed_folding_map applies map_kernel sequentially to each local
 // portion, forwarding the solution from portion i to portion i + 1.
+//
+// There is *no* guarantee that map_kernel is not invoked on an empty range.
 //
 ////////////////////////////////////////////////////////////////////////////////
 template <typename ForwardIt, typename MapF, typename S, typename... Args>
@@ -145,6 +147,16 @@ S distributed_folding_map_early_termination(ForwardIt first, ForwardIt last,
 // The return type of map_kernel must be DefaultConstructible.
 //
 ////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+struct optional_vector {
+  struct entry_t {
+    T value;
+    bool valid;
+  };
+  optional_vector(size_t s) : data(s) {}
+  std::vector<entry_t> data;
+};
+
 // TODO specialize mapped_t to support lambdas returning bool
 template <typename ForwardIt, typename MapF, typename... Args>
 std::vector<
@@ -159,23 +171,38 @@ distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   static_assert(
       !std::is_same<mapped_t, bool>::value,
       "distributed-map kernels returning bool are not supported (yet)");
+  using opt_mapped_t = typename optional_vector<mapped_t>::entry_t;
 
   auto localities = itr_traits::localities(first, last);
   size_t i = 0;
   rt::Handle h;
   auto d_args = std::make_tuple(map_kernel, first, last, args...);
-  std::vector<mapped_t> res(localities.size());
+  optional_vector<mapped_t> opt_res(localities.size());
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality, ++i) {
     rt::asyncExecuteAtWithRet(
         h, locality,
-        [](rt::Handle&, const typeof(d_args)& d_args, mapped_t* result) {
-          *result = apply_from<1>(::std::get<0>(d_args),
-                                  ::std::forward<typeof(d_args)>(d_args));
+        [](rt::Handle&, const typeof(d_args)& d_args, opt_mapped_t* result) {
+          auto first = ::std::get<1>(d_args);
+          auto last = ::std::get<2>(d_args);
+          auto lrange = itr_traits::local_range(first, last);
+          if (lrange.begin() != lrange.end()) {
+            result->valid = true;
+            result->value = apply_from<1>(
+                ::std::get<0>(d_args), ::std::forward<typeof(d_args)>(d_args));
+          } else {
+            result->valid = false;
+          }
         },
-        d_args, &res[i]);
+        d_args, &opt_res.data[i]);
   }
   rt::waitForCompletion(h);
+  std::vector<mapped_t> res;
+  for (auto& x : opt_res.data)
+    if (x.valid) {
+      printf("> pushing=%d\n", x.value);
+      res.push_back(x.value);
+    }
   return res;
 }
 
