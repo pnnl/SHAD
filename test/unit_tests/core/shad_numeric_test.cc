@@ -250,27 +250,6 @@ TYPED_TEST(STF, accumulate) {
              shad_test_stl::accumulate_<it_t, val_t, acc_f>, 0, acc_f{});
 }
 
-TYPED_TEST(STF, transform_reduce_two_containers) {
-  using it_t = typeof(this->in->begin());
-  using val_t = typename TypeParam::value_type;
-  using combine_f = std::multiplies<val_t>;
-  using reduce_f = std::plus<val_t>;
-  auto other = shad_test_stl::create_set_<TypeParam, false>{}(
-      shad_test_stl::kNumElements);
-  this->test_with_policy(
-      shad::distributed_sequential_tag{},
-      shad::transform_reduce<shad::distributed_sequential_tag, it_t, it_t,
-                             val_t, reduce_f, combine_f>,
-      shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
-      other->begin(), 0, reduce_f{}, combine_f{});
-  this->test_with_policy(
-      shad::distributed_parallel_tag{},
-      shad::transform_reduce<shad::distributed_parallel_tag, it_t, it_t, val_t,
-                             reduce_f, combine_f>,
-      shad_test_stl::transform_reduce_<it_t, it_t, val_t, reduce_f, combine_f>,
-      other->begin(), 0, reduce_f{}, combine_f{});
-}
-
 TYPED_TEST(STF, transform_reduce_one_container) {
   using it_t = typeof(this->in->begin());
   using val_t = typename TypeParam::value_type;
@@ -322,28 +301,6 @@ TYPED_TEST(MTF, accumulate) {
   };
   this->test(shad::accumulate<it_t, int64_t, typeof(op_t)>,
              shad_test_stl::accumulate_<it_t, int64_t, typeof(op_t)>, 0, op_t);
-}
-
-TYPED_TEST(MTF, transform_reduce_two_containers) {
-  using it_t = typeof(this->in->begin());
-  using val_t = typename TypeParam::value_type;
-  using acc_t = std::pair<int, int>;
-  using combine_f = std::multiplies<val_t>;
-  using reduce_f = std::plus<val_t>;
-  auto other = shad_test_stl::create_map_<TypeParam, false>{}(
-      shad_test_stl::kNumElements);
-  this->test_with_policy(
-      shad::distributed_sequential_tag{},
-      shad::transform_reduce<shad::distributed_sequential_tag, it_t, it_t,
-                             acc_t, reduce_f, combine_f>,
-      shad_test_stl::transform_reduce_<it_t, it_t, acc_t, reduce_f, combine_f>,
-      other->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
-  this->test_with_policy(
-      shad::distributed_parallel_tag{},
-      shad::transform_reduce<shad::distributed_parallel_tag, it_t, it_t, acc_t,
-                             reduce_f, combine_f>,
-      shad_test_stl::transform_reduce_<it_t, it_t, acc_t, reduce_f, combine_f>,
-      other->begin(), std::make_pair(0, 0), reduce_f{}, combine_f{});
 }
 
 TYPED_TEST(MTF, transform_reduce_one_container) {
