@@ -60,6 +60,16 @@ void iota(ForwardIterator first, ForwardIterator last, const T& value) {
       value);
 }
 
+namespace accumulate_impl {
+template <class InputIt, class T, class BinaryOperation>
+T accumulate(InputIt first, InputIt last, T init, BinaryOperation op) {
+  for (; first != last; ++first) {
+    init = op(std::move(init), *first);  // std::move since C++20
+  }
+  return init;
+}
+}  // namespace accumulate_impl
+
 template <class InputIt, class T, class BinaryOperation>
 T accumulate(InputIt first, InputIt last, T init, BinaryOperation op) {
   using itr_traits = distributed_iterator_traits<InputIt>;
@@ -299,6 +309,8 @@ template <class InputIt, class T, class BinaryOperation>
 T reduce(distributed_parallel_tag&& policy, InputIt first, InputIt last, T init,
          BinaryOperation op) {
   using itr_traits = distributed_iterator_traits<InputIt>;
+  static_assert(std::is_default_constructible<T>::value,
+                "reduce requires DefaultConstructible value type");
 
   // distributed map
   auto map_res = distributed_map(
@@ -321,9 +333,12 @@ T reduce(distributed_parallel_tag&& policy, InputIt first, InputIt last, T init,
             });
 
         // local reduce
-        auto b = map_res.begin();
-        auto res = *b;
-        while (++b != map_res.end()) res = op(std::move(res), *b);
+        auto b = map_res.begin(), e = map_res.end();
+        T res;
+        if (b != e) {
+          res = *b++;
+          res = std::accumulate(b, e, std::move(res), op);
+        }
         return res;
       },
       // map arguments
@@ -725,8 +740,6 @@ T transform_reduce(distributed_sequential_tag&& policy, ForwardIt first,
       init,
       // map arguments
       op, uop);
-
-  //
 }
 
 // single range - parallel
@@ -734,6 +747,9 @@ template <class ForwardIt, class T, class BinaryOp, class UnaryOp>
 T transform_reduce(distributed_parallel_tag&& policy, ForwardIt first,
                    ForwardIt last, T init, BinaryOp op, UnaryOp uop) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
+  static_assert(
+      std::is_default_constructible<T>::value,
+      "transform_reduce requires DefaultConstructible transformed value type");
 
   // distributed map
   auto map_res = distributed_map(
@@ -750,15 +766,18 @@ T transform_reduce(distributed_parallel_tag&& policy, ForwardIt first,
             lrange.begin(), lrange.end(),
             // kernel
             [&](local_iterator_t b, local_iterator_t e) {
-              auto res = *b;
-              while (++b != e) res = op(std::move(res), uop(*b));
+              auto res = uop(*b++);
+              for (; b != e; b++) res = op(std::move(res), uop(*b));
               return res;
             });
 
         // local reduce
-        auto b = map_res.begin();
-        auto res = *b;
-        while (++b != map_res.end()) res = op(std::move(res), *b);
+        auto b = map_res.begin(), e = map_res.end();
+        T res{};
+        if (b != e) {
+          res = *b++;
+          res = std::accumulate(b, e, std::move(res), op);
+        }
         return res;
       },
       // map arguments
@@ -1149,7 +1168,7 @@ OutputIt transform_inclusive_scan(distributed_sequential_tag&& policy,
         },
         std::make_tuple(first, last, res.first, res.second, op, uop), &res);
   }
-  return res.second;
+  return res.first;
 }
 
 template <class InputIt, class OutputIt, class BinaryOperation,
