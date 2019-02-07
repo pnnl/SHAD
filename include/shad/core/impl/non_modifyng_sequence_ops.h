@@ -340,6 +340,89 @@ ForwardItr find_if(distributed_parallel_tag&& policy, ForwardItr first,
 }
 
 template <typename ForwardItr, typename UnaryPredicate>
+ForwardItr find_if_not(distributed_sequential_tag&& policy, ForwardItr first,
+                       ForwardItr last, UnaryPredicate p) {
+  using itr_traits = distributed_iterator_traits<ForwardItr>;
+  auto localities = itr_traits::localities(first, last);
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    ForwardItr result = last;
+
+    rt::executeAtWithRet(
+        locality,
+        [](const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
+           ForwardItr* result) {
+          auto begin = std::get<0>(args);
+          *result = std::get<1>(args);
+          auto predicate = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, *result);
+          auto local_res = std::find_if_not(local_range.begin(),
+                                            local_range.end(), predicate);
+
+          if (local_res != local_range.end()) {
+            *result = std::move(itr_traits::iterator_from_local(
+                std::get<0>(args), std::get<1>(args), local_res));
+          }
+        },
+        std::make_tuple(first, last, p), &result);
+
+    if (result != last) {
+      return result;
+    }
+  }
+
+  return last;
+}
+
+template <typename ForwardItr, typename UnaryPredicate>
+ForwardItr find_if_not(distributed_parallel_tag&& policy, ForwardItr first,
+                       ForwardItr last, UnaryPredicate p) {
+  using itr_traits = distributed_iterator_traits<ForwardItr>;
+  auto localities = itr_traits::localities(first, last);
+
+  rt::Handle H;
+
+  std::vector<ForwardItr> results(localities.size(), last);
+  size_t i = 0;
+
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    rt::asyncExecuteAtWithRet(
+        H, locality,
+        [](rt::Handle&,
+           const std::tuple<ForwardItr, ForwardItr, UnaryPredicate>& args,
+           ForwardItr* result) {
+          auto begin = std::get<0>(args);
+          *result = std::get<1>(args);
+          auto predicate = std::get<2>(args);
+
+          auto local_range = itr_traits::local_range(begin, *result);
+          auto local_res = std::find_if_not(local_range.begin(),
+                                            local_range.end(), predicate);
+
+          if (local_res != local_range.end()) {
+            *result = std::move(itr_traits::iterator_from_local(
+                std::get<0>(args), std::get<1>(args), local_res));
+          }
+        },
+        std::make_tuple(first, last, p), &results[i]);
+
+    ++i;
+  }
+
+  rt::waitForCompletion(H);
+
+  auto resultPos =
+      std::find_if(std::begin(results), std::end(results),
+                   [&](const ForwardItr& o) -> bool { return last != o; });
+  if (resultPos != results.end()) last = std::move(*resultPos);
+
+  return last;
+}
+
+template <typename ForwardItr, typename UnaryPredicate>
 void for_each(distributed_sequential_tag&& policy, ForwardItr first,
               ForwardItr last, UnaryPredicate p) {
   using itr_traits = distributed_iterator_traits<ForwardItr>;

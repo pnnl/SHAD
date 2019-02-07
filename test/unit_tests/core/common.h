@@ -464,7 +464,7 @@ class TestFixture : public ::testing::Test {
                                      args_... args) {
     auto out1 = create_output_container(0);
     auto out2 = create_output_container(0);
-    shad::insert_iterator<T> out1_it(*out1, out1->begin());
+    shad_inserter_t out1_it(*out1, out1->begin());
     std::insert_iterator<T> out2_it(*out2, out2->begin());
     sub_f(std::forward<ExecutionPolicy>(policy), in->begin(), in->end(),
           out1_it, args...);

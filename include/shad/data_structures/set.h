@@ -234,9 +234,14 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
     return insert(value);
   }
 
-  void buffered_insert(iterator, const T& k) { BufferedInsert(k); }
+  void buffered_async_insert(rt::Handle& h, const value_type& value) {
+    BufferedAsyncInsert(h, value);
+  }
 
-  void buffered_flush() { WaitForBufferedInsert(); }
+  void buffered_async_flush(rt::Handle& h) {
+    rt::waitForCompletion(h);
+    WaitForBufferedInsert();
+  }
 
  private:
   ObjectID oid_;
@@ -251,8 +256,10 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
  protected:
   Set(ObjectID oid, const size_t numEntries)
       : oid_(oid),
-        localSet_(std::max(
-            numEntries / constants::kSetDefaultNumEntriesPerBucket, 1lu)),
+        localSet_(
+            std::max(numEntries / (constants::kSetDefaultNumEntriesPerBucket *
+                                   rt::numLocalities()),
+                     1lu)),
         buffers_(oid) {}
 };
 
@@ -321,11 +328,7 @@ template <typename T, typename ELEM_COMPARE>
 inline void Set<T, ELEM_COMPARE>::BufferedInsert(const T& element) {
   size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
-  if (targetLocality == rt::thisLocality()) {
-    localSet_.Insert(element);
-  } else {
-    buffers_.Insert(element, targetLocality);
-  }
+  buffers_.Insert(element, targetLocality);
 }
 
 template <typename T, typename ELEM_COMPARE>
@@ -333,11 +336,7 @@ inline void Set<T, ELEM_COMPARE>::BufferedAsyncInsert(rt::Handle& handle,
                                                       const T& element) {
   size_t targetId = shad::hash<T>{}(element) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
-  if (targetLocality == rt::thisLocality()) {
-    localSet_.AsyncInsert(handle, element);
-  } else {
-    buffers_.AsyncInsert(handle, element, targetLocality);
-  }
+  buffers_.AsyncInsert(handle, element, targetLocality);
 }
 
 template <typename T, typename ELEM_COMPARE>
