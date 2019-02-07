@@ -424,11 +424,12 @@ TYPED_TEST(ATF, shad_generate) {
       shad::generate<shad::distributed_sequential_tag, it_t, typeof(generator)>,
       shad_test_stl::generate_<it_t, typeof(generator)>,
       shad_test_stl::ordered_checksum<it_t>, generator);
+  auto cgenerator = [n = 42]() { return n; };
   this->test_void_with_policy(
       shad::distributed_parallel_tag{},
-      shad::generate<shad::distributed_parallel_tag, it_t, typeof(generator)>,
-      shad_test_stl::generate_<it_t, typeof(generator)>,
-      shad_test_stl::ordered_checksum<it_t>, generator);
+      shad::generate<shad::distributed_parallel_tag, it_t, typeof(cgenerator)>,
+      shad_test_stl::generate_<it_t, typeof(cgenerator)>,
+      shad_test_stl::ordered_checksum<it_t>, cgenerator);
 }
 
 // replace
