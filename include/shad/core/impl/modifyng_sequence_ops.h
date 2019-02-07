@@ -42,47 +42,46 @@ template <typename ForwardIt, typename T>
 void fill(distributed_parallel_tag&& policy, ForwardIt first, ForwardIt last,
           const T& value) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
 
-  rt::Handle H;
+  // distributed map
+  distributed_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, const T& value) {
+        using local_iterator_t = typename itr_traits::local_iterator_type;
 
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::asyncExecuteAt(
-        H, locality,
-        [](rt::Handle&, const std::tuple<ForwardIt, ForwardIt, T>& args) {
-          auto begin = std::get<0>(args);
-          auto end = std::get<1>(args);
-          auto value = std::get<2>(args);
+        // local map
+        auto lrange = itr_traits::local_range(first, last);
 
-          auto local_range = itr_traits::local_range(begin, end);
-          std::fill(local_range.begin(), local_range.end(), value);
-        },
-        std::make_tuple(first, last, value));
-  }
-
-  rt::waitForCompletion(H);
+        local_map_void(
+            // range
+            lrange.begin(), lrange.end(),
+            // kernel
+            [&](local_iterator_t b, local_iterator_t e) {
+              std::fill(b, e, value);
+            });
+      },
+      // map arguments
+      value);
 }
 
 template <typename ForwardIt, typename T>
 void fill(distributed_sequential_tag&& policy, ForwardIt first, ForwardIt last,
           const T& value) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
 
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::executeAt(locality,
-                  [](const std::tuple<ForwardIt, ForwardIt, T>& args) {
-                    auto begin = std::get<0>(args);
-                    auto end = std::get<1>(args);
-                    auto value = std::get<2>(args);
-
-                    auto local_range = itr_traits::local_range(begin, end);
-                    std::fill(local_range.begin(), local_range.end(), value);
-                  },
-                  std::make_tuple(first, last, value));
-  }
+  distributed_folding_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, const T& value) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        std::fill(lrange.begin(), lrange.end(), value);
+      },
+      // map arguments
+      value);
 }
 
 template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
@@ -151,154 +150,143 @@ ForwardIt2 transform(distributed_sequential_tag&& policy, ForwardIt1 first1,
 template <typename ForwardIt, typename Generator>
 void generate(distributed_parallel_tag&& policy, ForwardIt first,
               ForwardIt last, Generator generator) {
-  using T = typename ForwardIt::value_type;
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
 
-  rt::Handle H;
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::asyncExecuteAt(
-        H, locality,
-        [](rt::Handle&,
-           const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
-          auto begin = std::get<0>(args);
-          auto end = std::get<1>(args);
-          auto generator = std::get<2>(args);
-          auto local_range = itr_traits::local_range(begin, end);
-          auto lbegin = local_range.begin();
-          auto lend = local_range.end();
-          std::generate(lbegin, lend, generator);
-        },
-        std::make_tuple(first, last, generator));
-  }
+  // distributed map
+  distributed_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, Generator generator) {
+        using local_iterator_t = typename itr_traits::local_iterator_type;
 
-  rt::waitForCompletion(H);
+        // local map
+        auto lrange = itr_traits::local_range(first, last);
+
+        local_map_void(
+            // range
+            lrange.begin(), lrange.end(),
+            // kernel
+            [&](local_iterator_t b, local_iterator_t e) {
+              std::generate(b, e, generator);
+            });
+      },
+      // map arguments
+      generator);
 }
 
 template <typename ForwardIt, typename Generator>
 void generate(distributed_sequential_tag&& policy, ForwardIt first,
               ForwardIt last, Generator generator) {
-  using T = typename ForwardIt::value_type;
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
 
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::executeAt(locality,
-                  [](const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
-                    auto begin = std::get<0>(args);
-                    auto end = std::get<1>(args);
-                    auto generator = std::get<2>(args);
-                    auto local_range = itr_traits::local_range(begin, end);
-                    auto lbegin = local_range.begin();
-                    auto lend = local_range.end();
-                    std::generate(lbegin, lend, generator);
-                  },
-                  std::make_tuple(first, last, generator));
-  }
+  distributed_folding_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, Generator generator) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        std::generate(lrange.begin(), lrange.end(), generator);
+      },
+      // map arguments
+      generator);
 }
 
 template <typename ForwardIt, typename T>
 void replace(distributed_parallel_tag&& policy, ForwardIt first, ForwardIt last,
              const T& old_value, const T& new_value) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
 
-  rt::Handle H;
+  // distributed map
+  distributed_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, const T& old_value,
+         const T& new_value) {
+        using local_iterator_t = typename itr_traits::local_iterator_type;
 
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::asyncExecuteAt(
-        H, locality,
-        [](rt::Handle&, const std::tuple<ForwardIt, ForwardIt, T, T>& args) {
-          auto begin = std::get<0>(args);
-          auto end = std::get<1>(args);
-          auto old_value = std::get<2>(args);
-          auto new_value = std::get<3>(args);
+        // local map
+        auto lrange = itr_traits::local_range(first, last);
 
-          auto local_range = itr_traits::local_range(begin, end);
-          std::replace(local_range.begin(), local_range.end(), old_value,
-                       new_value);
-        },
-        std::make_tuple(first, last, old_value, new_value));
-  }
-
-  rt::waitForCompletion(H);
+        local_map_void(
+            // range
+            lrange.begin(), lrange.end(),
+            // kernel
+            [&](local_iterator_t b, local_iterator_t e) {
+              std::replace(b, e, old_value, new_value);
+            });
+      },
+      // map arguments
+      old_value, new_value);
 }
 
 template <typename ForwardIt, typename T>
 void replace(distributed_sequential_tag&& policy, ForwardIt first,
              ForwardIt last, const T& old_value, const T& new_value) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
 
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::executeAt(locality,
-                  [](const std::tuple<ForwardIt, ForwardIt, T, T>& args) {
-                    auto begin = std::get<0>(args);
-                    auto end = std::get<1>(args);
-                    auto old_value = std::get<2>(args);
-                    auto new_value = std::get<3>(args);
-
-                    auto local_range = itr_traits::local_range(begin, end);
-                    std::replace(local_range.begin(), local_range.end(),
-                                 old_value, new_value);
-                  },
-                  std::make_tuple(first, last, old_value, new_value));
-  }
+  distributed_folding_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, const T& old_value,
+         const T& new_value) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        std::replace(lrange.begin(), lrange.end(), old_value, new_value);
+      },
+      // map arguments
+      old_value, new_value);
 }
 
 template <typename ForwardIt, typename UnaryPredicate, typename T>
 void replace_if(distributed_parallel_tag&& policy, ForwardIt first,
                 ForwardIt last, UnaryPredicate p, const T& new_value) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
 
-  rt::Handle H;
+  // distributed map
+  distributed_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, UnaryPredicate p,
+         const T& new_value) {
+        using local_iterator_t = typename itr_traits::local_iterator_type;
 
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::asyncExecuteAt(
-        H, locality,
-        [](rt::Handle&,
-           const std::tuple<ForwardIt, ForwardIt, UnaryPredicate, T>& args) {
-          auto begin = std::get<0>(args);
-          auto end = std::get<1>(args);
-          auto p = std::get<2>(args);
-          auto new_value = std::get<3>(args);
+        // local map
+        auto lrange = itr_traits::local_range(first, last);
 
-          auto local_range = itr_traits::local_range(begin, end);
-          std::replace_if(local_range.begin(), local_range.end(), p, new_value);
-        },
-        std::make_tuple(first, last, p, new_value));
-  }
-
-  rt::waitForCompletion(H);
+        local_map_void(
+            // range
+            lrange.begin(), lrange.end(),
+            // kernel
+            [&](local_iterator_t b, local_iterator_t e) {
+              std::replace_if(b, e, p, new_value);
+            });
+      },
+      // map arguments
+      p, new_value);
 }
 
 template <typename ForwardIt, typename UnaryPredicate, typename T>
 void replace_if(distributed_sequential_tag&& policy, ForwardIt first,
                 ForwardIt last, UnaryPredicate p, const T& new_value) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
 
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::executeAt(
-        locality,
-        [](const std::tuple<ForwardIt, ForwardIt, UnaryPredicate, T>& args) {
-          auto begin = std::get<0>(args);
-          auto end = std::get<1>(args);
-          auto p = std::get<2>(args);
-          auto new_value = std::get<3>(args);
-
-          auto local_range = itr_traits::local_range(begin, end);
-          std::replace_if(local_range.begin(), local_range.end(), p, new_value);
-        },
-        std::make_tuple(first, last, p, new_value));
-  }
+  distributed_folding_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, UnaryPredicate p,
+         const T& new_value) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        std::replace_if(lrange.begin(), lrange.end(), p, new_value);
+      },
+      // map arguments
+      p, new_value);
 }
 
 }  // namespace impl

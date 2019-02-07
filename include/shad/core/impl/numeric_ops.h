@@ -28,9 +28,13 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <numeric>
+
 #include "shad/core/execution.h"
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
+
+#include "impl_patterns.h"
 
 namespace shad {
 namespace impl {
@@ -38,61 +42,43 @@ namespace impl {
 template <typename ForwardIterator, typename T>
 void iota(ForwardIterator first, ForwardIterator last, const T& value) {
   using itr_traits = distributed_iterator_traits<ForwardIterator>;
-  auto localities = itr_traits::localities(first, last);
-  T next_value = value;
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::executeAtWithRet(
-        locality,
-        [](const std::tuple<ForwardIterator, ForwardIterator, T>& args,
-           T* result) {
-          auto begin = std::get<0>(args);
-          auto end = std::get<1>(args);
-          auto value = std::get<2>(args);
 
-          auto local_range = itr_traits::local_range(begin, end);
-          auto lbeg = local_range.begin();
-          while (lbeg != local_range.end()) {
-            *lbeg++ = value;
-            ++value;
-          }
-          *result = value;
-        },
-        std::make_tuple(first, last, next_value), &next_value);
-  }
+  distributed_folding_map(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIterator first, ForwardIterator last, T res) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        for (auto it = lrange.begin(); it != lrange.end(); ++it) {
+          *it = res++;
+        }
+        // update the partial solution
+        return res;
+      },
+      // initial solution
+      value);
 }
-
-namespace accumulate_impl {
-template <class InputIt, class T, class BinaryOperation>
-T accumulate(InputIt first, InputIt last, T init, BinaryOperation op) {
-  for (; first != last; ++first) {
-    init = op(std::move(init), *first);  // std::move since C++20
-  }
-  return init;
-}
-}  // namespace accumulate_impl
 
 template <class InputIt, class T, class BinaryOperation>
 T accumulate(InputIt first, InputIt last, T init, BinaryOperation op) {
   using itr_traits = distributed_iterator_traits<InputIt>;
-  auto localities = itr_traits::localities(first, last);
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::executeAtWithRet(
-        locality,
-        [](const std::tuple<InputIt, InputIt, T, BinaryOperation>& args,
-           T* result) {
-          auto begin = std::get<0>(args);
-          auto end = std::get<1>(args);
-          auto init = std::get<2>(args);
-          auto op = std::get<3>(args);
-          auto local_range = itr_traits::local_range(begin, end);
-          *result = accumulate_impl::accumulate(local_range.begin(),
-                                                local_range.end(), init, op);
-        },
-        std::make_tuple(first, last, init, op), &init);
-  }
-  return init;
+
+  return distributed_folding_map(
+      // range
+      first, last,
+      // kernel
+      [](InputIt first, InputIt last, T res, BinaryOperation op) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        res = std::accumulate(lrange.begin(), lrange.end(), res, op);
+        // update the partial solution
+        return res;
+      },
+      // initial solution
+      init,
+      // map arguments
+      op);
 }
 
 template <class InputIt1, class InputIt2, class T>
@@ -306,69 +292,57 @@ OutputIt partial_sum(InputIt first, InputIt last, OutputIt d_first,
 template <class InputIt, class T, class BinaryOperation>
 T reduce(distributed_sequential_tag&& policy, InputIt first, InputIt last,
          T init, BinaryOperation op) {
-  using itr_traits = distributed_iterator_traits<InputIt>;
-  auto localities = itr_traits::localities(first, last);
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::executeAtWithRet(
-        locality,
-        [](const std::tuple<InputIt, InputIt, T, BinaryOperation>& args,
-           T* result) {
-          auto local_range =
-              itr_traits::local_range(std::get<0>(args), std::get<1>(args));
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto init = std::get<2>(args);
-          auto op = std::get<3>(args);
-          for (; begin != end; ++begin) {
-            init = op(std::move(init), *begin);
-          }
-          *result = init;
-        },
-        std::make_tuple(first, last, init, op), &init);
-  }
-  return init;
+  return impl::accumulate(first, last, init, op);
 }
 
 template <class InputIt, class T, class BinaryOperation>
 T reduce(distributed_parallel_tag&& policy, InputIt first, InputIt last, T init,
          BinaryOperation op) {
   using itr_traits = distributed_iterator_traits<InputIt>;
-  auto localities = itr_traits::localities(first, last);
-  rt::Handle h;
-  std::vector<T> results(localities.size());
-  size_t i = 0;
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality, ++i) {
-    rt::asyncExecuteAtWithRet(
-        h, locality,
-        [](rt::Handle& h,
-           const std::tuple<InputIt, InputIt, BinaryOperation>& args,
-           T* result) {
-          auto local_range =
-              itr_traits::local_range(std::get<0>(args), std::get<1>(args));
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto op = std::get<2>(args);
-          T acc = *begin;
-          while (++begin != end) {
-            acc = op(std::move(acc), *begin);
-          }
-          *result = acc;
-        },
-        std::make_tuple(first, last, op), &results[i]);
-  }
-  rt::waitForCompletion(h);
-  for (auto lval : results) {
-    init = op(std::move(init), lval);
-  }
-  return init;
+  static_assert(std::is_default_constructible<T>::value,
+                "reduce requires DefaultConstructible value type");
+
+  // distributed map
+  auto map_res = distributed_map(
+      // range
+      first, last,
+      // kernel
+      [](InputIt first, InputIt last, BinaryOperation op) {
+        using local_iterator_t = typename itr_traits::local_iterator_type;
+
+        // local map
+        auto lrange = itr_traits::local_range(first, last);
+        auto map_res = local_map(
+            // range
+            lrange.begin(), lrange.end(),
+            // kernel
+            [&](local_iterator_t b, local_iterator_t e) {
+              auto res = *b;
+              while (++b != e) res = op(std::move(res), *b);
+              return res;
+            });
+
+        // local reduce
+        auto b = map_res.begin(), e = map_res.end();
+        T res;
+        if (b != e) {
+          res = *b++;
+          res = std::accumulate(b, e, std::move(res), op);
+        }
+        return res;
+      },
+      // map arguments
+      op);
+
+  // TODO parallel
+  // reduce
+  return std::accumulate(map_res.begin(), map_res.end(), init, op);
 }
 
-template <class InputIt, class OutputIt, class T, class BinaryOperation>
+template <class InputIt, class OutputIt, class BinaryOperation, class T>
 OutputIt exclusive_scan(distributed_sequential_tag&& policy, InputIt first,
-                        InputIt last, OutputIt d_first, T init,
-                        BinaryOperation op) {
+                        InputIt last, OutputIt d_first, BinaryOperation op,
+                        T init) {
   using itr_traits = distributed_iterator_traits<InputIt>;
   auto localities = itr_traits::localities(first, last);
   auto startingLoc = localities.begin();
@@ -404,10 +378,10 @@ OutputIt exclusive_scan(distributed_sequential_tag&& policy, InputIt first,
   return d_first;
 }
 
-template <class InputIt, class OutputIt, class T, class BinaryOperation>
+template <class InputIt, class OutputIt, class BinaryOperation, class T>
 OutputIt exclusive_scan(distributed_parallel_tag&& policy, InputIt first,
-                        InputIt last, OutputIt d_first, T init,
-                        BinaryOperation op) {
+                        InputIt last, OutputIt d_first, BinaryOperation op,
+                        T init) {
   using itr_traits = distributed_iterator_traits<InputIt>;
   auto localities = itr_traits::localities(first, last);
   auto startingLoc = localities.begin();
@@ -728,70 +702,82 @@ OutputIt inclusive_scan(distributed_parallel_tag&& policy, InputIt first,
   return chunk_end;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//
+// transform_reduce
+//
+////////////////////////////////////////////////////////////////////////////////
+// single range - sequential
 template <class ForwardIt, class T, class BinaryOp, class UnaryOp>
 T transform_reduce(distributed_sequential_tag&& policy, ForwardIt first,
                    ForwardIt last, T init, BinaryOp op, UnaryOp uop) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality) {
-    rt::executeAtWithRet(
-        locality,
-        [](const std::tuple<ForwardIt, ForwardIt, T, BinaryOp, UnaryOp>& args,
-           T* result) {
-          auto local_range =
-              itr_traits::local_range(std::get<0>(args), std::get<1>(args));
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto init = std::get<2>(args);
-          auto op = std::get<3>(args);
-          auto uop = std::get<4>(args);
-          for (; begin != end; ++begin) {
-            init = op(std::move(init), uop(*begin));
-          }
-          *result = init;
-        },
-        std::make_tuple(first, last, init, op, uop), &init);
-  }
-  return init;
+  return distributed_folding_map(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, T res, BinaryOp op, UnaryOp uop) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        for (auto b = lrange.begin(); b != lrange.end(); ++b) {
+          res = op(std::move(res), uop(*b));
+        }
+        // update the partial solution
+        return res;
+      },
+      // initial solution
+      init,
+      // map arguments
+      op, uop);
 }
 
+// single range - parallel
 template <class ForwardIt, class T, class BinaryOp, class UnaryOp>
 T transform_reduce(distributed_parallel_tag&& policy, ForwardIt first,
                    ForwardIt last, T init, BinaryOp op, UnaryOp uop) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-  auto localities = itr_traits::localities(first, last);
-  rt::Handle h;
-  std::vector<T> results(localities.size());
-  size_t i = 0;
-  for (auto locality = localities.begin(), end = localities.end();
-       locality != end; ++locality, ++i) {
-    rt::asyncExecuteAtWithRet(
-        h, locality,
-        [](rt::Handle& h,
-           const std::tuple<ForwardIt, ForwardIt, BinaryOp, UnaryOp>& args,
-           T* result) {
-          auto local_range =
-              itr_traits::local_range(std::get<0>(args), std::get<1>(args));
-          auto begin = local_range.begin();
-          auto end = local_range.end();
-          auto op = std::get<2>(args);
-          auto uop = std::get<3>(args);
-          T acc = uop(*begin);
-          while (++begin != end) {
-            acc = op(std::move(acc), uop(*begin));
-          }
-          *result = acc;
-        },
-        std::make_tuple(first, last, op, uop), &results[i]);
-  }
-  rt::waitForCompletion(h);
-  for (auto lval : results) {
-    init = op(std::move(init), lval);
-  }
-  return init;
+  static_assert(
+      std::is_default_constructible<T>::value,
+      "transform_reduce requires DefaultConstructible transformed value type");
+
+  // distributed map
+  auto map_res = distributed_map(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last, BinaryOp op, UnaryOp uop) {
+        using local_iterator_t = typename itr_traits::local_iterator_type;
+
+        // local map
+        auto lrange = itr_traits::local_range(first, last);
+        auto map_res = local_map(
+            // range
+            lrange.begin(), lrange.end(),
+            // kernel
+            [&](local_iterator_t b, local_iterator_t e) {
+              auto res = uop(*b++);
+              for (; b != e; b++) res = op(std::move(res), uop(*b));
+              return res;
+            });
+
+        // local reduce
+        auto b = map_res.begin(), e = map_res.end();
+        T res{};
+        if (b != e) {
+          res = *b++;
+          res = std::accumulate(b, e, std::move(res), op);
+        }
+        return res;
+      },
+      // map arguments
+      op, uop);
+
+  // TODO parallel
+  // reduce
+  return std::accumulate(map_res.begin(), map_res.end(), init, op);
 }
 
+// two ranges - sequential
 template <class ForwardIt1, class ForwardIt2, class T, class BinaryOp1,
           class BinaryOp2>
 T transform_reduce(distributed_sequential_tag&& policy, ForwardIt1 first1,
@@ -825,6 +811,7 @@ T transform_reduce(distributed_sequential_tag&& policy, ForwardIt1 first1,
   return res.second;
 }
 
+// two ranges - parallel
 template <class ForwardIt1, class ForwardIt2, class T, class BinaryOp1,
           class BinaryOp2>
 T transform_reduce(distributed_parallel_tag&& policy, ForwardIt1 first1,
