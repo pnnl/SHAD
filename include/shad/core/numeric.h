@@ -25,7 +25,6 @@
 #ifndef INCLUDE_SHAD_CORE_NUMERIC_H
 #define INCLUDE_SHAD_CORE_NUMERIC_H
 
-#include <algorithm>
 #include <functional>
 #include <iterator>
 #include <tuple>
@@ -185,7 +184,7 @@ std::enable_if_t<!shad::is_execution_policy<InputIt>::value, OutputIt>
 exclusive_scan(InputIt first, InputIt last,
                OutputIt d_first, T init, BinaryOperation binary_op) {
   return impl::exclusive_scan(shad::distributed_sequential_tag{},
-                              first, last, d_first, binary_op, init);
+                              first, last, d_first, init, binary_op);
 }
 
 template <class ExecutionPolicy, class ForwardIt1, class ForwardIt2,
@@ -194,7 +193,7 @@ ForwardIt2 exclusive_scan(ExecutionPolicy&& policy, ForwardIt1 first,
                           ForwardIt1 last, ForwardIt2 d_first,
                           T init, BinaryOperation binary_op) {
   return impl::exclusive_scan(std::forward<ExecutionPolicy>(policy),
-                              first, last, d_first, binary_op, init);
+                              first, last, d_first, init, binary_op);
 }
 
 template <class InputIt, class OutputIt>
