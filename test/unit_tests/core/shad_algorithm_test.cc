@@ -414,18 +414,18 @@ TYPED_TEST(ATF, shad_transform) {
 TYPED_TEST(ATF, shad_generate) {
   using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
-  auto generator = [n = 42]() mutable { return n = std::negate<val_t>{}(n); };
+  auto flip_f = [n = 42]() mutable { return n = std::negate<val_t>{}(n); };
   this->test_void_with_policy(
       shad::distributed_sequential_tag{},
-      shad::generate<shad::distributed_sequential_tag, it_t, typeof(generator)>,
-      shad_test_stl::generate_<it_t, typeof(generator)>,
-      shad_test_stl::ordered_checksum<it_t>, generator);
-  auto cgenerator = [n = 42]() { return n; };
+      shad::generate<shad::distributed_sequential_tag, it_t, typeof(flip_f)>,
+      shad_test_stl::generate_<it_t, typeof(flip_f)>,
+      shad_test_stl::ordered_checksum<it_t>, flip_f);
+  auto const_f = [n = 42]() mutable { return n; };
   this->test_void_with_policy(
       shad::distributed_parallel_tag{},
-      shad::generate<shad::distributed_parallel_tag, it_t, typeof(cgenerator)>,
-      shad_test_stl::generate_<it_t, typeof(cgenerator)>,
-      shad_test_stl::ordered_checksum<it_t>, cgenerator);
+      shad::generate<shad::distributed_parallel_tag, it_t, typeof(const_f)>,
+      shad_test_stl::generate_<it_t, typeof(const_f)>,
+      shad_test_stl::ordered_checksum<it_t>, const_f);
 }
 
 // replace
