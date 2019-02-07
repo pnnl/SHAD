@@ -26,10 +26,11 @@
 
 #include "gtest/gtest.h"
 
-#include "shad/core/algorithm.h"
 #include "shad/core/iterator.h"
 #include "shad/core/unordered_map.h"
 #include "shad/core/unordered_set.h"
+
+#include "stl_emulation/algorithm.h"
 
 constexpr int batch_size = 128;
 static auto kv(int x) { return std::make_pair(x, x); }
@@ -41,8 +42,7 @@ void insert_check_batch(shad::unordered_set<int> &cnt, OutputIterator ins,
   for (auto i = batch_size; i > 0; --i) src.push_back(i);
   std::copy(src.begin(), src.end(), ins);
   for (auto i = batch_size; i > 0; --i) {
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), i) != cnt.end());
+    ASSERT_TRUE(shad_test_stl::find_(cnt.begin(), cnt.end(), i) != cnt.end());
   }
 }
 
@@ -53,8 +53,8 @@ void insert_check_batch(shad::unordered_map<int, int> &cnt, OutputIterator ins,
   for (auto i = batch_size; i > 0; --i) src.push_back(kv(i));
   std::copy(src.begin(), src.end(), ins);
   for (auto i = batch_size; i > 0; --i) {
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), kv(i)) != cnt.end());
+    ASSERT_TRUE(shad_test_stl::find_(cnt.begin(), cnt.end(), kv(i)) !=
+                cnt.end());
   }
 }
 
@@ -63,7 +63,7 @@ void insert_check_batch(shad::unordered_map<int, int> &cnt, OutputIterator ins,
 // shad::unordered_set
 //
 ///////////////////////////////////////
-TEST(shad_uset, insert_iterator) {
+TEST(shad_uset, std_insert_iterator) {
   using T = shad::unordered_set<int>;
   T cnt(3 * batch_size);
 
@@ -76,6 +76,22 @@ TEST(shad_uset, insert_iterator) {
 
   // insert into non-empty container, from end
   insert_check_batch(cnt, std::insert_iterator<T>(cnt, cnt.end()),
+                     2 * batch_size);
+}
+
+TEST(shad_uset, insert_iterator) {
+  using T = shad::unordered_set<int>;
+  T cnt(3 * batch_size);
+
+  // insert into empty container, from begin
+  insert_check_batch(cnt, shad::insert_iterator<T>(cnt, cnt.begin()), 0);
+
+  // insert into non-empty container, from begin
+  insert_check_batch(cnt, shad::insert_iterator<T>(cnt, cnt.begin()),
+                     batch_size);
+
+  // insert into non-empty container, from end
+  insert_check_batch(cnt, shad::insert_iterator<T>(cnt, cnt.end()),
                      2 * batch_size);
 }
 
@@ -91,7 +107,7 @@ TEST(shad_uset, buffered_insert_iterator) {
   }
   ins_begin.flush();
   for (auto i = batch_size; i > 0; --i) {
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
+    ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
                            cnt.end(), i) != cnt.end());
   }
 
@@ -103,7 +119,7 @@ TEST(shad_uset, buffered_insert_iterator) {
   }
   ins_begin_.flush();
   for (auto i = batch_size; i > 0; --i) {
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
+    ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
                            cnt.end(), first + i) != cnt.end());
   }
 
@@ -115,7 +131,7 @@ TEST(shad_uset, buffered_insert_iterator) {
   }
   ins_end.flush();
   for (auto i = batch_size; i > 0; --i) {
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
+    ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
                            cnt.end(), first + i) != cnt.end());
   }
 }
@@ -125,7 +141,7 @@ TEST(shad_uset, buffered_insert_iterator) {
 // shad::unordered_map
 //
 ///////////////////////////////////////
-TEST(shad_umap, insert_iterator) {
+TEST(shad_umap, std_insert_iterator) {
   using T = shad::unordered_map<int, int>;
   T cnt(3 * batch_size);
 
@@ -141,6 +157,22 @@ TEST(shad_umap, insert_iterator) {
                      2 * batch_size);
 }
 
+TEST(shad_umap, insert_iterator) {
+  using T = shad::unordered_map<int, int>;
+  T cnt(3 * batch_size);
+
+  // insert into empty container, from begin
+  insert_check_batch(cnt, shad::insert_iterator<T>(cnt, cnt.begin()), 0);
+
+  // insert into non-empty container, from begin
+  insert_check_batch(cnt, shad::insert_iterator<T>(cnt, cnt.begin()),
+                     batch_size);
+
+  // insert into non-empty container, from end
+  insert_check_batch(cnt, shad::insert_iterator<T>(cnt, cnt.end()),
+                     2 * batch_size);
+}
+
 TEST(shad_umap, buffered_insert_iterator) {
   using T = shad::unordered_map<int, int>;
   T cnt(3 * batch_size);
@@ -153,7 +185,7 @@ TEST(shad_umap, buffered_insert_iterator) {
   }
   ins_begin.flush();
   for (auto i = batch_size; i > 0; --i)
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
+    ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
                            cnt.end(), kv(i)) != cnt.end());
 
   // insert into non-empty container, from begin
@@ -164,7 +196,7 @@ TEST(shad_umap, buffered_insert_iterator) {
   }
   ins_begin_.flush();
   for (auto i = batch_size; i > 0; --i)
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
+    ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
                            cnt.end(), kv(first + i)) != cnt.end());
 
   // insert into non-empty container, from end
@@ -175,6 +207,6 @@ TEST(shad_umap, buffered_insert_iterator) {
   }
   ins_end.flush();
   for (auto i = batch_size; i > 0; --i)
-    ASSERT_TRUE(shad::find(shad::distributed_parallel_tag{}, cnt.begin(),
-                           cnt.end(), kv(first + i)) != cnt.end());
+    ASSERT_TRUE(shad_test_stl::find_(cnt.begin(), cnt.end(), kv(first + i)) !=
+                cnt.end());
 }

@@ -55,7 +55,6 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   friend class AbstractDataStructure;
 
   friend class set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
-  friend class set_iterator<Set<T, ELEM_COMPARE>, const T, T>;
 
  public:
   using value_type = T;

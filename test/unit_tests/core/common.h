@@ -371,6 +371,11 @@ int64_t ordered_checksum(It first, It last) {
 template <typename T>
 class TestFixture : public ::testing::Test {
  public:
+  //
+  // w/o execution policy
+  //
+  // single-range
+  // check: return values
   template <typename F, typename... args_>
   void test(F &&sub_f, F &&obj_f, args_... args) {
     auto obs = sub_f(in->begin(), in->end(), args...);
@@ -378,6 +383,8 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
+  // single-range, in-place "write-only"
+  // check: container values
   template <typename F, typename checksum_t, typename... args_>
   void test_void(F &&sub_f, F &&obj_f, checksum_t checksum_f, args_... args) {
     int64_t obs, exp;
@@ -388,6 +395,8 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
+  // multi-range input-output, STL insert iterators
+  // check: output-container values
   template <typename F, typename checksum_t, typename... args_>
   void test_io_inserters(F &&sub_f, F &&obj_f, checksum_t checksum_f,
                          args_... args) {
@@ -402,10 +411,11 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
+  // multi-range input-output, assign-based output
+  // check: output-container values
   template <typename F, typename checksum_t, typename... args_>
   void test_io_assignment(F &&sub_f, F &&obj_f, checksum_t checksum_f,
                           args_... args) {
-    using out_it_t = std::insert_iterator<T>;
     auto out1 = create_output_container(in->size());
     auto out2 = create_output_container(in->size());
     sub_f(in->begin(), in->end(), out1->begin(), args...);
@@ -415,6 +425,11 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
+  //
+  // w/ execution policy
+  //
+  // single-range
+  // check: return values
   template <typename ExecutionPolicy, typename FS, typename FO,
             typename... args_>
   void test_with_policy(ExecutionPolicy &&policy, FS &&sub_f, FO &&obj_f,
@@ -425,6 +440,8 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
+  // single-range, in-place "write-only"
+  // check: container values
   template <typename ExecutionPolicy, typename FS, typename FO,
             typename checksum_t, typename... args_>
   void test_void_with_policy(ExecutionPolicy &&policy, FS &&sub_f, FO &&obj_f,
@@ -438,6 +455,8 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
+  // multi-range input-output, SHAD/STL insert iterators
+  // check: output-container values
   template <typename shad_inserter_t, typename ExecutionPolicy, typename FS,
             typename FO, typename checksum_t, typename... args_>
   void test_io_inserters_with_policy(ExecutionPolicy &&policy, FS &&sub_f,
@@ -455,12 +474,13 @@ class TestFixture : public ::testing::Test {
     ASSERT_EQ(obs, exp);
   }
 
+  // multi-range input-output, assign-based output
+  // check: output-container values
   template <typename ExecutionPolicy, typename FS, typename FO,
             typename checksum_t, typename... args_>
   void test_io_assignment_with_policy(ExecutionPolicy &&policy, FS &&sub_f,
                                       FO &&obj_f, checksum_t checksum_f,
                                       args_... args) {
-    using out_it_t = std::insert_iterator<T>;
     auto out1 = create_output_container(in->size());
     auto out2 = create_output_container(in->size());
     sub_f(std::forward<ExecutionPolicy>(policy), in->begin(), in->end(),

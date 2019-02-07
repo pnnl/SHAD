@@ -4,18 +4,12 @@ set(tests
   shad_array_test
   unordered_set_test
   unordered_map_test
-  std_algorithm_test
-#  std_numeric_test
   shad_algorithm_test
+  shad_numeric_test
 )
 
 foreach(t ${tests})
   add_executable(${t} ${t}.cc)
-  if (SHAD_ENABLE_STD_REDUCE_TEST)
-    set_target_properties(
-      ${t} PROPERTIES
-      COMPILE_FLAGS "-DSTD_REDUCE_TEST")
-  endif()
   if (CLANG_TIDY_EXE)
     set_target_properties(
       ${t} PROPERTIES
