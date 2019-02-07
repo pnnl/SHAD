@@ -25,7 +25,6 @@
 #ifndef INCLUDE_SHAD_CORE_NUMERIC_H
 #define INCLUDE_SHAD_CORE_NUMERIC_H
 
-#include <algorithm>
 #include <functional>
 #include <iterator>
 #include <tuple>

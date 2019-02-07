@@ -60,16 +60,6 @@ void iota(ForwardIterator first, ForwardIterator last, const T& value) {
       value);
 }
 
-namespace accumulate_impl {
-template <class InputIt, class T, class BinaryOperation>
-T accumulate(InputIt first, InputIt last, T init, BinaryOperation op) {
-  for (; first != last; ++first) {
-    init = op(std::move(init), *first);  // std::move since C++20
-  }
-  return init;
-}
-}  // namespace accumulate_impl
-
 template <class InputIt, class T, class BinaryOperation>
 T accumulate(InputIt first, InputIt last, T init, BinaryOperation op) {
   using itr_traits = distributed_iterator_traits<InputIt>;
@@ -722,7 +712,6 @@ template <class ForwardIt, class T, class BinaryOp, class UnaryOp>
 T transform_reduce(distributed_sequential_tag&& policy, ForwardIt first,
                    ForwardIt last, T init, BinaryOp op, UnaryOp uop) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-
   return distributed_folding_map(
       // range
       first, last,
