@@ -328,24 +328,6 @@ void generate(distributed_sequential_tag&& policy, ForwardIt first,
 
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
-    rt::executeAt(
-        locality,
-        [](const std::tuple<ForwardIt, ForwardIt, Generator>& args) {
-          auto begin = std::get<0>(args);
-          auto end = std::get<1>(args);
-          auto generator = std::get<2>(args);
-          auto local_range = itr_traits::local_range(begin, end);
-          auto lbegin = local_range.begin();
-          auto lend = local_range.end();
-
-          // call the generator to align with the offset
-          auto it = itr_traits::iterator_from_local(begin, end, lbegin);
-          for (auto calls = std::distance(begin, it); calls; --calls)
-            generator();
-
-          std::generate(lbegin, lend, generator);
-        },
-        std::make_tuple(first, last, generator));
   }
 }
 
