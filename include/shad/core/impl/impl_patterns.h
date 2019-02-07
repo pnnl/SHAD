@@ -199,10 +199,8 @@ distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   rt::waitForCompletion(h);
   std::vector<mapped_t> res;
   for (auto& x : opt_res.data)
-    if (x.valid) {
-      printf("> pushing=%d\n", x.value);
+    if (x.valid)
       res.push_back(x.value);
-    }
   return res;
 }
 
