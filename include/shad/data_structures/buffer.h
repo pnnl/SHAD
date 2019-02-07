@@ -187,26 +187,20 @@ class BuffersVector {
  public:
   using BufferType = Buffer<EntryType, DataStructure>;
   explicit BuffersVector(ObjectIdentifier<DataStructure> oid)
-      : buffers_(rt::numLocalities() - 1, BufferType(oid)) {
+      : buffers_(rt::numLocalities(), BufferType(oid)) {
     for (size_t i = 0; i < (rt::numLocalities()); i++) {
-      if (i < static_cast<uint32_t>(rt::thisLocality())) {
-        buffers_[i].tgtLoc_ = rt::Locality(i);
-      } else if (i > static_cast<uint32_t>(rt::thisLocality())) {
-        buffers_[i - 1].tgtLoc_ = rt::Locality(i);
-      }
+      buffers_[i].tgtLoc_ = rt::Locality(i);
     }
   }
 
   void Insert(const EntryType& entry, const rt::Locality& tgtLoc) {
     uint32_t tgtId = static_cast<uint32_t>(tgtLoc);
-    if (tgtLoc > rt::thisLocality()) tgtId--;
     buffers_[tgtId].Insert(entry);
   }
 
   void AsyncInsert(rt::Handle& handle, const EntryType& entry,
                    const rt::Locality& tgtLoc) {
     uint32_t tgtId = static_cast<uint32_t>(tgtLoc);
-    if (tgtLoc > rt::thisLocality()) tgtId--;
     buffers_.at(tgtId).AsyncInsert(handle, entry);
   }
 
