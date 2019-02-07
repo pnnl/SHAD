@@ -457,8 +457,8 @@ class TestFixture : public ::testing::Test {
 
   // multi-range input-output, SHAD/STL insert iterators
   // check: output-container values
-  template <typename ExecutionPolicy, typename FS, typename FO,
-            typename checksum_t, typename... args_>
+  template <typename shad_inserter_t, typename ExecutionPolicy, typename FS,
+            typename FO, typename checksum_t, typename... args_>
   void test_io_inserters_with_policy(ExecutionPolicy &&policy, FS &&sub_f,
                                      FO &&obj_f, checksum_t checksum_f,
                                      args_... args) {
