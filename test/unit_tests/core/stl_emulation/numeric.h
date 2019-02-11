@@ -22,8 +22,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef TEST_UNIT_TESTS_STL_STL_EMULATION_NUMERIC_H_
-#define TEST_UNIT_TESTS_STL_STL_EMULATION_NUMERIC_H_
+#ifndef TEST_UNIT_TESTS_CORE_STL_EMULATION_NUMERIC_H_
+#define TEST_UNIT_TESTS_CORE_STL_EMULATION_NUMERIC_H_
 
 namespace shad_test_stl {
 

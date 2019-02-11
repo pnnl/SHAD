@@ -1169,12 +1169,118 @@ class lmap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     return tmp;
   }
 
+  class partition_range {
+   public:
+    partition_range(const lmap_iterator &begin, const lmap_iterator &end)
+        : begin_(begin), end_(end) {}
+    lmap_iterator begin() { return begin_; }
+    lmap_iterator end() { return end_; }
+
+   private:
+    lmap_iterator begin_;
+    lmap_iterator end_;
+  };
+
+  // split a range into at most n_parts non-empty sub-ranges
+  static std::vector<partition_range> partitions(lmap_iterator begin,
+                                                 lmap_iterator end,
+                                                 size_t n_parts) {
+    std::vector<partition_range> res;
+
+    auto n_buckets = n_spanned_buckets(begin, end);
+
+    if (n_buckets && n_parts) {
+      auto part_step =
+          (n_buckets >= n_parts) ? (n_buckets + n_parts - 1) / n_parts : 1;
+      auto map_ptr = begin.mapPtr_;
+      auto &buckets = map_ptr->buckets_array_;
+      auto b_end =
+          (end != lmap_end(map_ptr)) ? end.bucketId_ : map_ptr->numBuckets_;
+      auto bi = begin.bucketId_;
+      auto pbegin = begin;
+      while (true) {
+        bi = first_used_bucket(map_ptr, bi + part_step);
+        if (bi < b_end) {
+          auto pend = first_in_bucket(map_ptr, bi);
+          assert(pbegin != pend);
+          res.push_back(partition_range{pbegin, pend});
+          pbegin = pend;
+        } else {
+          if (pbegin != end) {
+            res.push_back(partition_range{pbegin, end});
+          }
+          break;
+        }
+      }
+    }
+
+    return res;
+  }
+
  private:
   const LMap *mapPtr_;
   size_t bucketId_;
   size_t position_;
   Bucket *currBucket_;
   Entry *entryPtr_;
+
+  // returns a pointer to the first entry of a bucket
+  static typename LMap::Entry &first_bucket_entry(const LMap *mapPtr_,
+                                                  size_t bi) {
+    assert(mapPtr_);
+    assert(bi < mapPtr_->numBuckets_);
+    return const_cast<LMap *>(mapPtr_)->buckets_array_[bi].getEntry(0);
+  }
+
+  // returns an iterator pointing to the beginning of the first active bucket
+  // from the input bucket (included)
+  static lmap_iterator first_in_bucket(const LMap *mapPtr_, size_t bi) {
+    assert(mapPtr_);
+    assert(bi < mapPtr_->numBuckets_);
+
+    auto &entry = first_bucket_entry(mapPtr_, bi);
+
+    // sanity check - bucket is used
+    assert(entry.state == LMap::USED);
+
+    return lmap_iterator(mapPtr_, bi, 0,
+                         &const_cast<LMap *>(mapPtr_)->buckets_array_[bi],
+                         &entry);
+  }
+
+  // returns the index of the first active bucket, starting from the input
+  // bucket (included). If not such bucket, it returns the number of buckets.
+  static size_t first_used_bucket(const LMap *mapPtr_, size_t bi) {
+    assert(mapPtr_);
+    // scan for the first used entry with the same logic as operator++
+    for (; bi < mapPtr_->numBuckets_; ++bi)
+      if (first_bucket_entry(mapPtr_, bi).state == LMap::USED) return bi;
+    return mapPtr_->numBuckets_;
+  }
+
+  // returns the number of buckets spanned by the input range
+  static size_t n_spanned_buckets(const lmap_iterator &begin,
+                                  const lmap_iterator &end) {
+    if (begin != end) {
+      auto map_ptr = begin.mapPtr_;
+      assert(map_ptr);
+
+      // invariant check - end is either:
+      // - the end of the set; or
+      // - an iterator pointing to an used entry
+      assert(end == lmap_end(map_ptr) ||
+             first_bucket_entry(map_ptr, end.bucketId_).state == LMap::USED);
+
+      if (end != lmap_end(map_ptr)) {
+        // count one more if end is not on a bucket edge
+        return end.bucketId_ - begin.bucketId_ +
+               (end.entryPtr_ !=
+                &first_bucket_entry(end.mapPtr_, end.bucketId_));
+      }
+      return map_ptr->numBuckets_ - begin.bucketId_;
+    }
+    return 0;
+  }
 };
 
 }  // namespace shad
