@@ -105,5 +105,5 @@ deploy:
   github-token: $GH_REPO_TOKEN
   keep-history: true
   on:
-    branch: auto-gh-pages #to be changed to 'master' after merging
+    branch: master
     condition: $DEPLOY_PAGES = 1
