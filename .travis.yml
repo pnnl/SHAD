@@ -5,6 +5,8 @@ matrix:
     - os: osx
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++"
+          DEPLOY_PAGES=0
+
     - os: linux
       addons:
         apt:
@@ -12,9 +14,10 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-5
-
       env:
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+          DEPLOY_PAGES=0
+    
     - os: linux
       addons:
         apt:
@@ -22,9 +25,10 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-6
-
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+          DEPLOY_PAGES=0
+    
     - os: linux
       addons:
         apt:
@@ -32,9 +36,10 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-7
-
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+          DEPLOY_PAGES=0
+    
     - os: linux
       addons:
         apt:
@@ -44,8 +49,18 @@ matrix:
           packages:
             - g++-7
             - clang-5.0
+            - doxygen
+            - doxygen-doc
+            - doxygen-latex
+            - doxygen-gui
+            - graphviz
       env:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+          DEPLOY_PAGES=1
+
+branches:
+  except:
+    - gh-pages
 
 before_install:
   - eval "${MATRIX_EVAL}"
@@ -75,3 +90,20 @@ script:
   - cmake -DCMAKE_BUILD_TYPE=Release -DSHAD_RUNTIME_SYSTEM=TBB -DGTEST_ROOT=$HOME/gtest-root -DTBB_ROOT=$HOME/tbb-root -Dbenchmark_ROOT=$HOME/benchmark-root -Bbuild-release -H.
   - cmake --build build-release -- -j 2
   - cmake --build build-release --target test -- ARGS="--output-on-failure"
+
+# Generate documentation
+after_success:
+  - test $DEPLOY_PAGES = 1 &&
+    cd $TRAVIS_BUILD_DIR &&
+    mkdir build-doxygen && cd build-doxygen && cmake .. -DSHAD_ENABLE_UNIT_TEST=OFF -DSHAD_ENABLE_DOXYGEN=ON &&
+    make doxygen-shad
+
+deploy:
+  provider: pages
+  local-dir: $TRAVIS_BUILD_DIR/build-doxygen/docs/html
+  skip-cleanup: true
+  github-token: $GH_REPO_TOKEN
+  keep-history: true
+  on:
+    branch: master
+    condition: $DEPLOY_PAGES = 1
