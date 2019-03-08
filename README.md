@@ -25,6 +25,25 @@ V. G. Castellana and M. Minutoli, "SHAD: The Scalable High-Performance Algorithm
 [![SHAD_BibTexdownload](https://img.shields.io/badge/BibTex-download-blue.svg)](https://dblp.org/rec/bib2/conf/ccgrid/CastellanaM18.bib)
 [![SHAD_RISdownload](https://img.shields.io/badge/RIS-download-blue.svg)](https://dblp.org/rec/ris/conf/ccgrid/CastellanaM18.ris)
 
+## Quickstart with Docker
+
+```
+git clone https://github.com/pnnl/SHAD.git shad
+cd shad
+docker-compose -f docker/docker-compose.yml pull head worker
+docker-compose -f docker/docker-compose.yml up -d scale worker=2
+docker exec -u mpi -it dokcer_head_1 /bin/bash
+cd $HOME/shad
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make
+```
+
+To run the unit test of the array on the docker cluster:
+```
+mpiexec -np 2 -ppn 1 --hosts docker_worker_1,docker_worker_2 test/unit_tests/core/shad_array_test
+```
+
 ## Build Instructions
 
 ### Install Dependencies
