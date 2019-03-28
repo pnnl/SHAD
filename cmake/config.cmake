@@ -148,7 +148,15 @@ if (SHAD_ENABLE_DOXYGEN)
     set(HAVE_DOT "" CACHE INTERNAL "Dot ?")
   endif()
 
-  add_custom_target(doxygen ALL)
+  add_custom_target(docs ALL)
+
+  include(FindPythonModule)
+
+  find_package(PythonInterp REQUIRED)
+  find_package(Sphinx REQUIRED)
+  find_python_module(breathe REQUIRED)
+  find_python_module(exhale REQUIRED)
+  find_python_module(sphinx_rtd_theme REQUIRED)
 else()
   message(STATUS "Doxygen disabled.")
 endif()
