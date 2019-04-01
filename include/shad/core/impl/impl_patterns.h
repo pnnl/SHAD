@@ -69,14 +69,23 @@ inline auto apply_from(F&& f, T&& t) {
       ::std::forward<F>(f), ::std::forward<T>(t));
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// distributed_folding_map applies map_kernel sequentially to each local
-// portion, forwarding the solution from portion i to portion i + 1.
-//
-// There is *no* guarantee that map_kernel is not invoked on an empty range.
-//
-////////////////////////////////////////////////////////////////////////////////
+/// @brief applies the folding-map pattern over a distributed range
+///
+/// Applies an operation sequentially to each sub-range (one for each locality
+/// on which the range is physically mapped), forwarding the solution from
+/// portion i to portion i + 1.
+///
+/// @tparam ForwardIt the type of the iterators in the input range
+/// @tparam MapF the type of the operation function object
+/// @tparam S the type of the solution
+/// @tparam Args the type of operation's arguments
+///
+/// @param[in] first,last the input range
+/// @param map_kernel the operation function object that will be applied
+/// @param init_sol the initial solution
+/// @param args operation's arguments
+///
+/// @return the last solution
 template <typename ForwardIt, typename MapF, typename S, typename... Args>
 S distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
                           const S& init_sol, Args&&... args) {
@@ -97,6 +106,7 @@ S distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   return res;
 }
 
+// distributed_folding_map variant with void operation
 template <typename ForwardIt, typename MapF, typename... Args>
 void distributed_folding_map_void(ForwardIt first, ForwardIt last,
                                   MapF&& map_kernel, Args&&... args) {
@@ -115,6 +125,7 @@ void distributed_folding_map_void(ForwardIt first, ForwardIt last,
   }
 }
 
+// distributed_folding_map variant testing for early termination
 template <typename ForwardIt, typename MapF, typename HaltF, typename S,
           typename... Args>
 S distributed_folding_map_early_termination(ForwardIt first, ForwardIt last,
@@ -153,21 +164,39 @@ struct optional_vector {
     T value;
     bool valid;
   };
-  optional_vector(size_t s) : data(s) {}
+  optional_vector(size_t s, const T& init) : data(s, entry_t{init, false}) {}
   std::vector<entry_t> data;
 };
 
-// TODO specialize mapped_t to support lambdas returning bool
+/// @brief applies the map pattern over a distributed range
+///
+/// Applies an operation in parallel to each sub-range (one for each locality on
+/// which the range is physically mapped) and returns the collection of mapped
+/// values (one for each sub-range).
+///
+/// @tparam ForwardIt the type of the iterators in the input range
+/// @tparam MapF the type of the operation function object
+/// @tparam Args the type of operation's arguments
+///
+/// @param[in] first,last the input range
+/// @param map_kernel the operation function object that will be applied
+/// @param init the initial mapped value
+/// @param args operation's arguments
+///
+/// @return the collection of mapped values
+///
+/// @todo support operations returning bool
 template <typename ForwardIt, typename MapF, typename... Args>
 std::vector<
     typename std::result_of<MapF&(ForwardIt, ForwardIt, Args&&...)>::type>
-distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
-                Args&&... args) {
+distributed_map_init(
+    ForwardIt first, ForwardIt last, MapF&& map_kernel,
+    const typename std::result_of<MapF&(ForwardIt, ForwardIt, Args&&...)>::type&
+        init,
+    Args&&... args) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   using mapped_t =
       typename std::result_of<MapF&(ForwardIt, ForwardIt, Args && ...)>::type;
-  static_assert(std::is_default_constructible<mapped_t>::value,
-                "distributed_map requires DefaultConstructible value type");
   static_assert(
       !std::is_same<mapped_t, bool>::value,
       "distributed-map kernels returning bool are not supported (yet)");
@@ -177,7 +206,7 @@ distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   size_t i = 0;
   rt::Handle h;
   auto d_args = std::make_tuple(map_kernel, first, last, args...);
-  optional_vector<mapped_t> opt_res(localities.size());
+  optional_vector<mapped_t> opt_res(localities.size(), init);
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality, ++i) {
     rt::asyncExecuteAtWithRet(
@@ -199,11 +228,26 @@ distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   rt::waitForCompletion(h);
   std::vector<mapped_t> res;
   for (auto& x : opt_res.data)
-    if (x.valid)
-      res.push_back(x.value);
+    if (x.valid) res.push_back(x.value);
   return res;
 }
 
+// distributed_map_init variant with default-constructed initial value
+template <typename ForwardIt, typename MapF, typename... Args>
+std::vector<
+    typename std::result_of<MapF&(ForwardIt, ForwardIt, Args&&...)>::type>
+distributed_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
+                Args&&... args) {
+  using itr_traits = distributed_iterator_traits<ForwardIt>;
+  using mapped_t =
+      typename std::result_of<MapF&(ForwardIt, ForwardIt, Args && ...)>::type;
+  static_assert(std::is_default_constructible<mapped_t>::value,
+                "distributed_map requires DefaultConstructible value type");
+  return distributed_map_init(first, last, map_kernel, mapped_t{},
+                              std::forward<Args>(args)...);
+}
+
+// distributed_map_init variant with void operation
 template <typename ForwardIt, typename MapF, typename... Args>
 void distributed_map_void(ForwardIt first, ForwardIt last, MapF&& map_kernel,
                           Args&&... args) {
@@ -225,15 +269,64 @@ void distributed_map_void(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   rt::waitForCompletion(h);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// local_map applies map_kernel over a partitioning of a local portion and
-// returns an iterable collection of partial results.
-//
-//  The return type of map_kernel must be DefaultConstructible.
-//
-////////////////////////////////////////////////////////////////////////////////
-// TODO specialize mapped_t to support lambdas returning bool
+/// @brief applies the map pattern over a local range
+///
+/// Applies an operation in parallel to each partition of a local range and
+/// returns the collection of mapped values (one for each partition).
+///
+/// @tparam ForwardIt the type of the iterators in the input range
+/// @tparam MapF the type of the operation function object
+///
+/// @param[in] first,last the input range
+/// @param map_kernel the operation function object that will be applied
+/// @param init the initial mapped value
+///
+/// @return the collection of mapped values
+///
+/// @todo support operations returning bool
+template <typename ForwardIt, typename MapF>
+std::vector<typename std::result_of<MapF&(ForwardIt, ForwardIt)>::type>
+local_map_init(
+    ForwardIt first, ForwardIt last, MapF&& map_kernel,
+    const typename std::result_of<MapF&(ForwardIt, ForwardIt)>::type& init) {
+  using mapped_t = typename std::result_of<MapF&(ForwardIt, ForwardIt)>::type;
+  static_assert(
+      !std::is_same<mapped_t, bool>::value,
+      "distributed-map kernels returning bool are not supported (yet)");
+
+  // allocate partial results
+  auto parts = local_iterator_traits<ForwardIt>::partitions(
+      first, last, rt::impl::getConcurrency());
+
+  std::vector<mapped_t> map_res(parts.size(), init);
+
+  if (parts.size()) {
+    rt::Handle map_h;
+    size_t part_id = 0;
+    for (auto pit = parts.begin(); pit != parts.end(); ++pit) {
+      auto map_args = std::make_tuple(pit->begin(), pit->end(), map_kernel,
+                                      &map_res[part_id]);
+      rt::asyncExecuteAt(
+          map_h, rt::thisLocality(),
+          [](rt::Handle&, const typeof(map_args)& map_args) {
+            auto pfirst = std::get<0>(map_args);
+            auto plast = std::get<1>(map_args);
+            auto map_kernel = std::get<2>(map_args);
+            auto res_unit = std::get<3>(map_args);
+            // map over the partition
+            assert(pfirst != plast);
+            *res_unit = map_kernel(pfirst, plast);
+          },
+          map_args);
+      ++part_id;
+    }
+    rt::waitForCompletion(map_h);
+  }
+
+  return map_res;
+}
+
+// local_map_init variant with default-constructed initial value
 template <typename ForwardIt, typename MapF>
 std::vector<typename std::result_of<MapF&(ForwardIt, ForwardIt)>::type>
 local_map(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
@@ -244,78 +337,57 @@ local_map(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
       !std::is_same<mapped_t, bool>::value,
       "distributed-map kernels returning bool are not supported (yet)");
 
-  // allocate partial results
-  auto range_len = std::distance(first, last);
-  auto n_blocks = std::min(rt::impl::getConcurrency(), (size_t)range_len);
-  std::vector<mapped_t> map_res(n_blocks);
+  return local_map_init(first, last, map_kernel, mapped_t{});
+}
 
-  if (n_blocks) {
-    auto block_size = (range_len + n_blocks - 1) / n_blocks;
+// local_map_init variant with void operation
+template <typename ForwardIt, typename MapF>
+void local_map_void(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
+  auto parts = local_iterator_traits<ForwardIt>::partitions(
+      first, last, rt::impl::getConcurrency());
 
+  if (parts.size()) {
     rt::Handle map_h;
-    for (size_t block_id = 0; block_id < n_blocks; ++block_id) {
-      auto map_args = std::make_tuple(block_id, block_size, first, last,
-                                      map_kernel, &map_res[block_id]);
+    for (auto pit = parts.begin(); pit != parts.end(); ++pit) {
+      auto map_args = std::make_tuple(pit->begin(), pit->end(), map_kernel);
       rt::asyncExecuteAt(
           map_h, rt::thisLocality(),
           [](rt::Handle&, const typeof(map_args)& map_args) {
-            size_t block_id = std::get<0>(map_args);
-            size_t block_size = std::get<1>(map_args);
-            auto begin = std::get<2>(map_args);
-            auto end = std::get<3>(map_args);
-            auto map_kernel = std::get<4>(map_args);
-            auto res_unit = std::get<5>(map_args);
-            // iteration-block boundaries
-            auto block_begin = begin;
-            std::advance(block_begin, block_id * block_size);
-            auto block_end = block_begin;
-            if (std::distance(block_begin, end) < block_size)
-              block_end = end;
-            else
-              std::advance(block_end, block_size);
-            // map over the block
-            auto m = map_kernel(block_begin, block_end);
-            *res_unit = m;
+            auto pfirst = std::get<0>(map_args);
+            auto plast = std::get<1>(map_args);
+            auto map_kernel = std::get<2>(map_args);
+            // map over the partition
+            assert(pfirst != plast);
+            map_kernel(pfirst, plast);
           },
           map_args);
     }
     rt::waitForCompletion(map_h);
   }
-
-  return map_res;
 }
 
+// local_map_init variant with a void operation that takes in input the offset
+// of the processed partition with respect to the input range
 template <typename ForwardIt, typename MapF>
-void local_map_void(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
-  // allocate partial results
-  auto range_len = std::distance(first, last);
-  auto n_blocks = std::min(rt::impl::getConcurrency(), (size_t)range_len);
+void local_map_void_offset(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
+  auto parts = local_iterator_traits<ForwardIt>::partitions(
+      first, last, rt::impl::getConcurrency());
 
-  if (n_blocks) {
-    auto block_size = (range_len + n_blocks - 1) / n_blocks;
-
+  if (parts.size()) {
     rt::Handle map_h;
-    for (size_t block_id = 0; block_id < n_blocks; ++block_id) {
-      auto map_args =
-          std::make_tuple(block_id, block_size, first, last, map_kernel);
+    for (auto pit = parts.begin(); pit != parts.end(); ++pit) {
+      auto map_args = std::make_tuple(pit->begin(), pit->end(), map_kernel,
+                                      std::distance(first, pit->begin()));
       rt::asyncExecuteAt(
           map_h, rt::thisLocality(),
           [](rt::Handle&, const typeof(map_args)& map_args) {
-            size_t block_id = std::get<0>(map_args);
-            size_t block_size = std::get<1>(map_args);
-            auto begin = std::get<2>(map_args);
-            auto end = std::get<3>(map_args);
-            auto map_kernel = std::get<4>(map_args);
-            // iteration-block boundaries
-            auto block_begin = begin;
-            std::advance(block_begin, block_id * block_size);
-            auto block_end = block_begin;
-            if (std::distance(block_begin, end) < block_size)
-              block_end = end;
-            else
-              std::advance(block_end, block_size);
-            // map over the block
-            map_kernel(block_begin, block_end);
+            auto pfirst = std::get<0>(map_args);
+            auto plast = std::get<1>(map_args);
+            auto map_kernel = std::get<2>(map_args);
+            auto poffset = std::get<3>(map_args);
+            // map over the partition
+            assert(pfirst != plast);
+            map_kernel(pfirst, plast, poffset);
           },
           map_args);
     }

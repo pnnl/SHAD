@@ -398,16 +398,30 @@ TYPED_TEST(ATF, shad_transform) {
   using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
   using map_f = std::negate<val_t>;
+  // ditributed sequential - aligned
   this->test_io_assignment_with_policy(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t, it_t, map_f>,
       shad_test_stl::transform_<it_t, it_t, map_f>,
       shad_test_stl::ordered_checksum<it_t>, map_f{});
+  // ditributed parallel - aligned
   this->test_io_assignment_with_policy(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t, it_t, map_f>,
       shad_test_stl::transform_<it_t, it_t, map_f>,
       shad_test_stl::ordered_checksum<it_t>, map_f{});
+  // ditributed sequential - unaligned
+  this->test_io_unaligned_assignment_with_policy(
+      shad::distributed_sequential_tag{},
+      shad::transform<shad::distributed_sequential_tag, it_t,
+                      typename TestFixture::unaligned_iterator, map_f>,
+      shad_test_stl::transform_<it_t, it_t, map_f>, map_f{});
+  // ditributed parallel - unaligned
+  this->test_io_unaligned_assignment_with_policy(
+      shad::distributed_parallel_tag{},
+      shad::transform<shad::distributed_parallel_tag, it_t,
+                      typename TestFixture::unaligned_iterator, map_f>,
+      shad_test_stl::transform_<it_t, it_t, map_f>, map_f{});
 }
 
 // generate
@@ -812,53 +826,70 @@ TYPED_TEST(STF, shad_find) {
 TYPED_TEST(STF, shad_transform) {
   using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
-  using map_f = std::negate<val_t>;
+  using aligned_map_f = std::negate<val_t>;
+  using unaligned_map_f = shad_test_stl::inc<val_t>;
+
+  // sequential - aligned
   this->template test_io_inserters_with_policy<
       shad::insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t,
-                      shad::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::insert_iterator<TypeParam>, aligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                aligned_map_f>,
+      shad_test_stl::checksum<it_t>, aligned_map_f{});
+
+  // parallel - aligned
   this->template test_io_inserters_with_policy<
       shad::insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
-                      shad::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::insert_iterator<TypeParam>, aligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                aligned_map_f>,
+      shad_test_stl::checksum<it_t>, aligned_map_f{});
 
-  // buffered insert iterator
+  // sequential - aligned - buffered insert iterator
   this->template test_io_inserters_with_policy<
       shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t,
-                      shad::buffered_insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::buffered_insert_iterator<TypeParam>, aligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                aligned_map_f>,
+      shad_test_stl::checksum<it_t>, aligned_map_f{});
+
+  // parallel - aligned - buffered insert iterator
   this->template test_io_inserters_with_policy<
       shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
-                      shad::buffered_insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::buffered_insert_iterator<TypeParam>, aligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                aligned_map_f>,
+      shad_test_stl::checksum<it_t>, aligned_map_f{});
 
-  // buffered insert iterator
-  using shad_buffered_out_it_t = shad::buffered_insert_iterator<TypeParam>;
-  using std_out_it_t = std::insert_iterator<TypeParam>;
-  this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
+  // sequential - unaligned - buffered insert iterator
+  this->template test_io_inserters_with_policy<
+      shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t,
-                      shad_buffered_out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
-  this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
+                      shad::buffered_insert_iterator<TypeParam>,
+                      unaligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                unaligned_map_f>,
+      shad_test_stl::checksum<it_t>, unaligned_map_f{});
+
+  // parallel - unaligned - buffered insert iterator
+  this->template test_io_inserters_with_policy<
+      shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
-                      shad_buffered_out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::buffered_insert_iterator<TypeParam>,
+                      unaligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                unaligned_map_f>,
+      shad_test_stl::checksum<it_t>, unaligned_map_f{});
 }
 
 ///////////////////////////////////////
@@ -1209,51 +1240,68 @@ TYPED_TEST(MTF, shad_find) {
 TYPED_TEST(MTF, shad_transform) {
   using it_t = typename TypeParam::iterator;
   using val_t = typename TypeParam::value_type;
-  using map_f = std::negate<val_t>;
+  using aligned_map_f = std::negate<val_t>;
+  using unaligned_map_f = shad_test_stl::inc<val_t>;
+
+  // sequential - aligned
   this->template test_io_inserters_with_policy<
       shad::insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t,
-                      shad::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::insert_iterator<TypeParam>, aligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                aligned_map_f>,
+      shad_test_stl::checksum<it_t>, aligned_map_f{});
+
+  // parallel - aligned
   this->template test_io_inserters_with_policy<
       shad::insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
-                      shad::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::insert_iterator<TypeParam>, aligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                aligned_map_f>,
+      shad_test_stl::checksum<it_t>, aligned_map_f{});
 
-  // buffered insert iterator
+  // sequential - aligned - buffered insert iterator
   this->template test_io_inserters_with_policy<
       shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t,
-                      shad::buffered_insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::buffered_insert_iterator<TypeParam>, aligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                aligned_map_f>,
+      shad_test_stl::checksum<it_t>, aligned_map_f{});
+
+  // parallel - aligned - buffered insert iterator
   this->template test_io_inserters_with_policy<
       shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
-                      shad::buffered_insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::buffered_insert_iterator<TypeParam>, aligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                aligned_map_f>,
+      shad_test_stl::checksum<it_t>, aligned_map_f{});
 
-  // buffered insert iterator
-  using shad_buffered_out_it_t = shad::buffered_insert_iterator<TypeParam>;
-  using std_out_it_t = std::insert_iterator<TypeParam>;
-  this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
+  // sequential - unaligned - buffered insert iterator
+  this->template test_io_inserters_with_policy<
+      shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_sequential_tag{},
       shad::transform<shad::distributed_sequential_tag, it_t,
-                      shad_buffered_out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
-  this->template test_io_inserters_with_policy<shad_buffered_out_it_t>(
+                      shad::buffered_insert_iterator<TypeParam>,
+                      unaligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                unaligned_map_f>,
+      shad_test_stl::checksum<it_t>, unaligned_map_f{});
+
+  // parallel - unaligned - buffered insert iterator
+  this->template test_io_inserters_with_policy<
+      shad::buffered_insert_iterator<TypeParam>>(
       shad::distributed_parallel_tag{},
       shad::transform<shad::distributed_parallel_tag, it_t,
-                      shad_buffered_out_it_t, map_f>,
-      shad_test_stl::transform_<it_t, std_out_it_t, map_f>,
-      shad_test_stl::checksum<it_t>, map_f{});
+                      shad::buffered_insert_iterator<TypeParam>,
+                      unaligned_map_f>,
+      shad_test_stl::transform_<it_t, std::insert_iterator<TypeParam>,
+                                unaligned_map_f>,
+      shad_test_stl::checksum<it_t>, unaligned_map_f{});
 }

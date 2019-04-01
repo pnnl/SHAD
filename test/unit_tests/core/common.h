@@ -22,8 +22,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef TEST_UNIT_TESTS_STL_COMMON_H_
-#define TEST_UNIT_TESTS_STL_COMMON_H_
+#ifndef TEST_UNIT_TESTS_CORE_COMMON_H_
+#define TEST_UNIT_TESTS_CORE_COMMON_H_
 
 #include <array>
 #include <memory>
@@ -350,6 +350,19 @@ struct to_int64<std::pair<T1, T2>> {
   int64_t operator()(const std::pair<T1, T2> &x) { return x.first + x.second; }
 };
 
+// increment
+template <typename T>
+struct inc {
+  T operator()(const T &x) { return x + 1; }
+};
+
+template <typename T, typename U>
+struct inc<std::pair<T, U>> {
+  std::pair<T, U> operator()(const std::pair<T, U> &x) {
+    return std::make_pair(x.first, x.second + 1);
+  }
+};
+
 // checksums
 template <typename It>
 int64_t checksum(It first, It last) {
@@ -486,8 +499,8 @@ class TestFixture : public ::testing::Test {
     sub_f(std::forward<ExecutionPolicy>(policy), in->begin(), in->end(),
           out1->begin(), args...);
     obj_f(in->begin(), in->end(), out2->begin(), args...);
-    auto obs = checksum(out1->begin(), out1->end());
-    auto exp = checksum(out2->begin(), out2->end());
+    auto obs = checksum_f(out1->begin(), out1->end());
+    auto exp = checksum_f(out2->begin(), out2->end());
     ASSERT_EQ(obs, exp);
   }
 
@@ -508,7 +521,46 @@ class VectorTestFixture : public TestFixture<T> {
 };
 
 template <typename T>
-class ArrayTestFixture : public TestFixture<T> {
+class ArrayTestFixture : public TestFixture<T> {};
+
+template <typename U, size_t size>
+class ArrayTestFixture<shad::array<U, size>>
+    : public TestFixture<shad::array<U, size>> {
+  using aligned_t = shad::array<U, size>;
+  using unaligned_t = shad::array<U, size * 2>;
+  void SetUp() { this->in = create_array_<aligned_t, true>{}(); }
+  std::shared_ptr<aligned_t> create_output_container(size_t) {
+    return create_array_<aligned_t, false>{}();
+  }
+  std::shared_ptr<unaligned_t> create_unaligned_output_container(size_t) {
+    return create_array_<unaligned_t, false>{}();
+  }
+
+ public:
+  using unaligned_iterator = typename shad::array<U, size * 2>::iterator;
+
+  // multi-range input-output, assign-based output
+  // check: output-container values
+  template <typename ExecutionPolicy, typename FS, typename FO,
+            typename... args_>
+  void test_io_unaligned_assignment_with_policy(ExecutionPolicy &&policy,
+                                                FS &&sub_f, FO &&obj_f,
+                                                args_... args) {
+    auto out1 = create_unaligned_output_container(this->in->size());
+    auto out2 = create_output_container(this->in->size());
+    sub_f(std::forward<ExecutionPolicy>(policy), this->in->begin(),
+          this->in->end(), out1->begin() + size, args...);
+    obj_f(this->in->begin(), this->in->end(), out2->begin(), args...);
+    auto obs = ordered_checksum(out1->begin() + size, out1->end());
+    auto exp = ordered_checksum(out2->begin(), out2->end());
+    ASSERT_EQ(obs, exp);
+  }
+};
+
+template <typename U, size_t size>
+class ArrayTestFixture<std::array<U, size>>
+    : public TestFixture<std::array<U, size>> {
+  using T = std::array<U, size>;
   void SetUp() { this->in = create_array_<T, true>{}(); }
   std::shared_ptr<T> create_output_container(size_t) {
     return create_array_<T, false>{}();

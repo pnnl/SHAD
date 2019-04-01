@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cassert>
 #include <functional>
 #include <memory>
 #include <tuple>
@@ -736,12 +737,118 @@ class lset_iterator : public std::iterator<std::forward_iterator_tag, T> {
     return tmp;
   }
 
+  class partition_range {
+   public:
+    partition_range(const lset_iterator& begin, const lset_iterator& end)
+        : begin_(begin), end_(end) {}
+    lset_iterator begin() { return begin_; }
+    lset_iterator end() { return end_; }
+
+   private:
+    lset_iterator begin_;
+    lset_iterator end_;
+  };
+
+  // split a range into at most n_parts non-empty sub-ranges
+  static std::vector<partition_range> partitions(lset_iterator begin,
+                                                 lset_iterator end,
+                                                 size_t n_parts) {
+    std::vector<partition_range> res;
+
+    auto n_buckets = n_spanned_buckets(begin, end);
+
+    if (n_buckets && n_parts) {
+      auto part_step =
+          (n_buckets >= n_parts) ? (n_buckets + n_parts - 1) / n_parts : 1;
+      auto set_ptr = begin.setPtr_;
+      auto& buckets = set_ptr->buckets_array_;
+      auto b_end =
+          (end != lset_end(set_ptr)) ? end.bucketId_ : set_ptr->numBuckets_;
+      auto bi = begin.bucketId_;
+      auto pbegin = begin;
+      while (true) {
+        bi = first_used_bucket(set_ptr, bi + part_step);
+        if (bi < b_end) {
+          auto pend = first_in_bucket(set_ptr, bi);
+          assert(pbegin != pend);
+          res.push_back(partition_range{pbegin, pend});
+          pbegin = pend;
+        } else {
+          if (pbegin != end) {
+            res.push_back(partition_range{pbegin, end});
+          }
+          break;
+        }
+      }
+    }
+
+    return res;
+  }
+
  private:
   const LSet* setPtr_;
   size_t bucketId_;
   size_t position_;
   Bucket* currBucket_;
   Entry* entryPtr_;
+
+  // returns a pointer to the first entry of a bucket
+  static typename LSet::Entry& first_bucket_entry(const LSet* setPtr_,
+                                                  size_t bi) {
+    assert(setPtr_);
+    assert(bi < setPtr_->numBuckets_);
+    return const_cast<LSet*>(setPtr_)->buckets_array_[bi].getEntry(0);
+  }
+
+  // returns an iterator pointing to the beginning of the first active bucket
+  // from the input bucket (included)
+  static lset_iterator first_in_bucket(const LSet* setPtr_, size_t bi) {
+    assert(setPtr_);
+    assert(bi < setPtr_->numBuckets_);
+
+    auto& entry = first_bucket_entry(setPtr_, bi);
+
+    // sanity check - bucket is used
+    assert(entry.state == LSet::USED);
+
+    return lset_iterator(setPtr_, bi, 0,
+                         &const_cast<LSet*>(setPtr_)->buckets_array_[bi],
+                         &entry);
+  }
+
+  // returns the index of the first active bucket, starting from the input
+  // bucket (included). If not such bucket, it returns the number of buckets.
+  static size_t first_used_bucket(const LSet* setPtr_, size_t bi) {
+    assert(setPtr_);
+    // scan for the first used entry with the same logic as operator++
+    for (; bi < setPtr_->numBuckets_; ++bi)
+      if (first_bucket_entry(setPtr_, bi).state == LSet::USED) return bi;
+    return setPtr_->numBuckets_;
+  }
+
+  // returns the number of buckets spanned by the input range
+  static size_t n_spanned_buckets(const lset_iterator& begin,
+                                  const lset_iterator& end) {
+    if (begin != end) {
+      auto set_ptr = begin.setPtr_;
+      assert(set_ptr);
+
+      // invariant check - end is either:
+      // - the end of the set; or
+      // - an iterator pointing to an used entry
+      assert(end == lset_end(set_ptr) ||
+             first_bucket_entry(set_ptr, end.bucketId_).state == LSet::USED);
+
+      if (end != lset_end(set_ptr)) {
+        // count one more if end is not on a bucket edge
+        return end.bucketId_ - begin.bucketId_ +
+               (end.entryPtr_ !=
+                &first_bucket_entry(end.setPtr_, end.bucketId_));
+      }
+      return set_ptr->numBuckets_ - begin.bucketId_;
+    }
+    return 0;
+  }
 };
 
 }  // namespace shad

@@ -570,3 +570,70 @@ TEST_F(LocalHashmapTest, AsyncApply) {
   shad::rt::waitForCompletion(handle);
   ASSERT_EQ(cnt, toinsert * 2);
 }
+
+TEST_F(LocalHashmapTest, LocalIteratorPartitions) {
+  uint64_t exp_checksum, obs_checksum;
+
+  // empty map
+  shad::LocalHashmap<uint64_t, uint64_t> map(kNumBuckets);
+  for (uint64_t n_parts = 1; n_parts <= 2 * kNumBuckets; ++n_parts) {
+    auto parts = shad::LocalHashmap<uint64_t, uint64_t>::iterator::partitions(
+        map.begin(), map.end(), n_parts);
+    ASSERT_EQ(parts.size(), 0);
+  }
+
+  // one non-empty bucket
+  for (uint64_t bid = 0; bid < kNumBuckets; bid += kNumBuckets / 8) {
+    map.Clear();
+    exp_checksum = 0;
+    for (auto i = kToInsert; i > 0; --i) {
+      auto x = i * kNumBuckets + bid;
+      map.Insert(x, x);
+      exp_checksum += x;
+    }
+    for (uint64_t n_parts = 1; n_parts <= 2 * kNumBuckets; ++n_parts) {
+      obs_checksum = 0;
+      auto parts = shad::LocalHashmap<uint64_t, uint64_t>::iterator::partitions(
+          map.begin(), map.end(), n_parts);
+      ASSERT_EQ(parts.size(), 1);
+      for (auto &p : parts)
+        for (auto x : p) obs_checksum += x.second;
+      ASSERT_EQ(exp_checksum, obs_checksum);
+    }
+  }
+
+  // some empty buckets
+  map.Clear();
+  exp_checksum = 0;
+  uint64_t bid = 0;
+  for (auto i = kToInsert; i > 0; --i) {
+    auto x = i * kNumBuckets + bid;
+    map.Insert(x, x);
+    exp_checksum += x;
+    bid = (bid + (kNumBuckets / 8)) % kNumBuckets;
+  }
+  for (uint64_t n_parts = 1; n_parts <= 2 * kNumBuckets; ++n_parts) {
+    obs_checksum = 0;
+    auto parts = shad::LocalHashmap<uint64_t, uint64_t>::iterator::partitions(
+        map.begin(), map.end(), n_parts);
+    ASSERT_TRUE(parts.size() <= 8);
+    for (auto &p : parts)
+      for (auto x : p) obs_checksum += x.second;
+    ASSERT_EQ(exp_checksum, obs_checksum);
+  }
+
+  // all buckets not empty
+  map.Clear();
+  exp_checksum = 0;
+  for (auto i = kToInsert; i > 0; --i) {
+    map.Insert(i, i);
+    exp_checksum += i;
+  }
+  for (size_t n_parts = 1; n_parts <= 2 * kNumBuckets; ++n_parts) {
+    obs_checksum = 0;
+    for (auto &p : shad::LocalHashmap<uint64_t, uint64_t>::iterator::partitions(
+             map.begin(), map.end(), n_parts))
+      for (auto x : p) obs_checksum += x.second;
+    ASSERT_EQ(exp_checksum, obs_checksum);
+  }
+}
