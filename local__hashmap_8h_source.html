@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">SHAD: Scalable High-performance Algorithms and Data-structures
-   &#160;<span id="projectnumber">0.0.1 (heads/master-0-g184fd26)</span>
+   &#160;<span id="projectnumber">0.0.1 (heads/master-0-gc041a85)</span>
    </div>
   </td>
  </tr>
@@ -1112,21 +1112,129 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01169"></a><span class="lineno"> 1169</span>&#160;    <span class="keywordflow">return</span> tmp;</div>
 <div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;  }</div>
 <div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;</div>
-<div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;  <span class="keyword">const</span> LMap *mapPtr_;</div>
-<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160;  <span class="keywordtype">size_t</span> bucketId_;</div>
-<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;  <span class="keywordtype">size_t</span> position_;</div>
-<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;  <a class="code" href="classshad_1_1lmap__iterator.html#aa37c8a6e06e10d9256e3ce2be6fabb4a">Bucket</a> *currBucket_;</div>
-<div class="line"><a name="l01177"></a><span class="lineno"> 1177</span>&#160;  <a class="code" href="classshad_1_1lmap__iterator.html#a67f31795cef049e504582e3ec92232ba">Entry</a> *entryPtr_;</div>
-<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;};</div>
-<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;</div>
-<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;}  <span class="comment">// namespace shad</span></div>
-<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;</div>
-<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;<span class="preprocessor">#endif  // INCLUDE_SHAD_DATA_STRUCTURES_LOCAL_HASHMAP_H_</span></div>
+<div class="line"><a name="l01172"></a><span class="lineno"><a class="line" href="classshad_1_1lmap__iterator_1_1partition__range.html"> 1172</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classshad_1_1lmap__iterator_1_1partition__range.html">partition_range</a> {</div>
+<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;   <span class="keyword">public</span>:</div>
+<div class="line"><a name="l01174"></a><span class="lineno"><a class="line" href="classshad_1_1lmap__iterator_1_1partition__range.html#a03dc9dcb49413d357e4b2bec33ca500e"> 1174</a></span>&#160;    <a class="code" href="classshad_1_1lmap__iterator_1_1partition__range.html#a03dc9dcb49413d357e4b2bec33ca500e">partition_range</a>(<span class="keyword">const</span> <a class="code" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> &amp;<a class="code" href="classshad_1_1lmap__iterator_1_1partition__range.html#ab9051f2c166f735d973c7188ca3a4247">begin</a>, <span class="keyword">const</span> <a class="code" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> &amp;<a class="code" href="classshad_1_1lmap__iterator_1_1partition__range.html#a9ead7090d1a23e4d7105b504c30a151e">end</a>)</div>
+<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;        : begin_(begin), end_(end) {}</div>
+<div class="line"><a name="l01176"></a><span class="lineno"><a class="line" href="classshad_1_1lmap__iterator_1_1partition__range.html#ab9051f2c166f735d973c7188ca3a4247"> 1176</a></span>&#160;    <a class="code" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> <a class="code" href="classshad_1_1lmap__iterator_1_1partition__range.html#ab9051f2c166f735d973c7188ca3a4247">begin</a>() { <span class="keywordflow">return</span> begin_; }</div>
+<div class="line"><a name="l01177"></a><span class="lineno"><a class="line" href="classshad_1_1lmap__iterator_1_1partition__range.html#a9ead7090d1a23e4d7105b504c30a151e"> 1177</a></span>&#160;    <a class="code" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> <a class="code" href="classshad_1_1lmap__iterator_1_1partition__range.html#a9ead7090d1a23e4d7105b504c30a151e">end</a>() { <span class="keywordflow">return</span> end_; }</div>
+<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;</div>
+<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;   <span class="keyword">private</span>:</div>
+<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;    <a class="code" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> begin_;</div>
+<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;    <a class="code" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> end_;</div>
+<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;  };</div>
+<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;</div>
+<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;  <span class="comment">// split a range into at most n_parts non-empty sub-ranges</span></div>
+<div class="line"><a name="l01185"></a><span class="lineno"><a class="line" href="classshad_1_1lmap__iterator.html#aa0c5e2776052948e8fc3c520404a5dcc"> 1185</a></span>&#160;  <span class="keyword">static</span> std::vector&lt;partition_range&gt; <a class="code" href="classshad_1_1lmap__iterator.html#aa0c5e2776052948e8fc3c520404a5dcc">partitions</a>(<a class="code" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> begin,</div>
+<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;                                                 <a class="code" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> end,</div>
+<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;                                                 <span class="keywordtype">size_t</span> n_parts) {</div>
+<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;    std::vector&lt;partition_range&gt; res;</div>
+<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;</div>
+<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;    <span class="keyword">auto</span> n_buckets = n_spanned_buckets(begin, end);</div>
+<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;</div>
+<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;    <span class="keywordflow">if</span> (n_buckets &amp;&amp; n_parts) {</div>
+<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;      <span class="keyword">auto</span> part_step =</div>
+<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;          (n_buckets &gt;= n_parts) ? (n_buckets + n_parts - 1) / n_parts : 1;</div>
+<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;      <span class="keyword">auto</span> map_ptr = begin.mapPtr_;</div>
+<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;      <span class="keyword">auto</span> &amp;buckets = map_ptr-&gt;buckets_array_;</div>
+<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;      <span class="keyword">auto</span> b_end =</div>
+<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;          (end != <a class="code" href="classshad_1_1lmap__iterator.html#af884d9acfdcdc8eba8d6eb4330923f74">lmap_end</a>(map_ptr)) ? end.bucketId_ : map_ptr-&gt;numBuckets_;</div>
+<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;      <span class="keyword">auto</span> bi = begin.bucketId_;</div>
+<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;      <span class="keyword">auto</span> pbegin = begin;</div>
+<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;      while (<span class="keyword">true</span>) {</div>
+<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;        bi = first_used_bucket(map_ptr, bi + part_step);</div>
+<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;        <span class="keywordflow">if</span> (bi &lt; b_end) {</div>
+<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;          <span class="keyword">auto</span> pend = first_in_bucket(map_ptr, bi);</div>
+<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;          assert(pbegin != pend);</div>
+<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;          res.push_back(<a class="code" href="classshad_1_1lmap__iterator_1_1partition__range.html">partition_range</a>{pbegin, pend});</div>
+<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;          pbegin = pend;</div>
+<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;          <span class="keywordflow">if</span> (pbegin != end) {</div>
+<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;            res.push_back(<a class="code" href="classshad_1_1lmap__iterator_1_1partition__range.html">partition_range</a>{pbegin, end});</div>
+<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;          }</div>
+<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;          <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;        }</div>
+<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;      }</div>
+<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;    }</div>
+<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;</div>
+<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;    <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;  }</div>
+<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;</div>
+<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;  <span class="keyword">const</span> LMap *mapPtr_;</div>
+<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;  <span class="keywordtype">size_t</span> bucketId_;</div>
+<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;  <span class="keywordtype">size_t</span> position_;</div>
+<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;  <a class="code" href="classshad_1_1lmap__iterator.html#aa37c8a6e06e10d9256e3ce2be6fabb4a">Bucket</a> *currBucket_;</div>
+<div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;  <a class="code" href="classshad_1_1lmap__iterator.html#a67f31795cef049e504582e3ec92232ba">Entry</a> *entryPtr_;</div>
+<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;</div>
+<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;  <span class="comment">// returns a pointer to the first entry of a bucket</span></div>
+<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;  <span class="keyword">static</span> <span class="keyword">typename</span> LMap::Entry &amp;first_bucket_entry(<span class="keyword">const</span> LMap *mapPtr_,</div>
+<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;                                                  <span class="keywordtype">size_t</span> bi) {</div>
+<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;    assert(mapPtr_);</div>
+<div class="line"><a name="l01231"></a><span class="lineno"> 1231</span>&#160;    assert(bi &lt; mapPtr_-&gt;numBuckets_);</div>
+<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">const_cast&lt;</span>LMap *<span class="keyword">&gt;</span>(mapPtr_)-&gt;buckets_array_[bi].getEntry(0);</div>
+<div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160;  }</div>
+<div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;</div>
+<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;  <span class="comment">// returns an iterator pointing to the beginning of the first active bucket</span></div>
+<div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;  <span class="comment">// from the input bucket (included)</span></div>
+<div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;  <span class="keyword">static</span> <a class="code" href="classshad_1_1lmap__iterator.html#a56f6c9d476d6ad8d8693554c80c32bca">lmap_iterator</a> first_in_bucket(<span class="keyword">const</span> LMap *mapPtr_, <span class="keywordtype">size_t</span> bi) {</div>
+<div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160;    assert(mapPtr_);</div>
+<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;    assert(bi &lt; mapPtr_-&gt;numBuckets_);</div>
+<div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160;</div>
+<div class="line"><a name="l01241"></a><span class="lineno"> 1241</span>&#160;    <span class="keyword">auto</span> &amp;entry = first_bucket_entry(mapPtr_, bi);</div>
+<div class="line"><a name="l01242"></a><span class="lineno"> 1242</span>&#160;</div>
+<div class="line"><a name="l01243"></a><span class="lineno"> 1243</span>&#160;    <span class="comment">// sanity check - bucket is used</span></div>
+<div class="line"><a name="l01244"></a><span class="lineno"> 1244</span>&#160;    assert(entry.state == LMap::USED);</div>
+<div class="line"><a name="l01245"></a><span class="lineno"> 1245</span>&#160;</div>
+<div class="line"><a name="l01246"></a><span class="lineno"> 1246</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classshad_1_1lmap__iterator.html#a56f6c9d476d6ad8d8693554c80c32bca">lmap_iterator</a>(mapPtr_, bi, 0,</div>
+<div class="line"><a name="l01247"></a><span class="lineno"> 1247</span>&#160;                         &amp;const_cast&lt;LMap *&gt;(mapPtr_)-&gt;buckets_array_[bi],</div>
+<div class="line"><a name="l01248"></a><span class="lineno"> 1248</span>&#160;                         &amp;entry);</div>
+<div class="line"><a name="l01249"></a><span class="lineno"> 1249</span>&#160;  }</div>
+<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;</div>
+<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;  <span class="comment">// returns the index of the first active bucket, starting from the input</span></div>
+<div class="line"><a name="l01252"></a><span class="lineno"> 1252</span>&#160;  <span class="comment">// bucket (included). If not such bucket, it returns the number of buckets.</span></div>
+<div class="line"><a name="l01253"></a><span class="lineno"> 1253</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">size_t</span> first_used_bucket(<span class="keyword">const</span> LMap *mapPtr_, <span class="keywordtype">size_t</span> bi) {</div>
+<div class="line"><a name="l01254"></a><span class="lineno"> 1254</span>&#160;    assert(mapPtr_);</div>
+<div class="line"><a name="l01255"></a><span class="lineno"> 1255</span>&#160;    <span class="comment">// scan for the first used entry with the same logic as operator++</span></div>
+<div class="line"><a name="l01256"></a><span class="lineno"> 1256</span>&#160;    <span class="keywordflow">for</span> (; bi &lt; mapPtr_-&gt;numBuckets_; ++bi)</div>
+<div class="line"><a name="l01257"></a><span class="lineno"> 1257</span>&#160;      <span class="keywordflow">if</span> (first_bucket_entry(mapPtr_, bi).state == LMap::USED) <span class="keywordflow">return</span> bi;</div>
+<div class="line"><a name="l01258"></a><span class="lineno"> 1258</span>&#160;    <span class="keywordflow">return</span> mapPtr_-&gt;numBuckets_;</div>
+<div class="line"><a name="l01259"></a><span class="lineno"> 1259</span>&#160;  }</div>
+<div class="line"><a name="l01260"></a><span class="lineno"> 1260</span>&#160;</div>
+<div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;  <span class="comment">// returns the number of buckets spanned by the input range</span></div>
+<div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">size_t</span> n_spanned_buckets(<span class="keyword">const</span> <a class="code" href="classshad_1_1lmap__iterator.html#a56f6c9d476d6ad8d8693554c80c32bca">lmap_iterator</a> &amp;begin,</div>
+<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;                                  <span class="keyword">const</span> <a class="code" href="classshad_1_1lmap__iterator.html#a56f6c9d476d6ad8d8693554c80c32bca">lmap_iterator</a> &amp;end) {</div>
+<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;    <span class="keywordflow">if</span> (begin != end) {</div>
+<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;      <span class="keyword">auto</span> map_ptr = begin.mapPtr_;</div>
+<div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160;      assert(map_ptr);</div>
+<div class="line"><a name="l01267"></a><span class="lineno"> 1267</span>&#160;</div>
+<div class="line"><a name="l01268"></a><span class="lineno"> 1268</span>&#160;      <span class="comment">// invariant check - end is either:</span></div>
+<div class="line"><a name="l01269"></a><span class="lineno"> 1269</span>&#160;      <span class="comment">// - the end of the set; or</span></div>
+<div class="line"><a name="l01270"></a><span class="lineno"> 1270</span>&#160;      <span class="comment">// - an iterator pointing to an used entry</span></div>
+<div class="line"><a name="l01271"></a><span class="lineno"> 1271</span>&#160;      assert(end == <a class="code" href="classshad_1_1lmap__iterator.html#af884d9acfdcdc8eba8d6eb4330923f74">lmap_end</a>(map_ptr) ||</div>
+<div class="line"><a name="l01272"></a><span class="lineno"> 1272</span>&#160;             first_bucket_entry(map_ptr, end.bucketId_).state == LMap::USED);</div>
+<div class="line"><a name="l01273"></a><span class="lineno"> 1273</span>&#160;</div>
+<div class="line"><a name="l01274"></a><span class="lineno"> 1274</span>&#160;      <span class="keywordflow">if</span> (end != <a class="code" href="classshad_1_1lmap__iterator.html#af884d9acfdcdc8eba8d6eb4330923f74">lmap_end</a>(map_ptr)) {</div>
+<div class="line"><a name="l01275"></a><span class="lineno"> 1275</span>&#160;        <span class="comment">// count one more if end is not on a bucket edge</span></div>
+<div class="line"><a name="l01276"></a><span class="lineno"> 1276</span>&#160;        <span class="keywordflow">return</span> end.bucketId_ - begin.bucketId_ +</div>
+<div class="line"><a name="l01277"></a><span class="lineno"> 1277</span>&#160;               (end.entryPtr_ !=</div>
+<div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160;                &amp;first_bucket_entry(end.mapPtr_, end.bucketId_));</div>
+<div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;      }</div>
+<div class="line"><a name="l01280"></a><span class="lineno"> 1280</span>&#160;      <span class="keywordflow">return</span> map_ptr-&gt;numBuckets_ - begin.bucketId_;</div>
+<div class="line"><a name="l01281"></a><span class="lineno"> 1281</span>&#160;    }</div>
+<div class="line"><a name="l01282"></a><span class="lineno"> 1282</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l01283"></a><span class="lineno"> 1283</span>&#160;  }</div>
+<div class="line"><a name="l01284"></a><span class="lineno"> 1284</span>&#160;};</div>
+<div class="line"><a name="l01285"></a><span class="lineno"> 1285</span>&#160;</div>
+<div class="line"><a name="l01286"></a><span class="lineno"> 1286</span>&#160;}  <span class="comment">// namespace shad</span></div>
+<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;</div>
+<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;<span class="preprocessor">#endif  // INCLUDE_SHAD_DATA_STRUCTURES_LOCAL_HASHMAP_H_</span></div>
 <div class="ttc" id="structshad_1_1Overwriter_html_a5e7bf0ee102f98373e29381e02fe133c"><div class="ttname"><a href="structshad_1_1Overwriter.html#a5e7bf0ee102f98373e29381e02fe133c">shad::Overwriter::Insert</a></div><div class="ttdeci">static bool Insert(T *const lhs, const T &amp;rhs, bool)</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:54</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a6171d13fb3d6d493068e23cd166e8929"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a6171d13fb3d6d493068e23cd166e8929">shad::LocalHashmap::end</a></div><div class="ttdeci">iterator end()</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:332</div></div>
 <div class="ttc" id="compare__and__hash__utils_8h_html"><div class="ttname"><a href="compare__and__hash__utils_8h.html">compare_and_hash_utils.h</a></div></div>
 <div class="ttc" id="classshad_1_1Hashmap_html"><div class="ttname"><a href="classshad_1_1Hashmap.html">shad::Hashmap</a></div><div class="ttdoc">The Hashmap data structure. </div><div class="ttdef"><b>Definition:</b> hashmap.h:58</div></div>
+<div class="ttc" id="classshad_1_1lmap__iterator_1_1partition__range_html_ab9051f2c166f735d973c7188ca3a4247"><div class="ttname"><a href="classshad_1_1lmap__iterator_1_1partition__range.html#ab9051f2c166f735d973c7188ca3a4247">shad::lmap_iterator::partition_range::begin</a></div><div class="ttdeci">lmap_iterator begin()</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1176</div></div>
+<div class="ttc" id="classshad_1_1lmap__iterator_1_1partition__range_html_a03dc9dcb49413d357e4b2bec33ca500e"><div class="ttname"><a href="classshad_1_1lmap__iterator_1_1partition__range.html#a03dc9dcb49413d357e4b2bec33ca500e">shad::lmap_iterator::partition_range::partition_range</a></div><div class="ttdeci">partition_range(const lmap_iterator &amp;begin, const lmap_iterator &amp;end)</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1174</div></div>
 <div class="ttc" id="classshad_1_1map__iterator_html"><div class="ttname"><a href="classshad_1_1map__iterator.html">shad::map_iterator</a></div><div class="ttdef"><b>Definition:</b> hashmap.h:44</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a78d00a5d4b2591cefcafb44247d9131d"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a78d00a5d4b2591cefcafb44247d9131d">shad::LocalHashmap::AsyncErase</a></div><div class="ttdeci">void AsyncErase(rt::Handle &amp;handle, const KTYPE &amp;key)</div><div class="ttdoc">Asynchronously remove a key-value pair from the hashmap. </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:835</div></div>
 <div class="ttc" id="classshad_1_1lmap__iterator_html_a5aaca46b07b8669790d0134b6f4a9f97"><div class="ttname"><a href="classshad_1_1lmap__iterator.html#a5aaca46b07b8669790d0134b6f4a9f97">shad::lmap_iterator::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1094</div></div>
@@ -1135,6 +1243,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a359f3fae23cbb8c4548d6abe0047ac9b"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a359f3fae23cbb8c4548d6abe0047ac9b">shad::LocalHashmap::AsyncApply</a></div><div class="ttdeci">void AsyncApply(rt::Handle &amp;handle, const KTYPE &amp;key, ApplyFunT &amp;&amp;function, Args &amp;...args)</div><div class="ttdoc">Asynchronously apply a user-defined function to a key-value pair. </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1003</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a9bd1b3780c1c676ce8d5eae265030080"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a9bd1b3780c1c676ce8d5eae265030080">shad::LocalHashmap::Lookup</a></div><div class="ttdeci">void Lookup(const KTYPE &amp;key, LookupResult *res)</div><div class="ttdoc">Lookup method. </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:199</div></div>
 <div class="ttc" id="runtime_8h_html"><div class="ttname"><a href="runtime_8h.html">runtime.h</a></div></div>
+<div class="ttc" id="classshad_1_1lmap__iterator_1_1partition__range_html"><div class="ttname"><a href="classshad_1_1lmap__iterator_1_1partition__range.html">shad::lmap_iterator::partition_range</a></div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1172</div></div>
 <div class="ttc" id="classshad_1_1lmap__iterator_html_abb447d70c14ac1fb628a525a0db60dd9"><div class="ttname"><a href="classshad_1_1lmap__iterator.html#abb447d70c14ac1fb628a525a0db60dd9">shad::lmap_iterator::lmap_end</a></div><div class="ttdeci">static lmap_iterator lmap_end(size_t numBuckets)</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1122</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a3fa27c320a046745e01804325f15dd0e"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a3fa27c320a046745e01804325f15dd0e">shad::LocalHashmap&lt; KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY &gt;::value_type</a></div><div class="ttdeci">std::pair&lt; KTYPE, VTYPE &gt; value_type</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:102</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a7dc7ac304876af70108a24c7b82d408e"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a7dc7ac304876af70108a24c7b82d408e">shad::LocalHashmap::PrintAllEntries</a></div><div class="ttdeci">void PrintAllEntries()</div><div class="ttdoc">Print all the entries in the hashmap. </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:646</div></div>
@@ -1145,10 +1254,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="namespaceshad_1_1rt_html_a36e675e25238d9b5c81b8a755dce61cd"><div class="ttname"><a href="namespaceshad_1_1rt.html#a36e675e25238d9b5c81b8a755dce61cd">shad::rt::asyncForEachAt</a></div><div class="ttdeci">void asyncForEachAt(Handle &amp;handle, const Locality &amp;loc, FunT &amp;&amp;func, const InArgsT &amp;args, const size_t numIters)</div><div class="ttdoc">Execute a parallel loop at a specific locality asynchronously. </div><div class="ttdef"><b>Definition:</b> runtime.h:1044</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_acc8cd3f5cf2147fb1e2a7b75900127d7"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#acc8cd3f5cf2147fb1e2a7b75900127d7">shad::LocalHashmap::Insert</a></div><div class="ttdeci">std::pair&lt; iterator, bool &gt; Insert(const KTYPE &amp;key, const VTYPE &amp;value)</div><div class="ttdoc">Insert a key-value pair in the hashmap. </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:849</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a9cc4e9135d4808fbf53f253755744019"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a9cc4e9135d4808fbf53f253755744019">shad::LocalHashmap::cbegin</a></div><div class="ttdeci">const_iterator cbegin()</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:334</div></div>
+<div class="ttc" id="classshad_1_1lmap__iterator_html_aa0c5e2776052948e8fc3c520404a5dcc"><div class="ttname"><a href="classshad_1_1lmap__iterator.html#aa0c5e2776052948e8fc3c520404a5dcc">shad::lmap_iterator::partitions</a></div><div class="ttdeci">static std::vector&lt; partition_range &gt; partitions(lmap_iterator begin, lmap_iterator end, size_t n_parts)</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1185</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a4e95baa9af6646d2c66adc1b8ae5781c"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a4e95baa9af6646d2c66adc1b8ae5781c">shad::LocalHashmap::Clear</a></div><div class="ttdeci">void Clear()</div><div class="ttdoc">Clear the content of the hashmap. </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:153</div></div>
 <div class="ttc" id="classshad_1_1lmap__iterator_html_ad07acefab2006a2836fef3e333eb615c"><div class="ttname"><a href="classshad_1_1lmap__iterator.html#ad07acefab2006a2836fef3e333eb615c">shad::lmap_iterator::operator==</a></div><div class="ttdeci">bool operator==(const lmap_iterator &amp;other) const </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1125</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_a18da968a5c684f5b4abbdd0bf6760574"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#a18da968a5c684f5b4abbdd0bf6760574">shad::LocalHashmap::cend</a></div><div class="ttdeci">const_iterator cend()</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:343</div></div>
 <div class="ttc" id="classshad_1_1lmap__iterator_html_a692400133c2520870cec48845f46aa5b"><div class="ttname"><a href="classshad_1_1lmap__iterator.html#a692400133c2520870cec48845f46aa5b">shad::lmap_iterator::lmap_iterator</a></div><div class="ttdeci">lmap_iterator(const LMap *mapPtr, size_t bId, size_t pos, Bucket *cb, Entry *ePtr)</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1100</div></div>
+<div class="ttc" id="classshad_1_1lmap__iterator_1_1partition__range_html_a9ead7090d1a23e4d7105b504c30a151e"><div class="ttname"><a href="classshad_1_1lmap__iterator_1_1partition__range.html#a9ead7090d1a23e4d7105b504c30a151e">shad::lmap_iterator::partition_range::end</a></div><div class="ttdeci">lmap_iterator end()</div><div class="ttdef"><b>Definition:</b> local_hashmap.h:1177</div></div>
 <div class="ttc" id="namespaceshad_1_1rt_html_a7536c33738a5dd285f3a44aa6a199faf"><div class="ttname"><a href="namespaceshad_1_1rt.html#a7536c33738a5dd285f3a44aa6a199faf">shad::rt::thisLocality</a></div><div class="ttdeci">Locality thisLocality()</div><div class="ttdoc">Identity of locality on which the call is made. </div><div class="ttdef"><b>Definition:</b> runtime.h:103</div></div>
 <div class="ttc" id="structshad_1_1LocalHashmap_1_1LookupResult_html_a0298dc2b0fe9122b6b98f6a9bb62e856"><div class="ttname"><a href="structshad_1_1LocalHashmap_1_1LookupResult.html#a0298dc2b0fe9122b6b98f6a9bb62e856">shad::LocalHashmap::LookupResult::found</a></div><div class="ttdeci">bool found</div><div class="ttdoc">True if the key has been found in the Hashmap. </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:191</div></div>
 <div class="ttc" id="classshad_1_1LocalHashmap_html_ac70c307f612b97f08f5e38bba7759665"><div class="ttname"><a href="classshad_1_1LocalHashmap.html#ac70c307f612b97f08f5e38bba7759665">shad::LocalHashmap::Size</a></div><div class="ttdeci">size_t Size() const </div><div class="ttdoc">Size of the hashmap (number of entries). </div><div class="ttdef"><b>Definition:</b> local_hashmap.h:116</div></div>

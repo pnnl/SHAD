@@ -3,6 +3,8 @@ var searchData=
   ['lmap_5fiterator',['lmap_iterator',['../classshad_1_1lmap__iterator.html',1,'shad']]],
   ['local_5fiterator_5frange',['local_iterator_range',['../classshad_1_1map__iterator_1_1local__iterator__range.html',1,'shad::map_iterator']]],
   ['local_5fiterator_5frange',['local_iterator_range',['../classshad_1_1set__iterator_1_1local__iterator__range.html',1,'shad::set_iterator']]],
+  ['local_5fiterator_5ftraits',['local_iterator_traits',['../structshad_1_1local__iterator__traits.html',1,'shad']]],
+  ['local_5fiterator_5ftraits_3c_20t_20_2a_20_3e',['local_iterator_traits&lt; T * &gt;',['../classshad_1_1local__iterator__traits_3_01T_01_5_01_4.html',1,'shad']]],
   ['localedgeindex',['LocalEdgeIndex',['../classshad_1_1LocalEdgeIndex.html',1,'shad']]],
   ['localedgelistchunk',['LocalEdgeListChunk',['../structshad_1_1AttributedEdgeIndexStorage_1_1LocalEdgeListChunk.html',1,'shad::AttributedEdgeIndexStorage']]],
   ['localedgelistchunk',['LocalEdgeListChunk',['../structshad_1_1DefaultEdgeIndexStorage_1_1LocalEdgeListChunk.html',1,'shad::DefaultEdgeIndexStorage']]],

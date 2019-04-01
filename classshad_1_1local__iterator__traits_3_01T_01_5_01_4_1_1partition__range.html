@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>SHAD: Scalable High-performance Algorithms and Data-structures: shad::is_distributed_iterator&lt; T, typename std::enable_if&lt;!std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt; Struct Template Reference</title>
+<title>SHAD: Scalable High-performance Algorithms and Data-structures: shad::local_iterator_traits&lt; T * &gt;::partition_range Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">SHAD: Scalable High-performance Algorithms and Data-structures
-   &#160;<span id="projectnumber">0.0.1 (heads/master-0-g184fd26)</span>
+   &#160;<span id="projectnumber">0.0.1 (heads/master-0-gc041a85)</span>
    </div>
   </td>
  </tr>
@@ -85,27 +85,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespaceshad.html">shad</a></li><li class="navelem"><a class="el" href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_9std_1_1is__sa51db7b1d56bd82f65c31391ac3bbe077.html">is_distributed_iterator< T, typename std::enable_if<!std::is_same< typename distributed_iterator_traits< T >::value_type, void >::value >::type ></a></li>  </ul>
+<li class="navelem"><a class="el" href="namespaceshad.html">shad</a></li><li class="navelem"><a class="el" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4.html">local_iterator_traits< T * ></a></li><li class="navelem"><a class="el" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html">partition_range</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
-<a href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_9std_1_1is__sabb4992aebd8edb987b3a7c501f03a218.html">List of all members</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">shad::is_distributed_iterator&lt; T, typename std::enable_if&lt;!std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt; Struct Template Reference</div>  </div>
+<div class="title">shad::local_iterator_traits&lt; T * &gt;::partition_range Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="distributed__iterator__traits_8h_source.html">shad/distributed_iterator_traits.h</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:a1cfb04895451ff68d946df3e4b15ba7d"><td class="memItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_9std_1_1is__sa51db7b1d56bd82f65c31391ac3bbe077.html#a1cfb04895451ff68d946df3e4b15ba7d">value</a> = true</td></tr>
-<tr class="separator:a1cfb04895451ff68d946df3e4b15ba7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:aa9a4a7e4416cc8e9f160e92e53277c42"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html#aa9a4a7e4416cc8e9f160e92e53277c42">begin</a> ()</td></tr>
+<tr class="separator:aa9a4a7e4416cc8e9f160e92e53277c42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc13ca22241d94bb453c90e16fd2cace"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html#acc13ca22241d94bb453c90e16fd2cace">end</a> ()</td></tr>
+<tr class="separator:acc13ca22241d94bb453c90e16fd2cace"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c88be79f232835b3711d95143d6eea1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html#a5c88be79f232835b3711d95143d6eea1">partition_range</a> (T *<a class="el" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html#aa9a4a7e4416cc8e9f160e92e53277c42">begin</a>, T *<a class="el" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html#acc13ca22241d94bb453c90e16fd2cace">end</a>)</td></tr>
+<tr class="separator:a5c88be79f232835b3711d95143d6eea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a1cfb04895451ff68d946df3e4b15ba7d"></a>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a5c88be79f232835b3711d95143d6eea1"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -115,19 +119,84 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool <a class="el" href="structshad_1_1is__distributed__iterator.html">shad::is_distributed_iterator</a>&lt; T, typename std::enable_if&lt;!std::is_same&lt; typename <a class="el" href="structshad_1_1distributed__iterator__traits.html">distributed_iterator_traits</a>&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt;::value = true</td>
+          <td class="memname"><a class="el" href="structshad_1_1local__iterator__traits.html">shad::local_iterator_traits</a>&lt; T * &gt;::partition_range::partition_range </td>
+          <td>(</td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>begin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>end</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aa9a4a7e4416cc8e9f160e92e53277c42"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T* <a class="el" href="structshad_1_1local__iterator__traits.html">shad::local_iterator_traits</a>&lt; T * &gt;::partition_range::begin </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="acc13ca22241d94bb453c90e16fd2cace"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T* <a class="el" href="structshad_1_1local__iterator__traits.html">shad::local_iterator_traits</a>&lt; T * &gt;::partition_range::end </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/shad/<a class="el" href="distributed__iterator__traits_8h_source.html">distributed_iterator_traits.h</a></li>
 </ul>
 </div><!-- contents -->

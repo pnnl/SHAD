@@ -1,13 +1,14 @@
 <map id="include/shad/core/impl/modifyng_sequence_ops.h" name="include/shad/core/impl/modifyng_sequence_ops.h">
-<area shape="rect" id="node7" href="$execution_8h.html" title="shad/core/execution.h" alt="" coords="1307,253,1457,280"/>
-<area shape="rect" id="node9" href="$utils_8h.html" title="shad/core/impl/utils.h" alt="" coords="797,96,944,123"/>
-<area shape="rect" id="node12" href="$runtime_8h.html" title="shad/runtime/runtime.h" alt="" coords="688,253,841,280"/>
-<area shape="rect" id="node29" href="$distributed__iterator__traits_8h.html" title="shad/distributed_iterator\l_traits.h" alt="" coords="918,246,1079,287"/>
-<area shape="rect" id="node10" href="$iterator_8h.html" title="shad/core/iterator.h" alt="" coords="698,171,832,197"/>
-<area shape="rect" id="node22" href="$handle_8h.html" title="shad/runtime/handle.h" alt="" coords="1109,435,1259,461"/>
-<area shape="rect" id="node23" href="$mapping__traits_8h.html" title="shad/runtime/mapping\l_traits.h" alt="" coords="1113,518,1263,559"/>
-<area shape="rect" id="node26" href="$locality_8h.html" title="shad/runtime/locality.h" alt="" coords="737,435,889,461"/>
-<area shape="rect" id="node27" href="$available__mappings_8h.html" title="shad/runtime/mappings\l/available_mappings.h" alt="" coords="919,427,1076,469"/>
-<area shape="rect" id="node28" href="$synchronous__interface_8h.html" title="shad/runtime/synchronous\l_interface.h" alt="" coords="261,337,435,378"/>
-<area shape="rect" id="node25" href="$available__traits__mappings_8h.html" title="shad/runtime/mappings\l/available_traits_mappings.h" alt="" coords="851,518,1037,559"/>
+<area shape="rect" id="node7" href="$execution_8h.html" title="shad/core/execution.h" alt="" coords="1545,96,1695,123"/>
+<area shape="rect" id="node9" href="$impl__patterns_8h.html" title="shad/core/impl/impl\l_patterns.h" alt="" coords="1334,171,1468,213"/>
+<area shape="rect" id="node13" href="$distributed__iterator__traits_8h.html" title="shad/distributed_iterator\l_traits.h" alt="" coords="1177,262,1337,303"/>
+<area shape="rect" id="node21" href="$runtime_8h.html" title="shad/runtime/runtime.h" alt="" coords="791,269,944,296"/>
+<area shape="rect" id="node30" href="$utils_8h.html" title="shad/core/impl/utils.h" alt="" coords="904,96,1051,123"/>
+<area shape="rect" id="node31" href="$iterator_8h.html" title="shad/core/iterator.h" alt="" coords="801,179,935,205"/>
+<area shape="rect" id="node15" href="$locality_8h.html" title="shad/runtime/locality.h" alt="" coords="675,451,828,477"/>
+<area shape="rect" id="node18" href="$mapping__traits_8h.html" title="shad/runtime/mapping\l_traits.h" alt="" coords="1137,534,1287,575"/>
+<area shape="rect" id="node20" href="$available__traits__mappings_8h.html" title="shad/runtime/mappings\l/available_traits_mappings.h" alt="" coords="839,534,1025,575"/>
+<area shape="rect" id="node27" href="$handle_8h.html" title="shad/runtime/handle.h" alt="" coords="1023,360,1173,387"/>
+<area shape="rect" id="node28" href="$available__mappings_8h.html" title="shad/runtime/mappings\l/available_mappings.h" alt="" coords="853,443,1011,485"/>
+<area shape="rect" id="node29" href="$synchronous__interface_8h.html" title="shad/runtime/synchronous\l_interface.h" alt="" coords="311,353,485,394"/>
 </map>

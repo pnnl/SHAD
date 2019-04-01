@@ -11,9 +11,9 @@
 <polygon fill="white" stroke="none" points="-4,4 -4,-24 132,-24 132,4 -4,4"/>
 <!-- Node1 -->
 <g id="node1" class="node"><title>Node1</title>
-<g id="a_node1"><a xlink:href="structshad_1_1measure.html" target="_top" xlink:title="Utility for time measurements. ">
+<g id="a_node1"><a xlink:href="classshad_1_1LocalSet.html" target="_top" xlink:title="shad::LocalSet\&lt; DestT \&gt;">
 <polygon fill="white" stroke="black" points="0.5,-0.5 0.5,-19.5 127.5,-19.5 127.5,-0.5 0.5,-0.5"/>
-<text text-anchor="middle" x="64" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">shad::measure&lt; TimeT &gt;</text>
+<text text-anchor="middle" x="64" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">shad::LocalSet&lt; DestT &gt;</text>
 </a>
 </g>
 </g>

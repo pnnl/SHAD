@@ -23,7 +23,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">SHAD: Scalable High-performance Algorithms and Data-structures
-   &#160;<span id="projectnumber">0.0.1 (heads/master-0-g184fd26)</span>
+   &#160;<span id="projectnumber">0.0.1 (heads/master-0-gc041a85)</span>
    </div>
   </td>
  </tr>
@@ -90,6 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
@@ -114,6 +115,11 @@ Collaboration diagram for shad::lmap_iterator&lt; LMap, T &gt;:</div>
 </div>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classshad_1_1lmap__iterator_1_1partition__range.html">partition_range</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a5aaca46b07b8669790d0134b6f4a9f97"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classshad_1_1lmap__iterator.html#a5aaca46b07b8669790d0134b6f4a9f97">value_type</a> = T</td></tr>
@@ -150,6 +156,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:af884d9acfdcdc8eba8d6eb4330923f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb447d70c14ac1fb628a525a0db60dd9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classshad_1_1lmap__iterator.html">lmap_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classshad_1_1lmap__iterator.html#abb447d70c14ac1fb628a525a0db60dd9">lmap_end</a> (size_t numBuckets)</td></tr>
 <tr class="separator:abb447d70c14ac1fb628a525a0db60dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0c5e2776052948e8fc3c520404a5dcc"><td class="memItemLeft" align="right" valign="top">static std::vector<br class="typebreak"/>
+&lt; <a class="el" href="classshad_1_1lmap__iterator_1_1partition__range.html">partition_range</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classshad_1_1lmap__iterator.html#aa0c5e2776052948e8fc3c520404a5dcc">partitions</a> (<a class="el" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> begin, <a class="el" href="classshad_1_1lmap__iterator.html">lmap_iterator</a> end, size_t n_parts)</td></tr>
+<tr class="separator:aa0c5e2776052948e8fc3c520404a5dcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -495,6 +504,48 @@ template&lt;typename LMap , typename T &gt; </div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa0c5e2776052948e8fc3c520404a5dcc"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename LMap , typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::vector&lt;<a class="el" href="classshad_1_1lmap__iterator_1_1partition__range.html">partition_range</a>&gt; <a class="el" href="classshad_1_1lmap__iterator.html">shad::lmap_iterator</a>&lt; LMap, T &gt;::partitions </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classshad_1_1lmap__iterator.html">lmap_iterator</a>&lt; LMap, T &gt;&#160;</td>
+          <td class="paramname"><em>begin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classshad_1_1lmap__iterator.html">lmap_iterator</a>&lt; LMap, T &gt;&#160;</td>
+          <td class="paramname"><em>end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>n_parts</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
