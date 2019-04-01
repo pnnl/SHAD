@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
       });
 
   size_t count = shad::reduce(
-      shad::distributed_sequential_tag{}, counters.begin(), counters.end());
+      shad::distributed_parallel_tag{}, counters.begin(), counters.end());
 
   std::cout << "Pi is roughly "
             << std::setprecision(20)
