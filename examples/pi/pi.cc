@@ -37,17 +37,26 @@ namespace shad {
 int main(int argc, char *argv[]) {
 
   shad::array<size_t, 128> counters;
+  shad::array<size_t, 128> seeds;
 
-  size_t numberOfPoints = 1e12;
+  std::mt19937_64 seed_gen;
+  shad::generate(
+      shad::distributed_sequential_tag{},
+      seeds.begin(), seeds.end(),
+      [=]() mutable -> size_t {
+        return seed_gen();
+      });
+
+  size_t numberOfPoints = 1e10;
   size_t numberOfPointsPerSim = numberOfPoints / counters.size();
 
-  shad::generate(
+  shad::transform(
       shad::distributed_parallel_tag{},
-      counters.begin(), counters.end(),
-      [=]() -> size_t {
+      seeds.begin(), seeds.end(),
+      counters.begin(),
+      [=](const uint64_t & S) -> size_t {
         size_t counter = 0;
-        std::random_device rd;
-        std::default_random_engine G(rd());
+        std::knuth_b G(S);
         std::uniform_real_distribution<double> dist(0.0, 1.0);
         for (size_t i = 0; i < numberOfPointsPerSim; ++i) {
           double x = dist(G);
