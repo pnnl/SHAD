@@ -1,8 +1,8 @@
 <map id="include/shad/runtime/mappings/cpp_simple/cpp_simple_synchronous_interface.h" name="include/shad/runtime/mappings/cpp_simple/cpp_simple_synchronous_interface.h">
 <area shape="rect" id="node4" href="$locality_8h.html" title="shad/runtime/locality.h" alt="" coords="512,229,665,256"/>
-<area shape="rect" id="node10" href="$cpp__simple__traits__mapping_8h.html" title="shad/runtime/mappings\l/cpp_simple/cpp_simple\l_traits_mapping.h" alt="" coords="53,125,215,181"/>
-<area shape="rect" id="node13" href="$cpp__simple__utility_8h.html" title="shad/runtime/mappings\l/cpp_simple/cpp_simple\l_utility.h" alt="" coords="639,125,802,181"/>
-<area shape="rect" id="node16" href="$synchronous__interface_8h.html" title="shad/runtime/synchronous\l_interface.h" alt="" coords="368,133,542,174"/>
-<area shape="rect" id="node7" href="$mapping__traits_8h.html" title="shad/runtime/mapping\l_traits.h" alt="" coords="21,305,171,346"/>
-<area shape="rect" id="node9" href="$available__traits__mappings_8h.html" title="shad/runtime/mappings\l/available_traits_mappings.h" alt="" coords="402,305,589,346"/>
+<area shape="rect" id="node11" href="$cpp__simple__traits__mapping_8h.html" title="shad/runtime/mappings\l/cpp_simple/cpp_simple\l_traits_mapping.h" alt="" coords="53,125,215,181"/>
+<area shape="rect" id="node14" href="$cpp__simple__utility_8h.html" title="shad/runtime/mappings\l/cpp_simple/cpp_simple\l_utility.h" alt="" coords="639,125,802,181"/>
+<area shape="rect" id="node17" href="$synchronous__interface_8h.html" title="shad/runtime/synchronous\l_interface.h" alt="" coords="368,133,542,174"/>
+<area shape="rect" id="node8" href="$mapping__traits_8h.html" title="shad/runtime/mapping\l_traits.h" alt="" coords="21,305,171,346"/>
+<area shape="rect" id="node10" href="$available__traits__mappings_8h.html" title="shad/runtime/mappings\l/available_traits_mappings.h" alt="" coords="494,305,681,346"/>
 </map>

@@ -1,9 +1,9 @@
 <map id="include/shad/runtime/mappings/cpp_simple/cpp_simple_asynchronous_interface.h" name="include/shad/runtime/mappings/cpp_simple/cpp_simple_asynchronous_interface.h">
-<area shape="rect" id="node6" href="$asynchronous__interface_8h.html" title="shad/runtime/asynchronous\l_interface.h" alt="" coords="291,133,473,174"/>
+<area shape="rect" id="node6" href="$asynchronous__interface_8h.html" title="shad/runtime/asynchronous\l_interface.h" alt="" coords="306,133,488,174"/>
 <area shape="rect" id="node7" href="$handle_8h.html" title="shad/runtime/handle.h" alt="" coords="5,229,155,256"/>
-<area shape="rect" id="node10" href="$mapping__traits_8h.html" title="shad/runtime/mapping\l_traits.h" alt="" coords="593,305,743,346"/>
-<area shape="rect" id="node13" href="$locality_8h.html" title="shad/runtime/locality.h" alt="" coords="466,229,619,256"/>
-<area shape="rect" id="node14" href="$cpp__simple__traits__mapping_8h.html" title="shad/runtime/mappings\l/cpp_simple/cpp_simple\l_traits_mapping.h" alt="" coords="728,125,891,181"/>
-<area shape="rect" id="node17" href="$cpp__simple__utility_8h.html" title="shad/runtime/mappings\l/cpp_simple/cpp_simple\l_utility.h" alt="" coords="915,125,1077,181"/>
-<area shape="rect" id="node12" href="$available__traits__mappings_8h.html" title="shad/runtime/mappings\l/available_traits_mappings.h" alt="" coords="227,305,413,346"/>
+<area shape="rect" id="node10" href="$mapping__traits_8h.html" title="shad/runtime/mapping\l_traits.h" alt="" coords="621,305,771,346"/>
+<area shape="rect" id="node13" href="$locality_8h.html" title="shad/runtime/locality.h" alt="" coords="517,229,669,256"/>
+<area shape="rect" id="node15" href="$cpp__simple__traits__mapping_8h.html" title="shad/runtime/mappings\l/cpp_simple/cpp_simple\l_traits_mapping.h" alt="" coords="728,125,891,181"/>
+<area shape="rect" id="node18" href="$cpp__simple__utility_8h.html" title="shad/runtime/mappings\l/cpp_simple/cpp_simple\l_utility.h" alt="" coords="915,125,1077,181"/>
+<area shape="rect" id="node12" href="$available__traits__mappings_8h.html" title="shad/runtime/mappings\l/available_traits_mappings.h" alt="" coords="177,305,364,346"/>
 </map>
