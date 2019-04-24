@@ -26,6 +26,7 @@
 #define INCLUDE_SHAD_RUNTIME_LOCALITY_H_
 
 #include <cstdint>
+#include <iostream>
 
 #include "shad/config/config.h"
 #include "shad/runtime/mapping_traits.h"
