@@ -47,6 +47,14 @@ template <typename T, typename It2>
 void advance_output_iterator(shad::buffered_insert_iterator<T>, It2, It2) {}
 
 template <typename It>
+void wait_iterator(It &) {}
+
+template <typename T>
+void wait_iterator(shad::buffered_insert_iterator<T> &it) {
+  it.wait();
+}
+
+template <typename It>
 void flush_iterator(It &) {}
 
 template <typename T>

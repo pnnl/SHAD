@@ -84,7 +84,7 @@ class insert_iterator
   typename internal_container_t::ObjectID global_id_;
   Iterator iterator_;
   internal_container_t* local_container_ptr_ = nullptr;
-  rt::Locality locality_;
+  rt::Locality locality_{rt::numLocalities()};
 };
 
 /// @brief Buffered insert iterator.
@@ -126,19 +126,25 @@ class buffered_insert_iterator : public insert_iterator<Container> {
     if (!this->local_container_ptr_ || this->locality_ != rt::thisLocality()) {
       this->locality_ = rt::thisLocality();
       this->local_container_ptr_ = Container::from_global_id(this->global_id_);
-      rt::Handle h;
-      handle_ = h;
+      handle_ = rt::Handle{};  // reset
     }
     this->local_container_ptr_->buffered_async_insert(handle_, value);
     return *this;
+  }
+
+  /// @brief Wait for pending insertions to the container.
+  void wait() {
+    if (this->local_container_ptr_ != nullptr &&
+        this->locality_ == rt::thisLocality()) {
+      this->local_container_ptr_->buffered_async_wait(handle_);
+    }
   }
 
   /// @brief Flushes pending insertions to the container.
   void flush() {
     if (this->local_container_ptr_ != nullptr &&
         this->locality_ == rt::thisLocality()) {
-      // if(!handle_.IsNull()) FIXME
-      this->local_container_ptr_->buffered_async_flush(handle_);
+      this->local_container_ptr_->buffered_async_flush();
     }
   }
 

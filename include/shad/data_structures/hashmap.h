@@ -334,10 +334,9 @@ class Hashmap : public AbstractDataStructure<
     BufferedAsyncInsert(h, value.first, value.second);
   }
 
-  void buffered_async_flush(rt::Handle &h) {
-    rt::waitForCompletion(h);
-    WaitForBufferedInsert();
-  }
+  void buffered_async_wait(rt::Handle &h) { rt::waitForCompletion(h); }
+
+  void buffered_async_flush() { WaitForBufferedInsert(); }
 
  private:
   ObjectID oid_;

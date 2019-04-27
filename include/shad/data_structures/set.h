@@ -238,10 +238,9 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
     BufferedAsyncInsert(h, value);
   }
 
-  void buffered_async_flush(rt::Handle& h) {
-    rt::waitForCompletion(h);
-    WaitForBufferedInsert();
-  }
+  void buffered_async_wait(rt::Handle& h) { rt::waitForCompletion(h); }
+
+  void buffered_async_flush() { WaitForBufferedInsert(); }
 
  private:
   ObjectID oid_;
