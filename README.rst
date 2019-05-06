@@ -1,11 +1,6 @@
 SHAD
 ****
 
-.. image:: https://github.com/pnnl/SHAD/raw/master/docs/shad_logo_500.jpeg
-    :target: https://pnnl.github.io/SHAD
-    :align: center
-
-
 .. image:: https://travis-ci.org/pnnl/SHAD.svg?branch=master
     :target: https://travis-ci.org/pnnl/SHAD
 .. image:: https://api.codacy.com/project/badge/Grade/d353a0bb182a47da80e5711c4e39ca0c
@@ -16,6 +11,10 @@ SHAD
     :target: http://github.com/pnnl/SHAD/releases
 .. image:: https://img.shields.io/github/issues/pnnl/SHAD.svg
     :target: http://github.com/pnnl/SHAD/issues
+
+.. image:: https://github.com/pnnl/SHAD/raw/master/docs/shad_logo_500.jpeg
+    :target: https://pnnl.github.io/SHAD
+    :align: center
 
 
 SHAD is the Scalable High-Performance Algorithms and Data-structures C++
@@ -71,7 +70,7 @@ Quickstart with Docker
     $ docker exec -u mpi -it dokcer_head_1 /bin/bash
     $ cd $HOME/shad
     $ mkdir build && cd build
-    $ cmake .. -DCMAKE_BUILD_TYPE=Release
+    $ cmake .. -DCMAKE_BUILD_TYPE=Release -DSHAD_RUNTIME_SYSTEM=GMT
     $ make
 
 

@@ -37,6 +37,11 @@ set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELEASE} ${CMAKE_C_FLAGS_DEBUG
 
 # CXX compiler flags:
 
+check_cxx_compiler_flag("-no-pie" CXX_SUPPORT_NO_PIE)
+if (CXX_SUPPORT_NO_PIE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -no-pie")
+endif()
+
 ## CXX Release Build flags:
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 check_cxx_compiler_flag("-march=native" CXX_SUPPORT_MARCH_NATIVE)
