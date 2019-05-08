@@ -107,7 +107,7 @@ htmlhelp_basename = 'shad'
 # -- Extension configuration -------------------------------------------------
 
 breathe_projects = {
-    "shad": "../build/docs/doxygen/xml"
+    "shad": "../build-doxygen/docs/doxygen/xml"
 }
 breathe_default_project = "shad"
 
