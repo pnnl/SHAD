@@ -1,4 +1,4 @@
-FROM mminutoli/gentoo-mpich
+FROM mminutoli/gentoo-mpich:latest
 
 LABEL mainteiner="Marco Minutoli <marco.minutoli@pnnl.gov>"
 
@@ -13,6 +13,4 @@ RUN mkdir -p /etc/portage/repos.conf \
     && emerge app-doc/doxygen dev-python/pip dev-libs/gmt dev-cpp/gtest
 
 USER mpi
-RUN pip install --user sphinx breathe exhale sphinx_rtd_theme
-
-USER root
+RUN pip install --user breathe==4.11.1 exhale==0.2.2 sphinx==1.7.9 sphinx-rtd-theme==0.4.3
