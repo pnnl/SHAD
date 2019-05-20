@@ -1,69 +1,109 @@
 language: cpp
+sudo: false
+notifications:
+  email: false
 
 matrix:
   include:
+    # Clang on OSX
     - os: osx
-      env:
-        - MATRIX_EVAL="CC=clang && CXX=clang++"
-          DEPLOY_PAGES=0
+      env: C_COMPILER=clang CXX_COMPILER=clang++ DEPLOY_PAGES=0
+      osx_image: xcode9.4
+      compiler: clang
+
+    - os: osx
+      env: C_COMPILER=clang CXX_COMPILER=clang++ DEPLOY_PAGES=0
+      osx_image: xcode10
+      compiler: clang
+
+    - os: osx
+      env: C_COMPILER=clang CXX_COMPILER=clang++ DEPLOY_PAGES=0
+      osx_image: xcode10.2
+      compiler: clang
+
+    # Clang on Linux
+    - os: linux
+      dist: xenial
+      env: C_COMPILER=clang-5.0 && CXX_COMPILER=clang++-5.0 DEPLOY_PAGES=0
+      addons: &clang50
+        apt:
+          packages:
+            - clang-5.0
+            - g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-5.0
+            - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
 
     - os: linux
-      addons:
+      dist: xenial
+      env: C_COMPILER=clang-6.0 && CXX_COMPILER=clang++-6.0 DEPLOY_PAGES=1
+      addons: &clang60
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
           packages:
-            - g++-5
-      env:
-        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-          DEPLOY_PAGES=0
-    
-    - os: linux
-      addons:
-        apt:
+            - clang-6.0
+            - g++-7
+            - doxygen
           sources:
             - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-6.0
+            - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+
+    - os: linux
+      dist: xenial
+      env: C_COMPILER=clang-7 && CXX_COMPILER=clang++-7 DEPLOY_PAGES=0
+      addons: &clang70
+        apt:
+          packages:
+            - clang-7
+            - g++-7
+            - doxygen
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-7
+            - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+
+    #GCC on Linux
+    - os: linux
+      dist: xenial
+      env: C_COMPILER=gcc-6 && CXX_COMPILER=g++-6 DEPLOY_PAGES=0
+      addons: &gcc6
+        apt:
           packages:
             - g++-6
-      env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-          DEPLOY_PAGES=0
-    
-    - os: linux
-      addons:
-        apt:
           sources:
             - ubuntu-toolchain-r-test
+    - os: linux
+      dist: xenial
+      env: C_COMPILER=gcc-7 && CXX_COMPILER=g++-7 DEPLOY_PAGES=0
+      addons: &gcc7
+        apt:
           packages:
             - g++-7
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-          DEPLOY_PAGES=0
-    
-    - os: linux
-      addons:
-        apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-5.0
+    - os: linux
+      dist: xenial
+      env: C_COMPILER=gcc-8 && CXX_COMPILER=g++-8 DEPLOY_PAGES=0
+      addons: &gcc8
+        apt:
           packages:
-            - g++-7
-            - clang-5.0
-            - doxygen
-            - doxygen-doc
-            - doxygen-latex
-            - doxygen-gui
-            - graphviz
-      env:
-        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
-          DEPLOY_PAGES=1
+            - g++-8
+          sources:
+            - ubuntu-toolchain-r-test
 
 branches:
   except:
     - gh-pages
 
 before_install:
-  - eval "${MATRIX_EVAL}"
+  - export CC=${C_COMPILER}
+  - export CXX=${CXX_COMPILER}
+  - ${CC} --version
+  - ${CXX} --version
   - git clone --branch release-1.8.0 --depth 1 https://github.com/google/googletest.git
   - cd googletest && mkdir build
   - cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$HOME/gtest-root -Bbuild -H.
@@ -94,9 +134,10 @@ script:
 # Generate documentation
 after_success:
   - test $DEPLOY_PAGES = 1 &&
+    pip install --user -r docs/requirements.txt &&
     cd $TRAVIS_BUILD_DIR &&
     mkdir build-doxygen && cd build-doxygen && cmake .. -DSHAD_ENABLE_UNIT_TEST=OFF -DSHAD_ENABLE_DOXYGEN=ON &&
-    make doxygen-shad
+    make docs && touch $TRAVIS_BUILD_DIR/build-doxygen/docs/html/.nojekyll
 
 deploy:
   provider: pages
