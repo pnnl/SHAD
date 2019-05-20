@@ -1,4 +1,4 @@
-FROM mminutoli/gentoo-mpich:latest
+FROM mminutoli/gentoo-mpich:stable
 
 LABEL mainteiner="Marco Minutoli <marco.minutoli@pnnl.gov>"
 
