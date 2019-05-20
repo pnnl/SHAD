@@ -1,0 +1,13 @@
+.. _exhale_function_sssp_8h_1a91dbf7a5e8a0b37d677fa6205e512175:
+
+Template Function __sssp_iteration
+==================================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_algorithms_sssp.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: __sssp_iteration(shad::rt::Handle&, const size_t&, typename GraphT::ObjectID&, typename shad::Set<VertexT>::ObjectID&, shad::Array<bool>::ObjectID&, shad::Array<bool>::ObjectID&, size_t&)

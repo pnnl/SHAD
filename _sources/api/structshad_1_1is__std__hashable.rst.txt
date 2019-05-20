@@ -1,0 +1,25 @@
+.. _exhale_struct_structshad_1_1is__std__hashable:
+
+Template Struct is_std_hashable
+===============================
+
+- Defined in :ref:`file_include_shad_core_type_traits.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public std::integral_constant< bool, std::is_arithmetic< T >::value||std::is_pointer< T >::value||std::is_same< T, std::string >::value >``
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::is_std_hashable
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a060c390865e5dbec41c7e2526fae8803:
+
+Template Function shad::lexicographical_compare(ExecutionPolicy&&, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2)
+==================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::lexicographical_compare(ExecutionPolicy&&, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2)

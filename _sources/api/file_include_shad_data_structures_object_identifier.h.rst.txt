@@ -1,0 +1,84 @@
+
+.. _file_include_shad_data_structures_object_identifier.h:
+
+File object_identifier.h
+========================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_data_structures>` (``include/shad/data_structures``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/data_structures/object_identifier.h``)
+-----------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_data_structures_object_identifier.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``atomic``
+
+- ``limits``
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_data_structures_abstract_data_structure.h`
+
+- :ref:`file_include_shad_data_structures_buffer.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1ObjectIdentifier`
+
+- :ref:`exhale_class_classshad_1_1ObjectIdentifierCounter`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_object__identifier_8h_1a73513752568c47bd71b06a4fc328eec4`
+
+- :ref:`exhale_function_object__identifier_8h_1a5761ac18b234d1551ab55f1ce32214cb`
+
+- :ref:`exhale_function_object__identifier_8h_1aa50b0a9ddf671edce6ba55be6975896a`
+
+- :ref:`exhale_function_object__identifier_8h_1a3c37dd61ed6b63c4eb35b3bc7c35d6c0`
+
+- :ref:`exhale_function_object__identifier_8h_1a82a20cc9e8de1bf3341c2506f7c1abc9`
+
+- :ref:`exhale_function_object__identifier_8h_1a6eca4ffdbc7555d2e0b549a0a6eeffdd`
+
+- :ref:`exhale_function_object__identifier_8h_1a59733f17e9061a22cd234fcfa3e022ff`
+

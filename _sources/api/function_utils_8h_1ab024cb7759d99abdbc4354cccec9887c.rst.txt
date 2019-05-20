@@ -1,0 +1,13 @@
+.. _exhale_function_utils_8h_1ab024cb7759d99abdbc4354cccec9887c:
+
+Template Function shad::impl::advance_output_iterator(shad::insert_iterator<T>&, It2, It2)
+==========================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_utils.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::advance_output_iterator(shad::insert_iterator<T>&, It2, It2)

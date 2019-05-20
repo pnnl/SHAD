@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1ObjectIdentifierCounter:
+
+Template Class ObjectIdentifierCounter
+======================================
+
+- Defined in :ref:`file_include_shad_data_structures_object_identifier.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::ObjectIdentifierCounter
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a05a181e15eb05bb17cf7bedcacc98585:
+
+Template Function shad::lexicographical_compare(InputIt1, InputIt1, InputIt2, InputIt2, Compare)
+================================================================================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::lexicographical_compare(InputIt1, InputIt1, InputIt2, InputIt2, Compare)

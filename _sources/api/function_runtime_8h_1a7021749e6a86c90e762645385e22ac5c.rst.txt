@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1a7021749e6a86c90e762645385e22ac5c:
+
+Template Function shad::rt::asyncExecuteAtWithRetBuff(Handle&, const Locality&, FunT&&, const InArgsT&, uint8_t \*, uint32_t \*)
+================================================================================================================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::asyncExecuteAtWithRetBuff(Handle&, const Locality&, FunT&&, const InArgsT&, uint8_t *, uint32_t *)

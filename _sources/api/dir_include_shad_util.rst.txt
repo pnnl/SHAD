@@ -1,0 +1,21 @@
+.. _dir_include_shad_util:
+
+
+Directory util
+==============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad>` (``include/shad``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad/util``
+
+
+Files
+-----
+
+- :ref:`file_include_shad_util_measure.h`
+- :ref:`file_include_shad_util_shadmain.h`
+
+

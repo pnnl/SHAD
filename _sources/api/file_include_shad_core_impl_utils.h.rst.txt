@@ -1,0 +1,77 @@
+
+.. _file_include_shad_core_impl_utils.h:
+
+File utils.h
+============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_core_impl>` (``include/shad/core/impl``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/core/impl/utils.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_core_impl_utils.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``functional``
+
+- ``iterator`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/core/iterator.h`` (:ref:`file_include_shad_core_iterator.h`)
+
+- ``shad/distributed_iterator_traits.h`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__impl`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_utils_8h_1ab024cb7759d99abdbc4354cccec9887c`
+
+- :ref:`exhale_function_utils_8h_1a8b3b049ff641f41f340c7c6ebede785e`
+
+- :ref:`exhale_function_utils_8h_1a1470dba8d08fdfc79c91a2e4f63b0c08`
+
+- :ref:`exhale_function_utils_8h_1ad32c49f0c531a85cf5b936e89855b342`
+
+- :ref:`exhale_function_utils_8h_1aa26f94aa4e333fb107863ff76bc5c8b4`
+

@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1a0d3e58f6b91d06bf7d3f46e7d2e478bc:
+
+Template Function shad::transform_inclusive_scan(ExecutionPolicy&&, ForwardIt1, ForwardIt1, ForwardIt2, BinaryOperation, UnaryOperation)
+========================================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::transform_inclusive_scan(ExecutionPolicy&&, ForwardIt1, ForwardIt1, ForwardIt2, BinaryOperation, UnaryOperation)

@@ -1,0 +1,13 @@
+.. _exhale_function_shadmain_8h_1a9f30a41da5e389095d44fe5b1c9e6f5e:
+
+Function shad::main
+===================
+
+- Defined in :ref:`file_include_shad_util_shadmain.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::main(int, char *)

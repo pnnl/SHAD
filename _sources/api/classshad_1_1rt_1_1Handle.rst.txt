@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1rt_1_1Handle:
+
+Class Handle
+============
+
+- Defined in :ref:`file_include_shad_runtime_handle.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::rt::Handle
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_function_gmt__utility_8h_1a073825e7287c921463359f537effb40a:
+
+Function shad::rt::impl::getGmtHandle
+=====================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_gmt_gmt_utility.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::impl::getGmtHandle(Handle&)

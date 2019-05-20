@@ -1,0 +1,13 @@
+.. _exhale_function_non__modifyng__sequence__ops_8h_1a3492634cc68c358b63b9dbc2cbc97555:
+
+Template Function shad::impl::count_if(distributed_parallel_tag&&, InputItr, InputItr, UnaryPredicate)
+======================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::count_if(distributed_parallel_tag&&, InputItr, InputItr, UnaryPredicate)

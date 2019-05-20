@@ -1,0 +1,28 @@
+.. _exhale_class_classshad_1_1impl_1_1array_1_1array__iterator:
+
+Template Class array::array_iterator
+====================================
+
+- Defined in :ref:`file_include_shad_core_array.h`
+
+
+Nested Relationships
+--------------------
+
+This class is a nested type of :ref:`exhale_class_classshad_1_1impl_1_1array`.
+
+
+Nested Types
+************
+
+- :ref:`exhale_class_classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::impl::array::array_iterator
+   :members:
+   :protected-members:
+   :undoc-members:

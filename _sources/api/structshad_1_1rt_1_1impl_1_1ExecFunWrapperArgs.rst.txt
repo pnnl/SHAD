@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1rt_1_1impl_1_1ExecFunWrapperArgs:
+
+Template Struct ExecFunWrapperArgs
+==================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_gmt_gmt_utility.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::rt::impl::ExecFunWrapperArgs
+   :members:
+   :protected-members:
+   :undoc-members:

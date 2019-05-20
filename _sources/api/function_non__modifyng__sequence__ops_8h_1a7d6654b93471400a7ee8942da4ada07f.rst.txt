@@ -1,0 +1,13 @@
+.. _exhale_function_non__modifyng__sequence__ops_8h_1a7d6654b93471400a7ee8942da4ada07f:
+
+Template Function shad::impl::find(distributed_parallel_tag&&, ForwardItr, ForwardItr, const T&)
+================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::find(distributed_parallel_tag&&, ForwardItr, ForwardItr, const T&)

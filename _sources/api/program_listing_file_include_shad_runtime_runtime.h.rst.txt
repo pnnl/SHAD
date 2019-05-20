@@ -1,0 +1,293 @@
+
+.. _program_listing_file_include_shad_runtime_runtime.h:
+
+Program Listing for File runtime.h
+==================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_include_shad_runtime_runtime.h>` (``include/shad/runtime/runtime.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   //===------------------------------------------------------------*- C++ -*-===//
+   //
+   //                                     SHAD
+   //
+   //      The Scalable High-performance Algorithms and Data Structure Library
+   //
+   //===----------------------------------------------------------------------===//
+   //
+   // Copyright 2018 Battelle Memorial Institute
+   //
+   // Licensed under the Apache License, Version 2.0 (the "License"); you may not
+   // use this file except in compliance with the License. You may obtain a copy
+   // of the License at
+   //
+   //     http://www.apache.org/licenses/LICENSE-2.0
+   //
+   // Unless required by applicable law or agreed to in writing, software
+   // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+   // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+   // License for the specific language governing permissions and limitations
+   // under the License.
+   //
+   //===----------------------------------------------------------------------===//
+   
+   #ifndef INCLUDE_SHAD_RUNTIME_RUNTIME_H_
+   #define INCLUDE_SHAD_RUNTIME_RUNTIME_H_
+   
+   #include <cstddef>
+   #include <cstdint>
+   
+   #include <functional>
+   #include <iostream>
+   #include <iterator>
+   #include <map>
+   #include <memory>
+   #include <set>
+   #include <unordered_set>
+   #include <utility>
+   #include <vector>
+   
+   #include "shad/config/config.h"
+   #include "shad/runtime/handle.h"
+   #include "shad/runtime/locality.h"
+   #include "shad/runtime/mapping_traits.h"
+   #include "shad/runtime/mappings/available_mappings.h"
+   #include "shad/runtime/synchronous_interface.h"
+   
+   namespace shad {
+   
+   namespace rt {
+   
+   class Lock {
+    public:
+     void lock() { impl::LockTrait<TargetSystemTag>::lock(lock_); }
+     void unlock() { impl::LockTrait<TargetSystemTag>::unlock(lock_); }
+   
+    private:
+     typename impl::LockTrait<TargetSystemTag>::LockTy lock_;
+   };
+   
+   namespace impl {
+   
+   inline void yield() { RuntimeInternalsTrait<TargetSystemTag>::Yield(); }
+   
+   inline size_t getConcurrency() {
+     return RuntimeInternalsTrait<TargetSystemTag>::Concurrency();
+   }
+   
+   inline void initialize(int argc, char *argv[]) {
+     RuntimeInternalsTrait<TargetSystemTag>::Initialize(argc, argv);
+   }
+   
+   inline void finalize() { RuntimeInternalsTrait<TargetSystemTag>::Finalize(); }
+   
+   inline Handle createHandle() {
+     // auto handle = HandleTrait<TargetSystemTag>::CreateNewHandle();
+     // Handle newHandle(handle);
+     return Handle(HandleTrait<TargetSystemTag>::CreateNewHandle());
+   }
+   
+   }  // namespace impl
+   
+   inline uint32_t numLocalities() {
+     return impl::RuntimeInternalsTrait<TargetSystemTag>::NumLocalities();
+   }
+   
+   inline Locality thisLocality() {
+     return Locality(impl::RuntimeInternalsTrait<TargetSystemTag>::ThisLocality());
+   }
+   
+   inline std::set<Locality> allLocalities() {
+     std::set<Locality> result;
+     for (uint32_t L = 0; L < numLocalities(); ++L) {
+       result.insert(Locality(L));
+     }
+     return result;
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void executeAt(const Locality &loc, FunT &&func, const InArgsT &args) {
+     impl::SynchronousInterface<TargetSystemTag>::executeAt(loc, func, args);
+   }
+   
+   template <typename FunT>
+   void executeAt(const Locality &loc, FunT &&func,
+                  const std::shared_ptr<uint8_t> &argsBuffer,
+                  const uint32_t bufferSize) {
+     impl::SynchronousInterface<TargetSystemTag>::executeAt(loc, func, argsBuffer,
+                                                            bufferSize);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void executeAtWithRetBuff(const Locality &loc, FunT &&func, const InArgsT &args,
+                             uint8_t *resultBuffer, uint32_t *resultSize) {
+     impl::SynchronousInterface<TargetSystemTag>::executeAtWithRetBuff(
+         loc, func, args, resultBuffer, resultSize);
+   }
+   
+   template <typename FunT>
+   void executeAtWithRetBuff(const Locality &loc, FunT &&func,
+                             const std::shared_ptr<uint8_t> &argsBuffer,
+                             const uint32_t bufferSize, uint8_t *resultBuffer,
+                             uint32_t *resultSize) {
+     impl::SynchronousInterface<TargetSystemTag>::executeAtWithRetBuff(
+         loc, func, argsBuffer, bufferSize, resultBuffer, resultSize);
+   }
+   
+   template <typename FunT, typename InArgsT, typename ResT>
+   void executeAtWithRet(const Locality &loc, FunT &&func, const InArgsT &args,
+                         ResT *result) {
+     impl::SynchronousInterface<TargetSystemTag>::executeAtWithRet(loc, func, args,
+                                                                   result);
+   }
+   
+   template <typename FunT, typename ResT>
+   void executeAtWithRet(const Locality &loc, FunT &&func,
+                         const std::shared_ptr<uint8_t> &argsBuffer,
+                         const uint32_t bufferSize, ResT *result) {
+     impl::SynchronousInterface<TargetSystemTag>::executeAtWithRet(
+         loc, func, argsBuffer, bufferSize, result);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void executeOnAll(FunT &&func, const InArgsT &args) {
+     impl::SynchronousInterface<TargetSystemTag>::executeOnAll(func, args);
+   }
+   
+   template <typename FunT>
+   void executeOnAll(FunT &&func, const std::shared_ptr<uint8_t> &argsBuffer,
+                     const uint32_t bufferSize) {
+     impl::SynchronousInterface<TargetSystemTag>::executeOnAll(func, argsBuffer,
+                                                               bufferSize);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void forEachAt(const Locality &loc, FunT &&func, const InArgsT &args,
+                  const size_t numIters) {
+     impl::SynchronousInterface<TargetSystemTag>::forEachAt(loc, func, args,
+                                                            numIters);
+   }
+   
+   template <typename FunT>
+   void forEachAt(const Locality &loc, FunT &&func,
+                  const std::shared_ptr<uint8_t> &argsBuffer,
+                  const uint32_t bufferSize, const size_t numIters) {
+     impl::SynchronousInterface<TargetSystemTag>::forEachAt(loc, func, argsBuffer,
+                                                            bufferSize, numIters);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void forEachOnAll(FunT &&func, const InArgsT &args, const size_t numIters) {
+     impl::SynchronousInterface<TargetSystemTag>::forEachOnAll(func, args,
+                                                               numIters);
+   }
+   
+   template <typename FunT>
+   void forEachOnAll(FunT &&func, const std::shared_ptr<uint8_t> &argsBuffer,
+                     const uint32_t bufferSize, const size_t numIters) {
+     impl::SynchronousInterface<TargetSystemTag>::forEachOnAll(
+         func, argsBuffer, bufferSize, numIters);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void asyncExecuteAt(Handle &handle, const Locality &loc, FunT &&func,
+                       const InArgsT &args) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAt(handle, loc,
+                                                                  func, args);
+   }
+   
+   template <typename FunT>
+   void asyncExecuteAt(Handle &handle, const Locality &loc, FunT &&func,
+                       const std::shared_ptr<uint8_t> &argsBuffer,
+                       const uint32_t bufferSize) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAt(
+         handle, loc, func, argsBuffer, bufferSize);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void asyncExecuteAtWithRetBuff(Handle &handle, const Locality &loc, FunT &&func,
+                                  const InArgsT &args, uint8_t *resultBuffer,
+                                  uint32_t *resultSize) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAtWithRetBuff(
+         handle, loc, func, args, resultBuffer, resultSize);
+   }
+   
+   template <typename FunT>
+   void asyncExecuteAtWithRetBuff(Handle &handle, const Locality &loc, FunT &&func,
+                                  const std::shared_ptr<uint8_t> &argsBuffer,
+                                  const uint32_t bufferSize, uint8_t *resultBuffer,
+                                  uint32_t *resultSize) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAtWithRetBuff(
+         handle, loc, func, argsBuffer, bufferSize, resultBuffer, resultSize);
+   }
+   
+   template <typename FunT, typename InArgsT, typename ResT>
+   void asyncExecuteAtWithRet(Handle &handle, const Locality &loc, FunT &&func,
+                              const InArgsT &args, ResT *result) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAtWithRet(
+         handle, loc, func, args, result);
+   }
+   
+   template <typename FunT, typename ResT>
+   void asyncExecuteAtWithRet(Handle &handle, const Locality &loc, FunT &&func,
+                              const std::shared_ptr<uint8_t> &argsBuffer,
+                              const uint32_t bufferSize, ResT *result) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteAtWithRet(
+         handle, loc, func, argsBuffer, bufferSize, result);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void asyncExecuteOnAll(Handle &handle, FunT &&func, const InArgsT &args) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteOnAll(handle, func,
+                                                                     args);
+   }
+   
+   template <typename FunT>
+   void asyncExecuteOnAll(Handle &handle, FunT &&func,
+                          const std::shared_ptr<uint8_t> &argsBuffer,
+                          const uint32_t bufferSize) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncExecuteOnAll(
+         handle, func, argsBuffer, bufferSize);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void asyncForEachAt(Handle &handle, const Locality &loc, FunT &&func,
+                       const InArgsT &args, const size_t numIters) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncForEachAt(
+         handle, loc, func, args, numIters);
+   }
+   
+   template <typename FunT>
+   void asyncForEachAt(Handle &handle, const Locality &loc, FunT &&func,
+                       const std::shared_ptr<uint8_t> &argsBuffer,
+                       const uint32_t bufferSize, const size_t numIters) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncForEachAt(
+         handle, loc, func, argsBuffer, bufferSize, numIters);
+   }
+   
+   template <typename FunT, typename InArgsT>
+   void asyncForEachOnAll(Handle &handle, FunT &&func, const InArgsT &args,
+                          const size_t numIters) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncForEachOnAll(
+         handle, func, args, numIters);
+   }
+   
+   template <typename FunT>
+   void asyncForEachOnAll(Handle &handle, FunT &&func,
+                          const std::shared_ptr<uint8_t> &argsBuffer,
+                          const uint32_t bufferSize, const size_t numIters) {
+     impl::AsynchronousInterface<TargetSystemTag>::asyncForEachOnAll(
+         handle, func, argsBuffer, bufferSize, numIters);
+   }
+   
+   inline void waitForCompletion(Handle &handle) {
+     impl::HandleTrait<TargetSystemTag>::WaitFor(handle.id_);
+   }
+   
+   }  // namespace rt
+   }  // namespace shad
+   
+   #endif  // INCLUDE_SHAD_RUNTIME_RUNTIME_H_

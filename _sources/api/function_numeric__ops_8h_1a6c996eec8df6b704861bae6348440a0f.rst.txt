@@ -1,0 +1,13 @@
+.. _exhale_function_numeric__ops_8h_1a6c996eec8df6b704861bae6348440a0f:
+
+Template Function shad::impl::inner_product(InputIt1, InputIt1, InputIt2, T, BinaryOperation1, BinaryOperation2)
+================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::inner_product(InputIt1, InputIt1, InputIt2, T, BinaryOperation1, BinaryOperation2)

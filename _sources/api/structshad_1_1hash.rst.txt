@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1hash:
+
+Template Struct hash
+====================
+
+- Defined in :ref:`file_include_shad_data_structures_compare_and_hash_utils.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::hash
+   :members:
+   :protected-members:
+   :undoc-members:

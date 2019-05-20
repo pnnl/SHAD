@@ -1,0 +1,56 @@
+
+.. _file_include_shad_core_impl_permutation_ops.h:
+
+File permutation_ops.h
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_core_impl>` (``include/shad/core/impl``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/core/impl/permutation_ops.h``)
+---------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_core_impl_permutation_ops.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``functional``
+
+- ``iterator`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/core/execution.h`` (:ref:`file_include_shad_core_execution.h`)
+
+- ``shad/distributed_iterator_traits.h`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__impl`
+

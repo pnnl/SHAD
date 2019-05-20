@@ -1,0 +1,25 @@
+.. _exhale_class_classshad_1_1OnePerLocality:
+
+Template Class OnePerLocality
+=============================
+
+- Defined in :ref:`file_include_shad_data_structures_one_per_locality.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public shad::AbstractDataStructure< OnePerLocality< T > >`` (:ref:`exhale_class_classshad_1_1AbstractDataStructure`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::OnePerLocality
+   :members:
+   :protected-members:
+   :undoc-members:

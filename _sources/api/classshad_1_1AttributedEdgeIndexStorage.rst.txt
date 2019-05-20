@@ -1,0 +1,28 @@
+.. _exhale_class_classshad_1_1AttributedEdgeIndexStorage:
+
+Template Class AttributedEdgeIndexStorage
+=========================================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_attributed_edge_index.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_struct_structshad_1_1AttributedEdgeIndexStorage_1_1ElementInserter`
+- :ref:`exhale_struct_structshad_1_1AttributedEdgeIndexStorage_1_1FlatEdgeList`
+- :ref:`exhale_struct_structshad_1_1AttributedEdgeIndexStorage_1_1LocalEdgeListChunk`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::AttributedEdgeIndexStorage
+   :members:
+   :protected-members:
+   :undoc-members:

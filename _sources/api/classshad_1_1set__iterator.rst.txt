@@ -1,0 +1,36 @@
+.. _exhale_class_classshad_1_1set__iterator:
+
+Template Class set_iterator
+===========================
+
+- Defined in :ref:`file_include_shad_data_structures_set.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_struct_structshad_1_1set__iterator_1_1itData`
+- :ref:`exhale_class_classshad_1_1set__iterator_1_1local__iterator__range`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public std::iterator< std::forward_iterator_tag, T >``
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::set_iterator
+   :members:
+   :protected-members:
+   :undoc-members:

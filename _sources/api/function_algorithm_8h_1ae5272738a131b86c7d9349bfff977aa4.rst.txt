@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1ae5272738a131b86c7d9349bfff977aa4:
+
+Template Function shad::find_if
+===============================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::find_if(ExecutionPolicy&&, ForwardItr, ForwardItr, UnaryPredicate)

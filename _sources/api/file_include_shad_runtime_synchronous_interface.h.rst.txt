@@ -1,0 +1,73 @@
+
+.. _file_include_shad_runtime_synchronous_interface.h:
+
+File synchronous_interface.h
+============================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime>` (``include/shad/runtime``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/synchronous_interface.h``)
+-------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_synchronous_interface.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstddef``
+
+- ``cstdint``
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``shad/runtime/locality.h`` (:ref:`file_include_shad_runtime_locality.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_synchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_synchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_synchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_runtime.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+- :ref:`namespace_shad__rt__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1SynchronousInterface`
+

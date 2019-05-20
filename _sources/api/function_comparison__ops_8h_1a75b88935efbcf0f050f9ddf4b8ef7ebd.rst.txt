@@ -1,0 +1,13 @@
+.. _exhale_function_comparison__ops_8h_1a75b88935efbcf0f050f9ddf4b8ef7ebd:
+
+Template Function shad::impl::equal(distributed_parallel_tag&&, ForwardIt1, ForwardIt1, ForwardIt2, BinaryPredicate)
+====================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_comparison_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::equal(distributed_parallel_tag&&, ForwardIt1, ForwardIt1, ForwardIt2, BinaryPredicate)

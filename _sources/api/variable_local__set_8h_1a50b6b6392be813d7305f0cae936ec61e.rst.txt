@@ -1,0 +1,13 @@
+.. _exhale_variable_local__set_8h_1a50b6b6392be813d7305f0cae936ec61e:
+
+Variable shad::constants::kSetDefaultNumEntriesPerBucket
+========================================================
+
+- Defined in :ref:`file_include_shad_data_structures_local_set.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: shad::constants::kSetDefaultNumEntriesPerBucket

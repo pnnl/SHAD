@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1a79535b2ad05d27266485f8e299b776cd:
+
+Template Function shad::accumulate(InputIt, InputIt, T, BinaryOperation)
+========================================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::accumulate(InputIt, InputIt, T, BinaryOperation)

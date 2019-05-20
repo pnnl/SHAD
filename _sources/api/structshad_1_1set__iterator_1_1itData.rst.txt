@@ -1,0 +1,22 @@
+.. _exhale_struct_structshad_1_1set__iterator_1_1itData:
+
+Struct set_iterator::itData
+===========================
+
+- Defined in :ref:`file_include_shad_data_structures_set.h`
+
+
+Nested Relationships
+--------------------
+
+This struct is a nested type of :ref:`exhale_class_classshad_1_1set__iterator`.
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::set_iterator::itData
+   :members:
+   :protected-members:
+   :undoc-members:

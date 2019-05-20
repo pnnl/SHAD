@@ -1,0 +1,82 @@
+
+.. _program_listing_file_include_shad_data_structures_one_per_locality.h:
+
+Program Listing for File one_per_locality.h
+===========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_include_shad_data_structures_one_per_locality.h>` (``include/shad/data_structures/one_per_locality.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   //===------------------------------------------------------------*- C++ -*-===//
+   //
+   //                                     SHAD
+   //
+   //      The Scalable High-performance Algorithms and Data Structure Library
+   //
+   //===----------------------------------------------------------------------===//
+   //
+   // Copyright 2018 Battelle Memorial Institute
+   //
+   // Licensed under the Apache License, Version 2.0 (the "License"); you may not
+   // use this file except in compliance with the License. You may obtain a copy
+   // of the License at
+   //
+   //     http://www.apache.org/licenses/LICENSE-2.0
+   //
+   // Unless required by applicable law or agreed to in writing, software
+   // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+   // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+   // License for the specific language governing permissions and limitations
+   // under the License.
+   //
+   //===----------------------------------------------------------------------===//
+   
+   #ifndef INCLUDE_SHAD_DATA_STRUCTURES_ONE_PER_LOCALITY_H_
+   #define INCLUDE_SHAD_DATA_STRUCTURES_ONE_PER_LOCALITY_H_
+   
+   #include "shad/data_structures/abstract_data_structure.h"
+   
+   namespace shad {
+   
+   template <typename T>
+   class OnePerLocality : public AbstractDataStructure<OnePerLocality<T>> {
+    public:
+     using ObjectID = typename AbstractDataStructure<OnePerLocality<T>>::ObjectID;
+     using SharedPtr =
+         typename AbstractDataStructure<OnePerLocality<T>>::SharedPtr;
+   
+   #ifdef DOXYGEN_IS_RUNNING
+     template <typename... Args>
+     static SharedPtr Create(Args... args);
+   #endif
+   
+     ObjectID GetGlobalID() const { return oid_; }
+   
+     T* const operator->() { return &localInstance_; }
+   
+     OnePerLocality<T>& operator=(const T& rhs) {
+       localInstance_ = rhs;
+       return *this;
+     }
+   
+     explicit operator T() const { return localInstance_; }
+   
+    protected:
+     template <typename... Args>
+     explicit OnePerLocality(ObjectID oid, Args... args)
+         : oid_{oid}, localInstance_{args...} {}
+   
+    private:
+     template <typename>
+     friend class AbstractDataStructure;
+   
+     ObjectID oid_;
+     T localInstance_;
+   };
+   
+   }  // namespace shad
+   
+   #endif  // INCLUDE_SHAD_DATA_STRUCTURES_ONE_PER_LOCALITY_H_

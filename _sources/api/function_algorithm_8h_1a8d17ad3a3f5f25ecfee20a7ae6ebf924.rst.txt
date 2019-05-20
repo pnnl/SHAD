@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a8d17ad3a3f5f25ecfee20a7ae6ebf924:
+
+Template Function shad::any_of
+==============================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::any_of(ExecutionPolicy&&, ForwardItr, ForwardItr, UnaryPredicate)

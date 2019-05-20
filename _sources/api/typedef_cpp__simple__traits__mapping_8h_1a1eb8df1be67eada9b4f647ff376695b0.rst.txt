@@ -1,0 +1,13 @@
+.. _exhale_typedef_cpp__simple__traits__mapping_8h_1a1eb8df1be67eada9b4f647ff376695b0:
+
+Typedef shad::rt::TargetSystemTag
+=================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_traits_mapping.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: shad::rt::TargetSystemTag

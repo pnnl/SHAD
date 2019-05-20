@@ -1,0 +1,90 @@
+
+.. _file_include_shad_extensions_graph_library_attributed_edge_index.h:
+
+File attributed_edge_index.h
+============================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_extensions_graph_library>` (``include/shad/extensions/graph_library``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/extensions/graph_library/attributed_edge_index.h``)
+------------------------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_extensions_graph_library_attributed_edge_index.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``atomic``
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``shad/data_structures/compare_and_hash_utils.h`` (:ref:`file_include_shad_data_structures_compare_and_hash_utils.h`)
+
+- ``shad/data_structures/local_hashmap.h`` (:ref:`file_include_shad_data_structures_local_hashmap.h`)
+
+- ``shad/data_structures/local_set.h`` (:ref:`file_include_shad_data_structures_local_set.h`)
+
+- ``shad/extensions/graph_library/edge_index.h`` (:ref:`file_include_shad_extensions_graph_library_edge_index.h`)
+
+- ``shad/extensions/graph_library/local_edge_index.h`` (:ref:`file_include_shad_extensions_graph_library_local_edge_index.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+- ``tuple``
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1AttributedEdgeIndexStorage_1_1ElementInserter`
+
+- :ref:`exhale_struct_structshad_1_1AttributedEdgeIndexStorage_1_1FlatEdgeList`
+
+- :ref:`exhale_struct_structshad_1_1AttributedEdgeIndexStorage_1_1LocalEdgeListChunk`
+
+- :ref:`exhale_class_classshad_1_1AttrEdgesPair`
+
+- :ref:`exhale_class_classshad_1_1AttributedEdgeIndexStorage`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_attributed__edge__index_8h_1a4fcdd0f79705e26acfcc087f7299e70e`
+
+- :ref:`exhale_typedef_attributed__edge__index_8h_1a1c829d1964a31a103acef7260a679a67`
+

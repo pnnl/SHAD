@@ -1,0 +1,22 @@
+.. _exhale_struct_structshad_1_1impl_1_1optional__vector_1_1entry__t:
+
+Struct optional_vector::entry_t
+===============================
+
+- Defined in :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+
+Nested Relationships
+--------------------
+
+This struct is a nested type of :ref:`exhale_struct_structshad_1_1impl_1_1optional__vector`.
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::impl::optional_vector::entry_t
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a507fdc64c5881f464e3c6dd7e470bfa1:
+
+Template Function shad::max_element(ExecutionPolicy&&, ForwardIt, ForwardIt, Compare)
+=====================================================================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::max_element(ExecutionPolicy&&, ForwardIt, ForwardIt, Compare)

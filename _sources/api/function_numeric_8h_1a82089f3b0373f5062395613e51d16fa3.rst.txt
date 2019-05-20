@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1a82089f3b0373f5062395613e51d16fa3:
+
+Template Function shad::partial_sum(InputIt, InputIt, OutputIt, BinaryOperation)
+================================================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::partial_sum(InputIt, InputIt, OutputIt, BinaryOperation)

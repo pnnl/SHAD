@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1af8972bdca686d5f92b727e66cf488952:
+
+Function shad::rt::impl::finalize
+=================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::impl::finalize()

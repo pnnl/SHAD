@@ -1,0 +1,22 @@
+.. _exhale_struct_structshad_1_1impl_1_1Buffer_1_1FlushArgs:
+
+Struct Buffer::FlushArgs
+========================
+
+- Defined in :ref:`file_include_shad_data_structures_buffer.h`
+
+
+Nested Relationships
+--------------------
+
+This struct is a nested type of :ref:`exhale_class_classshad_1_1impl_1_1Buffer`.
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::impl::Buffer::FlushArgs
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1IDCmp:
+
+Template Class IDCmp
+====================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_local_edge_index.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::IDCmp
+   :members:
+   :protected-members:
+   :undoc-members:

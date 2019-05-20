@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1distributed__sequential__tag:
+
+Struct distributed_sequential_tag
+=================================
+
+- Defined in :ref:`file_include_shad_core_execution.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::distributed_sequential_tag
+   :members:
+   :protected-members:
+   :undoc-members:

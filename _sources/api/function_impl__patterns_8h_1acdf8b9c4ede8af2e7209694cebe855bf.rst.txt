@@ -1,0 +1,13 @@
+.. _exhale_function_impl__patterns_8h_1acdf8b9c4ede8af2e7209694cebe855bf:
+
+Template Function shad::impl::distributed_folding_map_early_termination
+=======================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::distributed_folding_map_early_termination(ForwardIt, ForwardIt, MapF&&, HaltF&&, const S&, Args&&...)

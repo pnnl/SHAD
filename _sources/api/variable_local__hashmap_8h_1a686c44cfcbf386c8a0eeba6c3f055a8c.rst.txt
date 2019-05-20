@@ -1,0 +1,13 @@
+.. _exhale_variable_local__hashmap_8h_1a686c44cfcbf386c8a0eeba6c3f055a8c:
+
+Variable shad::constants::kDefaultNumEntriesPerBucket
+=====================================================
+
+- Defined in :ref:`file_include_shad_data_structures_local_hashmap.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: shad::constants::kDefaultNumEntriesPerBucket

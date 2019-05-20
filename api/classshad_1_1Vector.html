@@ -1,0 +1,1008 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Template Class Vector &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Template Class Vector::Iterator" href="classshad_1_1Vector_1_1Iterator.html" />
+    <link rel="prev" title="Template Class unordered_set" href="classshad_1_1unordered__set.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1AtArgs.html">Struct Array::AtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1InsertAtArgs.html">Struct Array::InsertAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1ElementInserter.html">Struct AttributedEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1FlatEdgeList.html">Struct AttributedEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct AttributedEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1ElementInserter.html">Struct DefaultEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1EmptyAttr.html">Struct DefaultEdgeIndexStorage::EmptyAttr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1FlatEdgeList.html">Struct DefaultEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct DefaultEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__iterator__traits.html">Template Struct distributed_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__parallel__tag.html">Struct distributed_parallel_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__random__access__iterator__trait.html">Template Struct distributed_random_access_iterator_trait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__sequential__tag.html">Struct distributed_sequential_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EdgeListChunk.html">Struct EdgeIndex::EdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EntryT.html">Struct EdgeIndex::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1InsertArgs.html">Struct EdgeIndex::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupArgs.html">Struct EdgeIndex::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupResult.html">Struct EdgeIndex::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash.html">Template Struct hash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash_3_01Key_00_01false_01_4.html">Template Struct hash&lt; Key, false &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1EntryT.html">Struct Hashmap::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1InsertArgs.html">Struct Hashmap::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1LookupArgs.html">Struct Hashmap::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply.html">Template Struct Apply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply_3_01i_00_01i_01_4.html">Template Struct Apply&lt; i, i &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Buffer_1_1FlushArgs.html">Struct Buffer::FlushArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector.html">Template Struct optional_vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector_1_1entry__t.html">Struct optional_vector::entry_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1transform__impl_1_1gen__args__t.html">Template Struct gen_args_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous.html">Template Struct is_block_contiguous</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1buffered__insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::buffered_insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator.html">Template Struct is_distributed_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b.html">Template Struct is_distributed_iterator&lt; T, typename std::enable_if&lt; !std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__execution__policy.html">Template Struct is_execution_policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__std__hashable.html">Template Struct is_std_hashable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1local__iterator__traits.html">Template Struct local_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Bucket.html">Struct LocalHashmap::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Entry.html">Struct LocalHashmap::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1LookupResult.html">Struct LocalHashmap::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Bucket.html">Struct LocalSet::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Entry.html">Struct LocalSet::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1map__iterator_1_1itData.html">Struct map_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1measure.html">Template Struct measure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Overwriter.html">Template Struct Overwriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01cpp__tag_01_4.html">Template Struct AsynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01gmt__tag_01_4.html">Template Struct AsynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01tbb__tag_01_4.html">Template Struct AsynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1cpp__tag.html">Struct cpp_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1CppHandle.html">Struct CppHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1ExecFunWrapperArgs.html">Template Struct ExecFunWrapperArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1gmt__tag.html">Struct gmt_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait.html">Template Struct HandleTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01cpp__tag_01_4.html">Template Struct HandleTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4.html">Template Struct HandleTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01tbb__tag_01_4.html">Template Struct HandleTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait.html">Template Struct LockTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01cpp__tag_01_4.html">Template Struct LockTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01gmt__tag_01_4.html">Template Struct LockTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01tbb__tag_01_4.html">Template Struct LockTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait.html">Template Struct RuntimeInternalsTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01cpp__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01gmt__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01tbb__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface.html">Template Struct SynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01cpp__tag_01_4.html">Template Struct SynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4.html">Template Struct SynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01tbb__tag_01_4.html">Template Struct SynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1tbb__tag.html">Struct tbb_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Set_1_1ExeAtArgs.html">Struct Set::ExeAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1set__iterator_1_1itData.html">Struct set_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Updater.html">Template Struct Updater</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure.html">Template Class AbstractDataStructure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure_1_1Catalog.html">Class AbstractDataStructure::Catalog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Array.html">Template Class Array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttrEdgesPair.html">Template Class AttrEdgesPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttributedEdgeIndexStorage.html">Template Class AttributedEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1buffered__insert__iterator.html">Template Class buffered_insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1DefaultEdgeIndexStorage.html">Template Class DefaultEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1EdgeIndex.html">Template Class EdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Hashmap.html">Template Class Hashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1IDCmp.html">Template Class IDCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator.html">Template Class array::array_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range.html">Class array_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef.html">Template Class array::ArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef_3_01const_01U_01_4.html">Template Class array::ArrayRef&lt; const U &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1BaseArrayRef.html">Template Class array::BaseArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1Buffer.html">Template Class Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1BuffersVector.html">Template Class BuffersVector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1insert__iterator.html">Template Class insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator.html">Template Class lmap_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator_1_1partition__range.html">Class lmap_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4.html">Template Class local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html">Template Class local_iterator_traits&lt; T * &gt;::local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalEdgeIndex.html">Template Class LocalEdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalHashmap.html">Template Class LocalHashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalSet.html">Template Class LocalSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator.html">Template Class lset_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator_1_1partition__range.html">Class lset_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator.html">Template Class map_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator_1_1local__iterator__range.html">Class map_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp.html">Template Class MemCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp_3_01std_1_1vector_3_01KeyTy_01_4_01_4.html">Template Class MemCmp&lt; std::vector&lt; KeyTy &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifier.html">Template Class ObjectIdentifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifierCounter.html">Template Class ObjectIdentifierCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1OnePerLocality.html">Template Class OnePerLocality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Handle.html">Class Handle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface.html">Template Class AsynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1localities__range.html">Class localities_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Locality.html">Class Locality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Lock.html">Class Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Set.html">Template Class Set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator.html">Template Class set_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator_1_1local__iterator__range.html">Class set_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__map.html">Template Class unordered_map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__set.html">Template Class unordered_set</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Template Class Vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector_1_1Iterator.html">Template Class Vector::Iterator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Template Class Vector</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classshad_1_1Vector.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="template-class-vector">
+<span id="exhale-class-classshad-1-1vector"></span><h1>Template Class Vector<a class="headerlink" href="#template-class-vector" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Defined in <a class="reference internal" href="file_include_shad_data_structures_vector.h.html#file-include-shad-data-structures-vector-h"><span class="std std-ref">File vector.h</span></a></li>
+</ul>
+<div class="section" id="nested-relationships">
+<h2>Nested Relationships<a class="headerlink" href="#nested-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="nested-types">
+<h3>Nested Types<a class="headerlink" href="#nested-types" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference internal" href="classshad_1_1Vector_1_1Iterator.html#exhale-class-classshad-1-1vector-1-1iterator"><span class="std std-ref">Template Class Vector::Iterator</span></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">shad::AbstractDataStructure&lt;</span> <span class="pre">Vector&lt;</span> <span class="pre">T,</span> <span class="pre">Allocator</span> <span class="pre">&gt;</span> <span class="pre">&gt;</span></code> (<a class="reference internal" href="classshad_1_1AbstractDataStructure.html#exhale-class-classshad-1-1abstractdatastructure"><span class="std std-ref">Template Class AbstractDataStructure</span></a>)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv3N4shad6VectorE">
+<span id="_CPPv2N4shad6VectorE"></span><span id="shad::Vector"></span><span class="target" id="classshad_1_1Vector"></span><em class="property">template </em>&lt;typename <em>T</em>, typename <em>Allocator</em> = std::allocator&lt;T&gt;&gt;<br /><em class="property">class </em><code class="descname">Vector</code> : <em class="property">public</em> shad::<a class="reference internal" href="classshad_1_1AbstractDataStructure.html#_CPPv3N4shad21AbstractDataStructureE" title="shad::AbstractDataStructure">AbstractDataStructure</a>&lt;<a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;&gt;<a class="headerlink" href="#_CPPv3N4shad6VectorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">Vector</span></a> data Structure. </p>
+<p><a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> is a distributed container that can grow dynamically.</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>The contained type must be trivially copiable.</dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">T</span></code>: The type of the entries stored in a <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </li>
+<li><code class="docutils literal notranslate"><span class="pre">Allocator</span></code>: The allocator to be used. </li>
+</ul>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Capacity</p>
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector4SizeEv">
+<span id="_CPPv2NK4shad6Vector4SizeEv"></span><span id="shad::Vector::SizeC"></span><span class="target" id="classshad_1_1Vector_1acc82ec6a8baf31c7b33cfde87309fffe"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::size_type <code class="descname">Size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector4SizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the number of element stored in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the number of element in the container. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector7MaxSizeEv">
+<span id="_CPPv2NK4shad6Vector7MaxSizeEv"></span><span id="shad::Vector::MaxSizeC"></span><span class="target" id="classshad_1_1Vector_1abf3456999188ff7f9e43ca8d1e7d4bff"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::size_type <code class="descname">MaxSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector7MaxSizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the maximum number of elements that <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> can hold. </p>
+<p>This methods returns the maximum potential size of the container. However, there is no guarantee that a <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> will be able to reach that size (i.e., the system might fail to allocate memory before that size is reached). </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector8CapacityEv">
+<span id="_CPPv2NK4shad6Vector8CapacityEv"></span><span id="shad::Vector::CapacityC"></span><span class="target" id="classshad_1_1Vector_1acba3d706d24f0b871dc05423692ac592"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::size_type <code class="descname">Capacity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector8CapacityEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return the size of the allocated storage capacity. </p>
+<p>The capacity of a <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> represent the maximum number of element that the currently allocated storage can hold without the need to expand. Notice that this does not imply a limit on the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">Vector</span></a> size. In fact, when the current capacity is exhausted and more is needed, the container will expand its capacity allocating more memory.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The size of the currently allocated storage capacity. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector5EmptyEv">
+<span id="_CPPv2NK4shad6Vector5EmptyEv"></span><span id="shad::Vector::EmptyC"></span><span class="target" id="classshad_1_1Vector_1ae3eb293e1a9f7b64ca1a77e40caef993"></span>bool <code class="descname">Empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector5EmptyEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns whether the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> is empty. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>true if the container Size is 0, false otherwise. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector7ReserveE9size_type">
+<span id="_CPPv2N4shad6Vector7ReserveE9size_type"></span><span id="shad::Vector::Reserve__size_type"></span><span class="target" id="classshad_1_1Vector_1aaba27b70744d34815776697084245777"></span>void <code class="descname">Reserve</code><span class="sig-paren">(</span>size_type <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector7ReserveE9size_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Request that the Capacity is at least n. </p>
+<p>Request that the Capacity is enough to store n elements. If n is greater than the current Capacity, the function will cause the container to expand increasing its Capacity to n. In all the other cases, the function does not affect the Capacity of the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>.</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Reserve is not thread safe, so don’t try to reserve from multiple concurrent tasks.</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">n</span></code>: The requested minimum Capacity for the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector6ResizeE9size_type">
+<span id="_CPPv2N4shad6Vector6ResizeE9size_type"></span><span id="shad::Vector::Resize__size_type"></span><span class="target" id="classshad_1_1Vector_1a52c6d1d7790dda2722f1c9a95ae66d3b"></span>void <code class="descname">Resize</code><span class="sig-paren">(</span>size_type <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector6ResizeE9size_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Resize the container so that it contains n elements. </p>
+<p>Resize the container so that it contains n elements. If n is smaller than the container Size, the content is reduced to the first n elements. If n is greater than the current Size, the container is expanded by inserting at the end as many elements as needed to reach a size of n.</p>
+<p>If n is greater than the current capacity, more data blocks will be allocated to extend the capacity to at least n elements.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">n</span></code>: The new container size, expressend in number of elements. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Element Access</p>
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector2AtE9size_type">
+<span id="_CPPv2NK4shad6Vector2AtE9size_type"></span><span id="shad::Vector::At__size_typeC"></span><span class="target" id="classshad_1_1Vector_1a5041f2722edbd22fd0bf6d280a78fb2a"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::value_type <code class="descname">At</code><span class="sig-paren">(</span>size_type <em>n</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector2AtE9size_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return the element in position n in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+<p>This methods check whether the requested position is within the bounds of the vector. If the position is out of bounds, the method will throw an std::out_of_range exception.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the element in position n. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">n</span></code>: The position of an element in the container. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad6VectorixE9size_type">
+<span id="_CPPv2NK4shad6VectorixE9size_type"></span><span id="shad::Vector::subscript-operator__size_typeC"></span><span class="target" id="classshad_1_1Vector_1a4d81f325dffc7fdcb4af51987fcae5df"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::value_type <code class="descname">operator[]</code><span class="sig-paren">(</span>size_type <em>n</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6VectorixE9size_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return the element in position n in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+<p>This methods is similar to At but it is not bound checked.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the element in position n. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">n</span></code>: The position of an element in the container. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector5FrontEv">
+<span id="_CPPv2NK4shad6Vector5FrontEv"></span><span id="shad::Vector::FrontC"></span><span class="target" id="classshad_1_1Vector_1a7949f34a5f3b8a427868c92680472691"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::value_type <code class="descname">Front</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector5FrontEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return the first element in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Calling this method on an empty container causes undefined behavior.</dd>
+<dt><strong>Return</strong></dt>
+<dd>The first element in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector4BackEv">
+<span id="_CPPv2NK4shad6Vector4BackEv"></span><span id="shad::Vector::BackC"></span><span class="target" id="classshad_1_1Vector_1aa53cd964ab723eba0af88dbba630529b"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::value_type <code class="descname">Back</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector4BackEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return the last element in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Calling this method on an empty container causes undefined behavior.</dd>
+<dt><strong>Return</strong></dt>
+<dd>The last element in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector7AsyncAtERN2rt6HandleE9size_typeP1T">
+<span id="_CPPv2NK4shad6Vector7AsyncAtERN2rt6HandleE9size_typeP1T"></span><span id="shad::Vector::AsyncAt__rt::HandleR.size_type.TPC"></span><span class="target" id="classshad_1_1Vector_1a4ccea09ed6061842e203a128b1d15d38"></span>void <code class="descname">AsyncAt</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, size_type <em>n</em>, T *<em>result</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector7AsyncAtERN2rt6HandleE9size_typeP1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return the element in position n in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+<p>This methods check whether the requested position is within the bounds of the vector. If the position is out of bounds, the method will throw an std::out_of_range exception.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: The handle that will be used for the spawned tasks. </li>
+<li><code class="docutils literal notranslate"><span class="pre">n</span></code>: The position of an element in the container. </li>
+<li><code class="docutils literal notranslate"><span class="pre">result</span></code>: The address where to store the result. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Modifiers</p>
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector5ClearEv">
+<span id="_CPPv2N4shad6Vector5ClearEv"></span><span id="shad::Vector::Clear"></span><span class="target" id="classshad_1_1Vector_1abaa9f4f6a5d0d029b7b09b207a881e01"></span>void <code class="descname">Clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector5ClearEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Removes all the elements from the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+<p>Removes all the elements from the container (destroying them). It leaves the container with a size and a capacity of 0. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector8PushBackERK1T">
+<span id="_CPPv2N4shad6Vector8PushBackERK1T"></span><span id="shad::Vector::PushBack__TCR"></span><span class="target" id="classshad_1_1Vector_1a4b843e22db538e31fe5388266bec27b7"></span>void <code class="descname">PushBack</code><span class="sig-paren">(</span><em class="property">const</em> T &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector8PushBackERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Adds an element at the end of the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector8InsertAtEN4shad6VectorI1T9AllocatorE9size_typeERKN4shad6VectorI1T9AllocatorE10value_typeE">
+<span id="_CPPv2N4shad6Vector8InsertAtEN4shad6VectorI1T9AllocatorE9size_typeERKN4shad6VectorI1T9AllocatorE10value_typeE"></span><span id="shad::Vector::InsertAt__shad::Vector:T.Allocator:::size_type.shad::Vector:T.Allocator:::value_typeCR"></span><span class="target" id="classshad_1_1Vector_1afcaff7d0c02745c89349c19ccba6848a"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::iterator <code class="descname">InsertAt</code><span class="sig-paren">(</span>shad::Vector&lt;T, Allocator&gt;::<a class="reference internal" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE9size_typeE" title="shad::Vector&lt;T, Allocator&gt;::size_type">size_type</a> <em>position</em>, <em class="property">const</em> shad::Vector&lt;T, Allocator&gt;::<a class="reference internal" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE10value_typeE" title="shad::Vector&lt;T, Allocator&gt;::value_type">value_type</a> &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector8InsertAtEN4shad6VectorI1T9AllocatorE9size_typeERKN4shad6VectorI1T9AllocatorE10value_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write a value at the specified position. </p>
+<p>This method overwrite the element at the specified position.</p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">kVectorSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">InsertAt</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>The semantic of this method is different from the insert method of the std::vector. The <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> will overwrite the element at poisition.</dd>
+<dt><strong>Return</strong></dt>
+<dd>An iterator that points to the inserted value. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">position</span></code>: Position where to write the given value. </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: Value to be written at the specified position. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector8InsertAtE9size_type13InputIterator13InputIterator">
+<span id="_CPPv2N4shad6Vector8InsertAtE9size_type13InputIterator13InputIterator"></span><span id="shad::Vector::InsertAt__size_type.InputIterator.InputIterator"></span><em class="property">template </em>&lt;<em class="property">typename</em> InputIterator&gt;<br /><span class="target" id="classshad_1_1Vector_1af6f11691760337b76c49f18db0f10b05"></span>iterator <code class="descname">InsertAt</code><span class="sig-paren">(</span>size_type <em>position</em>, InputIterator <em>begin</em>, InputIterator <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector8InsertAtE9size_type13InputIterator13InputIterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write a sequence of elements starting at the specified position. </p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">InsertAt</span><span class="p">(</span>
+  <span class="n">aPosition</span><span class="p">,</span> <span class="n">std</span><span class="p">::</span><span class="n">begin</span><span class="p">(</span><span class="n">someSequence</span><span class="p">),</span> <span class="n">std</span><span class="p">::</span><span class="n">end</span><span class="p">(</span><span class="n">someSequence</span><span class="p">));</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>The semantic of this method is different from the insert method of the std::vector. The <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> <strong>will not</strong> make room for the newly inserted elements shifting all the element from position to the end for performance reasons.</dd>
+<dt><strong>Return</strong></dt>
+<dd>An iterator that points to the first inserted value. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">position</span></code>: Position where to write the given value. </li>
+<li><code class="docutils literal notranslate"><span class="pre">position</span></code>: Position where to write the given value. </li>
+<li><code class="docutils literal notranslate"><span class="pre">begin</span></code>: An input iterator to the start of the sequence to insert. </li>
+<li><code class="docutils literal notranslate"><span class="pre">end</span></code>: An input iterator to the end of the sequence to insert. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector13AsyncInsertAtERN2rt6HandleEN4shad6VectorI1T9AllocatorE9size_typeERKN4shad6VectorI1T9AllocatorE10value_typeE">
+<span id="_CPPv2N4shad6Vector13AsyncInsertAtERN2rt6HandleEN4shad6VectorI1T9AllocatorE9size_typeERKN4shad6VectorI1T9AllocatorE10value_typeE"></span><span id="shad::Vector::AsyncInsertAt__rt::HandleR.shad::Vector:T.Allocator:::size_type.shad::Vector:T.Allocator:::value_typeCR"></span><span class="target" id="classshad_1_1Vector_1ae57e459d60d2e5e226ca8e1071582c23"></span>void <code class="descname">AsyncInsertAt</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, shad::Vector&lt;T, Allocator&gt;::<a class="reference internal" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE9size_typeE" title="shad::Vector&lt;T, Allocator&gt;::size_type">size_type</a> <em>position</em>, <em class="property">const</em> shad::Vector&lt;T, Allocator&gt;::<a class="reference internal" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE10value_typeE" title="shad::Vector&lt;T, Allocator&gt;::value_type">value_type</a> &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector13AsyncInsertAtERN2rt6HandleEN4shad6VectorI1T9AllocatorE9size_typeERKN4shad6VectorI1T9AllocatorE10value_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write a value at the specified position asynchronously. </p>
+<p>This method overwrite the element at the specified position. When writing one past the last element, the method will grow the container size by one inserting the value at the end.</p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span> <span class="n">handle</span><span class="p">;</span>
+<span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">kVectorSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">AsyncInsertAt</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="o">//</span> <span class="o">...</span> <span class="n">do</span> <span class="n">other</span> <span class="n">work</span> <span class="o">...</span>
+<span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">waitForCompletion</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>The semantic of this method is different from the insert method of the std::vector. The <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> will NOT make room for the newly inserted element and shift all the element by 1 from position to the end for performance reasons.</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: The handle that will be used for the spawned tasks. </li>
+<li><code class="docutils literal notranslate"><span class="pre">position</span></code>: Position where to write the given value. </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: Value to be written at the specified position. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector13AsyncInsertAtERN2rt6HandleE9size_type13InputIterator13InputIterator">
+<span id="_CPPv2N4shad6Vector13AsyncInsertAtERN2rt6HandleE9size_type13InputIterator13InputIterator"></span><span id="shad::Vector::AsyncInsertAt__rt::HandleR.size_type.InputIterator.InputIterator"></span><em class="property">template </em>&lt;<em class="property">typename</em> InputIterator&gt;<br /><span class="target" id="classshad_1_1Vector_1ac1b10512407484abb67858dee56f5a40"></span>void <code class="descname">AsyncInsertAt</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, size_type <em>position</em>, InputIterator <em>begin</em>, InputIterator <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector13AsyncInsertAtERN2rt6HandleE9size_type13InputIterator13InputIterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write a sequence of elements starting at the specified position asynchronously. </p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span> <span class="n">handle</span><span class="p">;</span>
+<span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">AsyncInsertAt</span><span class="p">(</span>
+  <span class="n">handle</span><span class="p">,</span> <span class="n">aPosition</span><span class="p">,</span> <span class="n">std</span><span class="p">::</span><span class="n">begin</span><span class="p">(</span><span class="n">someSequence</span><span class="p">),</span> <span class="n">std</span><span class="p">::</span><span class="n">end</span><span class="p">(</span><span class="n">someSequence</span><span class="p">));</span>
+<span class="o">//</span> <span class="o">...</span> <span class="n">do</span> <span class="n">other</span> <span class="n">work</span> <span class="o">...</span>
+<span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">waitForCompletion</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>The semantic of this method is different from the insert method of the std::vector. The <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a> <strong>will not</strong> make room for the newly inserted elements shifting all the element from position to the end for performance reasons.</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: The handle that will be used for the spawned tasks. </li>
+<li><code class="docutils literal notranslate"><span class="pre">position</span></code>: Position where to write the given value. </li>
+<li><code class="docutils literal notranslate"><span class="pre">begin</span></code>: An input iterator to the start of the sequence to insert. </li>
+<li><code class="docutils literal notranslate"><span class="pre">end</span></code>: An input iterator to the end of the sequence to insert. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector16BufferedInsertAtEK9size_typeRK10value_type">
+<span id="_CPPv2N4shad6Vector16BufferedInsertAtEK9size_typeRK10value_type"></span><span id="shad::Vector::BufferedInsertAt__size_typeC.value_typeCR"></span><span class="target" id="classshad_1_1Vector_1a20c0f9b4e66907b236e866e86f438184"></span>void <code class="descname">BufferedInsertAt</code><span class="sig-paren">(</span><em class="property">const</em> size_type <em>pos</em>, <em class="property">const</em> value_type &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector16BufferedInsertAtEK9size_typeRK10value_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffered Insert method. </p>
+<p>Inserts an element at the specified position, using aggregation buffers.</p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">kVectorSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">BufferedInsertAt</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">WaitForBufferedInsert</span><span class="p">();</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Insertions are finalized only after calling the <a class="reference internal" href="#classshad_1_1Vector_1ad82b288c5e4fe984bbb7093ce2dfde0d"><span class="std std-ref">WaitForBufferedInsert()</span></a> method.</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">pos</span></code>: The target position. </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: The value of the element to be inserted. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector21BufferedAsyncInsertAtERN2rt6HandleEK9size_typeRK10value_type">
+<span id="_CPPv2N4shad6Vector21BufferedAsyncInsertAtERN2rt6HandleEK9size_typeRK10value_type"></span><span id="shad::Vector::BufferedAsyncInsertAt__rt::HandleR.size_typeC.value_typeCR"></span><span class="target" id="classshad_1_1Vector_1a1b89dc4cb141559dfcfaa3f42bfe56d6"></span>void <code class="descname">BufferedAsyncInsertAt</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> size_type <em>pos</em>, <em class="property">const</em> value_type &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector21BufferedAsyncInsertAtERN2rt6HandleEK9size_typeRK10value_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronous Buffered Insert method. </p>
+<p>Asynchronously inserts an element at the specified position, using aggregation buffers.</p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span> <span class="n">handle</span><span class="p">;</span>
+<span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">kVectorSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">BufferedAsyncInsertAt</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="o">//</span> <span class="o">...</span> <span class="n">do</span> <span class="n">other</span> <span class="n">work</span> <span class="o">...</span>
+<span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">waitForCompletion</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+<span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">WaitForBufferedInsert</span><span class="p">();</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>asynchronous buffered insertions are finalized only after calling the shad::rt::waitForCompletion(rt::Handle &amp;handle) method <strong>and</strong> the <a class="reference internal" href="#classshad_1_1Vector_1ad82b288c5e4fe984bbb7093ce2dfde0d"><span class="std std-ref">WaitForBufferedInsert()</span></a> method, in this order.</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+<li><code class="docutils literal notranslate"><span class="pre">pos</span></code>: The target position. </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: The value to be inserted. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector21WaitForBufferedInsertEv">
+<span id="_CPPv2N4shad6Vector21WaitForBufferedInsertEv"></span><span id="shad::Vector::WaitForBufferedInsert"></span><span class="target" id="classshad_1_1Vector_1ad82b288c5e4fe984bbb7093ce2dfde0d"></span>void <code class="descname">WaitForBufferedInsert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector21WaitForBufferedInsertEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Finalize method for buffered insertions. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Algorithms</p>
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector5ApplyEK9size_typeRR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad6Vector5ApplyEK9size_typeRR9ApplyFunTDpR4Args"></span><span id="shad::Vector::Apply__size_typeC.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1Vector_1a35b98ffc99f64690a55408d847e41cb7"></span>void <code class="descname">Apply</code><span class="sig-paren">(</span><em class="property">const</em> size_type <em>position</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector5ApplyEK9size_typeRR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Applies a user-defined function to an element. </p>
+<p>Applies a user-defined function to the element at the specified position. Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">fn</span><span class="p">(</span><span class="n">size_t</span><span class="p">,</span> <span class="n">size_t</span><span class="o">&amp;</span> <span class="n">elem</span><span class="p">,</span> <span class="n">size_t</span><span class="o">&amp;</span> <span class="n">aValue</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">//</span> <span class="o">...</span> <span class="n">do</span> <span class="n">something</span> <span class="o">...</span>
+<span class="p">}</span>
+<span class="o">//</span> <span class="o">...</span>
+<span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">kVectorSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">Apply</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">aValue</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">size_t</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="n">args</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">position</span></code>: The target position. </li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector10AsyncApplyERN2rt6HandleEK9size_typeRR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad6Vector10AsyncApplyERN2rt6HandleEK9size_typeRR9ApplyFunTDpR4Args"></span><span id="shad::Vector::AsyncApply__rt::HandleR.size_typeC.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1Vector_1a6157b35194197e1cf6491bc70cf08e14"></span>void <code class="descname">AsyncApply</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> size_type <em>position</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector10AsyncApplyERN2rt6HandleEK9size_typeRR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously applies a user-defined function to an element. </p>
+<p>Asynchronously applies a user-defined function to the element at the specified position.</p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">fn</span><span class="p">(</span><span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">size_t</span><span class="o">&amp;</span> <span class="n">elem</span><span class="p">,</span> <span class="n">size_t</span><span class="o">&amp;</span> <span class="n">aValue</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">//</span> <span class="o">...</span> <span class="n">do</span> <span class="n">something</span> <span class="o">...</span>
+<span class="p">}</span>
+<span class="o">//</span> <span class="o">...</span>
+<span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span> <span class="n">handle</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">kVectorSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">AsyncApply</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">aValue</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">waitForCompletion</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the shad::rt::waitForCompletion(rt::Handle &amp;handle) method.</dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">size_t</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="n">args</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+<li><code class="docutils literal notranslate"><span class="pre">position</span></code>: The target position. </li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector14ForEachInRangeEK9size_typeK9size_typeRR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad6Vector14ForEachInRangeEK9size_typeK9size_typeRR9ApplyFunTDpR4Args"></span><span id="shad::Vector::ForEachInRange__size_typeC.size_typeC.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1Vector_1aea2d723d26f4ff30dfea4bd77703e475"></span>void <code class="descname">ForEachInRange</code><span class="sig-paren">(</span><em class="property">const</em> size_type <em>first</em>, <em class="property">const</em> size_type <em>last</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector14ForEachInRangeEK9size_typeK9size_typeRR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Applies a user-defined function to every element in the specified range. </p>
+<p>Applies a user-defined function to all the elements in the specified range of positions.</p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">fn</span><span class="p">(</span><span class="n">size_t</span><span class="o">&amp;</span> <span class="n">elem</span><span class="p">,</span> <span class="n">size_t</span><span class="o">&amp;</span> <span class="n">aValue</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">//</span> <span class="o">...</span> <span class="n">do</span> <span class="n">something</span> <span class="o">...</span>
+<span class="p">}</span>
+<span class="o">//</span> <span class="o">...</span>
+<span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="n">edsPtr</span><span class="o">-&gt;</span><span class="n">ForEachInRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">kVectorSize</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">aValue</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="n">args</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">first</span></code>: The first position of the range. </li>
+<li><code class="docutils literal notranslate"><span class="pre">last</span></code>: The last position of the range. </li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector19AsyncForEachInRangeERN2rt6HandleEK9size_typeK9size_typeRR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad6Vector19AsyncForEachInRangeERN2rt6HandleEK9size_typeK9size_typeRR9ApplyFunTDpR4Args"></span><span id="shad::Vector::AsyncForEachInRange__rt::HandleR.size_typeC.size_typeC.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1Vector_1a8ab3e99caafbae6cf639744079b9e9cc"></span>void <code class="descname">AsyncForEachInRange</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> size_type <em>first</em>, <em class="property">const</em> size_type <em>last</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector19AsyncForEachInRangeERN2rt6HandleEK9size_typeK9size_typeRR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously applies a user-defined function to every element in the specified range. </p>
+<p>Asynchronously applies a user-defined function to all the elements in the specified range of positions.</p>
+<p>Typical usage: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">asyncApplyFun</span><span class="p">(</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">size_t</span><span class="o">&amp;</span> <span class="n">elem</span><span class="p">,</span> <span class="n">size_t</span><span class="o">&amp;</span> <span class="n">aValue</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">//</span> <span class="o">...</span> <span class="n">do</span> <span class="n">something</span> <span class="o">...</span>
+<span class="p">}</span>
+<span class="o">//</span> <span class="o">...</span>
+<span class="n">auto</span> <span class="n">vectorPtr</span> <span class="o">=</span> <span class="n">shad</span><span class="p">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">::</span><span class="n">Create</span><span class="p">(</span><span class="n">kVectorSize</span><span class="p">);</span>
+<span class="n">rt</span><span class="p">::</span><span class="n">Handle</span> <span class="n">handle</span><span class="p">;</span>
+<span class="n">vectorPtr</span><span class="o">-&gt;</span><span class="n">AsyncForEachInRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">kVectorSize</span><span class="p">,</span> <span class="n">kVectorSize</span><span class="p">,</span> <span class="n">aValue</span><span class="p">);</span>
+<span class="o">//</span> <span class="o">...</span> <span class="n">do</span> <span class="n">other</span> <span class="n">work</span> <span class="o">...</span>
+<span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">waitForCompletion</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the shad::rt::waitForCompletion(rt::Handle &amp;handle) method.</dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="n">args</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+<li><code class="docutils literal notranslate"><span class="pre">first</span></code>: The first position of the range. </li>
+<li><code class="docutils literal notranslate"><span class="pre">last</span></code>: The last position of the range. </li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="type">
+<dt id="_CPPv3IEN4shad6VectorI1T9AllocatorE14allocator_typeE">
+<span id="_CPPv2IEN4shad6VectorI1T9AllocatorE14allocator_typeE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Vector_1ad950d846edeeed7cc4a9163f9f679624"></span><em class="property">using </em><code class="descname">allocator_type</code> = Allocator<a class="headerlink" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE14allocator_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The type of the allocator. </p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad6VectorI1T9AllocatorE10value_typeE">
+<span id="_CPPv2IEN4shad6VectorI1T9AllocatorE10value_typeE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Vector_1adb97b89826617473f44b4bb1dd3308ba"></span><em class="property">using </em><code class="descname">value_type</code> = T<a class="headerlink" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE10value_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The type of the elements stored in the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">shad::Vector</span></a>. </p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad6VectorI1T9AllocatorE15difference_typeE">
+<span id="_CPPv2IEN4shad6VectorI1T9AllocatorE15difference_typeE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Vector_1a46e5348988a063d58ed55c76fc94cec1"></span><em class="property">using </em><code class="descname">difference_type</code> = <em class="property">typename</em> <a class="reference internal" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE14allocator_typeE" title="shad::Vector&lt;T, Allocator&gt;::allocator_type">allocator_type</a>::difference_type<a class="headerlink" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE15difference_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A signed integral type used the difference between iterators. </p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad6VectorI1T9AllocatorE9size_typeE">
+<span id="_CPPv2IEN4shad6VectorI1T9AllocatorE9size_typeE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Vector_1a1c97f4eb87d738cb4de97e5b3587c397"></span><em class="property">using </em><code class="descname">size_type</code> = <em class="property">typename</em> <a class="reference internal" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE14allocator_typeE" title="shad::Vector&lt;T, Allocator&gt;::allocator_type">allocator_type</a>::size_type<a class="headerlink" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE9size_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>An unsigned integral type that can represent any non-negative value of difference_type. </p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad6VectorI1T9AllocatorE8iteratorE">
+<span id="_CPPv2IEN4shad6VectorI1T9AllocatorE8iteratorE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Vector_1aaa71fd41daa1548f8436bc54ef507976"></span><em class="property">using </em><code class="descname">iterator</code> = Iterator&lt;T&gt;<a class="headerlink" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A random access iterator to <a class="reference internal" href="#classshad_1_1Vector_1adb97b89826617473f44b4bb1dd3308ba"><span class="std std-ref">shad::Vector::value_type</span></a>. </p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad6VectorI1T9AllocatorE14const_iteratorE">
+<span id="_CPPv2IEN4shad6VectorI1T9AllocatorE14const_iteratorE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Vector_1ab677e6f62431a450c856e7ffe44efbc6"></span><em class="property">using </em><code class="descname">const_iterator</code> = Iterator&lt;<em class="property">const</em> T&gt;<a class="headerlink" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE14const_iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A random access iterator to const <a class="reference internal" href="#classshad_1_1Vector_1adb97b89826617473f44b4bb1dd3308ba"><span class="std std-ref">shad::Vector::value_type</span></a>. </p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad6VectorI1T9AllocatorE8ObjectIDE">
+<span id="_CPPv2IEN4shad6VectorI1T9AllocatorE8ObjectIDE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Vector_1a71193856f7dddb5e9fe0128fe5d12448"></span><em class="property">using </em><code class="descname">ObjectID</code> = <em class="property">typename</em> <a class="reference internal" href="classshad_1_1AbstractDataStructure.html#_CPPv3N4shad21AbstractDataStructureE" title="shad::AbstractDataStructure">AbstractDataStructure</a>::ObjectID<a class="headerlink" href="#_CPPv3IEN4shad6VectorI1T9AllocatorE8ObjectIDE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The type of the unique identifier for the <a class="reference internal" href="#classshad_1_1Vector"><span class="std std-ref">Vector</span></a>. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv3NK4shad6Vector11GetGlobalIDEv">
+<span id="_CPPv2NK4shad6Vector11GetGlobalIDEv"></span><span id="shad::Vector::GetGlobalIDC"></span><span class="target" id="classshad_1_1Vector_1a1624c9ed8f177f50071cdeff7ccb3c03"></span>ObjectID <code class="descname">GetGlobalID</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad6Vector11GetGlobalIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>DataStructure identifier getter. </p>
+<p>Returns the global object identifier associated to a DataStructure instance.</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>It must be implemented in the inheriting DataStructure. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6VectorD0Ev">
+<span id="_CPPv2N4shad6VectorD0Ev"></span><span id="shad::Vector::~Vector"></span><span class="target" id="classshad_1_1Vector_1af3505368cf8e3cef009b8d1f894a8e97"></span><code class="descname">~Vector</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6VectorD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector17BufferEntryInsertEKNSt5tupleI9size_type10value_typeEE">
+<span id="_CPPv2N4shad6Vector17BufferEntryInsertEKNSt5tupleI9size_type10value_typeEE"></span><span id="shad::Vector::BufferEntryInsert__std::tuple:size_type.value_type:C"></span><span class="target" id="classshad_1_1Vector_1ac34d718c025cee060735b3bced4cf38b"></span>void <code class="descname">BufferEntryInsert</code><span class="sig-paren">(</span><em class="property">const</em> std::tuple&lt;size_type, value_type&gt; <em>entry</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector17BufferEntryInsertEKNSt5tupleI9size_type10value_typeEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector8InsertAtEN6VectorI1T9AllocatorE9size_typeE12IteratorType12IteratorType">
+<span id="_CPPv2N4shad6Vector8InsertAtEN6VectorI1T9AllocatorE9size_typeE12IteratorType12IteratorType"></span><span id="shad::Vector::InsertAt__Vector:T.Allocator:::size_type.IteratorType.IteratorType"></span><em class="property">template </em>&lt;<em class="property">typename</em> IteratorType&gt;<br /><span class="target" id="classshad_1_1Vector_1a6b3e4b374c0cdc673273716d08c83161"></span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::iterator <code class="descname">InsertAt</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::size_type <em>position</em>, IteratorType <em>begin</em>, IteratorType <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector8InsertAtEN6VectorI1T9AllocatorE9size_typeE12IteratorType12IteratorType" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector13AsyncInsertAtERN2rt6HandleEN6VectorI1T9AllocatorE9size_typeE12IteratorType12IteratorType">
+<span id="_CPPv2N4shad6Vector13AsyncInsertAtERN2rt6HandleEN6VectorI1T9AllocatorE9size_typeE12IteratorType12IteratorType"></span><span id="shad::Vector::AsyncInsertAt__rt::HandleR.Vector:T.Allocator:::size_type.IteratorType.IteratorType"></span><em class="property">template </em>&lt;<em class="property">typename</em> IteratorType&gt;<br /><span class="target" id="classshad_1_1Vector_1a0feab819cbb5f85388a42e9548983479"></span>void <code class="descname">AsyncInsertAt</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::size_type <em>position</em>, IteratorType <em>begin</em>, IteratorType <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector13AsyncInsertAtERN2rt6HandleEN6VectorI1T9AllocatorE9size_typeE12IteratorType12IteratorType" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector5ApplyEKN6VectorI1T9AllocatorE9size_typeERR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad6Vector5ApplyEKN6VectorI1T9AllocatorE9size_typeERR9ApplyFunTDpR4Args"></span><span id="shad::Vector::Apply__Vector:T.Allocator:::size_typeC.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1Vector_1a5f503abd217734deaa5baafb8142ab45"></span>void <code class="descname">Apply</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::size_type <em>position</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector5ApplyEKN6VectorI1T9AllocatorE9size_typeERR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector10AsyncApplyERN2rt6HandleEKN6VectorI1T9AllocatorE9size_typeERR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad6Vector10AsyncApplyERN2rt6HandleEKN6VectorI1T9AllocatorE9size_typeERR9ApplyFunTDpR4Args"></span><span id="shad::Vector::AsyncApply__rt::HandleR.Vector:T.Allocator:::size_typeC.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1Vector_1a81e9f5dd9a9f35d59df36c8e7bb334c2"></span>void <code class="descname">AsyncApply</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv3N4shad6VectorE" title="shad::Vector">Vector</a>&lt;T, Allocator&gt;::size_type <em>position</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector10AsyncApplyERN2rt6HandleEKN6VectorI1T9AllocatorE9size_typeERR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Protected Functions</p>
+<dl class="function">
+<dt id="_CPPv3N4shad6Vector6VectorE8ObjectID9size_type">
+<span id="_CPPv2N4shad6Vector6VectorE8ObjectID9size_type"></span><span id="shad::Vector::Vector__ObjectID.size_type"></span><span class="target" id="classshad_1_1Vector_1a19cf7c81eea1bbf2f1f3222ac6b4a4a5"></span><code class="descname">Vector</code><span class="sig-paren">(</span>ObjectID <em>oid</em>, size_type <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad6Vector6VectorE8ObjectID9size_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Friends</p>
+<dl class="function">
+<dt>
+<span class="target" id="classshad_1_1Vector_1a940ed6ff8c53d0b6007975770b4dc641"></span><em class="property">friend </em><code class="descname">shad::Vector::impl::BuffersVector&lt; std::tuple&lt; size_t, T &gt;, Vector&lt; T, Allocator &gt; &gt;</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classshad_1_1Vector_1_1Iterator.html" class="btn btn-neutral float-right" title="Template Class Vector::Iterator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classshad_1_1unordered__set.html" class="btn btn-neutral float-left" title="Template Class unordered_set" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

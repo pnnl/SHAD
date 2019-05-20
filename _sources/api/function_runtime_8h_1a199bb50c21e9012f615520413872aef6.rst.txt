@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1a199bb50c21e9012f615520413872aef6:
+
+Function shad::rt::numLocalities
+================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::numLocalities()

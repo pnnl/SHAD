@@ -1,5 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node2" href="$structshad_1_1distributed__iterator__traits.html" title="shad::distributed_iterator\l_traits\&lt; Iterator \&gt;" alt="" coords="152,13,317,54"/>
-<area shape="rect" id="node4" href="$structshad_1_1local__iterator__traits.html" title="shad::local_iterator\l_traits\&lt; Iterator \&gt;" alt="" coords="169,78,301,119"/>
-<area shape="rect" id="node3" href="$structshad_1_1distributed__random__access__iterator__trait.html" title="shad::distributed_random\l_access_iterator_trait\l\&lt; Iterator \&gt;" alt="" coords="365,5,533,61"/>
-</map>

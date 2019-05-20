@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1is__distributed__iterator:
+
+Template Struct is_distributed_iterator
+=======================================
+
+- Defined in :ref:`file_include_shad_distributed_iterator_traits.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::is_distributed_iterator
+   :members:
+   :protected-members:
+   :undoc-members:

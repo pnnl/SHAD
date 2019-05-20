@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1a1406d52ae9f56d5b4a160d37b2b20f3a:
+
+Template Function shad::iota
+============================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::iota(ForwardIterator, ForwardIterator, T)

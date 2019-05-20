@@ -1,0 +1,111 @@
+
+.. _file_include_shad_distributed_iterator_traits.h:
+
+File distributed_iterator_traits.h
+==================================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad>` (``include/shad``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/distributed_iterator_traits.h``)
+-----------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_distributed_iterator_traits.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cassert``
+
+- ``iterator`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/runtime/locality.h`` (:ref:`file_include_shad_runtime_locality.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_algorithm.h`
+
+- :ref:`file_include_shad_core_array.h`
+
+- :ref:`file_include_shad_core_impl_binary_search_ops.h`
+
+- :ref:`file_include_shad_core_impl_comparison_ops.h`
+
+- :ref:`file_include_shad_core_impl_heap_ops.h`
+
+- :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+- :ref:`file_include_shad_core_impl_minimum_maximum_ops.h`
+
+- :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+- :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+- :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+- :ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`
+
+- :ref:`file_include_shad_core_impl_other_ops_on_sorted_ranges.h`
+
+- :ref:`file_include_shad_core_impl_partitioning_ops.h`
+
+- :ref:`file_include_shad_core_impl_permutation_ops.h`
+
+- :ref:`file_include_shad_core_impl_set_ops.h`
+
+- :ref:`file_include_shad_core_impl_sorting_ops.h`
+
+- :ref:`file_include_shad_core_impl_utils.h`
+
+- :ref:`file_include_shad_core_numeric.h`
+
+- :ref:`file_include_shad_data_structures_hashmap.h`
+
+- :ref:`file_include_shad_data_structures_set.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1distributed__iterator__traits`
+
+- :ref:`exhale_struct_structshad_1_1distributed__random__access__iterator__trait`
+
+- :ref:`exhale_struct_structshad_1_1is__distributed__iterator`
+
+- :ref:`exhale_struct_structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b`
+
+- :ref:`exhale_struct_structshad_1_1local__iterator__traits`
+
+- :ref:`exhale_class_classshad_1_1local__iterator__traits_3_01T_01_5_01_4`
+
+- :ref:`exhale_class_classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range`
+

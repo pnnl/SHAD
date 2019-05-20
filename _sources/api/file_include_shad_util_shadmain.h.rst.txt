@@ -1,0 +1,51 @@
+
+.. _file_include_shad_util_shadmain.h:
+
+File shadmain.h
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_util>` (``include/shad/util``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/util/shadmain.h``)
+---------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_util_shadmain.h.rst
+
+
+
+
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_shad.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_shadmain_8h_1a9f30a41da5e389095d44fe5b1c9e6f5e`
+

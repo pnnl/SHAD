@@ -1,0 +1,34 @@
+.. _dir_include_shad_core_impl:
+
+
+Directory impl
+==============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_core>` (``include/shad/core``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad/core/impl``
+
+
+Files
+-----
+
+- :ref:`file_include_shad_core_impl_binary_search_ops.h`
+- :ref:`file_include_shad_core_impl_comparison_ops.h`
+- :ref:`file_include_shad_core_impl_heap_ops.h`
+- :ref:`file_include_shad_core_impl_impl_patterns.h`
+- :ref:`file_include_shad_core_impl_minimum_maximum_ops.h`
+- :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+- :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+- :ref:`file_include_shad_core_impl_numeric_ops.h`
+- :ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`
+- :ref:`file_include_shad_core_impl_other_ops_on_sorted_ranges.h`
+- :ref:`file_include_shad_core_impl_partitioning_ops.h`
+- :ref:`file_include_shad_core_impl_permutation_ops.h`
+- :ref:`file_include_shad_core_impl_set_ops.h`
+- :ref:`file_include_shad_core_impl_sorting_ops.h`
+- :ref:`file_include_shad_core_impl_utils.h`
+
+

@@ -1,0 +1,13 @@
+.. _exhale_function_impl__patterns_8h_1acb91c9af4a31a73faa6ea8f71a0be42a:
+
+Template Function shad::impl::local_map_void_offset
+===================================================
+
+- Defined in :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::local_map_void_offset(ForwardIt, ForwardIt, MapF&&)

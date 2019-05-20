@@ -1,0 +1,13 @@
+.. _exhale_function_buffer_8h_1a8a85d4fe7d902968e0b727efc68d3c31:
+
+Template Function shad::constants::min
+======================================
+
+- Defined in :ref:`file_include_shad_data_structures_buffer.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::constants::min(T const, T const)

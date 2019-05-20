@@ -1,0 +1,13 @@
+.. _exhale_function_numeric__ops_8h_1adb47097b66f7a100bfbd7ecaa9f5774b:
+
+Template Function shad::impl::reduce(distributed_sequential_tag&&, InputIt, InputIt, T, BinaryOperation)
+========================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::reduce(distributed_sequential_tag&&, InputIt, InputIt, T, BinaryOperation)

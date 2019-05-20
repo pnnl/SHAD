@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1a9a77fcd35f06e3e2200ee1ca940ba8d1:
+
+Template Function shad::rt::executeAtWithRetBuff(const Locality&, FunT&&, const std::shared_ptr<uint8_t>&, const uint32_t, uint8_t \*, uint32_t \*)
+===================================================================================================================================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::executeAtWithRetBuff(const Locality&, FunT&&, const std::shared_ptr<uint8_t>&, const uint32_t, uint8_t *, uint32_t *)

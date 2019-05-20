@@ -1,0 +1,35 @@
+.. _exhale_class_classshad_1_1Set:
+
+Template Class Set
+==================
+
+- Defined in :ref:`file_include_shad_data_structures_set.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_struct_structshad_1_1Set_1_1ExeAtArgs`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public shad::AbstractDataStructure< Set< T, ELEM_COMPARE > >`` (:ref:`exhale_class_classshad_1_1AbstractDataStructure`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::Set
+   :members:
+   :protected-members:
+   :undoc-members:

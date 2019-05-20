@@ -1,0 +1,64 @@
+
+.. _file_include_shad_runtime_mappings_tbb_tbb_utility.h:
+
+File tbb_utility.h
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime_mappings_tbb>` (``include/shad/runtime/mappings/tbb``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/mappings/tbb/tbb_utility.h``)
+----------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_mappings_tbb_tbb_utility.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstddef``
+
+- ``cstdint``
+
+- ``shad/runtime/locality.h`` (:ref:`file_include_shad_runtime_locality.h`)
+
+- ``sstream``
+
+- ``system_error``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_synchronous_interface.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+- :ref:`namespace_shad__rt__impl`
+

@@ -1,0 +1,22 @@
+.. _exhale_struct_structshad_1_1Set_1_1ExeAtArgs:
+
+Struct Set::ExeAtArgs
+=====================
+
+- Defined in :ref:`file_include_shad_data_structures_set.h`
+
+
+Nested Relationships
+--------------------
+
+This struct is a nested type of :ref:`exhale_class_classshad_1_1Set`.
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::Set::ExeAtArgs
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a1d99da6ce33f2013b3ff47b9a05a0916:
+
+Template Function shad::equal(ExecutionPolicy&&, ForwardIt1, ForwardIt1, ForwardIt2, BinaryPredicate)
+=====================================================================================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::equal(ExecutionPolicy&&, ForwardIt1, ForwardIt1, ForwardIt2, BinaryPredicate)

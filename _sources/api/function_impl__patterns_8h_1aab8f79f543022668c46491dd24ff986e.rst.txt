@@ -1,0 +1,13 @@
+.. _exhale_function_impl__patterns_8h_1aab8f79f543022668c46491dd24ff986e:
+
+Template Function shad::impl::local_map_init
+============================================
+
+- Defined in :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::local_map_init(ForwardIt, ForwardIt, MapF&&, const typename std::result_of<MapF&(ForwardIt, ForwardIt)>::type&)

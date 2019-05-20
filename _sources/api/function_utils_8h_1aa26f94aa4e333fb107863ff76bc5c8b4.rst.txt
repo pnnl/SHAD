@@ -1,0 +1,13 @@
+.. _exhale_function_utils_8h_1aa26f94aa4e333fb107863ff76bc5c8b4:
+
+Template Function shad::impl::flush_iterator(shad::buffered_insert_iterator<T>&)
+================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_utils.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::flush_iterator(shad::buffered_insert_iterator<T>&)

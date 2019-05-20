@@ -1,0 +1,87 @@
+
+.. _file_include_shad_data_structures_set.h:
+
+File set.h
+==========
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_data_structures>` (``include/shad/data_structures``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/data_structures/set.h``)
+---------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_data_structures_set.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``functional``
+
+- ``shad/data_structures/abstract_data_structure.h`` (:ref:`file_include_shad_data_structures_abstract_data_structure.h`)
+
+- ``shad/data_structures/buffer.h`` (:ref:`file_include_shad_data_structures_buffer.h`)
+
+- ``shad/data_structures/compare_and_hash_utils.h`` (:ref:`file_include_shad_data_structures_compare_and_hash_utils.h`)
+
+- ``shad/data_structures/local_set.h`` (:ref:`file_include_shad_data_structures_local_set.h`)
+
+- ``shad/distributed_iterator_traits.h`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+- ``tuple``
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_unordered_set.h`
+
+- :ref:`file_include_shad_extensions_graph_library_algorithms_sssp.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1Set_1_1ExeAtArgs`
+
+- :ref:`exhale_struct_structshad_1_1set__iterator_1_1itData`
+
+- :ref:`exhale_class_classshad_1_1Set`
+
+- :ref:`exhale_class_classshad_1_1set__iterator`
+
+- :ref:`exhale_class_classshad_1_1set__iterator_1_1local__iterator__range`
+

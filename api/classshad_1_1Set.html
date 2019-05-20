@@ -1,0 +1,776 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Template Class Set &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Template Class set_iterator" href="classshad_1_1set__iterator.html" />
+    <link rel="prev" title="Class Lock" href="classshad_1_1rt_1_1Lock.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1AtArgs.html">Struct Array::AtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1InsertAtArgs.html">Struct Array::InsertAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1ElementInserter.html">Struct AttributedEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1FlatEdgeList.html">Struct AttributedEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct AttributedEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1ElementInserter.html">Struct DefaultEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1EmptyAttr.html">Struct DefaultEdgeIndexStorage::EmptyAttr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1FlatEdgeList.html">Struct DefaultEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct DefaultEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__iterator__traits.html">Template Struct distributed_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__parallel__tag.html">Struct distributed_parallel_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__random__access__iterator__trait.html">Template Struct distributed_random_access_iterator_trait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__sequential__tag.html">Struct distributed_sequential_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EdgeListChunk.html">Struct EdgeIndex::EdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EntryT.html">Struct EdgeIndex::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1InsertArgs.html">Struct EdgeIndex::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupArgs.html">Struct EdgeIndex::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupResult.html">Struct EdgeIndex::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash.html">Template Struct hash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash_3_01Key_00_01false_01_4.html">Template Struct hash&lt; Key, false &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1EntryT.html">Struct Hashmap::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1InsertArgs.html">Struct Hashmap::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1LookupArgs.html">Struct Hashmap::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply.html">Template Struct Apply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply_3_01i_00_01i_01_4.html">Template Struct Apply&lt; i, i &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Buffer_1_1FlushArgs.html">Struct Buffer::FlushArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector.html">Template Struct optional_vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector_1_1entry__t.html">Struct optional_vector::entry_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1transform__impl_1_1gen__args__t.html">Template Struct gen_args_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous.html">Template Struct is_block_contiguous</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1buffered__insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::buffered_insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator.html">Template Struct is_distributed_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b.html">Template Struct is_distributed_iterator&lt; T, typename std::enable_if&lt; !std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__execution__policy.html">Template Struct is_execution_policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__std__hashable.html">Template Struct is_std_hashable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1local__iterator__traits.html">Template Struct local_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Bucket.html">Struct LocalHashmap::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Entry.html">Struct LocalHashmap::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1LookupResult.html">Struct LocalHashmap::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Bucket.html">Struct LocalSet::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Entry.html">Struct LocalSet::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1map__iterator_1_1itData.html">Struct map_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1measure.html">Template Struct measure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Overwriter.html">Template Struct Overwriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01cpp__tag_01_4.html">Template Struct AsynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01gmt__tag_01_4.html">Template Struct AsynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01tbb__tag_01_4.html">Template Struct AsynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1cpp__tag.html">Struct cpp_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1CppHandle.html">Struct CppHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1ExecFunWrapperArgs.html">Template Struct ExecFunWrapperArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1gmt__tag.html">Struct gmt_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait.html">Template Struct HandleTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01cpp__tag_01_4.html">Template Struct HandleTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4.html">Template Struct HandleTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01tbb__tag_01_4.html">Template Struct HandleTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait.html">Template Struct LockTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01cpp__tag_01_4.html">Template Struct LockTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01gmt__tag_01_4.html">Template Struct LockTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01tbb__tag_01_4.html">Template Struct LockTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait.html">Template Struct RuntimeInternalsTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01cpp__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01gmt__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01tbb__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface.html">Template Struct SynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01cpp__tag_01_4.html">Template Struct SynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4.html">Template Struct SynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01tbb__tag_01_4.html">Template Struct SynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1tbb__tag.html">Struct tbb_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Set_1_1ExeAtArgs.html">Struct Set::ExeAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1set__iterator_1_1itData.html">Struct set_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Updater.html">Template Struct Updater</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure.html">Template Class AbstractDataStructure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure_1_1Catalog.html">Class AbstractDataStructure::Catalog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Array.html">Template Class Array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttrEdgesPair.html">Template Class AttrEdgesPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttributedEdgeIndexStorage.html">Template Class AttributedEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1buffered__insert__iterator.html">Template Class buffered_insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1DefaultEdgeIndexStorage.html">Template Class DefaultEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1EdgeIndex.html">Template Class EdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Hashmap.html">Template Class Hashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1IDCmp.html">Template Class IDCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator.html">Template Class array::array_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range.html">Class array_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef.html">Template Class array::ArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef_3_01const_01U_01_4.html">Template Class array::ArrayRef&lt; const U &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1BaseArrayRef.html">Template Class array::BaseArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1Buffer.html">Template Class Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1BuffersVector.html">Template Class BuffersVector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1insert__iterator.html">Template Class insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator.html">Template Class lmap_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator_1_1partition__range.html">Class lmap_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4.html">Template Class local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html">Template Class local_iterator_traits&lt; T * &gt;::local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalEdgeIndex.html">Template Class LocalEdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalHashmap.html">Template Class LocalHashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalSet.html">Template Class LocalSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator.html">Template Class lset_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator_1_1partition__range.html">Class lset_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator.html">Template Class map_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator_1_1local__iterator__range.html">Class map_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp.html">Template Class MemCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp_3_01std_1_1vector_3_01KeyTy_01_4_01_4.html">Template Class MemCmp&lt; std::vector&lt; KeyTy &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifier.html">Template Class ObjectIdentifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifierCounter.html">Template Class ObjectIdentifierCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1OnePerLocality.html">Template Class OnePerLocality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Handle.html">Class Handle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface.html">Template Class AsynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1localities__range.html">Class localities_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Locality.html">Class Locality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Lock.html">Class Lock</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Template Class Set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator.html">Template Class set_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator_1_1local__iterator__range.html">Class set_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__map.html">Template Class unordered_map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__set.html">Template Class unordered_set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector.html">Template Class Vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector_1_1Iterator.html">Template Class Vector::Iterator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Template Class Set</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classshad_1_1Set.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="template-class-set">
+<span id="exhale-class-classshad-1-1set"></span><h1>Template Class Set<a class="headerlink" href="#template-class-set" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Defined in <a class="reference internal" href="file_include_shad_data_structures_set.h.html#file-include-shad-data-structures-set-h"><span class="std std-ref">File set.h</span></a></li>
+</ul>
+<div class="section" id="nested-relationships">
+<h2>Nested Relationships<a class="headerlink" href="#nested-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="nested-types">
+<h3>Nested Types<a class="headerlink" href="#nested-types" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference internal" href="structshad_1_1Set_1_1ExeAtArgs.html#exhale-struct-structshad-1-1set-1-1exeatargs"><span class="std std-ref">Struct Set::ExeAtArgs</span></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">shad::AbstractDataStructure&lt;</span> <span class="pre">Set&lt;</span> <span class="pre">T,</span> <span class="pre">ELEM_COMPARE</span> <span class="pre">&gt;</span> <span class="pre">&gt;</span></code> (<a class="reference internal" href="classshad_1_1AbstractDataStructure.html#exhale-class-classshad-1-1abstractdatastructure"><span class="std std-ref">Template Class AbstractDataStructure</span></a>)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv3N4shad3SetE">
+<span id="_CPPv2N4shad3SetE"></span><span id="shad::Set"></span><span class="target" id="classshad_1_1Set"></span><em class="property">template </em>&lt;typename <em>T</em>, typename <em>ELEM_COMPARE</em> = <a class="reference internal" href="classshad_1_1MemCmp.html#classshad_1_1MemCmp"><span class="std std-ref">MemCmp</span></a>&lt;T&gt;&gt;<br /><em class="property">class </em><code class="descname">Set</code> : <em class="property">public</em> shad::<a class="reference internal" href="classshad_1_1AbstractDataStructure.html#_CPPv3N4shad21AbstractDataStructureE" title="shad::AbstractDataStructure">AbstractDataStructure</a>&lt;<a class="reference internal" href="#_CPPv3N4shad3SetE" title="shad::Set">Set</a>&lt;T, ELEM_COMPARE&gt;&gt;<a class="headerlink" href="#_CPPv3N4shad3SetE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <a class="reference internal" href="#classshad_1_1Set"><span class="std std-ref">Set</span></a> data structure. </p>
+<p>SHAD’s set is a distributed, unordered, set. <dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>obects of type T need to be trivially copiable. </dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">T</span></code>: type of the entries stored in the set. </li>
+<li><code class="docutils literal notranslate"><span class="pre">ELEM_COMPARE</span></code>: element comparison function; default is MemCmp&lt;T&gt;. </li>
+</ul>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE10value_typeE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE10value_typeE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1a20c26f02edb7c6c978a0e0b6f2b46c80"></span><em class="property">using </em><code class="descname">value_type</code> = T<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE10value_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE4SetTE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE4SetTE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1ac4975698d3f73a58bb223e28ca582fa9"></span><em class="property">using </em><code class="descname">SetT</code> = Set&lt;T, ELEM_COMPARE&gt;<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE4SetTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE5LSetTE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE5LSetTE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1a93ad50cc28bbc3b48f87e69bfbf3c632"></span><em class="property">using </em><code class="descname">LSetT</code> = LocalSet&lt;T, ELEM_COMPARE&gt;<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE5LSetTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE8ObjectIDE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE8ObjectIDE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1a05ba25e24c892602d707b21e3e4300b9"></span><em class="property">using </em><code class="descname">ObjectID</code> = <em class="property">typename</em> <a class="reference internal" href="classshad_1_1AbstractDataStructure.html#_CPPv3N4shad21AbstractDataStructureE" title="shad::AbstractDataStructure">AbstractDataStructure</a>::ObjectID<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE8ObjectIDE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE10ShadSetPtrE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE10ShadSetPtrE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1aa35015620563a346ef29432143fe1f44"></span><em class="property">using </em><code class="descname">ShadSetPtr</code> = <em class="property">typename</em> <a class="reference internal" href="classshad_1_1AbstractDataStructure.html#_CPPv3N4shad21AbstractDataStructureE" title="shad::AbstractDataStructure">AbstractDataStructure</a>&lt;<a class="reference internal" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE4SetTE" title="shad::Set&lt;T, ELEM_COMPARE&gt;::SetT">SetT</a>&gt;::SharedPtr<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE10ShadSetPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE13BuffersVectorE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE13BuffersVectorE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1ace82796db9a7938647d935452ea6d39c"></span><em class="property">using </em><code class="descname">BuffersVector</code> = <em class="property">typename</em> impl::<a class="reference internal" href="classshad_1_1impl_1_1BuffersVector.html#_CPPv3N4shad4impl13BuffersVectorE" title="shad::impl::BuffersVector">BuffersVector</a>&lt;T, <a class="reference internal" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE4SetTE" title="shad::Set&lt;T, ELEM_COMPARE&gt;::SetT">SetT</a>&gt;<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE13BuffersVectorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE8iteratorE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE8iteratorE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1a01298773ecde90c0df1e444429bf9703"></span><em class="property">using </em><code class="descname">iterator</code> = <a class="reference internal" href="classshad_1_1set__iterator.html#_CPPv3N4shad12set_iteratorE" title="shad::set_iterator">set_iterator</a>&lt;Set&lt;T, ELEM_COMPARE&gt;, <em class="property">const</em> T, T&gt;<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE14const_iteratorE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE14const_iteratorE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1a0b2608f92f5397a25e62fad925fc177e"></span><em class="property">using </em><code class="descname">const_iterator</code> = <a class="reference internal" href="classshad_1_1set__iterator.html#_CPPv3N4shad12set_iteratorE" title="shad::set_iterator">set_iterator</a>&lt;Set&lt;T, ELEM_COMPARE&gt;, <em class="property">const</em> T, T&gt;<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE14const_iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE14local_iteratorE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE14local_iteratorE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1a531920d32511b8fa5ffef94b0d772e29"></span><em class="property">using </em><code class="descname">local_iterator</code> = <a class="reference internal" href="classshad_1_1lset__iterator.html#_CPPv3N4shad13lset_iteratorE" title="shad::lset_iterator">lset_iterator</a>&lt;LocalSet&lt;T, ELEM_COMPARE&gt;, <em class="property">const</em> T&gt;<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE14local_iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE20const_local_iteratorE">
+<span id="_CPPv2IEN4shad3SetI1T12ELEM_COMPAREE20const_local_iteratorE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1Set_1a0857d9ce7a249e860e3a67bc18f7de8b"></span><em class="property">using </em><code class="descname">const_local_iterator</code> = <a class="reference internal" href="classshad_1_1lset__iterator.html#_CPPv3N4shad13lset_iteratorE" title="shad::lset_iterator">lset_iterator</a>&lt;LocalSet&lt;T, ELEM_COMPARE&gt;, <em class="property">const</em> T&gt;<a class="headerlink" href="#_CPPv3IEN4shad3SetI1T12ELEM_COMPAREE20const_local_iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv3NK4shad3Set11GetGlobalIDEv">
+<span id="_CPPv2NK4shad3Set11GetGlobalIDEv"></span><span id="shad::Set::GetGlobalIDC"></span><span class="target" id="classshad_1_1Set_1a4c57c459143fba4dc825e77217eb66c7"></span>ObjectID <code class="descname">GetGlobalID</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad3Set11GetGlobalIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create method. </p>
+<p>Creates a new set instance. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A shared pointer to the newly created set instance. Getter of the Global Identifier.</dd>
+<dt><strong>Return</strong></dt>
+<dd>The global identifier associated with the set instance. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">numEntries</span></code>: Expected number of elements. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad3Set4SizeEv">
+<span id="_CPPv2NK4shad3Set4SizeEv"></span><span id="shad::Set::SizeC"></span><span class="target" id="classshad_1_1Set_1aefd9d547c7a8a720769e55cafc6802cf"></span>size_t <code class="descname">Size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad3Set4SizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Overall size of the set (number of elements). </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Calling the size method may result in one-to-all communication among localities to retrieve consinstent information. </dd>
+<dt><strong>Return</strong></dt>
+<dd>the size of the set. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set6InsertERK1T">
+<span id="_CPPv2N4shad3Set6InsertERK1T"></span><span id="shad::Set::Insert__TCR"></span><span class="target" id="classshad_1_1Set_1abc2fb49844cb251c26472ccf490e4ea4"></span>std::pair&lt;<em class="property">typename</em> <a class="reference internal" href="#_CPPv3N4shad3SetE" title="shad::Set">Set</a>&lt;T, ELEM_COMPARE&gt;::iterator, bool&gt; <code class="descname">Insert</code><span class="sig-paren">(</span><em class="property">const</em> T &amp;<em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set6InsertERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Insert an element in the set. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>a pair consisting of an iterator to the inserted element (or to the element that prevented the insertion) and a bool denoting whether the insertion took place. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code>: the element. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set11AsyncInsertERN2rt6HandleERK1T">
+<span id="_CPPv2N4shad3Set11AsyncInsertERN2rt6HandleERK1T"></span><span id="shad::Set::AsyncInsert__rt::HandleR.TCR"></span><span class="target" id="classshad_1_1Set_1a323831242d5737325df067e252c9d5b3"></span>void <code class="descname">AsyncInsert</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> T &amp;<em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set11AsyncInsertERN2rt6HandleERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously Insert an element in the set. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code>: the element. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set14BufferedInsertERK1T">
+<span id="_CPPv2N4shad3Set14BufferedInsertERK1T"></span><span id="shad::Set::BufferedInsert__TCR"></span><span class="target" id="classshad_1_1Set_1a1ac85f834d9ccd281f56c36742730e97"></span>void <code class="descname">BufferedInsert</code><span class="sig-paren">(</span><em class="property">const</em> T &amp;<em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set14BufferedInsertERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffered Insert method. Inserts an element, using aggregation buffers. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Insertions are finalized only after calling the <a class="reference internal" href="#classshad_1_1Set_1a3712197c5aaeadf247975051f81b03c7"><span class="std std-ref">WaitForBufferedInsert()</span></a> method. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code>: The element. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set19BufferedAsyncInsertERN2rt6HandleERK1T">
+<span id="_CPPv2N4shad3Set19BufferedAsyncInsertERN2rt6HandleERK1T"></span><span id="shad::Set::BufferedAsyncInsert__rt::HandleR.TCR"></span><span class="target" id="classshad_1_1Set_1a2d3f1919275884a863577853d05c64f2"></span>void <code class="descname">BufferedAsyncInsert</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> T &amp;<em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set19BufferedAsyncInsertERN2rt6HandleERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronous Buffered Insert method. Asynchronously inserts an element, using aggregation buffers. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>asynchronous buffered insertions are finalized only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method AND the <a class="reference internal" href="#classshad_1_1Set_1a3712197c5aaeadf247975051f81b03c7"><span class="std std-ref">WaitForBufferedInsert()</span></a> method, in this order. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle </li>
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code>: The element. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set21WaitForBufferedInsertEv">
+<span id="_CPPv2N4shad3Set21WaitForBufferedInsertEv"></span><span id="shad::Set::WaitForBufferedInsert"></span><span class="target" id="classshad_1_1Set_1a3712197c5aaeadf247975051f81b03c7"></span>void <code class="descname">WaitForBufferedInsert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set21WaitForBufferedInsertEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Finalize method for buffered insertions. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set5EraseERK1T">
+<span id="_CPPv2N4shad3Set5EraseERK1T"></span><span id="shad::Set::Erase__TCR"></span><span class="target" id="classshad_1_1Set_1a1d7269e2f1468f877d1efaac95e780e1"></span>void <code class="descname">Erase</code><span class="sig-paren">(</span><em class="property">const</em> T &amp;<em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set5EraseERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove an element from the set. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code>: the element. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set10AsyncEraseERN2rt6HandleERK1T">
+<span id="_CPPv2N4shad3Set10AsyncEraseERN2rt6HandleERK1T"></span><span id="shad::Set::AsyncErase__rt::HandleR.TCR"></span><span class="target" id="classshad_1_1Set_1ad424d2a53863f1228f245d57d8439842"></span>void <code class="descname">AsyncErase</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> T &amp;<em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set10AsyncEraseERN2rt6HandleERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously remove an element from the set. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code>: the element. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set5ClearEv">
+<span id="_CPPv2N4shad3Set5ClearEv"></span><span id="shad::Set::Clear"></span><span class="target" id="classshad_1_1Set_1ad12b4cacd980e45c5cf77997917c17c1"></span>void <code class="descname">Clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set5ClearEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clear the content of the set. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set5ResetE6size_t">
+<span id="_CPPv2N4shad3Set5ResetE6size_t"></span><span id="shad::Set::Reset__s"></span><span class="target" id="classshad_1_1Set_1a1af0696f3c2e3aea11fc04aaf39c7740"></span>void <code class="descname">Reset</code><span class="sig-paren">(</span>size_t <em>numElements</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set5ResetE6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clear the content of the set. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set4FindERK1T">
+<span id="_CPPv2N4shad3Set4FindERK1T"></span><span id="shad::Set::Find__TCR"></span><span class="target" id="classshad_1_1Set_1a0a43db8a4eb3d76b5150d63e53c2ab50"></span>bool <code class="descname">Find</code><span class="sig-paren">(</span><em class="property">const</em> T &amp;<em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set4FindERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check if the set contains a given element. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>true if the element is found, false otherwise. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code>: the element to find. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set9AsyncFindERN2rt6HandleERK1TPb">
+<span id="_CPPv2N4shad3Set9AsyncFindERN2rt6HandleERK1TPb"></span><span id="shad::Set::AsyncFind__rt::HandleR.TCR.bP"></span><span class="target" id="classshad_1_1Set_1afd802c9be7b268deafdc2ca6322e2a53"></span>void <code class="descname">AsyncFind</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> T &amp;<em>element</em>, bool *<em>found</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set9AsyncFindERN2rt6HandleERK1TPb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously check if the set contains a given element. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code>: the element to find. </li>
+<li><code class="docutils literal notranslate"><span class="pre">found</span></code>: the address where to store the result of the operation. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set14ForEachElementERR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad3Set14ForEachElementERR9ApplyFunTDpR4Args"></span><span id="shad::Set::ForEachElement__ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1Set_1ae7ae217c231aa0ef54c5e2990c172b12"></span>void <code class="descname">ForEachElement</code><span class="sig-paren">(</span>ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set14ForEachElementERR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Apply a user-defined function to each element in the set. </p>
+<p><dl class="docutils">
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">const</span> <span class="n">T</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set19AsyncForEachElementERN2rt6HandleERR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad3Set19AsyncForEachElementERN2rt6HandleERR9ApplyFunTDpR4Args"></span><span id="shad::Set::AsyncForEachElement__rt::HandleR.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1Set_1ab4722765fe62737bd6b1b59635ebbe28"></span>void <code class="descname">AsyncForEachElement</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set19AsyncForEachElementERN2rt6HandleERR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously apply a user-defined function to each element in the set. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed. only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method. </dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">shad</span><span class="p">::</span><span class="n">rt</span><span class="p">::</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">const</span> <span class="n">T</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle. to be used to wait for completion. </li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set16PrintAllElementsEv">
+<span id="_CPPv2N4shad3Set16PrintAllElementsEv"></span><span id="shad::Set::PrintAllElements"></span><span class="target" id="classshad_1_1Set_1a92ae5af89da9c3232c062ecdacece447"></span>void <code class="descname">PrintAllElements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set16PrintAllElementsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Print all the entries in the set. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>std::ostream &amp; operator&lt;&lt; must be defined for T. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set17BufferEntryInsertERK1T">
+<span id="_CPPv2N4shad3Set17BufferEntryInsertERK1T"></span><span id="shad::Set::BufferEntryInsert__TCR"></span><span class="target" id="classshad_1_1Set_1aaa3c96b1f2eba65966ebc9e519adda01"></span>void <code class="descname">BufferEntryInsert</code><span class="sig-paren">(</span><em class="property">const</em> T &amp;<em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set17BufferEntryInsertERK1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set5beginEv">
+<span id="_CPPv2N4shad3Set5beginEv"></span><span id="shad::Set::begin"></span><span class="target" id="classshad_1_1Set_1ae747d10b913845091066d2393ea9695b"></span>iterator <code class="descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set5beginEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set3endEv">
+<span id="_CPPv2N4shad3Set3endEv"></span><span id="shad::Set::end"></span><span class="target" id="classshad_1_1Set_1a2e9ac1823ff085510d34773a0cb04852"></span>iterator <code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set3endEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad3Set6cbeginEv">
+<span id="_CPPv2NK4shad3Set6cbeginEv"></span><span id="shad::Set::cbeginC"></span><span class="target" id="classshad_1_1Set_1ad78796bf564ae57dd14ca838b9581012"></span>const_iterator <code class="descname">cbegin</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad3Set6cbeginEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad3Set4cendEv">
+<span id="_CPPv2NK4shad3Set4cendEv"></span><span id="shad::Set::cendC"></span><span class="target" id="classshad_1_1Set_1a0fbcb453f73d47e17b4a6c8d33994e40"></span>const_iterator <code class="descname">cend</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad3Set4cendEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad3Set5beginEv">
+<span id="_CPPv2NK4shad3Set5beginEv"></span><span id="shad::Set::beginC"></span><span class="target" id="classshad_1_1Set_1a6fe767278f6a52c03242fd7deeda791a"></span>const_iterator <code class="descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad3Set5beginEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad3Set3endEv">
+<span id="_CPPv2NK4shad3Set3endEv"></span><span id="shad::Set::endC"></span><span class="target" id="classshad_1_1Set_1ac675b386665585dbc86667ea93d1be34"></span>const_iterator <code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad3Set3endEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set11local_beginEv">
+<span id="_CPPv2N4shad3Set11local_beginEv"></span><span id="shad::Set::local_begin"></span><span class="target" id="classshad_1_1Set_1a179918a1cbc5793a1522a00497495eeb"></span>local_iterator <code class="descname">local_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set11local_beginEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set9local_endEv">
+<span id="_CPPv2N4shad3Set9local_endEv"></span><span id="shad::Set::local_end"></span><span class="target" id="classshad_1_1Set_1a274bae1a1e053109f42c8864bbc707e5"></span>local_iterator <code class="descname">local_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set9local_endEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set12clocal_beginEv">
+<span id="_CPPv2N4shad3Set12clocal_beginEv"></span><span id="shad::Set::clocal_begin"></span><span class="target" id="classshad_1_1Set_1af16201940dce366a4865b813031e8430"></span>const_local_iterator <code class="descname">clocal_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set12clocal_beginEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set10clocal_endEv">
+<span id="_CPPv2N4shad3Set10clocal_endEv"></span><span id="shad::Set::clocal_end"></span><span class="target" id="classshad_1_1Set_1a9a4e1a99d244de6930a3e785fd2aedf3"></span>const_local_iterator <code class="descname">clocal_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set10clocal_endEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set6insertERK10value_type">
+<span id="_CPPv2N4shad3Set6insertERK10value_type"></span><span id="shad::Set::insert__value_typeCR"></span><span class="target" id="classshad_1_1Set_1aa6d109d2d82561a6561cd0a2c134f9f7"></span>std::pair&lt;iterator, bool&gt; <code class="descname">insert</code><span class="sig-paren">(</span><em class="property">const</em> value_type &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set6insertERK10value_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set6insertE14const_iteratorRK10value_type">
+<span id="_CPPv2N4shad3Set6insertE14const_iteratorRK10value_type"></span><span id="shad::Set::insert__const_iterator.value_typeCR"></span><span class="target" id="classshad_1_1Set_1ac340c155ad269e57da33056acb6f39db"></span>std::pair&lt;iterator, bool&gt; <code class="descname">insert</code><span class="sig-paren">(</span>const_iterator, <em class="property">const</em> value_type &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set6insertE14const_iteratorRK10value_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set21buffered_async_insertERN2rt6HandleERK10value_type">
+<span id="_CPPv2N4shad3Set21buffered_async_insertERN2rt6HandleERK10value_type"></span><span id="shad::Set::buffered_async_insert__rt::HandleR.value_typeCR"></span><span class="target" id="classshad_1_1Set_1a67affb4764bef8776b12992cd304f007"></span>void <code class="descname">buffered_async_insert</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>h</em>, <em class="property">const</em> value_type &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set21buffered_async_insertERN2rt6HandleERK10value_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad3Set20buffered_async_flushERN2rt6HandleE">
+<span id="_CPPv2N4shad3Set20buffered_async_flushERN2rt6HandleE"></span><span id="shad::Set::buffered_async_flush__rt::HandleR"></span><span class="target" id="classshad_1_1Set_1a0ffd32ad7071950050b9119918459466"></span>void <code class="descname">buffered_async_flush</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>h</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set20buffered_async_flushERN2rt6HandleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Protected Functions</p>
+<dl class="function">
+<dt id="_CPPv3N4shad3Set3SetE8ObjectIDK6size_t">
+<span id="_CPPv2N4shad3Set3SetE8ObjectIDK6size_t"></span><span id="shad::Set::Set__ObjectID.sC"></span><span class="target" id="classshad_1_1Set_1af23f31404ceabcf8c495c8dd77842c14"></span><code class="descname">Set</code><span class="sig-paren">(</span>ObjectID <em>oid</em>, <em class="property">const</em> size_t <em>numEntries</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad3Set3SetE8ObjectIDK6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classshad_1_1set__iterator.html" class="btn btn-neutral float-right" title="Template Class set_iterator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classshad_1_1rt_1_1Lock.html" class="btn btn-neutral float-left" title="Class Lock" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

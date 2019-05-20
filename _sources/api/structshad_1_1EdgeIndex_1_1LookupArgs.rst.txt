@@ -1,0 +1,22 @@
+.. _exhale_struct_structshad_1_1EdgeIndex_1_1LookupArgs:
+
+Struct EdgeIndex::LookupArgs
+============================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_edge_index.h`
+
+
+Nested Relationships
+--------------------
+
+This struct is a nested type of :ref:`exhale_class_classshad_1_1EdgeIndex`.
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::EdgeIndex::LookupArgs
+   :members:
+   :protected-members:
+   :undoc-members:

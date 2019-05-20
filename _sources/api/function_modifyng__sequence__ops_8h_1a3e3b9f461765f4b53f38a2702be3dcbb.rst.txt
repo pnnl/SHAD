@@ -1,0 +1,13 @@
+.. _exhale_function_modifyng__sequence__ops_8h_1a3e3b9f461765f4b53f38a2702be3dcbb:
+
+Template Function shad::impl::transform_impl::block_contiguous_local_par
+========================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::transform_impl::block_contiguous_local_par(ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)

@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1a750ac93a8d339b97e3a11e182b50ffbc:
+
+Template Function shad::rt::executeAtWithRet(const Locality&, FunT&&, const InArgsT&, ResT \*)
+==============================================================================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::executeAtWithRet(const Locality&, FunT&&, const InArgsT&, ResT *)

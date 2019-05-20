@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1aef6165d38034e9fd6e2fa8bb433a6f61:
+
+Template Function shad::replace_if
+==================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::replace_if(ExecutionPolicy&&, ForwardIt, ForwardIt, UnaryPredicate, const T&)

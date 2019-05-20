@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Template Struct is_distributed_iterator &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Template Struct is_distributed_iterator&lt; T, typename std::enable_if&lt; !std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt;" href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b.html" />
+    <link rel="prev" title="Template Struct is_block_contiguous&lt; shad::insert_iterator&lt; Container &gt; &gt;" href="structshad_1_1is__block__contiguous_3_01shad_1_1insert__iterator_3_01Container_01_4_01_4.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1AtArgs.html">Struct Array::AtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1InsertAtArgs.html">Struct Array::InsertAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1ElementInserter.html">Struct AttributedEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1FlatEdgeList.html">Struct AttributedEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct AttributedEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1ElementInserter.html">Struct DefaultEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1EmptyAttr.html">Struct DefaultEdgeIndexStorage::EmptyAttr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1FlatEdgeList.html">Struct DefaultEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct DefaultEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__iterator__traits.html">Template Struct distributed_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__parallel__tag.html">Struct distributed_parallel_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__random__access__iterator__trait.html">Template Struct distributed_random_access_iterator_trait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__sequential__tag.html">Struct distributed_sequential_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EdgeListChunk.html">Struct EdgeIndex::EdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EntryT.html">Struct EdgeIndex::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1InsertArgs.html">Struct EdgeIndex::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupArgs.html">Struct EdgeIndex::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupResult.html">Struct EdgeIndex::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash.html">Template Struct hash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash_3_01Key_00_01false_01_4.html">Template Struct hash&lt; Key, false &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1EntryT.html">Struct Hashmap::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1InsertArgs.html">Struct Hashmap::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1LookupArgs.html">Struct Hashmap::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply.html">Template Struct Apply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply_3_01i_00_01i_01_4.html">Template Struct Apply&lt; i, i &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Buffer_1_1FlushArgs.html">Struct Buffer::FlushArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector.html">Template Struct optional_vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector_1_1entry__t.html">Struct optional_vector::entry_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1transform__impl_1_1gen__args__t.html">Template Struct gen_args_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous.html">Template Struct is_block_contiguous</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1buffered__insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::buffered_insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Template Struct is_distributed_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b.html">Template Struct is_distributed_iterator&lt; T, typename std::enable_if&lt; !std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__execution__policy.html">Template Struct is_execution_policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__std__hashable.html">Template Struct is_std_hashable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1local__iterator__traits.html">Template Struct local_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Bucket.html">Struct LocalHashmap::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Entry.html">Struct LocalHashmap::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1LookupResult.html">Struct LocalHashmap::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Bucket.html">Struct LocalSet::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Entry.html">Struct LocalSet::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1map__iterator_1_1itData.html">Struct map_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1measure.html">Template Struct measure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Overwriter.html">Template Struct Overwriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01cpp__tag_01_4.html">Template Struct AsynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01gmt__tag_01_4.html">Template Struct AsynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01tbb__tag_01_4.html">Template Struct AsynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1cpp__tag.html">Struct cpp_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1CppHandle.html">Struct CppHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1ExecFunWrapperArgs.html">Template Struct ExecFunWrapperArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1gmt__tag.html">Struct gmt_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait.html">Template Struct HandleTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01cpp__tag_01_4.html">Template Struct HandleTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4.html">Template Struct HandleTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01tbb__tag_01_4.html">Template Struct HandleTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait.html">Template Struct LockTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01cpp__tag_01_4.html">Template Struct LockTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01gmt__tag_01_4.html">Template Struct LockTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01tbb__tag_01_4.html">Template Struct LockTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait.html">Template Struct RuntimeInternalsTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01cpp__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01gmt__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01tbb__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface.html">Template Struct SynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01cpp__tag_01_4.html">Template Struct SynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4.html">Template Struct SynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01tbb__tag_01_4.html">Template Struct SynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1tbb__tag.html">Struct tbb_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Set_1_1ExeAtArgs.html">Struct Set::ExeAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1set__iterator_1_1itData.html">Struct set_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Updater.html">Template Struct Updater</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure.html">Template Class AbstractDataStructure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure_1_1Catalog.html">Class AbstractDataStructure::Catalog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Array.html">Template Class Array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttrEdgesPair.html">Template Class AttrEdgesPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttributedEdgeIndexStorage.html">Template Class AttributedEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1buffered__insert__iterator.html">Template Class buffered_insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1DefaultEdgeIndexStorage.html">Template Class DefaultEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1EdgeIndex.html">Template Class EdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Hashmap.html">Template Class Hashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1IDCmp.html">Template Class IDCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator.html">Template Class array::array_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range.html">Class array_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef.html">Template Class array::ArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef_3_01const_01U_01_4.html">Template Class array::ArrayRef&lt; const U &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1BaseArrayRef.html">Template Class array::BaseArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1Buffer.html">Template Class Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1BuffersVector.html">Template Class BuffersVector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1insert__iterator.html">Template Class insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator.html">Template Class lmap_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator_1_1partition__range.html">Class lmap_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4.html">Template Class local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html">Template Class local_iterator_traits&lt; T * &gt;::local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalEdgeIndex.html">Template Class LocalEdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalHashmap.html">Template Class LocalHashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalSet.html">Template Class LocalSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator.html">Template Class lset_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator_1_1partition__range.html">Class lset_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator.html">Template Class map_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator_1_1local__iterator__range.html">Class map_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp.html">Template Class MemCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp_3_01std_1_1vector_3_01KeyTy_01_4_01_4.html">Template Class MemCmp&lt; std::vector&lt; KeyTy &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifier.html">Template Class ObjectIdentifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifierCounter.html">Template Class ObjectIdentifierCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1OnePerLocality.html">Template Class OnePerLocality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Handle.html">Class Handle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface.html">Template Class AsynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1localities__range.html">Class localities_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Locality.html">Class Locality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Lock.html">Class Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Set.html">Template Class Set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator.html">Template Class set_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator_1_1local__iterator__range.html">Class set_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__map.html">Template Class unordered_map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__set.html">Template Class unordered_set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector.html">Template Class Vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector_1_1Iterator.html">Template Class Vector::Iterator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Template Struct is_distributed_iterator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/structshad_1_1is__distributed__iterator.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="template-struct-is-distributed-iterator">
+<span id="exhale-struct-structshad-1-1is-distributed-iterator"></span><h1>Template Struct is_distributed_iterator<a class="headerlink" href="#template-struct-is-distributed-iterator" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Defined in <a class="reference internal" href="file_include_shad_distributed_iterator_traits.h.html#file-include-shad-distributed-iterator-traits-h"><span class="std std-ref">File distributed_iterator_traits.h</span></a></li>
+</ul>
+<div class="section" id="struct-documentation">
+<h2>Struct Documentation<a class="headerlink" href="#struct-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv3N4shad23is_distributed_iteratorE">
+<span id="_CPPv2N4shad23is_distributed_iteratorE"></span><span id="shad::is_distributed_iterator"></span><span class="target" id="structshad_1_1is__distributed__iterator"></span><em class="property">template </em>&lt;<em class="property">typename</em> T, typename = void&gt;<br /><em class="property">struct </em><code class="descname">is_distributed_iterator</code><a class="headerlink" href="#_CPPv3N4shad23is_distributed_iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Attributes</p>
+<dl class="member">
+<dt id="_CPPv3N4shad23is_distributed_iterator5valueE">
+<span id="_CPPv2N4shad23is_distributed_iterator5valueE"></span><span id="shad::is_distributed_iterator::value__b"></span><span class="target" id="structshad_1_1is__distributed__iterator_1a8eff7da7d0308d61ac32d008fe4a4219"></span><em class="property">constexpr</em> bool <code class="descname">value</code> = false<a class="headerlink" href="#_CPPv3N4shad23is_distributed_iterator5valueE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b.html" class="btn btn-neutral float-right" title="Template Struct is_distributed_iterator&lt; T, typename std::enable_if&lt; !std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="structshad_1_1is__block__contiguous_3_01shad_1_1insert__iterator_3_01Container_01_4_01_4.html" class="btn btn-neutral float-left" title="Template Struct is_block_contiguous&lt; shad::insert_iterator&lt; Container &gt; &gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

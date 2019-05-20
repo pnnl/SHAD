@@ -1,7 +1,0 @@
-var searchData=
-[
-  ['idxt',['IdxT',['../classshad_1_1EdgeIndex.html#a8beb31c05450d63d7add3f9408c9943a',1,'shad::EdgeIndex']]],
-  ['internal_5fcontainer_5ft',['internal_container_t',['../classshad_1_1insert__iterator.html#a040650a6a725c67ff6b4331cef06afaa',1,'shad::insert_iterator']]],
-  ['iterator',['Iterator',['../classshad_1_1insert__iterator.html#a9423151fee020bc148d8c6037ecb0542',1,'shad::insert_iterator::Iterator()'],['../group__Types.html#ga7b1db0deafc45673f50da5aacb8c372c',1,'shad::array::iterator()'],['../group__Types.html#gab52d604c26835c20a0363f9affa7ff57',1,'shad::unordered_map::iterator()'],['../group__Types.html#gadbad50ac069a38bd820c0a9f532f903e',1,'shad::unordered_set::iterator()'],['../classshad_1_1Hashmap.html#a2500b369fd011d6a9d5e98ff213c9c66',1,'shad::Hashmap::iterator()'],['../classshad_1_1LocalHashmap.html#aafdf55e8d9fa4799bcef4881baf25a71',1,'shad::LocalHashmap::iterator()'],['../classshad_1_1LocalSet.html#a90ad05d816b6336fea56e6511093d4f6',1,'shad::LocalSet::iterator()'],['../classshad_1_1Set.html#a01298773ecde90c0df1e444429bf9703',1,'shad::Set::iterator()'],['../classshad_1_1Vector.html#aaa71fd41daa1548f8436bc54ef507976',1,'shad::Vector::iterator()']]],
-  ['iterator_5fcategory',['iterator_category',['../structshad_1_1distributed__iterator__traits.html#ae2c93d2849540657dd1f56c643d75c26',1,'shad::distributed_iterator_traits::iterator_category()'],['../structshad_1_1distributed__random__access__iterator__trait.html#a6794da2277108e23065517078bbf8e93',1,'shad::distributed_random_access_iterator_trait::iterator_category()']]]
-];

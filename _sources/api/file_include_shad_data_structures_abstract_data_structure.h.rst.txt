@@ -1,0 +1,85 @@
+
+.. _file_include_shad_data_structures_abstract_data_structure.h:
+
+File abstract_data_structure.h
+==============================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_data_structures>` (``include/shad/data_structures``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/data_structures/abstract_data_structure.h``)
+-----------------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_data_structures_abstract_data_structure.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``deque``
+
+- ``limits``
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``shad/data_structures/object_identifier.h`` (:ref:`file_include_shad_data_structures_object_identifier.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+- ``tuple``
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_array.h`
+
+- :ref:`file_include_shad_data_structures_array.h`
+
+- :ref:`file_include_shad_data_structures_hashmap.h`
+
+- :ref:`file_include_shad_data_structures_one_per_locality.h`
+
+- :ref:`file_include_shad_data_structures_set.h`
+
+- :ref:`file_include_shad_data_structures_vector.h`
+
+- :ref:`file_include_shad_extensions_graph_library_edge_index.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1AbstractDataStructure`
+
+- :ref:`exhale_class_classshad_1_1AbstractDataStructure_1_1Catalog`
+

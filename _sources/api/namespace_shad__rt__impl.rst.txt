@@ -1,0 +1,124 @@
+
+.. _namespace_shad__rt__impl:
+
+Namespace shad::rt::impl
+========================
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01cpp__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01gmt__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01tbb__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1cpp__tag`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1CppHandle`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1ExecFunWrapperArgs`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1gmt__tag`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1HandleTrait`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1HandleTrait_3_01cpp__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1HandleTrait_3_01tbb__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1LockTrait`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1LockTrait_3_01cpp__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1LockTrait_3_01gmt__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1LockTrait_3_01tbb__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01cpp__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01gmt__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01tbb__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1SynchronousInterface`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01cpp__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01tbb__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1tbb__tag`
+
+- :ref:`exhale_class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_gmt__utility_8h_1a1083a9a4e08beddf6cb708be42f534dc`
+
+- :ref:`exhale_function_gmt__utility_8h_1a55c46191640e8d8a7645014d181f00ae`
+
+- :ref:`exhale_function_gmt__utility_8h_1aeb1d47c4176c24034814421f636b23de`
+
+- :ref:`exhale_function_gmt__utility_8h_1a89c8b8b587a013c3793d26b04e7450bd`
+
+- :ref:`exhale_function_gmt__utility_8h_1a40e34c2573f1fdae32b86d25ee8e91b5`
+
+- :ref:`exhale_function_cpp__simple__utility_8h_1a41b29efba127bb02b8832829aa4068a5`
+
+- :ref:`exhale_function_gmt__utility_8h_1aedf5441850db5b49d9087b262201a110`
+
+- :ref:`exhale_function_runtime_8h_1a87fb03e4e73b219e6af16fab7e3bd859`
+
+- :ref:`exhale_function_gmt__utility_8h_1a6d5636a04f872bf517e80633221aedcc`
+
+- :ref:`exhale_function_gmt__utility_8h_1aa16cf992cde01fe6edc90bfad09ae7ed`
+
+- :ref:`exhale_function_gmt__utility_8h_1af66aff5703d8f5570ba41b7e82534495`
+
+- :ref:`exhale_function_gmt__utility_8h_1a0b03dc6a28c611e5d4dd5de70742ea31`
+
+- :ref:`exhale_function_gmt__utility_8h_1aad275d30b5531baf4bcb8d23e1e029f9`
+
+- :ref:`exhale_function_gmt__utility_8h_1af5be7cb69b6233f3f0dd9dc9f4b73857`
+
+- :ref:`exhale_function_runtime_8h_1af8972bdca686d5f92b727e66cf488952`
+
+- :ref:`exhale_function_gmt__utility_8h_1a192dc9ed14e865f5225af9e84f69ce72`
+
+- :ref:`exhale_function_runtime_8h_1a0b42bee7c35d7ff623e550bed3691446`
+
+- :ref:`exhale_function_gmt__utility_8h_1a073825e7287c921463359f537effb40a`
+
+- :ref:`exhale_function_gmt__utility_8h_1ab44c57562ebda6cbe85ac96d97ca56d9`
+
+- :ref:`exhale_function_runtime_8h_1acb5252cd1e313926bfca7f10a909a22f`
+
+- :ref:`exhale_function_runtime_8h_1a1fafbf6312400979472b258faab97d01`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_gmt__utility_8h_1aa26757722745e840feba2c3be1e43117`
+
+- :ref:`exhale_variable_gmt__utility_8h_1a6aae37512ab6054b8870a363e8fec7fe`

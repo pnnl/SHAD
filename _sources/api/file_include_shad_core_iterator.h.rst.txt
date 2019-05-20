@@ -1,0 +1,75 @@
+
+.. _file_include_shad_core_iterator.h:
+
+File iterator.h
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_core>` (``include/shad/core``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/core/iterator.h``)
+---------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_core_iterator.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``iterator`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+- :ref:`file_include_shad_core_impl_utils.h`
+
+- :ref:`file_include_shad_core_unordered_map.h`
+
+- :ref:`file_include_shad_core_unordered_set.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1is__block__contiguous`
+
+- :ref:`exhale_struct_structshad_1_1is__block__contiguous_3_01shad_1_1buffered__insert__iterator_3_01Container_01_4_01_4`
+
+- :ref:`exhale_struct_structshad_1_1is__block__contiguous_3_01shad_1_1insert__iterator_3_01Container_01_4_01_4`
+
+- :ref:`exhale_class_classshad_1_1buffered__insert__iterator`
+
+- :ref:`exhale_class_classshad_1_1insert__iterator`
+

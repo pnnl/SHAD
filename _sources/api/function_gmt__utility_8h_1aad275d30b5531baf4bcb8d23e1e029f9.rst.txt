@@ -1,0 +1,13 @@
+.. _exhale_function_gmt__utility_8h_1aad275d30b5531baf4bcb8d23e1e029f9:
+
+Template Function shad::rt::impl::execFunWithRetWrapper(const void \*, uint32_t, void \*, uint32_t \*, gmt_handle_t)
+====================================================================================================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_gmt_gmt_utility.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::impl::execFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)

@@ -1,0 +1,228 @@
+
+.. _file_include_shad_runtime_runtime.h:
+
+File runtime.h
+==============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime>` (``include/shad/runtime``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/runtime.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_runtime.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstddef``
+
+- ``cstdint``
+
+- ``functional``
+
+- ``iostream``
+
+- ``iterator`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``map`` (:ref:`file_include_shad_runtime_mappings_available_mappings.h`)
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``set`` (:ref:`file_include_shad_data_structures_local_set.h`)
+
+- ``shad/config/config.h``
+
+- ``shad/runtime/handle.h`` (:ref:`file_include_shad_runtime_handle.h`)
+
+- ``shad/runtime/locality.h`` (:ref:`file_include_shad_runtime_locality.h`)
+
+- ``shad/runtime/mapping_traits.h`` (:ref:`file_include_shad_runtime_mapping_traits.h`)
+
+- ``shad/runtime/mappings/available_mappings.h`` (:ref:`file_include_shad_runtime_mappings_available_mappings.h`)
+
+- ``shad/runtime/synchronous_interface.h`` (:ref:`file_include_shad_runtime_synchronous_interface.h`)
+
+- ``unordered_set`` (:ref:`file_include_shad_core_unordered_set.h`)
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_algorithm.h`
+
+- :ref:`file_include_shad_core_array.h`
+
+- :ref:`file_include_shad_core_impl_binary_search_ops.h`
+
+- :ref:`file_include_shad_core_impl_comparison_ops.h`
+
+- :ref:`file_include_shad_core_impl_heap_ops.h`
+
+- :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+- :ref:`file_include_shad_core_impl_minimum_maximum_ops.h`
+
+- :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+- :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+- :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+- :ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`
+
+- :ref:`file_include_shad_core_impl_other_ops_on_sorted_ranges.h`
+
+- :ref:`file_include_shad_core_impl_partitioning_ops.h`
+
+- :ref:`file_include_shad_core_impl_permutation_ops.h`
+
+- :ref:`file_include_shad_core_impl_set_ops.h`
+
+- :ref:`file_include_shad_core_impl_sorting_ops.h`
+
+- :ref:`file_include_shad_core_impl_utils.h`
+
+- :ref:`file_include_shad_core_iterator.h`
+
+- :ref:`file_include_shad_core_numeric.h`
+
+- :ref:`file_include_shad_data_structures_abstract_data_structure.h`
+
+- :ref:`file_include_shad_data_structures_array.h`
+
+- :ref:`file_include_shad_data_structures_buffer.h`
+
+- :ref:`file_include_shad_data_structures_hashmap.h`
+
+- :ref:`file_include_shad_data_structures_local_hashmap.h`
+
+- :ref:`file_include_shad_data_structures_local_set.h`
+
+- :ref:`file_include_shad_data_structures_object_identifier.h`
+
+- :ref:`file_include_shad_data_structures_set.h`
+
+- :ref:`file_include_shad_data_structures_vector.h`
+
+- :ref:`file_include_shad_extensions_graph_library_algorithms_sssp.h`
+
+- :ref:`file_include_shad_extensions_graph_library_attributed_edge_index.h`
+
+- :ref:`file_include_shad_extensions_graph_library_edge_index.h`
+
+- :ref:`file_include_shad_extensions_graph_library_local_edge_index.h`
+
+- :ref:`file_include_shad_shad.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+- :ref:`namespace_shad__rt__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1rt_1_1Lock`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_runtime_8h_1adea42bceb84b2161df8fece9d20cb7cf`
+
+- :ref:`exhale_function_runtime_8h_1aad88d972c54520fa6da6661c0972ca66`
+
+- :ref:`exhale_function_runtime_8h_1a8690d0c19d1d2e7acce51b9c83223c94`
+
+- :ref:`exhale_function_runtime_8h_1a52c8bfa7986d1786079e81e772a9d425`
+
+- :ref:`exhale_function_runtime_8h_1a5ef970b04fc171862dc8b0c4cb6308d4`
+
+- :ref:`exhale_function_runtime_8h_1a7021749e6a86c90e762645385e22ac5c`
+
+- :ref:`exhale_function_runtime_8h_1a112df602ea3878eab5f2d2ed424d8d87`
+
+- :ref:`exhale_function_runtime_8h_1a35ae5113d8da4942705af0a77305fe0c`
+
+- :ref:`exhale_function_runtime_8h_1aafcdb9446fa49c00add25b4cf61f92f0`
+
+- :ref:`exhale_function_runtime_8h_1a36e675e25238d9b5c81b8a755dce61cd`
+
+- :ref:`exhale_function_runtime_8h_1a8f5647851b74b49dc7c35d5025b07cf3`
+
+- :ref:`exhale_function_runtime_8h_1a540b5cecb449199c0c829141cc2ae7d5`
+
+- :ref:`exhale_function_runtime_8h_1a4737e1c84ac7e830a1a306ac5b136a7d`
+
+- :ref:`exhale_function_runtime_8h_1ae4b428e7e47fc07e01707b3abb01caa2`
+
+- :ref:`exhale_function_runtime_8h_1a5bc582ecab17be55af910f8a6e3e31f5`
+
+- :ref:`exhale_function_runtime_8h_1a750ac93a8d339b97e3a11e182b50ffbc`
+
+- :ref:`exhale_function_runtime_8h_1aa1c240408fd99868fe25dc35e78c9c79`
+
+- :ref:`exhale_function_runtime_8h_1acadca86a92a75be85e51534f905b7fef`
+
+- :ref:`exhale_function_runtime_8h_1a9a77fcd35f06e3e2200ee1ca940ba8d1`
+
+- :ref:`exhale_function_runtime_8h_1aeff4031b9c8382aa34ec65c853cf45b8`
+
+- :ref:`exhale_function_runtime_8h_1af82c01717fef30752cd60051a92a9bee`
+
+- :ref:`exhale_function_runtime_8h_1a3701740e6d6681499063a0b5fa43645b`
+
+- :ref:`exhale_function_runtime_8h_1a7d0647bae3b6f6a7c870fee9b69bbf8e`
+
+- :ref:`exhale_function_runtime_8h_1a681ee8fbfec5d92c2bc8cd3851eae0c7`
+
+- :ref:`exhale_function_runtime_8h_1a3642b67c7ddc6f9d527616e4eb6cdbde`
+
+- :ref:`exhale_function_runtime_8h_1a87fb03e4e73b219e6af16fab7e3bd859`
+
+- :ref:`exhale_function_runtime_8h_1af8972bdca686d5f92b727e66cf488952`
+
+- :ref:`exhale_function_runtime_8h_1a0b42bee7c35d7ff623e550bed3691446`
+
+- :ref:`exhale_function_runtime_8h_1acb5252cd1e313926bfca7f10a909a22f`
+
+- :ref:`exhale_function_runtime_8h_1a1fafbf6312400979472b258faab97d01`
+
+- :ref:`exhale_function_runtime_8h_1a199bb50c21e9012f615520413872aef6`
+
+- :ref:`exhale_function_runtime_8h_1a7536c33738a5dd285f3a44aa6a199faf`
+
+- :ref:`exhale_function_runtime_8h_1a6ea1d3672bac3a80032863b6732a0c0a`
+

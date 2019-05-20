@@ -1,0 +1,13 @@
+.. _exhale_function_comparison__ops_8h_1a1fa1317d224502e223288526b775c16e:
+
+Template Function shad::impl::lexicographical_compare(distributed_parallel_tag&&, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2, BinaryPredicate)
+==================================================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_comparison_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::lexicographical_compare(distributed_parallel_tag&&, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2, BinaryPredicate)

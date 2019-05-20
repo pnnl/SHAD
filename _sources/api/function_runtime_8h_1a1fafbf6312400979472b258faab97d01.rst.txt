@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1a1fafbf6312400979472b258faab97d01:
+
+Function shad::rt::impl::yield
+==============================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::impl::yield()

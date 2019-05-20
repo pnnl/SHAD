@@ -1,0 +1,13 @@
+.. _exhale_function_non__modifyng__sequence__ops_8h_1a0290bcb45c99355e4813a2a66cb8ef3c:
+
+Template Function shad::impl::count(distributed_sequential_tag&&, InputItr, InputItr, const T&)
+===============================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::count(distributed_sequential_tag&&, InputItr, InputItr, const T&)

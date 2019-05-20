@@ -1,0 +1,161 @@
+
+.. _program_listing_file_include_shad_runtime_locality.h:
+
+Program Listing for File locality.h
+===================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_include_shad_runtime_locality.h>` (``include/shad/runtime/locality.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   //===------------------------------------------------------------*- C++ -*-===//
+   //
+   //                                     SHAD
+   //
+   //      The Scalable High-performance Algorithms and Data Structure Library
+   //
+   //===----------------------------------------------------------------------===//
+   //
+   // Copyright 2018 Battelle Memorial Institute
+   //
+   // Licensed under the Apache License, Version 2.0 (the "License"); you may not
+   // use this file except in compliance with the License. You may obtain a copy
+   // of the License at
+   //
+   //     http://www.apache.org/licenses/LICENSE-2.0
+   //
+   // Unless required by applicable law or agreed to in writing, software
+   // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+   // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+   // License for the specific language governing permissions and limitations
+   // under the License.
+   //
+   //===----------------------------------------------------------------------===//
+   
+   #ifndef INCLUDE_SHAD_RUNTIME_LOCALITY_H_
+   #define INCLUDE_SHAD_RUNTIME_LOCALITY_H_
+   
+   #include <cstdint>
+   #include <iostream>
+   
+   #include "shad/config/config.h"
+   #include "shad/runtime/mapping_traits.h"
+   #include "shad/runtime/mappings/available_traits_mappings.h"
+   
+   namespace shad {
+   
+   namespace rt {
+   
+   class Locality {
+    public:
+     Locality()
+         : id_(impl::RuntimeInternalsTrait<TargetSystemTag>::NullLocality()) {}
+   
+     explicit constexpr Locality(const uint32_t id) : id_(id) {}
+   
+     Locality(const Locality& rhs) = default;
+   
+     Locality& operator=(const Locality& rhs) = default;
+   
+     Locality(Locality&& rhs) = default;
+   
+     Locality& operator=(Locality&& rhs) = default;
+   
+     friend bool operator<(const Locality& lhs, const Locality& rhs) {
+       return (lhs.id_ < rhs.id_);
+     }
+   
+     friend bool operator==(const Locality& lhs, const Locality& rhs) {
+       return (lhs.id_ == rhs.id_);
+     }
+   
+     friend std::ostream& operator<<(std::ostream& os, const Locality& rhs) {
+       return os << "Locality[" << rhs.id_ << "]";
+     }
+   
+     explicit operator uint32_t() const { return id_; }
+   
+     bool IsNull() const {
+       return id_ == impl::RuntimeInternalsTrait<TargetSystemTag>::NullLocality();
+     }
+   
+     Locality& operator++() {
+       ++id_;
+       return *this;
+     }
+   
+     Locality& operator--() {
+       --id_;
+       return *this;
+     }
+   
+     Locality& operator+=(std::size_t n) {
+       id_ += n;
+       return *this;
+     }
+   
+     Locality& operator-=(std::size_t n) {
+       id_ -= n;
+       return *this;
+     }
+   
+     Locality operator-(std::size_t n) {
+       Locality tmp = *this;
+       tmp.operator-=(1);
+       return tmp;
+     }
+   
+     Locality operator+(std::size_t n) {
+       Locality tmp = *this;
+       tmp.operator+=(1);
+       return tmp;
+     }
+   
+    private:
+     uint32_t id_;
+   };
+   
+   inline bool operator!=(const Locality& lhs, const Locality& rhs) {
+     return !(lhs == rhs);
+   }
+   
+   inline bool operator>(const Locality& lhs, const Locality& rhs) {
+     return rhs < lhs;
+   }
+   
+   inline bool operator<=(const Locality& lhs, const Locality& rhs) {
+     return !(lhs > rhs);
+   }
+   
+   inline bool operator>=(const Locality& lhs, const Locality& rhs) {
+     return !(lhs < rhs);
+   }
+   
+   class localities_range {
+    public:
+     localities_range(const Locality& B, const Locality& E) : begin_(B), end_(E) {}
+   
+     localities_range()
+         : localities_range(Locality(0),
+                            Locality(impl::RuntimeInternalsTrait<
+                                     TargetSystemTag>::NumLocalities())) {}
+   
+     Locality begin() const { return begin_; }
+     Locality end() const { return end_; }
+   
+     size_t size() const {
+       return static_cast<uint32_t>(end_) - static_cast<uint32_t>(begin_);
+     }
+   
+    private:
+     Locality begin_;
+     Locality end_;
+   };
+   
+   }  // namespace rt
+   
+   }  // namespace shad
+   
+   #endif  // INCLUDE_SHAD_RUNTIME_LOCALITY_H_

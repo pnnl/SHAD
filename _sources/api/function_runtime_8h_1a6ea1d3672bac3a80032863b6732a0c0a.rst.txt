@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1a6ea1d3672bac3a80032863b6732a0c0a:
+
+Function shad::rt::waitForCompletion
+====================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::waitForCompletion(Handle&)

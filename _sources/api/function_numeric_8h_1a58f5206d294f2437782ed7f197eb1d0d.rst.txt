@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1a58f5206d294f2437782ed7f197eb1d0d:
+
+Template Function shad::transform_exclusive_scan(InputIt, InputIt, OutputIt, T, BinaryOperation, UnaryOperation)
+================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::transform_exclusive_scan(InputIt, InputIt, OutputIt, T, BinaryOperation, UnaryOperation)

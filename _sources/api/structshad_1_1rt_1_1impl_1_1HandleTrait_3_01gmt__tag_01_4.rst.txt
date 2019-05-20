@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4:
+
+Template Struct HandleTrait< gmt_tag >
+======================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_gmt_gmt_traits_mapping.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::rt::impl::HandleTrait< gmt_tag >
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_function_numeric__ops_8h_1a3fd931d2f89809175443eb4fd47ddb28:
+
+Template Function shad::impl::transform_reduce(distributed_parallel_tag&&, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOp1, BinaryOp2)
+=======================================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::transform_reduce(distributed_parallel_tag&&, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOp1, BinaryOp2)

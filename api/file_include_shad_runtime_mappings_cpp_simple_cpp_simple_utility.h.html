@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>File cpp_simple_utility.h &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Program Listing for File cpp_simple_utility.h" href="program_listing_file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h.html" />
+    <link rel="prev" title="Program Listing for File cpp_simple_traits_mapping.h" href="program_listing_file_include_shad_runtime_mappings_cpp_simple_cpp_simple_traits_mapping.h.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#files">Files</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_abstract_data_structure.h.html">File abstract_data_structure.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_algorithm.h.html">File algorithm.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_array.h.html">File array.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_array.h.html">File array.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_asynchronous_interface.h.html">File asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_attributed_edge_index.h.html">File attributed_edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_available_mappings.h.html">File available_mappings.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_available_traits_mappings.h.html">File available_traits_mappings.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_binary_search_ops.h.html">File binary_search_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_buffer.h.html">File buffer.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_compare_and_hash_utils.h.html">File compare_and_hash_utils.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_comparison_ops.h.html">File comparison_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_asynchronous_interface.h.html">File cpp_simple_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_synchronous_interface.h.html">File cpp_simple_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_traits_mapping.h.html">File cpp_simple_traits_mapping.h</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">File cpp_simple_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_distributed_iterator_traits.h.html">File distributed_iterator_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_edge_index.h.html">File edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_execution.h.html">File execution.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h.html">File gmt_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_synchronous_interface.h.html">File gmt_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_traits_mapping.h.html">File gmt_traits_mapping.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_utility.h.html">File gmt_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_handle.h.html">File handle.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_hashmap.h.html">File hashmap.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_heap_ops.h.html">File heap_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_impl_patterns.h.html">File impl_patterns.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_iterator.h.html">File iterator.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_local_edge_index.h.html">File local_edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_local_hashmap.h.html">File local_hashmap.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_local_set.h.html">File local_set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_locality.h.html">File locality.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mapping_traits.h.html">File mapping_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_util_measure.h.html">File measure.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_minimum_maximum_ops.h.html">File minimum_maximum_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_modifyng_sequence_ops.h.html">File modifyng_sequence_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_non_modifyng_sequence_ops.h.html">File non_modifyng_sequence_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_numeric.h.html">File numeric.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_numeric_ops.h.html">File numeric_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_object_identifier.h.html">File object_identifier.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_one_per_locality.h.html">File one_per_locality.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_ops_on_uninitialized_memory.h.html">File ops_on_uninitialized_memory.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_other_ops_on_sorted_ranges.h.html">File other_ops_on_sorted_ranges.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_partitioning_ops.h.html">File partitioning_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_permutation_ops.h.html">File permutation_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_runtime.h.html">File runtime.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_set.h.html">File set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_set_ops.h.html">File set_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_shad.h.html">File shad.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_util_shadmain.h.html">File shadmain.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_sorting_ops.h.html">File sorting_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_algorithms_sssp.h.html">File sssp.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_synchronous_interface.h.html">File synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_asynchronous_interface.h.html">File tbb_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_synchronous_interface.h.html">File tbb_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_traits_mapping.h.html">File tbb_traits_mapping.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_utility.h.html">File tbb_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_type_traits.h.html">File type_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_unordered_map.h.html">File unordered_map.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_unordered_set.h.html">File unordered_set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_utils.h.html">File utils.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_vector.h.html">File vector.h</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>File cpp_simple_utility.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="file-cpp-simple-utility-h">
+<span id="file-include-shad-runtime-mappings-cpp-simple-cpp-simple-utility-h"></span><h1>File cpp_simple_utility.h<a class="headerlink" href="#file-cpp-simple-utility-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="dir_include_shad_runtime_mappings_cpp_simple.html#dir-include-shad-runtime-mappings-cpp-simple"><span class="std std-ref">Parent directory</span></a> (<code class="docutils literal notranslate"><span class="pre">include/shad/runtime/mappings/cpp_simple</span></code>)</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#definition-include-shad-runtime-mappings-cpp-simple-cpp-simple-utility-h" id="id1">Definition (<code class="docutils literal notranslate"><span class="pre">include/shad/runtime/mappings/cpp_simple/cpp_simple_utility.h</span></code>)</a></li>
+<li><a class="reference internal" href="#includes" id="id2">Includes</a></li>
+<li><a class="reference internal" href="#included-by" id="id3">Included By</a></li>
+<li><a class="reference internal" href="#namespaces" id="id4">Namespaces</a></li>
+<li><a class="reference internal" href="#functions" id="id5">Functions</a></li>
+</ul>
+</div>
+<div class="section" id="definition-include-shad-runtime-mappings-cpp-simple-cpp-simple-utility-h">
+<h2>Definition (<code class="docutils literal notranslate"><span class="pre">include/shad/runtime/mappings/cpp_simple/cpp_simple_utility.h</span></code>)<a class="headerlink" href="#definition-include-shad-runtime-mappings-cpp-simple-cpp-simple-utility-h" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="program_listing_file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h.html">Program Listing for File cpp_simple_utility.h</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="includes">
+<h2>Includes<a class="headerlink" href="#includes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">shad/runtime/locality.h</span></code> (<a class="reference internal" href="file_include_shad_runtime_locality.h.html#file-include-shad-runtime-locality-h"><span class="std std-ref">File locality.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">sstream</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">system_error</span></code></li>
+</ul>
+</div>
+<div class="section" id="included-by">
+<h2>Included By<a class="headerlink" href="#included-by" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_asynchronous_interface.h.html#file-include-shad-runtime-mappings-cpp-simple-cpp-simple-asynchronous-interface-h"><span class="std std-ref">File cpp_simple_asynchronous_interface.h</span></a></li>
+<li><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_synchronous_interface.h.html#file-include-shad-runtime-mappings-cpp-simple-cpp-simple-synchronous-interface-h"><span class="std std-ref">File cpp_simple_synchronous_interface.h</span></a></li>
+</ul>
+</div>
+<div class="section" id="namespaces">
+<h2>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="namespace_shad.html#namespace-shad"><span class="std std-ref">Namespace shad</span></a></li>
+<li><a class="reference internal" href="namespace_shad__rt.html#namespace-shad-rt"><span class="std std-ref">Namespace shad::rt</span></a></li>
+<li><a class="reference internal" href="namespace_shad__rt__impl.html#namespace-shad-rt-impl"><span class="std std-ref">Namespace shad::rt::impl</span></a></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="function_cpp__simple__utility_8h_1a41b29efba127bb02b8832829aa4068a5.html#exhale-function-cpp-simple-utility-8h-1a41b29efba127bb02b8832829aa4068a5"><span class="std std-ref">Function shad::rt::impl::checkLocality</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="program_listing_file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h.html" class="btn btn-neutral float-right" title="Program Listing for File cpp_simple_utility.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="program_listing_file_include_shad_runtime_mappings_cpp_simple_cpp_simple_traits_mapping.h.html" class="btn btn-neutral float-left" title="Program Listing for File cpp_simple_traits_mapping.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

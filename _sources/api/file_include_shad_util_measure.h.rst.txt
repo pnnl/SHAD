@@ -1,0 +1,59 @@
+
+.. _file_include_shad_util_measure.h:
+
+File measure.h
+==============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_util>` (``include/shad/util``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/util/measure.h``)
+--------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_util_measure.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``chrono`` (:ref:`file_include_shad_runtime_asynchronous_interface.h`)
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_extensions_graph_library_algorithms_sssp.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1measure`
+

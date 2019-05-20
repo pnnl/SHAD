@@ -1,0 +1,13 @@
+.. _exhale_function_numeric__ops_8h_1af4764964e73da24626df70bf937018d4:
+
+Template Function shad::impl::transform_inclusive_scan(distributed_sequential_tag&&, InputIt, InputIt, OutputIt, BinaryOperation, UnaryOperation, T)
+====================================================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::transform_inclusive_scan(distributed_sequential_tag&&, InputIt, InputIt, OutputIt, BinaryOperation, UnaryOperation, T)

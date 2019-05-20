@@ -1,0 +1,13 @@
+.. _exhale_function_non__modifyng__sequence__ops_8h_1a493ad5c9070f71bcb9b1aca4688a585a:
+
+Template Function shad::impl::find_if(distributed_parallel_tag&&, ForwardItr, ForwardItr, UnaryPredicate)
+=========================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::find_if(distributed_parallel_tag&&, ForwardItr, ForwardItr, UnaryPredicate)

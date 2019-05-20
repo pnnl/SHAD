@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1measure:
+
+Template Struct measure
+=======================
+
+- Defined in :ref:`file_include_shad_util_measure.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::measure
+   :members:
+   :protected-members:
+   :undoc-members:

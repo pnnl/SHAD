@@ -1,0 +1,13 @@
+.. _exhale_function_object__identifier_8h_1a5761ac18b234d1551ab55f1ce32214cb:
+
+Template Function shad::operator<<(std::ostream&, const ObjectIdentifier<T>&)
+=============================================================================
+
+- Defined in :ref:`file_include_shad_data_structures_object_identifier.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::operator<<(std::ostream&, const ObjectIdentifier<T>&)

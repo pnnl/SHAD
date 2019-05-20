@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1ade79004d9d2b57d94717640536689f30:
+
+Template Function shad::min_element(ExecutionPolicy&&, ForwardIt, ForwardIt, Compare)
+=====================================================================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::min_element(ExecutionPolicy&&, ForwardIt, ForwardIt, Compare)

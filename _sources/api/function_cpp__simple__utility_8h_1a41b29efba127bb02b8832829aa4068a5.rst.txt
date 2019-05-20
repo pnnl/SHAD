@@ -1,0 +1,13 @@
+.. _exhale_function_cpp__simple__utility_8h_1a41b29efba127bb02b8832829aa4068a5:
+
+Function shad::rt::impl::checkLocality
+======================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::impl::checkLocality(const Locality&)

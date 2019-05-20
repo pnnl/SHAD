@@ -1,8 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node2" href="$classshad_1_1insert__iterator.html" title="Insert iterator (over a shad container). " alt="" coords="130,5,267,46"/>
-<area shape="rect" id="node4" href="$classshad_1_1lmap__iterator.html" title="shad::lmap_iterator\l\&lt; LMap, T \&gt;" alt="" coords="132,70,265,111"/>
-<area shape="rect" id="node5" href="$classshad_1_1lset__iterator.html" title="shad::lset_iterator\l\&lt; LSet, T \&gt;" alt="" coords="135,135,262,177"/>
-<area shape="rect" id="node6" href="$classshad_1_1map__iterator.html" title="shad::map_iterator\l\&lt; Map, T, NonConstT \&gt;" alt="" coords="117,201,280,242"/>
-<area shape="rect" id="node7" href="$classshad_1_1set__iterator.html" title="shad::set_iterator\l\&lt; Set, T, NonConstT \&gt;" alt="" coords="120,266,277,307"/>
-<area shape="rect" id="node3" href="$classshad_1_1buffered__insert__iterator.html" title="Buffered insert iterator. " alt="" coords="328,5,477,46"/>
-</map>

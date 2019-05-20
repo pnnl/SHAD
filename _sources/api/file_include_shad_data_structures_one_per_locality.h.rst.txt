@@ -1,0 +1,51 @@
+
+.. _file_include_shad_data_structures_one_per_locality.h:
+
+File one_per_locality.h
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_data_structures>` (``include/shad/data_structures``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/data_structures/one_per_locality.h``)
+----------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_data_structures_one_per_locality.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``shad/data_structures/abstract_data_structure.h`` (:ref:`file_include_shad_data_structures_abstract_data_structure.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1OnePerLocality`
+

@@ -1,0 +1,55 @@
+
+.. _file_include_shad_core_unordered_map.h:
+
+File unordered_map.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_core>` (``include/shad/core``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/core/unordered_map.h``)
+--------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_core_unordered_map.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``shad/core/iterator.h`` (:ref:`file_include_shad_core_iterator.h`)
+
+- ``shad/data_structures/compare_and_hash_utils.h`` (:ref:`file_include_shad_data_structures_compare_and_hash_utils.h`)
+
+- ``shad/data_structures/hashmap.h`` (:ref:`file_include_shad_data_structures_hashmap.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1unordered__map`
+

@@ -1,0 +1,13 @@
+.. _exhale_function_impl__patterns_8h_1ae3198e995caf16706ae51020545ef11d:
+
+Template Function shad::impl::distributed_folding_map_void
+==========================================================
+
+- Defined in :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::distributed_folding_map_void(ForwardIt, ForwardIt, MapF&&, Args&&...)

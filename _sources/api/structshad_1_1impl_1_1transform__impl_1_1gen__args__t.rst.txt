@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1impl_1_1transform__impl_1_1gen__args__t:
+
+Template Struct gen_args_t
+==========================
+
+- Defined in :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::impl::transform_impl::gen_args_t
+   :members:
+   :protected-members:
+   :undoc-members:

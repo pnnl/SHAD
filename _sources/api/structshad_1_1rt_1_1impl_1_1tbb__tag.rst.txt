@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1rt_1_1impl_1_1tbb__tag:
+
+Struct tbb_tag
+==============
+
+- Defined in :ref:`file_include_shad_runtime_mappings_tbb_tbb_traits_mapping.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::rt::impl::tbb_tag
+   :members:
+   :protected-members:
+   :undoc-members:

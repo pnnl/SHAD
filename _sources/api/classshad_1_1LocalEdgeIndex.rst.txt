@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1LocalEdgeIndex:
+
+Template Class LocalEdgeIndex
+=============================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_local_edge_index.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::LocalEdgeIndex
+   :members:
+   :protected-members:
+   :undoc-members:

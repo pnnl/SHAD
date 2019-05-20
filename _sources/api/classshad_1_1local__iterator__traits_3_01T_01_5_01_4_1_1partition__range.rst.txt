@@ -1,0 +1,22 @@
+.. _exhale_class_classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range:
+
+Template Class local_iterator_traits< T * >::local_iterator_traits< T * >
+=========================================================================
+
+- Defined in :ref:`file_include_shad_distributed_iterator_traits.h`
+
+
+Nested Relationships
+--------------------
+
+This class is a nested type of :ref:`exhale_class_classshad_1_1local__iterator__traits_3_01T_01_5_01_4`.
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::local_iterator_traits< T * >::partition_range
+   :members:
+   :protected-members:
+   :undoc-members:

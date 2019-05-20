@@ -1,0 +1,101 @@
+
+.. _namespace_shad__rt:
+
+Namespace shad::rt
+==================
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad__rt__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1rt_1_1Handle`
+
+- :ref:`exhale_class_classshad_1_1rt_1_1localities__range`
+
+- :ref:`exhale_class_classshad_1_1rt_1_1Locality`
+
+- :ref:`exhale_class_classshad_1_1rt_1_1Lock`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_runtime_8h_1adea42bceb84b2161df8fece9d20cb7cf`
+
+- :ref:`exhale_function_runtime_8h_1aad88d972c54520fa6da6661c0972ca66`
+
+- :ref:`exhale_function_runtime_8h_1a8690d0c19d1d2e7acce51b9c83223c94`
+
+- :ref:`exhale_function_runtime_8h_1a52c8bfa7986d1786079e81e772a9d425`
+
+- :ref:`exhale_function_runtime_8h_1a5ef970b04fc171862dc8b0c4cb6308d4`
+
+- :ref:`exhale_function_runtime_8h_1a7021749e6a86c90e762645385e22ac5c`
+
+- :ref:`exhale_function_runtime_8h_1a112df602ea3878eab5f2d2ed424d8d87`
+
+- :ref:`exhale_function_runtime_8h_1a35ae5113d8da4942705af0a77305fe0c`
+
+- :ref:`exhale_function_runtime_8h_1aafcdb9446fa49c00add25b4cf61f92f0`
+
+- :ref:`exhale_function_runtime_8h_1a36e675e25238d9b5c81b8a755dce61cd`
+
+- :ref:`exhale_function_runtime_8h_1a8f5647851b74b49dc7c35d5025b07cf3`
+
+- :ref:`exhale_function_runtime_8h_1a540b5cecb449199c0c829141cc2ae7d5`
+
+- :ref:`exhale_function_runtime_8h_1a4737e1c84ac7e830a1a306ac5b136a7d`
+
+- :ref:`exhale_function_runtime_8h_1ae4b428e7e47fc07e01707b3abb01caa2`
+
+- :ref:`exhale_function_runtime_8h_1a5bc582ecab17be55af910f8a6e3e31f5`
+
+- :ref:`exhale_function_runtime_8h_1a750ac93a8d339b97e3a11e182b50ffbc`
+
+- :ref:`exhale_function_runtime_8h_1aa1c240408fd99868fe25dc35e78c9c79`
+
+- :ref:`exhale_function_runtime_8h_1acadca86a92a75be85e51534f905b7fef`
+
+- :ref:`exhale_function_runtime_8h_1a9a77fcd35f06e3e2200ee1ca940ba8d1`
+
+- :ref:`exhale_function_runtime_8h_1aeff4031b9c8382aa34ec65c853cf45b8`
+
+- :ref:`exhale_function_runtime_8h_1af82c01717fef30752cd60051a92a9bee`
+
+- :ref:`exhale_function_runtime_8h_1a3701740e6d6681499063a0b5fa43645b`
+
+- :ref:`exhale_function_runtime_8h_1a7d0647bae3b6f6a7c870fee9b69bbf8e`
+
+- :ref:`exhale_function_runtime_8h_1a681ee8fbfec5d92c2bc8cd3851eae0c7`
+
+- :ref:`exhale_function_runtime_8h_1a3642b67c7ddc6f9d527616e4eb6cdbde`
+
+- :ref:`exhale_function_runtime_8h_1a199bb50c21e9012f615520413872aef6`
+
+- :ref:`exhale_function_runtime_8h_1a7536c33738a5dd285f3a44aa6a199faf`
+
+- :ref:`exhale_function_runtime_8h_1a6ea1d3672bac3a80032863b6732a0c0a`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_cpp__simple__traits__mapping_8h_1a1eb8df1be67eada9b4f647ff376695b0`

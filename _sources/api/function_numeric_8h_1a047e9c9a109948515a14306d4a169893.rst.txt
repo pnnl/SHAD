@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1a047e9c9a109948515a14306d4a169893:
+
+Template Function shad::reduce(ExecutionPolicy&&, ForwardIt, ForwardIt, T)
+==========================================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::reduce(ExecutionPolicy&&, ForwardIt, ForwardIt, T)

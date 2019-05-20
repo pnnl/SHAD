@@ -1,0 +1,174 @@
+
+.. _program_listing_file_include_shad_data_structures_object_identifier.h:
+
+Program Listing for File object_identifier.h
+============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_include_shad_data_structures_object_identifier.h>` (``include/shad/data_structures/object_identifier.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   //===------------------------------------------------------------*- C++ -*-===//
+   //
+   //                                     SHAD
+   //
+   //      The Scalable High-performance Algorithms and Data Structure Library
+   //
+   //===----------------------------------------------------------------------===//
+   //
+   // Copyright 2018 Battelle Memorial Institute
+   //
+   // Licensed under the Apache License, Version 2.0 (the "License"); you may not
+   // use this file except in compliance with the License. You may obtain a copy
+   // of the License at
+   //
+   //     http://www.apache.org/licenses/LICENSE-2.0
+   //
+   // Unless required by applicable law or agreed to in writing, software
+   // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+   // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+   // License for the specific language governing permissions and limitations
+   // under the License.
+   //
+   //===----------------------------------------------------------------------===//
+   
+   #ifndef INCLUDE_SHAD_DATA_STRUCTURES_OBJECT_IDENTIFIER_H_
+   #define INCLUDE_SHAD_DATA_STRUCTURES_OBJECT_IDENTIFIER_H_
+   
+   #include <atomic>
+   #include <limits>
+   #include "shad/runtime/runtime.h"
+   
+   namespace shad {
+   template <typename T>
+   class ObjectIdentifier {
+    public:
+     static const ObjectIdentifier<T> kNullID;
+   
+     static constexpr uint8_t kLocalityIdBitsize = 16u;
+   
+     static constexpr uint8_t kIdentifierBitsize = 48u;
+   
+     explicit constexpr ObjectIdentifier(uint64_t id) : id_(id) {}
+   
+     ObjectIdentifier(const rt::Locality &locality, uint64_t localID) {
+       id_ = static_cast<uint32_t>(locality);
+       id_ <<= kIdentifierBitsize;
+       id_ |= localID;
+     }
+   
+     ObjectIdentifier(const ObjectIdentifier &oid) = default;
+   
+     ObjectIdentifier(ObjectIdentifier &&) noexcept = default;
+   
+     ObjectIdentifier &operator=(ObjectIdentifier &&) noexcept = default;
+   
+     friend bool operator<(const ObjectIdentifier &lhs,
+                           const ObjectIdentifier &rhs) {
+       return lhs.id_ < rhs.id_;
+     }
+   
+     ObjectIdentifier &operator=(const ObjectIdentifier &rhs) = default;
+   
+     explicit operator uint64_t() const { return static_cast<uint64_t>(id_); }
+   
+     rt::Locality GetOwnerLocality() const {
+       return rt::Locality(uint32_t(id_ >> kIdentifierBitsize));
+     }
+   
+     size_t GetLocalID() const { return id_ & kIdentifierBitMask; }
+   
+    private:
+     static constexpr uint64_t kIdentifierBitMask =
+         ((uint64_t(1) << kIdentifierBitsize) - 1);
+   
+     uint64_t id_;
+   };
+   
+   template <typename T>
+   const ObjectIdentifier<T> ObjectIdentifier<T>::kNullID =
+       ObjectIdentifier<T>(std::numeric_limits<uint64_t>::max());
+   
+   template <typename T>
+   constexpr uint8_t ObjectIdentifier<T>::kIdentifierBitsize;
+   
+   template <typename T>
+   constexpr uint64_t ObjectIdentifier<T>::kIdentifierBitMask;
+   
+   template <typename T>
+   inline bool operator>(const ObjectIdentifier<T> &lhs,
+                         const ObjectIdentifier<T> &rhs) {
+     return rhs < lhs;
+   }
+   
+   template <typename T>
+   inline bool operator<=(const ObjectIdentifier<T> &lhs,
+                          const ObjectIdentifier<T> &rhs) {
+     return !(lhs > rhs);
+   }
+   
+   template <typename T>
+   inline bool operator>=(const ObjectIdentifier<T> &lhs,
+                          const ObjectIdentifier<T> &rhs) {
+     return !(lhs < rhs);
+   }
+   
+   template <typename T>
+   inline bool operator==(const ObjectIdentifier<T> &lhs,
+                          const ObjectIdentifier<T> &rhs) {
+     return !(rhs < lhs) && !(lhs < rhs);
+   }
+   
+   template <typename T>
+   inline bool operator!=(const ObjectIdentifier<T> &lhs,
+                          const ObjectIdentifier<T> &rhs) {
+     return !(lhs == rhs);
+   }
+   
+   template <typename T>
+   std::ostream &operator<<(std::ostream &out, const ObjectIdentifier<T> &rhs) {
+     auto node = rhs.GetOwnerLocality();
+     size_t objectId = rhs.GetLocalID();
+     return out << "NodeOwner[" << node << "] id = " << objectId;
+   }
+   
+   template <typename T>
+   class ObjectIdentifierCounter {
+    public:
+     static ObjectIdentifierCounter<T> &Instance() {
+       static ObjectIdentifierCounter<T> instance;
+       return instance;
+     }
+     ObjectIdentifier<T> operator++(int) {
+       uint64_t value = counter_.fetch_add(1);
+       return ObjectIdentifier<T>(value);
+     }
+   
+     explicit operator uint64_t() const { return static_cast<uint64_t>(counter_); }
+   
+    private:
+     ObjectIdentifierCounter() {
+       // note that in the following, the cast to uint32_t invokes the conversion
+       // operator of the rt::thisLocality object, but we need a uint64_t.
+       counter_ = static_cast<uint64_t>(static_cast<uint32_t>(rt::thisLocality()))
+                  << ObjectIdentifier<T>::kIdentifierBitsize;
+     }
+   
+     std::atomic<uint64_t> counter_;
+   };
+   
+   template <typename T>
+   std::ostream &operator<<(std::ostream &out,
+                            const ObjectIdentifierCounter<T> &rhs) {
+     uint64_t objectIdentifier = static_cast<uint64_t>(rhs);
+     uint64_t node = objectIdentifier >> ObjectIdentifier<T>::kIdentifierBitsize;
+     uint64_t objectId =
+         ObjectIdentifier<T>::kIdentifierBitMask & objectIdentifier;
+     return out << "NodeOwner[" << node << "] id = " << objectId;
+   }
+   
+   }  // namespace shad
+   
+   #endif  // INCLUDE_SHAD_DATA_STRUCTURES_OBJECT_IDENTIFIER_H_

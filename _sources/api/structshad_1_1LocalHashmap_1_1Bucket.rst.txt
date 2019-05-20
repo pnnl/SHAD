@@ -1,0 +1,22 @@
+.. _exhale_struct_structshad_1_1LocalHashmap_1_1Bucket:
+
+Struct LocalHashmap::Bucket
+===========================
+
+- Defined in :ref:`file_include_shad_data_structures_local_hashmap.h`
+
+
+Nested Relationships
+--------------------
+
+This struct is a nested type of :ref:`exhale_class_classshad_1_1LocalHashmap`.
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::LocalHashmap::Bucket
+   :members:
+   :protected-members:
+   :undoc-members:

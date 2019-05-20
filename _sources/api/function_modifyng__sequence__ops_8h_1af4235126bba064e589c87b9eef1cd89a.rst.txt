@@ -1,0 +1,13 @@
+.. _exhale_function_modifyng__sequence__ops_8h_1af4235126bba064e589c87b9eef1cd89a:
+
+Template Function shad::impl::transform(distributed_parallel_tag&&, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)
+=======================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::transform(distributed_parallel_tag&&, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)

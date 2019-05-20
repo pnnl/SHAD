@@ -1,0 +1,22 @@
+.. _exhale_class_classshad_1_1AbstractDataStructure_1_1Catalog:
+
+Class AbstractDataStructure::Catalog
+====================================
+
+- Defined in :ref:`file_include_shad_data_structures_abstract_data_structure.h`
+
+
+Nested Relationships
+--------------------
+
+This class is a nested type of :ref:`exhale_class_classshad_1_1AbstractDataStructure`.
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::AbstractDataStructure::Catalog
+   :members:
+   :protected-members:
+   :undoc-members:

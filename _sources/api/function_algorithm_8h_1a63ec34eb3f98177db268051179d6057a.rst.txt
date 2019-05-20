@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a63ec34eb3f98177db268051179d6057a:
+
+Template Function shad::find
+============================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::find(ExecutionPolicy&&, ForwardItr, ForwardItr, const T&)

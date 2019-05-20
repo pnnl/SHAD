@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1AttrEdgesPair:
+
+Template Class AttrEdgesPair
+============================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_attributed_edge_index.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::AttrEdgesPair
+   :members:
+   :protected-members:
+   :undoc-members:

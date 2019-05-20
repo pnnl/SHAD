@@ -1,0 +1,57 @@
+
+.. _file_include_shad_core_unordered_set.h:
+
+File unordered_set.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_core>` (``include/shad/core``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/core/unordered_set.h``)
+--------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_core_unordered_set.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``shad/core/iterator.h`` (:ref:`file_include_shad_core_iterator.h`)
+
+- ``shad/data_structures/compare_and_hash_utils.h`` (:ref:`file_include_shad_data_structures_compare_and_hash_utils.h`)
+
+- ``shad/data_structures/set.h`` (:ref:`file_include_shad_data_structures_set.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1unordered__set`
+

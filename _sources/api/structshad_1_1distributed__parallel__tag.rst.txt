@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1distributed__parallel__tag:
+
+Struct distributed_parallel_tag
+===============================
+
+- Defined in :ref:`file_include_shad_core_execution.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::distributed_parallel_tag
+   :members:
+   :protected-members:
+   :undoc-members:

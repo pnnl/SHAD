@@ -1,0 +1,13 @@
+.. _exhale_function_minimum__maximum__ops_8h_1aed037b97b6d5e1bd2d2f23a0c9ddf9b5:
+
+Template Function shad::impl::minmax_element(distributed_parallel_tag&&, ForwardIt, ForwardIt, Compare)
+=======================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_minimum_maximum_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::minmax_element(distributed_parallel_tag&&, ForwardIt, ForwardIt, Compare)

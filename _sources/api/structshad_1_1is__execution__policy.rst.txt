@@ -1,0 +1,25 @@
+.. _exhale_struct_structshad_1_1is__execution__policy:
+
+Template Struct is_execution_policy
+===================================
+
+- Defined in :ref:`file_include_shad_core_execution.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public std::integral_constant< bool, std::is_same< ExecutionPolicy, distributed_sequential_tag >::value||std::is_same< ExecutionPolicy, distributed_parallel_tag >::value >``
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::is_execution_policy
+   :members:
+   :protected-members:
+   :undoc-members:

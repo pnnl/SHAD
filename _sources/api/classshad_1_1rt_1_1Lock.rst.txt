@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1rt_1_1Lock:
+
+Class Lock
+==========
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::rt::Lock
+   :members:
+   :protected-members:
+   :undoc-members:

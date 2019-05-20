@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a9bd5736fe5e18ec23a7d7e5913a11df8:
+
+Template Function shad::generate
+================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::generate(ExecutionPolicy&&, ForwardIt, ForwardIt, Generator)

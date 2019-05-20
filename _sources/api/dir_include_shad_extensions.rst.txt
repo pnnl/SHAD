@@ -1,0 +1,20 @@
+.. _dir_include_shad_extensions:
+
+
+Directory extensions
+====================
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad>` (``include/shad``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad/extensions``
+
+Subdirectories
+--------------
+
+- :ref:`dir_include_shad_extensions_graph_library`
+
+
+

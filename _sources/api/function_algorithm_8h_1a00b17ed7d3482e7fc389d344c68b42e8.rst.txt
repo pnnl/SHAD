@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a00b17ed7d3482e7fc389d344c68b42e8:
+
+Template Function shad::none_of
+===============================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::none_of(ExecutionPolicy&&, ForwardItr, ForwardItr, UnaryPredicate)

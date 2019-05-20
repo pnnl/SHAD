@@ -1,0 +1,27 @@
+.. _dir_include_shad_extensions_graph_library:
+
+
+Directory library
+=================
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_extensions>` (``include/shad/extensions``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad/extensions/graph_library``
+
+Subdirectories
+--------------
+
+- :ref:`dir_include_shad_extensions_graph_library_algorithms`
+
+
+Files
+-----
+
+- :ref:`file_include_shad_extensions_graph_library_attributed_edge_index.h`
+- :ref:`file_include_shad_extensions_graph_library_edge_index.h`
+- :ref:`file_include_shad_extensions_graph_library_local_edge_index.h`
+
+

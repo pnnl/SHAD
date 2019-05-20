@@ -1,0 +1,31 @@
+.. _exhale_class_classshad_1_1Vector_1_1Iterator:
+
+Template Class Vector::Iterator
+===============================
+
+- Defined in :ref:`file_include_shad_data_structures_vector.h`
+
+
+Nested Relationships
+--------------------
+
+This class is a nested type of :ref:`exhale_class_classshad_1_1Vector`.
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``private std::iterator< std::random_access_iterator_tag, ValueType >``
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::Vector::Iterator
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Template Class array::array_iterator &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class array_iterator::local_iterator_range" href="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range.html" />
+    <link rel="prev" title="Template Class array" href="classshad_1_1impl_1_1array.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1AtArgs.html">Struct Array::AtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1InsertAtArgs.html">Struct Array::InsertAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1ElementInserter.html">Struct AttributedEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1FlatEdgeList.html">Struct AttributedEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct AttributedEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1ElementInserter.html">Struct DefaultEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1EmptyAttr.html">Struct DefaultEdgeIndexStorage::EmptyAttr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1FlatEdgeList.html">Struct DefaultEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct DefaultEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__iterator__traits.html">Template Struct distributed_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__parallel__tag.html">Struct distributed_parallel_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__random__access__iterator__trait.html">Template Struct distributed_random_access_iterator_trait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__sequential__tag.html">Struct distributed_sequential_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EdgeListChunk.html">Struct EdgeIndex::EdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EntryT.html">Struct EdgeIndex::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1InsertArgs.html">Struct EdgeIndex::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupArgs.html">Struct EdgeIndex::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupResult.html">Struct EdgeIndex::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash.html">Template Struct hash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash_3_01Key_00_01false_01_4.html">Template Struct hash&lt; Key, false &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1EntryT.html">Struct Hashmap::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1InsertArgs.html">Struct Hashmap::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1LookupArgs.html">Struct Hashmap::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply.html">Template Struct Apply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply_3_01i_00_01i_01_4.html">Template Struct Apply&lt; i, i &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Buffer_1_1FlushArgs.html">Struct Buffer::FlushArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector.html">Template Struct optional_vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector_1_1entry__t.html">Struct optional_vector::entry_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1transform__impl_1_1gen__args__t.html">Template Struct gen_args_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous.html">Template Struct is_block_contiguous</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1buffered__insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::buffered_insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator.html">Template Struct is_distributed_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b.html">Template Struct is_distributed_iterator&lt; T, typename std::enable_if&lt; !std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__execution__policy.html">Template Struct is_execution_policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__std__hashable.html">Template Struct is_std_hashable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1local__iterator__traits.html">Template Struct local_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Bucket.html">Struct LocalHashmap::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Entry.html">Struct LocalHashmap::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1LookupResult.html">Struct LocalHashmap::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Bucket.html">Struct LocalSet::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Entry.html">Struct LocalSet::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1map__iterator_1_1itData.html">Struct map_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1measure.html">Template Struct measure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Overwriter.html">Template Struct Overwriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01cpp__tag_01_4.html">Template Struct AsynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01gmt__tag_01_4.html">Template Struct AsynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01tbb__tag_01_4.html">Template Struct AsynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1cpp__tag.html">Struct cpp_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1CppHandle.html">Struct CppHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1ExecFunWrapperArgs.html">Template Struct ExecFunWrapperArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1gmt__tag.html">Struct gmt_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait.html">Template Struct HandleTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01cpp__tag_01_4.html">Template Struct HandleTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4.html">Template Struct HandleTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01tbb__tag_01_4.html">Template Struct HandleTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait.html">Template Struct LockTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01cpp__tag_01_4.html">Template Struct LockTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01gmt__tag_01_4.html">Template Struct LockTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01tbb__tag_01_4.html">Template Struct LockTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait.html">Template Struct RuntimeInternalsTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01cpp__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01gmt__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01tbb__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface.html">Template Struct SynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01cpp__tag_01_4.html">Template Struct SynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4.html">Template Struct SynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01tbb__tag_01_4.html">Template Struct SynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1tbb__tag.html">Struct tbb_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Set_1_1ExeAtArgs.html">Struct Set::ExeAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1set__iterator_1_1itData.html">Struct set_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Updater.html">Template Struct Updater</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure.html">Template Class AbstractDataStructure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure_1_1Catalog.html">Class AbstractDataStructure::Catalog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Array.html">Template Class Array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttrEdgesPair.html">Template Class AttrEdgesPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttributedEdgeIndexStorage.html">Template Class AttributedEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1buffered__insert__iterator.html">Template Class buffered_insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1DefaultEdgeIndexStorage.html">Template Class DefaultEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1EdgeIndex.html">Template Class EdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Hashmap.html">Template Class Hashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1IDCmp.html">Template Class IDCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Template Class array::array_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range.html">Class array_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef.html">Template Class array::ArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef_3_01const_01U_01_4.html">Template Class array::ArrayRef&lt; const U &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1BaseArrayRef.html">Template Class array::BaseArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1Buffer.html">Template Class Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1BuffersVector.html">Template Class BuffersVector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1insert__iterator.html">Template Class insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator.html">Template Class lmap_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator_1_1partition__range.html">Class lmap_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4.html">Template Class local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html">Template Class local_iterator_traits&lt; T * &gt;::local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalEdgeIndex.html">Template Class LocalEdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalHashmap.html">Template Class LocalHashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalSet.html">Template Class LocalSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator.html">Template Class lset_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator_1_1partition__range.html">Class lset_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator.html">Template Class map_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator_1_1local__iterator__range.html">Class map_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp.html">Template Class MemCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp_3_01std_1_1vector_3_01KeyTy_01_4_01_4.html">Template Class MemCmp&lt; std::vector&lt; KeyTy &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifier.html">Template Class ObjectIdentifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifierCounter.html">Template Class ObjectIdentifierCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1OnePerLocality.html">Template Class OnePerLocality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Handle.html">Class Handle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface.html">Template Class AsynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1localities__range.html">Class localities_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Locality.html">Class Locality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Lock.html">Class Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Set.html">Template Class Set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator.html">Template Class set_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator_1_1local__iterator__range.html">Class set_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__map.html">Template Class unordered_map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__set.html">Template Class unordered_set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector.html">Template Class Vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector_1_1Iterator.html">Template Class Vector::Iterator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Template Class array::array_iterator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classshad_1_1impl_1_1array_1_1array__iterator.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="template-class-array-array-iterator">
+<span id="exhale-class-classshad-1-1impl-1-1array-1-1array-iterator"></span><h1>Template Class array::array_iterator<a class="headerlink" href="#template-class-array-array-iterator" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Defined in <a class="reference internal" href="file_include_shad_core_array.h.html#file-include-shad-core-array-h"><span class="std std-ref">File array.h</span></a></li>
+</ul>
+<div class="section" id="nested-relationships">
+<h2>Nested Relationships<a class="headerlink" href="#nested-relationships" title="Permalink to this headline">¶</a></h2>
+<p>This class is a nested type of <a class="reference internal" href="classshad_1_1impl_1_1array.html#exhale-class-classshad-1-1impl-1-1array"><span class="std std-ref">Template Class array</span></a>.</p>
+<div class="section" id="nested-types">
+<h3>Nested Types<a class="headerlink" href="#nested-types" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range.html#exhale-class-classshad-1-1impl-1-1array-1-1array-iterator-1-1local-iterator-range"><span class="std std-ref">Class array_iterator::local_iterator_range</span></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv3N4shad4impl5array14array_iteratorE">
+<span id="_CPPv2N4shad4impl5array14array_iteratorE"></span><span id="shad::impl::array::array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator"></span><em class="property">template </em>&lt;typename <em>U</em>&gt;<br /><em class="property">class </em><code class="descname">array_iterator</code><a class="headerlink" href="#_CPPv3N4shad4impl5array14array_iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="type">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE9referenceE">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE9referenceE"></span>template&lt;&gt;<br />template&lt;&gt;<br /><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a64ce63498346d7a0251ddc1a35b863c9"></span><em class="property">using </em><code class="descname">reference</code> = <em class="property">typename</em> array&lt;T, N&gt;::template ArrayRef&lt;U&gt;<a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE9referenceE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE7pointerE">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE7pointerE"></span>template&lt;&gt;<br />template&lt;&gt;<br /><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a382931df380a876e641878d9da089285"></span><em class="property">using </em><code class="descname">pointer</code> = <em class="property">typename</em> array::pointer<a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE7pointerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE15difference_typeE">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE15difference_typeE"></span>template&lt;&gt;<br />template&lt;&gt;<br /><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a200b08591cb893e0d1d66be434318184"></span><em class="property">using </em><code class="descname">difference_type</code> = std::ptrdiff_t<a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE15difference_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE10value_typeE">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE10value_typeE"></span>template&lt;&gt;<br />template&lt;&gt;<br /><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a8d2a7362de8d486cd74e4b49c7f560b6"></span><em class="property">using </em><code class="descname">value_type</code> = <em class="property">typename</em> array::value_type<a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE10value_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE17iterator_categoryE">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE17iterator_categoryE"></span>template&lt;&gt;<br />template&lt;&gt;<br /><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1ade163779248fd6af9b5bfe2c7bba3e7a"></span><em class="property">using </em><code class="descname">iterator_category</code> = std::random_access_iterator_tag<a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE17iterator_categoryE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE19local_iterator_typeE">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE19local_iterator_typeE"></span>template&lt;&gt;<br />template&lt;&gt;<br /><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a6ac6fb7eb73501a80a8ce3a5641124e0"></span><em class="property">using </em><code class="descname">local_iterator_type</code> = <a class="reference internal" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE7pointerE" title="shad::impl::array&lt;T, N&gt;::array_iterator&lt;U&gt;::pointer">pointer</a><a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE19local_iterator_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE18distribution_rangeE">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE18distribution_rangeE"></span>template&lt;&gt;<br />template&lt;&gt;<br /><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a3e1bbeaf4cb965a37131fd7807a853ca"></span><em class="property">using </em><code class="descname">distribution_range</code> = std::vector&lt;std::pair&lt;rt::<a class="reference internal" href="classshad_1_1rt_1_1Locality.html#_CPPv3N4shad2rt8LocalityE" title="shad::rt::Locality">Locality</a>, size_t&gt;&gt;<a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE18distribution_rangeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERRN2rt8LocalityE15difference_type8ObjectID7pointer">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERRN2rt8LocalityE15difference_type8ObjectID7pointer"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a7e7af777dae6bd45f50485283407d055"></span>template&lt;&gt;<br /><code class="descname">array_iterator</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Locality.html#_CPPv3N4shad2rt8LocalityE" title="shad::rt::Locality">Locality</a> &amp;&amp;<em>l</em>, <a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE15difference_typeE" title="shad::impl::array&lt;T, N&gt;::difference_type">difference_type</a> <em>offset</em>, <a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE8ObjectIDE" title="shad::impl::array&lt;T, N&gt;::ObjectID">ObjectID</a> <em>oid</em>, <a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE7pointerE" title="shad::impl::array&lt;T, N&gt;::pointer">pointer</a> <em>chunk</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERRN2rt8LocalityE15difference_type8ObjectID7pointer" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Constructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorEv">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorEv"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1ae84fd788ea583184c4ad00dd271884ee"></span>template&lt;&gt;<br /><code class="descname">array_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERK14array_iterator">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1afbc7443f1d285310d8f5ad7afcfbd824"></span>template&lt;&gt;<br /><code class="descname">array_iterator</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERRN2rt8LocalityE15difference_type8ObjectID7pointer" title="shad::impl::array&lt;T, N&gt;::array_iterator::array_iterator">array_iterator</a> &amp;<em>O</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERRK14array_iterator">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERRK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a2925dbc689d8b5923aacc16e6c2950db"></span>template&lt;&gt;<br /><code class="descname">array_iterator</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERRN2rt8LocalityE15difference_type8ObjectID7pointer" title="shad::impl::array&lt;T, N&gt;::array_iterator::array_iterator">array_iterator</a> &amp;&amp;<em>O</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator14array_iteratorERRK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Move constructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratoraSERK14array_iterator">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratoraSERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a8810f42733ec02d59e2980366241bc4a"></span>template&lt;&gt;<br />array_iterator &amp;<code class="descname">operator=</code><span class="sig-paren">(</span><em class="property">const</em> array_iterator &amp;<em>O</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratoraSERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy assignment operator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratoraSERR14array_iterator">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratoraSERR14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a5e26dd4858de350b4dac2a11e934141d"></span>template&lt;&gt;<br />array_iterator &amp;<code class="descname">operator=</code><span class="sig-paren">(</span>array_iterator &amp;&amp;<em>O</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratoraSERR14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Move assignment operator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratoreqERK14array_iterator">
+<span id="_CPPv2IENK4shad4impl5arrayI1T1NE14array_iteratoreqERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a74961948f8ea56d1973ba112eeb44a26"></span>template&lt;&gt;<br />bool <code class="descname">operator==</code><span class="sig-paren">(</span><em class="property">const</em> array_iterator &amp;<em>O</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratoreqERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorneERK14array_iterator">
+<span id="_CPPv2IENK4shad4impl5arrayI1T1NE14array_iteratorneERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a3618841c57041fcd96c44616fc113b81"></span>template&lt;&gt;<br />bool <code class="descname">operator!=</code><span class="sig-paren">(</span><em class="property">const</em> array_iterator &amp;<em>O</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorneERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormlEv">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratormlEv"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a8f57fea3ca0265418b74e68a02d3ce1f"></span>template&lt;&gt;<br /><a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE9referenceE" title="shad::impl::array&lt;T, N&gt;::reference">reference</a> <code class="descname">operator*</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormlEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratorppEv">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratorppEv"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1aff39a816550d923f4d701f46f937c26d"></span>template&lt;&gt;<br />array_iterator &amp;<code class="descname">operator++</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratorppEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratorppEi">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratorppEi"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1ad473926b0eb4817d6e77c398fc102b8e"></span>template&lt;&gt;<br />array_iterator <code class="descname">operator++</code><span class="sig-paren">(</span>int<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratorppEi" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormmEv">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratormmEv"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a3ccb7a82e8ece710f1b0b00ffe3d0e34"></span>template&lt;&gt;<br />array_iterator &amp;<code class="descname">operator--</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormmEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormmEi">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratormmEi"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1ab5c87463dab86cda2e1977d9a9e0d01c"></span>template&lt;&gt;<br />array_iterator <code class="descname">operator--</code><span class="sig-paren">(</span>int<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormmEi" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratorpLE15difference_type">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratorpLE15difference_type"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1aa01fe53d795c7ab6a2dae19687478056"></span>template&lt;&gt;<br />array_iterator &amp;<code class="descname">operator+=</code><span class="sig-paren">(</span><a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE15difference_typeE" title="shad::impl::array&lt;T, N&gt;::difference_type">difference_type</a> <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratorpLE15difference_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormIE15difference_type">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratormIE15difference_type"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1ae65ecc75284ec6191ef875253aebe71d"></span>template&lt;&gt;<br />array_iterator &amp;<code class="descname">operator-=</code><span class="sig-paren">(</span><a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE15difference_typeE" title="shad::impl::array&lt;T, N&gt;::difference_type">difference_type</a> <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormIE15difference_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratorplE15difference_type">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratorplE15difference_type"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1ad30adc98440625f148e74c0341b304f3"></span>template&lt;&gt;<br />array_iterator <code class="descname">operator+</code><span class="sig-paren">(</span><a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE15difference_typeE" title="shad::impl::array&lt;T, N&gt;::difference_type">difference_type</a> <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratorplE15difference_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormiE15difference_type">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iteratormiE15difference_type"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a91084bec936a18c7ef1138fa4780be24"></span>template&lt;&gt;<br />array_iterator <code class="descname">operator-</code><span class="sig-paren">(</span><a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE15difference_typeE" title="shad::impl::array&lt;T, N&gt;::difference_type">difference_type</a> <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iteratormiE15difference_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratormiERK14array_iterator">
+<span id="_CPPv2IENK4shad4impl5arrayI1T1NE14array_iteratormiERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a7d31baa0a9c174391272ab25882e4bbe"></span>template&lt;&gt;<br /><a class="reference internal" href="classshad_1_1impl_1_1array.html#_CPPv3IEN4shad4impl5arrayI1T1NE15difference_typeE" title="shad::impl::array&lt;T, N&gt;::difference_type">difference_type</a> <code class="descname">operator-</code><span class="sig-paren">(</span><em class="property">const</em> array_iterator &amp;<em>O</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratormiERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorltERK14array_iterator">
+<span id="_CPPv2IENK4shad4impl5arrayI1T1NE14array_iteratorltERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a2f2be6cb64de7658cd671be8ca188752"></span>template&lt;&gt;<br />bool <code class="descname">operator&lt;</code><span class="sig-paren">(</span><em class="property">const</em> array_iterator &amp;<em>O</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorltERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorgtERK14array_iterator">
+<span id="_CPPv2IENK4shad4impl5arrayI1T1NE14array_iteratorgtERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1aa31b6bc4d6ce044cd0f0c8e598fcf43b"></span>template&lt;&gt;<br />bool <code class="descname">operator&gt;</code><span class="sig-paren">(</span><em class="property">const</em> array_iterator &amp;<em>O</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorgtERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorleERK14array_iterator">
+<span id="_CPPv2IENK4shad4impl5arrayI1T1NE14array_iteratorleERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a59e95ca54f63d29474f29ab733c8cdd3"></span>template&lt;&gt;<br />bool <code class="descname">operator&lt;=</code><span class="sig-paren">(</span><em class="property">const</em> array_iterator &amp;<em>O</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorleERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorgeERK14array_iterator">
+<span id="_CPPv2IENK4shad4impl5arrayI1T1NE14array_iteratorgeERK14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1aa79e351af3e3db9b9b706865a7f3b196"></span>template&lt;&gt;<br />bool <code class="descname">operator&gt;=</code><span class="sig-paren">(</span><em class="property">const</em> array_iterator &amp;<em>O</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3IENK4shad4impl5arrayI1T1NE14array_iteratorgeERK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator11local_rangeER14array_iteratorR14array_iterator">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iterator11local_rangeER14array_iteratorR14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1ab14f4b082c38b1b2b3c8b9b0e0c1fb6d"></span>template&lt;&gt;<br /><em class="property">static</em> local_iterator_range <code class="descname">local_range</code><span class="sig-paren">(</span>array_iterator &amp;<em>B</em>, array_iterator &amp;<em>E</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator11local_rangeER14array_iteratorR14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator12distributionER14array_iteratorR14array_iterator">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iterator12distributionER14array_iteratorR14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a8c6f8f5b6b0f8c88af056bacbe87e963"></span>template&lt;&gt;<br /><em class="property">static</em> distribution_range <code class="descname">distribution</code><span class="sig-paren">(</span>array_iterator &amp;<em>begin</em>, array_iterator &amp;<em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator12distributionER14array_iteratorR14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator10localitiesER14array_iteratorR14array_iterator">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iterator10localitiesER14array_iteratorR14array_iterator"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a2e4f8711c3711c3ab02c08dbc03d3142"></span>template&lt;&gt;<br /><em class="property">static</em> rt::<a class="reference internal" href="classshad_1_1rt_1_1localities__range.html#_CPPv3N4shad2rt16localities_rangeE" title="shad::rt::localities_range">localities_range</a> <code class="descname">localities</code><span class="sig-paren">(</span>array_iterator &amp;<em>B</em>, array_iterator &amp;<em>E</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator10localitiesER14array_iteratorR14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator19iterator_from_localER14array_iteratorR14array_iterator19local_iterator_type">
+<span id="_CPPv2IEN4shad4impl5arrayI1T1NE14array_iterator19iterator_from_localER14array_iteratorR14array_iterator19local_iterator_type"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1ac0db3ce1e30199bf9d3784b5345daddd"></span>template&lt;&gt;<br /><em class="property">static</em> array_iterator <code class="descname">iterator_from_local</code><span class="sig-paren">(</span>array_iterator &amp;<em>B</em>, array_iterator &amp;<em>E</em>, local_iterator_type <em>itr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad4impl5arrayI1T1NE14array_iterator19iterator_from_localER14array_iteratorR14array_iterator19local_iterator_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Friends</p>
+<dl class="function">
+<dt id="_CPPv3lsRNSt7ostreamEK14array_iterator">
+<span id="_CPPv2lsRNSt7ostreamEK14array_iterator"></span><span id="lshift-operator__osR.array_iteratorC"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1a8f6f34e3ee470686deeaa5e7c1758502"></span>std::ostream &amp;<code class="descname">operator&lt;&lt;</code><span class="sig-paren">(</span>std::ostream &amp;<em>stream</em>, <em class="property">const</em> array_iterator <em>i</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3lsRNSt7ostreamEK14array_iterator" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="class">
+<dt id="_CPPv3N4shad4impl5array14array_iterator20local_iterator_rangeE">
+<span id="_CPPv2N4shad4impl5array14array_iterator20local_iterator_rangeE"></span><span id="shad::impl::array::array_iterator::local_iterator_range"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range"></span><em class="property">class </em><code class="descname">local_iterator_range</code><a class="headerlink" href="#_CPPv3N4shad4impl5array14array_iterator20local_iterator_rangeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range20local_iterator_rangeE19local_iterator_type19local_iterator_type">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range20local_iterator_rangeE19local_iterator_type19local_iterator_type"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range_1ae710ff3087041d8637fda401174b359e"></span>template&lt;&gt;<br />template&lt;&gt;<br /><code class="descname">local_iterator_range</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE19local_iterator_typeE" title="shad::impl::array&lt;T, N&gt;::array_iterator&lt;U&gt;::local_iterator_type">local_iterator_type</a> <em>B</em>, <a class="reference internal" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE19local_iterator_typeE" title="shad::impl::array&lt;T, N&gt;::array_iterator&lt;U&gt;::local_iterator_type">local_iterator_type</a> <em>E</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range20local_iterator_rangeE19local_iterator_type19local_iterator_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range5beginEv">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range5beginEv"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range_1a0a7b27f635c722b0dabfc38d99803404"></span>template&lt;&gt;<br />template&lt;&gt;<br /><a class="reference internal" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE19local_iterator_typeE" title="shad::impl::array&lt;T, N&gt;::array_iterator&lt;U&gt;::local_iterator_type">local_iterator_type</a> <code class="descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range5beginEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range3endEv">
+<span id="_CPPv2IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range3endEv"></span><span class="target" id="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range_1a1a682f9689aca3aa178dbd9ac0298de2"></span>template&lt;&gt;<br />template&lt;&gt;<br /><a class="reference internal" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE19local_iterator_typeE" title="shad::impl::array&lt;T, N&gt;::array_iterator&lt;U&gt;::local_iterator_type">local_iterator_type</a> <code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEIEN4shad4impl5arrayI1T1NE14array_iteratorI1UE20local_iterator_range3endEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range.html" class="btn btn-neutral float-right" title="Class array_iterator::local_iterator_range" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classshad_1_1impl_1_1array.html" class="btn btn-neutral float-left" title="Template Class array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

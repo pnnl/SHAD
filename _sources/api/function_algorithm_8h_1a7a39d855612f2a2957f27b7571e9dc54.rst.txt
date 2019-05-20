@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a7a39d855612f2a2957f27b7571e9dc54:
+
+Template Function shad::transform
+=================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::transform(ExecutionPolicy&&, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)

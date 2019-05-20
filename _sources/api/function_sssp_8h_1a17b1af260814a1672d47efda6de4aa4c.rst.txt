@@ -1,0 +1,13 @@
+.. _exhale_function_sssp_8h_1a17b1af260814a1672d47efda6de4aa4c:
+
+Template Function __sssp_length
+===============================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_algorithms_sssp.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: __sssp_length(typename GraphT::ObjectID, size_t, typename shad::Set<VertexT>::SharedPtr, typename shad::Set<VertexT>::SharedPtr, shad::Array<bool>::SharedPtr, shad::Array<bool>::SharedPtr, VertexT, VertexT)

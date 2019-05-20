@@ -1,0 +1,13 @@
+.. _exhale_function_data__structures_2array_8h_1a6687ecc25017a77995f49bfd5707f6be:
+
+Function shad::getTargetLocalityFromTargePosition
+=================================================
+
+- Defined in :ref:`file_include_shad_data_structures_array.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::getTargetLocalityFromTargePosition(const std::vector<std::pair<size_t, size_t>>&, size_t)

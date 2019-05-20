@@ -1,0 +1,13 @@
+.. _exhale_function_non__modifyng__sequence__ops_8h_1ab8c70eb5ae1c2f4696052c7d389e5c9a:
+
+Template Function shad::impl::any_of(distributed_parallel_tag&&, ForwardItr, ForwardItr, UnaryPredicate)
+========================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::any_of(distributed_parallel_tag&&, ForwardItr, ForwardItr, UnaryPredicate)

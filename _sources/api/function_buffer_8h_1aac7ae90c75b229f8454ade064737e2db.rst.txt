@@ -1,0 +1,13 @@
+.. _exhale_function_buffer_8h_1aac7ae90c75b229f8454ade064737e2db:
+
+Template Function shad::constants::max
+======================================
+
+- Defined in :ref:`file_include_shad_data_structures_buffer.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::constants::max(T const, T const)

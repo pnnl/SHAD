@@ -1,0 +1,13 @@
+.. _exhale_function_numeric__ops_8h_1a5878e1265f2a092ccf92a06e954f1c81:
+
+Template Function shad::impl::adjacent_difference(distributed_parallel_tag&&, InputIt, InputIt, OutputIt, BinaryOperation)
+==========================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::adjacent_difference(distributed_parallel_tag&&, InputIt, InputIt, OutputIt, BinaryOperation)

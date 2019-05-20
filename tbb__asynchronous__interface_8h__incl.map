@@ -1,8 +1,0 @@
-<map id="include/shad/runtime/mappings/tbb/tbb_asynchronous_interface.h" name="include/shad/runtime/mappings/tbb/tbb_asynchronous_interface.h">
-<area shape="rect" id="node6" href="$asynchronous__interface_8h.html" title="shad/runtime/asynchronous\l_interface.h" alt="" coords="144,110,326,151"/>
-<area shape="rect" id="node7" href="$handle_8h.html" title="shad/runtime/handle.h" alt="" coords="607,200,757,227"/>
-<area shape="rect" id="node10" href="$mapping__traits_8h.html" title="shad/runtime/mapping\l_traits.h" alt="" coords="720,275,870,317"/>
-<area shape="rect" id="node13" href="$locality_8h.html" title="shad/runtime/locality.h" alt="" coords="429,200,582,227"/>
-<area shape="rect" id="node15" href="$tbb__utility_8h.html" title="shad/runtime/mappings\l/tbb/tbb_utility.h" alt="" coords="351,110,509,151"/>
-<area shape="rect" id="node12" href="$available__traits__mappings_8h.html" title="shad/runtime/mappings\l/available_traits_mappings.h" alt="" coords="458,275,645,317"/>
-</map>

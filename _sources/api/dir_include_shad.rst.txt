@@ -1,0 +1,30 @@
+.. _dir_include_shad:
+
+
+Directory shad
+==============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include>` (``include``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad``
+
+Subdirectories
+--------------
+
+- :ref:`dir_include_shad_core`
+- :ref:`dir_include_shad_data_structures`
+- :ref:`dir_include_shad_extensions`
+- :ref:`dir_include_shad_runtime`
+- :ref:`dir_include_shad_util`
+
+
+Files
+-----
+
+- :ref:`file_include_shad_distributed_iterator_traits.h`
+- :ref:`file_include_shad_shad.h`
+
+

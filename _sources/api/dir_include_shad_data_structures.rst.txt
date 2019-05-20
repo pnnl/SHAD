@@ -1,0 +1,30 @@
+.. _dir_include_shad_data_structures:
+
+
+Directory structures
+====================
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad>` (``include/shad``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad/data_structures``
+
+
+Files
+-----
+
+- :ref:`file_include_shad_data_structures_abstract_data_structure.h`
+- :ref:`file_include_shad_data_structures_array.h`
+- :ref:`file_include_shad_data_structures_buffer.h`
+- :ref:`file_include_shad_data_structures_compare_and_hash_utils.h`
+- :ref:`file_include_shad_data_structures_hashmap.h`
+- :ref:`file_include_shad_data_structures_local_hashmap.h`
+- :ref:`file_include_shad_data_structures_local_set.h`
+- :ref:`file_include_shad_data_structures_object_identifier.h`
+- :ref:`file_include_shad_data_structures_one_per_locality.h`
+- :ref:`file_include_shad_data_structures_set.h`
+- :ref:`file_include_shad_data_structures_vector.h`
+
+

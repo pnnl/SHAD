@@ -1,0 +1,77 @@
+
+.. _file_include_shad_runtime_handle.h:
+
+File handle.h
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime>` (``include/shad/runtime``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/handle.h``)
+----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_handle.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``shad/config/config.h``
+
+- ``shad/runtime/mapping_traits.h`` (:ref:`file_include_shad_runtime_mapping_traits.h`)
+
+- ``shad/runtime/mappings/available_traits_mappings.h`` (:ref:`file_include_shad_runtime_mappings_available_traits_mappings.h`)
+
+- ``type_traits`` (:ref:`file_include_shad_core_type_traits.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_runtime_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_runtime.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+- :ref:`namespace_shad__rt__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1rt_1_1Handle`
+
+- :ref:`exhale_class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface`
+

@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1af24b9e8c34031c3eb513512540d75220:
+
+Template Function shad::minmax_element(ExecutionPolicy&&, ForwardIt, ForwardIt)
+===============================================================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::minmax_element(ExecutionPolicy&&, ForwardIt, ForwardIt)

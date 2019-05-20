@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1aea9e6912fe7e3a494de8b7eaad2fd345:
+
+Template Function shad::reduce(InputIt, InputIt, T)
+===================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::reduce(InputIt, InputIt, T)

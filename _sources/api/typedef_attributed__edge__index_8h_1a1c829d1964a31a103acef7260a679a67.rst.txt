@@ -1,0 +1,13 @@
+.. _exhale_typedef_attributed__edge__index_8h_1a1c829d1964a31a103acef7260a679a67:
+
+Typedef shad::LocalAttributedEdgeIndex
+======================================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_attributed_edge_index.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: shad::LocalAttributedEdgeIndex

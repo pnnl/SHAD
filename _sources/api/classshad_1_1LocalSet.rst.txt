@@ -1,0 +1,27 @@
+.. _exhale_class_classshad_1_1LocalSet:
+
+Template Class LocalSet
+=======================
+
+- Defined in :ref:`file_include_shad_data_structures_local_set.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_struct_structshad_1_1LocalSet_1_1Bucket`
+- :ref:`exhale_struct_structshad_1_1LocalSet_1_1Entry`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::LocalSet
+   :members:
+   :protected-members:
+   :undoc-members:

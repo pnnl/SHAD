@@ -1,0 +1,13 @@
+.. _exhale_function_non__modifyng__sequence__ops_8h_1a752c11475059b2ab06116285a440a2af:
+
+Template Function shad::impl::all_of(distributed_sequential_tag&&, ForwardItr, ForwardItr, UnaryPredicate)
+==========================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::all_of(distributed_sequential_tag&&, ForwardItr, ForwardItr, UnaryPredicate)

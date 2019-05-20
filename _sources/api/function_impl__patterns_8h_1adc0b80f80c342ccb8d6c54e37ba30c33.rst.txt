@@ -1,0 +1,13 @@
+.. _exhale_function_impl__patterns_8h_1adc0b80f80c342ccb8d6c54e37ba30c33:
+
+Template Function shad::impl::distributed_map_void
+==================================================
+
+- Defined in :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::distributed_map_void(ForwardIt, ForwardIt, MapF&&, Args&&...)

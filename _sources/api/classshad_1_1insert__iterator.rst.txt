@@ -1,0 +1,31 @@
+.. _exhale_class_classshad_1_1insert__iterator:
+
+Template Class insert_iterator
+==============================
+
+- Defined in :ref:`file_include_shad_core_iterator.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public std::iterator< std::output_iterator_tag, void, void, void, void >``
+
+
+Derived Type
+************
+
+- ``public shad::buffered_insert_iterator< Container >`` (:ref:`exhale_class_classshad_1_1buffered__insert__iterator`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::insert_iterator
+   :members:
+   :protected-members:
+   :undoc-members:

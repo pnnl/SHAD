@@ -1,0 +1,112 @@
+
+.. _file_include_shad_core_impl_impl_patterns.h:
+
+File impl_patterns.h
+====================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_core_impl>` (``include/shad/core/impl``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/core/impl/impl_patterns.h``)
+-------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_core_impl_impl_patterns.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstddef``
+
+- ``iterator`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/distributed_iterator_traits.h`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+- ``tuple``
+
+- ``type_traits`` (:ref:`file_include_shad_core_type_traits.h`)
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_impl_minimum_maximum_ops.h`
+
+- :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+- :ref:`file_include_shad_core_impl_non_modifyng_sequence_ops.h`
+
+- :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1impl_1_1Apply`
+
+- :ref:`exhale_struct_structshad_1_1impl_1_1Apply_3_01i_00_01i_01_4`
+
+- :ref:`exhale_struct_structshad_1_1impl_1_1optional__vector`
+
+- :ref:`exhale_struct_structshad_1_1impl_1_1optional__vector_1_1entry__t`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_impl__patterns_8h_1aaa60357de2f3eaaf01d8563738f5dbbe`
+
+- :ref:`exhale_function_impl__patterns_8h_1aa5242e01a049077428b271dedc22ba31`
+
+- :ref:`exhale_function_impl__patterns_8h_1acdf8b9c4ede8af2e7209694cebe855bf`
+
+- :ref:`exhale_function_impl__patterns_8h_1ae3198e995caf16706ae51020545ef11d`
+
+- :ref:`exhale_function_impl__patterns_8h_1ada96d05cbfda53aa6a513d7ac05d2236`
+
+- :ref:`exhale_function_impl__patterns_8h_1ab93b059ad765dbee67a83c80c3e6c131`
+
+- :ref:`exhale_function_impl__patterns_8h_1adc0b80f80c342ccb8d6c54e37ba30c33`
+
+- :ref:`exhale_function_impl__patterns_8h_1a41d3f8271a46b16d658dae5a970ccb50`
+
+- :ref:`exhale_function_impl__patterns_8h_1aab8f79f543022668c46491dd24ff986e`
+
+- :ref:`exhale_function_impl__patterns_8h_1ae56194f13576644715a17d570926acfc`
+
+- :ref:`exhale_function_impl__patterns_8h_1acb91c9af4a31a73faa6ea8f71a0be42a`
+

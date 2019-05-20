@@ -1,0 +1,31 @@
+.. _exhale_class_classshad_1_1impl_1_1array_1_1ArrayRef_3_01const_01U_01_4:
+
+Template Class array::ArrayRef< const U >
+=========================================
+
+- Defined in :ref:`file_include_shad_core_array.h`
+
+
+Nested Relationships
+--------------------
+
+This class is a nested type of :ref:`exhale_class_classshad_1_1impl_1_1array`.
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public array::template BaseArrayRef< U >``
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::impl::array::ArrayRef< const U >
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1rt_1_1impl_1_1CppHandle:
+
+Struct CppHandle
+================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_traits_mapping.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::rt::impl::CppHandle
+   :members:
+   :protected-members:
+   :undoc-members:

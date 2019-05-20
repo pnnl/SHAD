@@ -1,0 +1,980 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Template Class EdgeIndex &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Template Class Hashmap" href="classshad_1_1Hashmap.html" />
+    <link rel="prev" title="Template Class DefaultEdgeIndexStorage" href="classshad_1_1DefaultEdgeIndexStorage.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1AtArgs.html">Struct Array::AtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Array_1_1InsertAtArgs.html">Struct Array::InsertAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1ElementInserter.html">Struct AttributedEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1FlatEdgeList.html">Struct AttributedEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1AttributedEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct AttributedEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1ElementInserter.html">Struct DefaultEdgeIndexStorage::ElementInserter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1EmptyAttr.html">Struct DefaultEdgeIndexStorage::EmptyAttr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1FlatEdgeList.html">Struct DefaultEdgeIndexStorage::FlatEdgeList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1DefaultEdgeIndexStorage_1_1LocalEdgeListChunk.html">Struct DefaultEdgeIndexStorage::LocalEdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__iterator__traits.html">Template Struct distributed_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__parallel__tag.html">Struct distributed_parallel_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__random__access__iterator__trait.html">Template Struct distributed_random_access_iterator_trait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1distributed__sequential__tag.html">Struct distributed_sequential_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EdgeListChunk.html">Struct EdgeIndex::EdgeListChunk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EntryT.html">Struct EdgeIndex::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1InsertArgs.html">Struct EdgeIndex::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupArgs.html">Struct EdgeIndex::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupResult.html">Struct EdgeIndex::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash.html">Template Struct hash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1hash_3_01Key_00_01false_01_4.html">Template Struct hash&lt; Key, false &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1EntryT.html">Struct Hashmap::EntryT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1InsertArgs.html">Struct Hashmap::InsertArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Hashmap_1_1LookupArgs.html">Struct Hashmap::LookupArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply.html">Template Struct Apply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Apply_3_01i_00_01i_01_4.html">Template Struct Apply&lt; i, i &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1Buffer_1_1FlushArgs.html">Struct Buffer::FlushArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector.html">Template Struct optional_vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1optional__vector_1_1entry__t.html">Struct optional_vector::entry_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1impl_1_1transform__impl_1_1gen__args__t.html">Template Struct gen_args_t</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous.html">Template Struct is_block_contiguous</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1buffered__insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::buffered_insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__block__contiguous_3_01shad_1_1insert__iterator_3_01Container_01_4_01_4.html">Template Struct is_block_contiguous&lt; shad::insert_iterator&lt; Container &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator.html">Template Struct is_distributed_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b.html">Template Struct is_distributed_iterator&lt; T, typename std::enable_if&lt; !std::is_same&lt; typename distributed_iterator_traits&lt; T &gt;::value_type, void &gt;::value &gt;::type &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__execution__policy.html">Template Struct is_execution_policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1is__std__hashable.html">Template Struct is_std_hashable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1local__iterator__traits.html">Template Struct local_iterator_traits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Bucket.html">Struct LocalHashmap::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1Entry.html">Struct LocalHashmap::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalHashmap_1_1LookupResult.html">Struct LocalHashmap::LookupResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Bucket.html">Struct LocalSet::Bucket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1LocalSet_1_1Entry.html">Struct LocalSet::Entry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1map__iterator_1_1itData.html">Struct map_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1measure.html">Template Struct measure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Overwriter.html">Template Struct Overwriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01cpp__tag_01_4.html">Template Struct AsynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01gmt__tag_01_4.html">Template Struct AsynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01tbb__tag_01_4.html">Template Struct AsynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1cpp__tag.html">Struct cpp_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1CppHandle.html">Struct CppHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1ExecFunWrapperArgs.html">Template Struct ExecFunWrapperArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1gmt__tag.html">Struct gmt_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait.html">Template Struct HandleTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01cpp__tag_01_4.html">Template Struct HandleTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4.html">Template Struct HandleTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01tbb__tag_01_4.html">Template Struct HandleTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait.html">Template Struct LockTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01cpp__tag_01_4.html">Template Struct LockTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01gmt__tag_01_4.html">Template Struct LockTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01tbb__tag_01_4.html">Template Struct LockTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait.html">Template Struct RuntimeInternalsTrait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01cpp__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01gmt__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01tbb__tag_01_4.html">Template Struct RuntimeInternalsTrait&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface.html">Template Struct SynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01cpp__tag_01_4.html">Template Struct SynchronousInterface&lt; cpp_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4.html">Template Struct SynchronousInterface&lt; gmt_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01tbb__tag_01_4.html">Template Struct SynchronousInterface&lt; tbb_tag &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1tbb__tag.html">Struct tbb_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Set_1_1ExeAtArgs.html">Struct Set::ExeAtArgs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1set__iterator_1_1itData.html">Struct set_iterator::itData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structshad_1_1Updater.html">Template Struct Updater</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure.html">Template Class AbstractDataStructure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AbstractDataStructure_1_1Catalog.html">Class AbstractDataStructure::Catalog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Array.html">Template Class Array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttrEdgesPair.html">Template Class AttrEdgesPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1AttributedEdgeIndexStorage.html">Template Class AttributedEdgeIndexStorage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1buffered__insert__iterator.html">Template Class buffered_insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1DefaultEdgeIndexStorage.html">Template Class DefaultEdgeIndexStorage</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Template Class EdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Hashmap.html">Template Class Hashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1IDCmp.html">Template Class IDCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array.html">Template Class array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator.html">Template Class array::array_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1array__iterator_1_1local__iterator__range.html">Class array_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef.html">Template Class array::ArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1ArrayRef_3_01const_01U_01_4.html">Template Class array::ArrayRef&lt; const U &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1array_1_1BaseArrayRef.html">Template Class array::BaseArrayRef</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1Buffer.html">Template Class Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1impl_1_1BuffersVector.html">Template Class BuffersVector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1insert__iterator.html">Template Class insert_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator.html">Template Class lmap_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lmap__iterator_1_1partition__range.html">Class lmap_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4.html">Template Class local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1local__iterator__traits_3_01T_01_5_01_4_1_1partition__range.html">Template Class local_iterator_traits&lt; T * &gt;::local_iterator_traits&lt; T * &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalEdgeIndex.html">Template Class LocalEdgeIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalHashmap.html">Template Class LocalHashmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1LocalSet.html">Template Class LocalSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator.html">Template Class lset_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1lset__iterator_1_1partition__range.html">Class lset_iterator::partition_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator.html">Template Class map_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1map__iterator_1_1local__iterator__range.html">Class map_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp.html">Template Class MemCmp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1MemCmp_3_01std_1_1vector_3_01KeyTy_01_4_01_4.html">Template Class MemCmp&lt; std::vector&lt; KeyTy &gt; &gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifier.html">Template Class ObjectIdentifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1ObjectIdentifierCounter.html">Template Class ObjectIdentifierCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1OnePerLocality.html">Template Class OnePerLocality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Handle.html">Class Handle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface.html">Template Class AsynchronousInterface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1localities__range.html">Class localities_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Locality.html">Class Locality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1rt_1_1Lock.html">Class Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Set.html">Template Class Set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator.html">Template Class set_iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1set__iterator_1_1local__iterator__range.html">Class set_iterator::local_iterator_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__map.html">Template Class unordered_map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1unordered__set.html">Template Class unordered_set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector.html">Template Class Vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classshad_1_1Vector_1_1Iterator.html">Template Class Vector::Iterator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Template Class EdgeIndex</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classshad_1_1EdgeIndex.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="template-class-edgeindex">
+<span id="exhale-class-classshad-1-1edgeindex"></span><h1>Template Class EdgeIndex<a class="headerlink" href="#template-class-edgeindex" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Defined in <a class="reference internal" href="file_include_shad_extensions_graph_library_edge_index.h.html#file-include-shad-extensions-graph-library-edge-index-h"><span class="std std-ref">File edge_index.h</span></a></li>
+</ul>
+<div class="section" id="nested-relationships">
+<h2>Nested Relationships<a class="headerlink" href="#nested-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="nested-types">
+<h3>Nested Types<a class="headerlink" href="#nested-types" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EdgeListChunk.html#exhale-struct-structshad-1-1edgeindex-1-1edgelistchunk"><span class="std std-ref">Struct EdgeIndex::EdgeListChunk</span></a></li>
+<li><a class="reference internal" href="structshad_1_1EdgeIndex_1_1EntryT.html#exhale-struct-structshad-1-1edgeindex-1-1entryt"><span class="std std-ref">Struct EdgeIndex::EntryT</span></a></li>
+<li><a class="reference internal" href="structshad_1_1EdgeIndex_1_1InsertArgs.html#exhale-struct-structshad-1-1edgeindex-1-1insertargs"><span class="std std-ref">Struct EdgeIndex::InsertArgs</span></a></li>
+<li><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupArgs.html#exhale-struct-structshad-1-1edgeindex-1-1lookupargs"><span class="std std-ref">Struct EdgeIndex::LookupArgs</span></a></li>
+<li><a class="reference internal" href="structshad_1_1EdgeIndex_1_1LookupResult.html#exhale-struct-structshad-1-1edgeindex-1-1lookupresult"><span class="std std-ref">Struct EdgeIndex::LookupResult</span></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">shad::AbstractDataStructure&lt;</span> <span class="pre">EdgeIndex&lt;</span> <span class="pre">SrcT,</span> <span class="pre">DestT,</span> <span class="pre">StorageT</span> <span class="pre">&gt;</span> <span class="pre">&gt;</span></code> (<a class="reference internal" href="classshad_1_1AbstractDataStructure.html#exhale-class-classshad-1-1abstractdatastructure"><span class="std std-ref">Template Class AbstractDataStructure</span></a>)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv3N4shad9EdgeIndexE">
+<span id="_CPPv2N4shad9EdgeIndexE"></span><span id="shad::EdgeIndex"></span><span class="target" id="classshad_1_1EdgeIndex"></span><em class="property">template </em>&lt;typename <em>SrcT</em>, typename <em>DestT</em>, typename <em>StorageT</em> = <a class="reference internal" href="classshad_1_1DefaultEdgeIndexStorage.html#classshad_1_1DefaultEdgeIndexStorage"><span class="std std-ref">DefaultEdgeIndexStorage</span></a>&lt;SrcT, DestT&gt;&gt;<br /><em class="property">class </em><code class="descname">EdgeIndex</code> : <em class="property">public</em> shad::<a class="reference internal" href="classshad_1_1AbstractDataStructure.html#_CPPv3N4shad21AbstractDataStructureE" title="shad::AbstractDataStructure">AbstractDataStructure</a>&lt;<a class="reference internal" href="#_CPPv3N4shad9EdgeIndexE" title="shad::EdgeIndex">EdgeIndex</a>&lt;SrcT, DestT, StorageT&gt;&gt;<a class="headerlink" href="#_CPPv3N4shad9EdgeIndexE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <a class="reference internal" href="#classshad_1_1EdgeIndex"><span class="std std-ref">EdgeIndex</span></a> data structure. </p>
+<p>SHAD’s <a class="reference internal" href="#classshad_1_1EdgeIndex"><span class="std std-ref">EdgeIndex</span></a> is a thread-safe, associative container, representing a collection of neighbors lists of a graph. <dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>obects of type SrcT and DestT need to be trivially copiable. </dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">SrcT</span></code>: type of source vertices (used as identifiers). </li>
+<li><code class="docutils literal notranslate"><span class="pre">DestT</span></code>: type of destination vertices (used as identifiers). </li>
+</ul>
+</dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">StorageT</span></code>: <a class="reference internal" href="#classshad_1_1EdgeIndex"><span class="std std-ref">EdgeIndex</span></a> local storage. Default is a map of sets. </li>
+</ul>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="type">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE8ObjectIDE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE8ObjectIDE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1ac1849d1d8dc7f32e2ca56fa224308ef2"></span><em class="property">using </em><code class="descname">ObjectID</code> = <em class="property">typename</em> <a class="reference internal" href="classshad_1_1AbstractDataStructure.html#_CPPv3N4shad21AbstractDataStructureE" title="shad::AbstractDataStructure">AbstractDataStructure</a>::ObjectID<a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE8ObjectIDE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE11EdgeListPtrE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE11EdgeListPtrE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1ae6b70863258ef3efebc3868e5c791a0d"></span><em class="property">using </em><code class="descname">EdgeListPtr</code> = <em class="property">typename</em> <a class="reference internal" href="classshad_1_1AbstractDataStructure.html#_CPPv3N4shad21AbstractDataStructureE" title="shad::AbstractDataStructure">AbstractDataStructure</a>&lt;EdgeIndex&lt;SrcT, DestT, StorageT&gt;&gt;::SharedPtr<a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE11EdgeListPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE7SrcTypeE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE7SrcTypeE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a10fd1a7498be01373f022c3e4445bd92"></span><em class="property">using </em><code class="descname">SrcType</code> = SrcT<a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE7SrcTypeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE8DestTypeE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE8DestTypeE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a1fe85e04eb8fbc43233e1656e93ca4fd"></span><em class="property">using </em><code class="descname">DestType</code> = DestT<a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE8DestTypeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE5LIdxTE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE5LIdxTE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1af0fe2f8cb6950ca82e97085c0baedf90"></span><em class="property">using </em><code class="descname">LIdxT</code> = <a class="reference internal" href="classshad_1_1LocalEdgeIndex.html#_CPPv3N4shad14LocalEdgeIndexE" title="shad::LocalEdgeIndex">LocalEdgeIndex</a>&lt;SrcT, DestT, StorageT&gt;<a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE5LIdxTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE4IdxTE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE4IdxTE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a8beb31c05450d63d7add3f9408c9943a"></span><em class="property">using </em><code class="descname">IdxT</code> = EdgeIndex&lt;SrcT, DestT, StorageT&gt;<a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE4IdxTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE13BuffersVectorE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE13BuffersVectorE"></span>template&lt;&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1af749b171d243a86058fffe96247d42f5"></span><em class="property">using </em><code class="descname">BuffersVector</code> = <em class="property">typename</em> impl::<a class="reference internal" href="classshad_1_1impl_1_1BuffersVector.html#_CPPv3N4shad4impl13BuffersVectorE" title="shad::impl::BuffersVector">BuffersVector</a>&lt;EntryT, EdgeIndex&lt;SrcT, DestT, StorageT&gt;&gt;<a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE13BuffersVectorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv3NK4shad9EdgeIndex11GetGlobalIDEv">
+<span id="_CPPv2NK4shad9EdgeIndex11GetGlobalIDEv"></span><span id="shad::EdgeIndex::GetGlobalIDC"></span><span class="target" id="classshad_1_1EdgeIndex_1aa07ea25da27d521c32434d0dc3dc5ac9"></span>ObjectID <code class="descname">GetGlobalID</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad9EdgeIndex11GetGlobalIDEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create method. </p>
+<p>Creates a new edge_index instance.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A shared pointer to the newly created edge_index instance. Getter of the Global Identifier.</dd>
+<dt><strong>Return</strong></dt>
+<dd>The global identifier associated with the hashmap instance. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">numVertices</span></code>: Expected number of vertices. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3NK4shad9EdgeIndex4SizeEv">
+<span id="_CPPv2NK4shad9EdgeIndex4SizeEv"></span><span id="shad::EdgeIndex::SizeC"></span><span class="target" id="classshad_1_1EdgeIndex_1a2e4c3f4a29d28742879d3119d835fc57"></span>size_t <code class="descname">Size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv3NK4shad9EdgeIndex4SizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Overall size of the edge index (number of unique sources). </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the number of unique source vertices in the index. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex8NumEdgesEv">
+<span id="_CPPv2N4shad9EdgeIndex8NumEdgesEv"></span><span id="shad::EdgeIndex::NumEdges"></span><span class="target" id="classshad_1_1EdgeIndex_1ac2177910ddf94f52f4b1833a72509992"></span>size_t <code class="descname">NumEdges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex8NumEdgesEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Overall number of edges in the index. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the number of edges in the index. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex6InsertERK4SrcTRK5DestT">
+<span id="_CPPv2N4shad9EdgeIndex6InsertERK4SrcTRK5DestT"></span><span id="shad::EdgeIndex::Insert__SrcTCR.DestTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1a410c822912b1335afaa8c393ebeb5c2c"></span>void <code class="descname">Insert</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em>, <em class="property">const</em> DestT &amp;<em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex6InsertERK4SrcTRK5DestT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Insert an edge in the index. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: the destination vertex. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex11AsyncInsertERN2rt6HandleERK4SrcTRK5DestT">
+<span id="_CPPv2N4shad9EdgeIndex11AsyncInsertERN2rt6HandleERK4SrcTRK5DestT"></span><span id="shad::EdgeIndex::AsyncInsert__rt::HandleR.SrcTCR.DestTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1a28391328c8882398f6452f7987ecbe53"></span>void <code class="descname">AsyncInsert</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> SrcT &amp;<em>src</em>, <em class="property">const</em> DestT &amp;<em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex11AsyncInsertERN2rt6HandleERK4SrcTRK5DestT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously insert an edge in the index. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: the destination vertex. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex14InsertEdgeListERK4SrcTP5DestT6size_tb">
+<span id="_CPPv2N4shad9EdgeIndex14InsertEdgeListERK4SrcTP5DestT6size_tb"></span><span id="shad::EdgeIndex::InsertEdgeList__SrcTCR.DestTP.s.b"></span><span class="target" id="classshad_1_1EdgeIndex_1a3d46667ec205db01b0fd6e9d418cf192"></span>void <code class="descname">InsertEdgeList</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em>, DestT *<em>destinations</em>, size_t <em>numDest</em>, bool <em>overwrite</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex14InsertEdgeListERK4SrcTP5DestT6size_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Insert an edge list in the index. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">destinations</span></code>: pointer to the destination vertices. </li>
+<li><code class="docutils literal notranslate"><span class="pre">numDest</span></code>: number of destinations (edges) to insert. </li>
+<li><code class="docutils literal notranslate"><span class="pre">overwrite</span></code>: if true, overwrites the neighbors list of src with the provided destinations; otherwise, edges are added to the current neighbors list. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex19AsyncInsertEdgeListERN2rt6HandleERK4SrcTP5DestT6size_tb">
+<span id="_CPPv2N4shad9EdgeIndex19AsyncInsertEdgeListERN2rt6HandleERK4SrcTP5DestT6size_tb"></span><span id="shad::EdgeIndex::AsyncInsertEdgeList__rt::HandleR.SrcTCR.DestTP.s.b"></span><span class="target" id="classshad_1_1EdgeIndex_1ad27778c664727b3784988250c5623ab6"></span>void <code class="descname">AsyncInsertEdgeList</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> SrcT &amp;<em>src</em>, DestT *<em>destinations</em>, size_t <em>numDest</em>, bool <em>overwrite</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex19AsyncInsertEdgeListERN2rt6HandleERK4SrcTP5DestT6size_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously insert an edge list in the index. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">destinations</span></code>: pointer to the destination vertices. </li>
+<li><code class="docutils literal notranslate"><span class="pre">numDest</span></code>: number of destinations (edges) to insert. </li>
+<li><code class="docutils literal notranslate"><span class="pre">overwrite</span></code>: if true, overwrites the neighbors list of src with the provided destinations; otherwise, edges are added to the current neighbors list. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex17AsyncGetNeighborsERN2rt6HandleEK4SrcTPPN8StorageT20NeighborListStorageTE">
+<span id="_CPPv2N4shad9EdgeIndex17AsyncGetNeighborsERN2rt6HandleEK4SrcTPPN8StorageT20NeighborListStorageTE"></span><span id="shad::EdgeIndex::AsyncGetNeighbors__rt::HandleR.SrcTC.StorageT::NeighborListStorageTPP"></span><span class="target" id="classshad_1_1EdgeIndex_1a9d9a45b30b9a274674e8180d6468f6cc"></span>void <code class="descname">AsyncGetNeighbors</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> SrcT <em>src</em>, <em class="property">typename</em> StorageT::NeighborListStorageT **<em>res</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex17AsyncGetNeighborsERN2rt6HandleEK4SrcTPPN8StorageT20NeighborListStorageTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously retrieve the neighbors list of a given vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">res</span></code>: pointer to the neighbors list storage where the neighbors list of src is stored. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex12GetNeighborsERK4SrcTPN8StorageT20NeighborListStorageTE">
+<span id="_CPPv2N4shad9EdgeIndex12GetNeighborsERK4SrcTPN8StorageT20NeighborListStorageTE"></span><span id="shad::EdgeIndex::GetNeighbors__SrcTCR.StorageT::NeighborListStorageTP"></span><span class="target" id="classshad_1_1EdgeIndex_1a8b7bc20d65a535f0ec1b568d7cbbca4b"></span>void <code class="descname">GetNeighbors</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em>, <em class="property">typename</em> StorageT::NeighborListStorageT *<em>res</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex12GetNeighborsERK4SrcTPN8StorageT20NeighborListStorageTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieve the neighbors list of a given vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">res</span></code>: pointer to the neighbors list storage where the neighbors list of src is copied. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex9GetDegreeERK4SrcT">
+<span id="_CPPv2N4shad9EdgeIndex9GetDegreeERK4SrcT"></span><span id="shad::EdgeIndex::GetDegree__SrcTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1a39bf8088eb8689211e0273dc1d7e3b3a"></span>size_t <code class="descname">GetDegree</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex9GetDegreeERK4SrcT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Number of neighbors of a given vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the number of neighbors of vertex src. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex14BufferedInsertERK4SrcTRK5DestT">
+<span id="_CPPv2N4shad9EdgeIndex14BufferedInsertERK4SrcTRK5DestT"></span><span id="shad::EdgeIndex::BufferedInsert__SrcTCR.DestTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1a1b2fbd03993f2687ca92b91e22667bb3"></span>void <code class="descname">BufferedInsert</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em>, <em class="property">const</em> DestT &amp;<em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex14BufferedInsertERK4SrcTRK5DestT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffered Insert method. </p>
+<p>Inserts an edge, using aggregation buffers.</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Insertions are finalized only after calling the <a class="reference internal" href="#classshad_1_1EdgeIndex_1a4b02ebf2ea13561e06470dabeaa957ca"><span class="std std-ref">WaitForBufferedInsert()</span></a> method.</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: The source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dest</span></code>: The destination vertex. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex19BufferedAsyncInsertERN2rt6HandleERK4SrcTRK5DestT">
+<span id="_CPPv2N4shad9EdgeIndex19BufferedAsyncInsertERN2rt6HandleERK4SrcTRK5DestT"></span><span id="shad::EdgeIndex::BufferedAsyncInsert__rt::HandleR.SrcTCR.DestTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1aaad1cccd3da96c4e957fad51f4b60f5d"></span>void <code class="descname">BufferedAsyncInsert</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> SrcT &amp;<em>src</em>, <em class="property">const</em> DestT &amp;<em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex19BufferedAsyncInsertERN2rt6HandleERK4SrcTRK5DestT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronous Buffered Insert method. </p>
+<p>Asynchronously inserts an edge, using aggregation buffers.</p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>asynchronous buffered insertions are finalized only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method <strong>and</strong> the <a class="reference internal" href="#classshad_1_1EdgeIndex_1a4b02ebf2ea13561e06470dabeaa957ca"><span class="std std-ref">WaitForBufferedInsert()</span></a> method, in this order.</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle </li>
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: The source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dest</span></code>: The destination vertex. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex21WaitForBufferedInsertEv">
+<span id="_CPPv2N4shad9EdgeIndex21WaitForBufferedInsertEv"></span><span id="shad::EdgeIndex::WaitForBufferedInsert"></span><span class="target" id="classshad_1_1EdgeIndex_1a4b02ebf2ea13561e06470dabeaa957ca"></span>void <code class="descname">WaitForBufferedInsert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex21WaitForBufferedInsertEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Finalize method for buffered insertions. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex5EraseERK4SrcTRK5DestT">
+<span id="_CPPv2N4shad9EdgeIndex5EraseERK4SrcTRK5DestT"></span><span id="shad::EdgeIndex::Erase__SrcTCR.DestTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1ac763297b97967b220bb9658927b91bab"></span>void <code class="descname">Erase</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em>, <em class="property">const</em> DestT &amp;<em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex5EraseERK4SrcTRK5DestT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Delete an edge. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: The source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dest</span></code>: The destination vertex. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex10AsyncEraseERN2rt6HandleERK4SrcTRK5DestT">
+<span id="_CPPv2N4shad9EdgeIndex10AsyncEraseERN2rt6HandleERK4SrcTRK5DestT"></span><span id="shad::EdgeIndex::AsyncErase__rt::HandleR.SrcTCR.DestTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1a474b38452f60fe74c6230e9e10be6a35"></span>void <code class="descname">AsyncErase</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> SrcT &amp;<em>src</em>, <em class="property">const</em> DestT &amp;<em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex10AsyncEraseERN2rt6HandleERK4SrcTRK5DestT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously delete an edge. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the rt::waitForCompletion(rt::Handle &amp;handle) method. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: The source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dest</span></code>: The destination vertex. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex5EraseERK4SrcT">
+<span id="_CPPv2N4shad9EdgeIndex5EraseERK4SrcT"></span><span id="shad::EdgeIndex::Erase__SrcTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1aa792333e7ef7cc1c1883fa7e6e8c6c3f"></span>void <code class="descname">Erase</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex5EraseERK4SrcT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove a vertex from the edge index. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the src vertex. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex5ClearEv">
+<span id="_CPPv2N4shad9EdgeIndex5ClearEv"></span><span id="shad::EdgeIndex::Clear"></span><span class="target" id="classshad_1_1EdgeIndex_1a79eb64ffbc08c73aa03d03efe5fdd312"></span>void <code class="descname">Clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex5ClearEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clear the content of the edge index. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex17BufferEntryInsertERK6EntryT">
+<span id="_CPPv2N4shad9EdgeIndex17BufferEntryInsertERK6EntryT"></span><span id="shad::EdgeIndex::BufferEntryInsert__EntryTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1afab5d3fe70db0c4f96f2516e08c8fdee"></span>void <code class="descname">BufferEntryInsert</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv3N4shad9EdgeIndex6EntryTE" title="shad::EdgeIndex::EntryT">EntryT</a> &amp;<em>entry</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex17BufferEntryInsertERK6EntryT" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex15ForEachNeighborERK4SrcTRR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad9EdgeIndex15ForEachNeighborERK4SrcTRR9ApplyFunTDpR4Args"></span><span id="shad::EdgeIndex::ForEachNeighbor__SrcTCR.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a26dfd4d48e1f16ac4c988ec49dc2ffb4"></span>void <code class="descname">ForEachNeighbor</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex15ForEachNeighborERK4SrcTRR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Apply a user-defined function to each neighbor of a given vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">const</span> <span class="n">SrcT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">const</span> <span class="n">DestT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: The source vertex </li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex20AsyncForEachNeighborERN2rt6HandleERK4SrcTRR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad9EdgeIndex20AsyncForEachNeighborERN2rt6HandleERK4SrcTRR9ApplyFunTDpR4Args"></span><span id="shad::EdgeIndex::AsyncForEachNeighbor__rt::HandleR.SrcTCR.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a4006c67fe1a61a5b83d8e3f9bebd616f"></span>void <code class="descname">AsyncForEachNeighbor</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, <em class="property">const</em> SrcT &amp;<em>src</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex20AsyncForEachNeighborERN2rt6HandleERK4SrcTRR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously apply a user-defined function to each neighbor of a given vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the </dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">const</span> <span class="n">SrcT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">const</span> <span class="n">DestT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: The source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex13ForEachVertexERR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad9EdgeIndex13ForEachVertexERR9ApplyFunTDpR4Args"></span><span id="shad::EdgeIndex::ForEachVertex__ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a50ba7449742c1ee2a06ba4529493b656"></span>void <code class="descname">ForEachVertex</code><span class="sig-paren">(</span>ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex13ForEachVertexERR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Apply a user-defined function to each vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">const</span> <span class="n">SrcT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex18AsyncForEachVertexERN2rt6HandleERR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad9EdgeIndex18AsyncForEachVertexERN2rt6HandleERR9ApplyFunTDpR4Args"></span><span id="shad::EdgeIndex::AsyncForEachVertex__rt::HandleR.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a7e7ad3189f35af48bdd627c086bbc00c"></span>void <code class="descname">AsyncForEachVertex</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex18AsyncForEachVertexERN2rt6HandleERR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Apply a user-defined function to each vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the </dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">const</span> <span class="n">SrcT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex11ForEachEdgeERR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad9EdgeIndex11ForEachEdgeERR9ApplyFunTDpR4Args"></span><span id="shad::EdgeIndex::ForEachEdge__ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1ad6ffc821277ec7cbb19d47cca6fd08f8"></span>void <code class="descname">ForEachEdge</code><span class="sig-paren">(</span>ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex11ForEachEdgeERR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Apply a user-defined function to each edge. </p>
+<p><dl class="docutils">
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">const</span> <span class="n">SrcT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">const</span> <span class="n">DestT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex16AsyncForEachEdgeERN2rt6HandleERR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad9EdgeIndex16AsyncForEachEdgeERN2rt6HandleERR9ApplyFunTDpR4Args"></span><span id="shad::EdgeIndex::AsyncForEachEdge__rt::HandleR.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a0388260052d7d512e99b344ec8630462"></span>void <code class="descname">AsyncForEachEdge</code><span class="sig-paren">(</span>rt::<a class="reference internal" href="classshad_1_1rt_1_1Handle.html#_CPPv3N4shad2rt6HandleE" title="shad::rt::Handle">Handle</a> &amp;<em>handle</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex16AsyncForEachEdgeERN2rt6HandleERR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asynchronously apply a user-defined function to each edge. </p>
+<p><dl class="docutils">
+<dt><strong>Warning</strong></dt>
+<dd>Asynchronous operations are guaranteed to have completed only after calling the </dd>
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">const</span> <span class="n">SrcT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">const</span> <span class="n">DestT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handle</span></code>: Reference to the handle to be used to wait for completion. </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex16GetLocalIndexPtrEv">
+<span id="_CPPv2N4shad9EdgeIndex16GetLocalIndexPtrEv"></span><span id="shad::EdgeIndex::GetLocalIndexPtr"></span><span class="target" id="classshad_1_1EdgeIndex_1a3865d359b5915da27c1ed724e2586be1"></span><a class="reference internal" href="classshad_1_1LocalEdgeIndex.html#_CPPv3N4shad14LocalEdgeIndexE" title="shad::LocalEdgeIndex">LocalEdgeIndex</a>&lt;SrcT, DestT, StorageT&gt; *<code class="descname">GetLocalIndexPtr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex16GetLocalIndexPtrEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex19GetVertexAttributesERK4SrcTPN8StorageT14SrcAttributesTE">
+<span id="_CPPv2N4shad9EdgeIndex19GetVertexAttributesERK4SrcTPN8StorageT14SrcAttributesTE"></span><span id="shad::EdgeIndex::GetVertexAttributes__SrcTCR.StorageT::SrcAttributesTP"></span><span class="target" id="classshad_1_1EdgeIndex_1a081298237f8cec930e4f6104b371ab7b"></span>bool <code class="descname">GetVertexAttributes</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em>, <em class="property">typename</em> StorageT::SrcAttributesT *<em>attr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex19GetVertexAttributesERK4SrcTPN8StorageT14SrcAttributesTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieve the attributes of a given vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>true if the vertex has been found, false otherwise. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">attr</span></code>: pointer to the attributes data structure where the attributes are copied. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex21VertexAttributesApplyERK4SrcTRR9ApplyFunTDpR4Args">
+<span id="_CPPv2N4shad9EdgeIndex21VertexAttributesApplyERK4SrcTRR9ApplyFunTDpR4Args"></span><span id="shad::EdgeIndex::VertexAttributesApply__SrcTCR.ApplyFunTRR.ArgsRDp"></span><em class="property">template </em>&lt;<em class="property">typename</em> ApplyFunT, typename... <em>Args</em>&gt;<br /><span class="target" id="classshad_1_1EdgeIndex_1a41732ef7cd7c4824d752525110c58db8"></span>void <code class="descname">VertexAttributesApply</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>src</em>, ApplyFunT &amp;&amp;<em>function</em>, Args&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex21VertexAttributesApplyERK4SrcTRR9ApplyFunTDpR4Args" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Apply a user-defined function to the attributes of a given vertex. </p>
+<p><dl class="docutils">
+<dt><strong>Template Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ApplyFunT</span></code>: User-defined function type. The function prototype should be: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">void</span><span class="p">(</span><span class="n">const</span> <span class="n">SrcT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">StorageT</span><span class="p">::</span><span class="n">SrcAttributesT</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;</span><span class="p">);</span>
+</pre></div>
+</div>
+ </li>
+<li><code class="docutils literal notranslate"><span class="pre">...Args</span></code>: Types of the function arguments.</li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: the source vertex. </li>
+<li><code class="docutils literal notranslate"><span class="pre">function</span></code>: The function to apply. </li>
+<li><code class="docutils literal notranslate"><span class="pre">args</span></code>: The function arguments. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Protected Functions</p>
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex9EdgeIndexE8ObjectIDK6size_t">
+<span id="_CPPv2N4shad9EdgeIndex9EdgeIndexE8ObjectIDK6size_t"></span><span id="shad::EdgeIndex::EdgeIndex__ObjectID.sC"></span><span class="target" id="classshad_1_1EdgeIndex_1a4d82e057adb441e486fd3500a2633f48"></span><code class="descname">EdgeIndex</code><span class="sig-paren">(</span>ObjectID <em>oid</em>, <em class="property">const</em> size_t <em>numVertices</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex9EdgeIndexE8ObjectIDK6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad9EdgeIndex9EdgeIndexE8ObjectIDK6size_tRKN8StorageT14SrcAttributesTE">
+<span id="_CPPv2N4shad9EdgeIndex9EdgeIndexE8ObjectIDK6size_tRKN8StorageT14SrcAttributesTE"></span><span id="shad::EdgeIndex::EdgeIndex__ObjectID.sC.StorageT::SrcAttributesTCR"></span><span class="target" id="classshad_1_1EdgeIndex_1af18ce9911aa0239fa4a3e02d66175c75"></span><code class="descname">EdgeIndex</code><span class="sig-paren">(</span>ObjectID <em>oid</em>, <em class="property">const</em> size_t <em>numVertices</em>, <em class="property">const</em> <em class="property">typename</em> StorageT::SrcAttributesT &amp;<em>initAttr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex9EdgeIndexE8ObjectIDK6size_tRKN8StorageT14SrcAttributesTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="class">
+<dt id="_CPPv3N4shad9EdgeIndex6EntryTE">
+<span id="_CPPv2N4shad9EdgeIndex6EntryTE"></span><span id="shad::EdgeIndex::EntryT"></span><span class="target" id="structshad_1_1EdgeIndex_1_1EntryT"></span><em class="property">struct </em><code class="descname">EntryT</code><a class="headerlink" href="#_CPPv3N4shad9EdgeIndex6EntryTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT6EntryTERK4SrcTRK5DestT">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT6EntryTERK4SrcTRK5DestT"></span><span class="target" id="structshad_1_1EdgeIndex_1_1EntryT_1a47eb1cc293a63bee60332c8cb28755b1"></span>template&lt;&gt;<br /><code class="descname">EntryT</code><span class="sig-paren">(</span><em class="property">const</em> SrcT &amp;<em>s</em>, <em class="property">const</em> DestT &amp;<em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT6EntryTERK4SrcTRK5DestT" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT6EntryTEv">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT6EntryTEv"></span><span class="target" id="structshad_1_1EdgeIndex_1_1EntryT_1a9c2dec91f8a956742d18116cf6c0eb73"></span>template&lt;&gt;<br /><code class="descname">EntryT</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT6EntryTEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT3srcE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT3srcE"></span>template&lt;&gt;<br /><span class="target" id="structshad_1_1EdgeIndex_1_1EntryT_1a9437ab5481f5db7a277d9c26ecfe1b70"></span>SrcT <code class="descname">src</code><a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT3srcE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT4destE">
+<span id="_CPPv2IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT4destE"></span>template&lt;&gt;<br /><span class="target" id="structshad_1_1EdgeIndex_1_1EntryT_1a538cbbeef35115be233a1f5a4d700c93"></span>DestT <code class="descname">dest</code><a class="headerlink" href="#_CPPv3IEN4shad9EdgeIndexI4SrcT5DestT8StorageTE6EntryT4destE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classshad_1_1Hashmap.html" class="btn btn-neutral float-right" title="Template Class Hashmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classshad_1_1DefaultEdgeIndexStorage.html" class="btn btn-neutral float-left" title="Template Class DefaultEdgeIndexStorage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

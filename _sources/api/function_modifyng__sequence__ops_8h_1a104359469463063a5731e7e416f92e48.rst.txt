@@ -1,0 +1,13 @@
+.. _exhale_function_modifyng__sequence__ops_8h_1a104359469463063a5731e7e416f92e48:
+
+Template Function shad::impl::generate(distributed_sequential_tag&&, ForwardIt, ForwardIt, Generator)
+=====================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::generate(distributed_sequential_tag&&, ForwardIt, ForwardIt, Generator)

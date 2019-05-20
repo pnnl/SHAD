@@ -1,0 +1,81 @@
+
+.. _file_include_shad_runtime_mappings_tbb_tbb_traits_mapping.h:
+
+File tbb_traits_mapping.h
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime_mappings_tbb>` (``include/shad/runtime/mappings/tbb``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/mappings/tbb/tbb_traits_mapping.h``)
+-----------------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_mappings_tbb_tbb_traits_mapping.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+- ``limits``
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``mutex``
+
+- ``shad/runtime/mapping_traits.h`` (:ref:`file_include_shad_runtime_mapping_traits.h`)
+
+- ``string``
+
+- ``tbb/task_group.h``
+
+- ``tbb/tbb.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_synchronous_interface.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+- :ref:`namespace_shad__rt__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1HandleTrait_3_01tbb__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1LockTrait_3_01tbb__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01tbb__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1tbb__tag`
+

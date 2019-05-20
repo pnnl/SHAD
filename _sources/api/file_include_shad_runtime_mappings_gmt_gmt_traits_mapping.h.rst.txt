@@ -1,0 +1,81 @@
+
+.. _file_include_shad_runtime_mappings_gmt_gmt_traits_mapping.h:
+
+File gmt_traits_mapping.h
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime_mappings_gmt>` (``include/shad/runtime/mappings/gmt``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/mappings/gmt/gmt_traits_mapping.h``)
+-----------------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_mappings_gmt_gmt_traits_mapping.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+- ``gmt/gmt.h``
+
+- ``iostream``
+
+- ``limits``
+
+- ``mutex``
+
+- ``shad/runtime/mapping_traits.h`` (:ref:`file_include_shad_runtime_mapping_traits.h`)
+
+- ``string``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_synchronous_interface.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+- :ref:`namespace_shad__rt__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1gmt__tag`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1LockTrait_3_01gmt__tag_01_4`
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01gmt__tag_01_4`
+

@@ -1,0 +1,13 @@
+.. _exhale_function_object__identifier_8h_1a6eca4ffdbc7555d2e0b549a0a6eeffdd:
+
+Template Function shad::operator>
+=================================
+
+- Defined in :ref:`file_include_shad_data_structures_object_identifier.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::operator>(const ObjectIdentifier<T>&, const ObjectIdentifier<T>&)

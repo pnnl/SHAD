@@ -1,0 +1,26 @@
+.. _exhale_class_classshad_1_1AbstractDataStructure:
+
+Template Class AbstractDataStructure
+====================================
+
+- Defined in :ref:`file_include_shad_data_structures_abstract_data_structure.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_class_classshad_1_1AbstractDataStructure_1_1Catalog`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::AbstractDataStructure
+   :members:
+   :protected-members:
+   :undoc-members:

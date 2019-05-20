@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1unordered__set:
+
+Template Class unordered_set
+============================
+
+- Defined in :ref:`file_include_shad_core_unordered_set.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::unordered_set
+   :members:
+   :protected-members:
+   :undoc-members:

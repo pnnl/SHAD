@@ -1,0 +1,77 @@
+
+.. _file_include_shad_data_structures_vector.h:
+
+File vector.h
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_data_structures>` (``include/shad/data_structures``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/data_structures/vector.h``)
+------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_data_structures_vector.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``atomic``
+
+- ``cstdint``
+
+- ``iterator`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``limits``
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``shad/data_structures/abstract_data_structure.h`` (:ref:`file_include_shad_data_structures_abstract_data_structure.h`)
+
+- ``shad/data_structures/buffer.h`` (:ref:`file_include_shad_data_structures_buffer.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+- ``stdexcept``
+
+- ``tuple``
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1Vector`
+
+- :ref:`exhale_class_classshad_1_1Vector_1_1Iterator`
+

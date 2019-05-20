@@ -1,0 +1,13 @@
+.. _exhale_function_gmt__utility_8h_1ab44c57562ebda6cbe85ac96d97ca56d9:
+
+Function shad::rt::impl::getNodeId
+==================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_gmt_gmt_utility.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::impl::getNodeId(const Locality&)

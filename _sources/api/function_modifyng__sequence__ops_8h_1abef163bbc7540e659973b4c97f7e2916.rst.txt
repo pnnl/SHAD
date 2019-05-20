@@ -1,0 +1,13 @@
+.. _exhale_function_modifyng__sequence__ops_8h_1abef163bbc7540e659973b4c97f7e2916:
+
+Template Function shad::impl::replace_if(distributed_parallel_tag&&, ForwardIt, ForwardIt, UnaryPredicate, const T&)
+====================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::replace_if(distributed_parallel_tag&&, ForwardIt, ForwardIt, UnaryPredicate, const T&)

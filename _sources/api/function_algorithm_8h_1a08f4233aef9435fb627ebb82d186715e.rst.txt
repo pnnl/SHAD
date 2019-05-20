@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a08f4233aef9435fb627ebb82d186715e:
+
+Template Function shad::count_if
+================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::count_if(ExecutionPolicy&&, InputItr, InputItr, UnaryPredicate)

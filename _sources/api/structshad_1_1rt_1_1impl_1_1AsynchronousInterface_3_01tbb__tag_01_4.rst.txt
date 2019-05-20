@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01tbb__tag_01_4:
+
+Template Struct AsynchronousInterface< tbb_tag >
+================================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_tbb_tbb_asynchronous_interface.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::rt::impl::AsynchronousInterface< tbb_tag >
+   :members:
+   :protected-members:
+   :undoc-members:

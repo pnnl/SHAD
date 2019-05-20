@@ -1,0 +1,13 @@
+.. _exhale_function_modifyng__sequence__ops_8h_1a9e0c0239c1524dfe2ad0c0a6a34f80c7:
+
+Template Function shad::impl::transform_impl::async_block_contiguous_remote
+===========================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::transform_impl::async_block_contiguous_remote(rt::Locality, rt::Handle&, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)

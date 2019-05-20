@@ -1,0 +1,30 @@
+.. _dir_include_shad_runtime:
+
+
+Directory runtime
+=================
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad>` (``include/shad``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad/runtime``
+
+Subdirectories
+--------------
+
+- :ref:`dir_include_shad_runtime_mappings`
+
+
+Files
+-----
+
+- :ref:`file_include_shad_runtime_asynchronous_interface.h`
+- :ref:`file_include_shad_runtime_handle.h`
+- :ref:`file_include_shad_runtime_locality.h`
+- :ref:`file_include_shad_runtime_mapping_traits.h`
+- :ref:`file_include_shad_runtime_runtime.h`
+- :ref:`file_include_shad_runtime_synchronous_interface.h`
+
+

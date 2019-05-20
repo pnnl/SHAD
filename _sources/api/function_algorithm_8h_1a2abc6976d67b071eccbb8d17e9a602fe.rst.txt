@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a2abc6976d67b071eccbb8d17e9a602fe:
+
+Template Function shad::count
+=============================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::count(ExecutionPolicy&&, InputItr, InputItr, const T&)

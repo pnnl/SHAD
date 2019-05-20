@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a9be869b9241eafbec6af016a45fa8f45:
+
+Template Function shad::equal(InputIt1, InputIt1, InputIt2, BinaryPredicate)
+============================================================================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::equal(InputIt1, InputIt1, InputIt2, BinaryPredicate)

@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1Overwriter:
+
+Template Struct Overwriter
+==========================
+
+- Defined in :ref:`file_include_shad_data_structures_local_hashmap.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::Overwriter
+   :members:
+   :protected-members:
+   :undoc-members:

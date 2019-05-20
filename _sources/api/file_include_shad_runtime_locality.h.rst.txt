@@ -1,0 +1,93 @@
+
+.. _file_include_shad_runtime_locality.h:
+
+File locality.h
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime>` (``include/shad/runtime``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/locality.h``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_locality.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+- ``iostream``
+
+- ``shad/config/config.h``
+
+- ``shad/runtime/mapping_traits.h`` (:ref:`file_include_shad_runtime_mapping_traits.h`)
+
+- ``shad/runtime/mappings/available_traits_mappings.h`` (:ref:`file_include_shad_runtime_mappings_available_traits_mappings.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_distributed_iterator_traits.h`
+
+- :ref:`file_include_shad_runtime_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_synchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_synchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_utility.h`
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_synchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_utility.h`
+
+- :ref:`file_include_shad_runtime_runtime.h`
+
+- :ref:`file_include_shad_runtime_synchronous_interface.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classshad_1_1rt_1_1localities__range`
+
+- :ref:`exhale_class_classshad_1_1rt_1_1Locality`
+

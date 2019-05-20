@@ -1,0 +1,73 @@
+
+.. _file_include_shad_runtime_asynchronous_interface.h:
+
+File asynchronous_interface.h
+=============================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime>` (``include/shad/runtime``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/asynchronous_interface.h``)
+--------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_asynchronous_interface.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstddef``
+
+- ``cstdint``
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``shad/runtime/handle.h`` (:ref:`file_include_shad_runtime_handle.h`)
+
+- ``shad/runtime/locality.h`` (:ref:`file_include_shad_runtime_locality.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h`
+
+- :ref:`file_include_shad_runtime_mappings_tbb_tbb_asynchronous_interface.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+- :ref:`namespace_shad__rt__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface`
+

@@ -1,0 +1,25 @@
+.. _exhale_struct_structshad_1_1distributed__random__access__iterator__trait:
+
+Template Struct distributed_random_access_iterator_trait
+========================================================
+
+- Defined in :ref:`file_include_shad_distributed_iterator_traits.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public shad::distributed_iterator_traits< Iterator >`` (:ref:`exhale_struct_structshad_1_1distributed__iterator__traits`)
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::distributed_random_access_iterator_trait
+   :members:
+   :protected-members:
+   :undoc-members:

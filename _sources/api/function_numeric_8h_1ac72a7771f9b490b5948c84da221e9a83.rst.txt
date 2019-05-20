@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1ac72a7771f9b490b5948c84da221e9a83:
+
+Template Function shad::adjacent_difference(InputIt, InputIt, OutputIt, BinaryOperation)
+========================================================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::adjacent_difference(InputIt, InputIt, OutputIt, BinaryOperation)

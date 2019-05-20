@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1impl_1_1BuffersVector:
+
+Template Class BuffersVector
+============================
+
+- Defined in :ref:`file_include_shad_data_structures_buffer.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::impl::BuffersVector
+   :members:
+   :protected-members:
+   :undoc-members:

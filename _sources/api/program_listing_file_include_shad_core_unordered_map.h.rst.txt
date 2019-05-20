@@ -1,0 +1,130 @@
+
+.. _program_listing_file_include_shad_core_unordered_map.h:
+
+Program Listing for File unordered_map.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_include_shad_core_unordered_map.h>` (``include/shad/core/unordered_map.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   //===------------------------------------------------------------*- C++ -*-===//
+   //
+   //                                     SHAD
+   //
+   //      The Scalable High-performance Algorithms and Data Structure Library
+   //
+   //===----------------------------------------------------------------------===//
+   //
+   // Copyright 2018 Battelle Memorial Institute
+   //
+   // Licensed under the Apache License, Version 2.0 (the "License"); you may not
+   // use this file except in compliance with the License. You may obtain a copy
+   // of the License at
+   //
+   //     http://www.apache.org/licenses/LICENSE-2.0
+   //
+   // Unless required by applicable law or agreed to in writing, software
+   // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+   // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+   // License for the specific language governing permissions and limitations
+   // under the License.
+   //
+   //===----------------------------------------------------------------------===//
+   
+   #ifndef INCLUDE_SHAD_CORE_UNORDERED_MAP_H_
+   #define INCLUDE_SHAD_CORE_UNORDERED_MAP_H_
+   
+   #include "shad/core/iterator.h"
+   #include "shad/data_structures/compare_and_hash_utils.h"
+   #include "shad/data_structures/hashmap.h"
+   
+   namespace shad {
+   
+   template <class Key, class T, class Hash = shad::hash<Key>>
+   class unordered_map {
+     using hashmap_t = Hashmap<Key, T, shad::MemCmp<Key>, shad::Updater<T>>;
+   
+     friend class insert_iterator<unordered_map>;
+     friend class buffered_insert_iterator<unordered_map>;
+   
+    public:
+     using key_type = Key;
+     using mapped_type = T;
+     using value_type = typename hashmap_t::value_type;
+     using size_type = std::size_t;
+     using difference_type = std::ptrdiff_t;
+     // todo hasher
+     // todo key_equal
+     // todo allocator_type
+     // todo reference
+     // todo const_reference
+     using pointer = value_type *;
+     using const_pointer = const value_type *;
+     using iterator = typename hashmap_t::iterator;
+     using const_iterator = typename hashmap_t::const_iterator;
+     using local_iterator = typename hashmap_t::local_iterator;
+     using const_local_iterator = typename hashmap_t::const_local_iterator;
+     // todo node_type
+     // todo insert_return_type
+   
+    public:
+     explicit unordered_map(size_type bucket_count = 1021,
+                            const Hash &hash = Hash()) {
+       ptr = hashmap_t::Create(bucket_count);
+     }
+   
+     ~unordered_map() { hashmap_t::Destroy(ptr.get()->GetGlobalID()); }
+   
+     // todo assignment
+     // todo get_allocator
+   
+     iterator begin() noexcept { return impl()->begin(); }
+     const_iterator begin() const noexcept { return impl()->begin(); }
+     const_iterator cbegin() const noexcept { return impl()->cbegin(); }
+     iterator end() noexcept { return impl()->end(); }
+     const_iterator end() const noexcept { return impl()->end(); }
+     const_iterator cend() const noexcept { return impl()->cend(); }
+   
+     bool empty() const noexcept { return size() == 0; }
+     size_type size() const noexcept { return impl()->Size(); }
+     // todo max_size
+   
+     std::pair<iterator, bool> insert(const value_type &value) {
+       return impl()->insert(value);
+     }
+   
+     iterator insert(const_iterator it, const value_type &value) {
+       return impl()->insert(it, value).first;
+     }
+   
+   
+   
+   
+   
+   
+   
+   
+   
+    private:
+     using internal_container_t = hashmap_t;
+     using oid_t = typename internal_container_t::ObjectID;
+     oid_t global_id() { return impl()->GetGlobalID(); }
+     static internal_container_t *from_global_id(oid_t oid) {
+       return internal_container_t::GetPtr(oid).get();
+     }
+   
+     std::shared_ptr<hashmap_t> ptr = nullptr;
+     const hashmap_t *impl() const { return ptr.get(); }
+     hashmap_t *impl() { return ptr.get(); }
+   };
+   
+   // todo operator==
+   // todo operator!=
+   // todo std::swap
+   
+   }  // namespace shad
+   
+   #endif /* INCLUDE_SHAD_CORE_UNORDERED_MAP_H_ */

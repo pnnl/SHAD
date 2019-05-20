@@ -1,0 +1,13 @@
+.. _exhale_function_impl__patterns_8h_1aaa60357de2f3eaaf01d8563738f5dbbe:
+
+Template Function shad::impl::apply_from
+========================================
+
+- Defined in :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::apply_from(F&&, T&&)

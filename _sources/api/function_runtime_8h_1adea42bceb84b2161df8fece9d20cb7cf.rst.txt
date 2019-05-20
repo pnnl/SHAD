@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1adea42bceb84b2161df8fece9d20cb7cf:
+
+Function shad::rt::allLocalities
+================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::allLocalities()

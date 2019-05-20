@@ -1,0 +1,25 @@
+.. _exhale_struct_structshad_1_1local__iterator__traits:
+
+Template Struct local_iterator_traits
+=====================================
+
+- Defined in :ref:`file_include_shad_distributed_iterator_traits.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public std::iterator_traits< Iterator >``
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::local_iterator_traits
+   :members:
+   :protected-members:
+   :undoc-members:

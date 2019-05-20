@@ -1,0 +1,99 @@
+
+.. _file_include_shad_data_structures_buffer.h:
+
+File buffer.h
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_data_structures>` (``include/shad/data_structures``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/data_structures/buffer.h``)
+------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_data_structures_buffer.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``array`` (:ref:`file_include_shad_core_array.h`)
+
+- ``atomic``
+
+- ``shad/data_structures/object_identifier.h`` (:ref:`file_include_shad_data_structures_object_identifier.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_data_structures_array.h`
+
+- :ref:`file_include_shad_data_structures_hashmap.h`
+
+- :ref:`file_include_shad_data_structures_set.h`
+
+- :ref:`file_include_shad_data_structures_vector.h`
+
+- :ref:`file_include_shad_extensions_graph_library_edge_index.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__constants`
+
+- :ref:`namespace_shad__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1impl_1_1Buffer_1_1FlushArgs`
+
+- :ref:`exhale_class_classshad_1_1impl_1_1Buffer`
+
+- :ref:`exhale_class_classshad_1_1impl_1_1BuffersVector`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_buffer_8h_1aac7ae90c75b229f8454ade064737e2db`
+
+- :ref:`exhale_function_buffer_8h_1a8a85d4fe7d902968e0b727efc68d3c31`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_buffer_8h_1ace42d3d5de7cc4856665fd1e5e809cc9`
+

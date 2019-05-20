@@ -1,0 +1,28 @@
+.. _exhale_class_classshad_1_1LocalHashmap:
+
+Template Class LocalHashmap
+===========================
+
+- Defined in :ref:`file_include_shad_data_structures_local_hashmap.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_struct_structshad_1_1LocalHashmap_1_1Bucket`
+- :ref:`exhale_struct_structshad_1_1LocalHashmap_1_1Entry`
+- :ref:`exhale_struct_structshad_1_1LocalHashmap_1_1LookupResult`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::LocalHashmap
+   :members:
+   :protected-members:
+   :undoc-members:

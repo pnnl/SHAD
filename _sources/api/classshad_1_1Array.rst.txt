@@ -1,0 +1,36 @@
+.. _exhale_class_classshad_1_1Array:
+
+Template Class Array
+====================
+
+- Defined in :ref:`file_include_shad_data_structures_array.h`
+
+
+Nested Relationships
+--------------------
+
+
+Nested Types
+************
+
+- :ref:`exhale_struct_structshad_1_1Array_1_1AtArgs`
+- :ref:`exhale_struct_structshad_1_1Array_1_1InsertAtArgs`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public shad::AbstractDataStructure< Array< T > >`` (:ref:`exhale_class_classshad_1_1AbstractDataStructure`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::Array
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,8 +1,0 @@
-<map id="include/shad/data_structures/local_set.h" name="include/shad/data_structures/local_set.h">
-<area shape="rect" id="node2" href="$set_8h.html" title="include/shad/data_structures\l/set.h" alt="" coords="23,103,212,145"/>
-<area shape="rect" id="node5" href="$attributed__edge__index_8h.html" title="include/shad/extensions\l/graph_library/attributed\l_edge_index.h" alt="" coords="372,291,535,347"/>
-<area shape="rect" id="node6" href="$edge__index_8h.html" title="include/shad/extensions\l/graph_library/edge_index.h" alt="" coords="235,201,416,242"/>
-<area shape="rect" id="node7" href="$local__edge__index_8h.html" title="include/shad/extensions\l/graph_library/local_edge\l_index.h" alt="" coords="299,96,465,152"/>
-<area shape="rect" id="node3" href="$unordered__set_8h.html" title="include/shad/core/unordered\l_set.h" alt="" coords="25,201,209,242"/>
-<area shape="rect" id="node4" href="$sssp_8h.html" title="include/shad/extensions\l/graph_library/algorithms\l/sssp.h" alt="" coords="45,291,208,347"/>
-</map>

@@ -1,0 +1,13 @@
+.. _exhale_variable_buffer_8h_1ace42d3d5de7cc4856665fd1e5e809cc9:
+
+Variable shad::constants::kBufferNumBytes
+=========================================
+
+- Defined in :ref:`file_include_shad_data_structures_buffer.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: shad::constants::kBufferNumBytes

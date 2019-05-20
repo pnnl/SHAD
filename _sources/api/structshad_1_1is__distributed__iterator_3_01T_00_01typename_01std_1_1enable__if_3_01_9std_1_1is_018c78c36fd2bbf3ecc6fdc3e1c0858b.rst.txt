@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1is__distributed__iterator_3_01T_00_01typename_01std_1_1enable__if_3_01_9std_1_1is_018c78c36fd2bbf3ecc6fdc3e1c0858b:
+
+Template Struct is_distributed_iterator< T, typename std::enable_if< !std::is_same< typename distributed_iterator_traits< T >::value_type, void >::value >::type >
+==================================================================================================================================================================
+
+- Defined in :ref:`file_include_shad_distributed_iterator_traits.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::is_distributed_iterator< T, typename std::enable_if< !std::is_same< typename distributed_iterator_traits< T >::value_type, void >::value >::type >
+   :members:
+   :protected-members:
+   :undoc-members:

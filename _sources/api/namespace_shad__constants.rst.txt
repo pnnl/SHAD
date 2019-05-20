@@ -1,0 +1,33 @@
+
+.. _namespace_shad__constants:
+
+Namespace shad::constants
+=========================
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_buffer_8h_1aac7ae90c75b229f8454ade064737e2db`
+
+- :ref:`exhale_function_buffer_8h_1a8a85d4fe7d902968e0b727efc68d3c31`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_buffer_8h_1ace42d3d5de7cc4856665fd1e5e809cc9`
+
+- :ref:`exhale_variable_local__hashmap_8h_1a686c44cfcbf386c8a0eeba6c3f055a8c`
+
+- :ref:`exhale_variable_local__set_8h_1a50b6b6392be813d7305f0cae936ec61e`

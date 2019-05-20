@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1a3a46378a583f1c96000caa42e640ab5c:
+
+Template Function shad::inclusive_scan(InputIt, InputIt, OutputIt, BinaryOperation, T)
+======================================================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::inclusive_scan(InputIt, InputIt, OutputIt, BinaryOperation, T)

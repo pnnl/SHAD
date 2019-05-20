@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1rt_1_1localities__range:
+
+Class localities_range
+======================
+
+- Defined in :ref:`file_include_shad_runtime_locality.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::rt::localities_range
+   :members:
+   :protected-members:
+   :undoc-members:

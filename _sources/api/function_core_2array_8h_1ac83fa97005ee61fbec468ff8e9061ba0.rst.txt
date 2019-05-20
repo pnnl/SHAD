@@ -1,0 +1,13 @@
+.. _exhale_function_core_2array_8h_1ac83fa97005ee61fbec468ff8e9061ba0:
+
+Template Function shad::impl::operator==
+========================================
+
+- Defined in :ref:`file_include_shad_core_array.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::operator==(const array<T, N>&, const array<T, N>&)

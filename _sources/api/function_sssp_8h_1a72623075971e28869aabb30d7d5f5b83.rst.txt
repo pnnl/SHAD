@@ -1,0 +1,13 @@
+.. _exhale_function_sssp_8h_1a72623075971e28869aabb30d7d5f5b83:
+
+Template Function __sssp_neigh_iter
+===================================
+
+- Defined in :ref:`file_include_shad_extensions_graph_library_algorithms_sssp.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: __sssp_neigh_iter(shad::rt::Handle&, const VertexT&, const VertexT&, typename shad::Set<VertexT>::ObjectID&, shad::Array<bool>::ObjectID&, shad::Array<bool>::ObjectID&, VertexT&)

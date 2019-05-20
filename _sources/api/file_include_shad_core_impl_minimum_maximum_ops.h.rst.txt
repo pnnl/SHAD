@@ -1,0 +1,87 @@
+
+.. _file_include_shad_core_impl_minimum_maximum_ops.h:
+
+File minimum_maximum_ops.h
+==========================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_core_impl>` (``include/shad/core/impl``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/core/impl/minimum_maximum_ops.h``)
+-------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_core_impl_minimum_maximum_ops.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``functional``
+
+- ``impl_patterns.h`` (:ref:`file_include_shad_core_impl_impl_patterns.h`)
+
+- ``iterator`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/core/execution.h`` (:ref:`file_include_shad_core_execution.h`)
+
+- ``shad/distributed_iterator_traits.h`` (:ref:`file_include_shad_distributed_iterator_traits.h`)
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+- ``tuple``
+
+- ``type_traits`` (:ref:`file_include_shad_core_type_traits.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_algorithm.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__impl`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1ab42bc947de3c81671581ee2016fa2040`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1a381d52cbdba7b857ceac91ee8eb8fcdd`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1adfebf0e80301a20f84968a0ddf15953c`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1a83136697aad39dd0e3a1c7975f20663c`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1ab9de78c4bd93c5e2de3483e8bb4bc1ee`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1aed037b97b6d5e1bd2d2f23a0c9ddf9b5`
+

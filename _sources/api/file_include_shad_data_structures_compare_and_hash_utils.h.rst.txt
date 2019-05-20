@@ -1,0 +1,100 @@
+
+.. _file_include_shad_data_structures_compare_and_hash_utils.h:
+
+File compare_and_hash_utils.h
+=============================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_data_structures>` (``include/shad/data_structures``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/data_structures/compare_and_hash_utils.h``)
+----------------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_data_structures_compare_and_hash_utils.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``cstdint``
+
+- ``cstring``
+
+- ``functional``
+
+- ``shad/core/type_traits.h`` (:ref:`file_include_shad_core_type_traits.h`)
+
+- ``type_traits`` (:ref:`file_include_shad_core_type_traits.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_include_shad_core_unordered_map.h`
+
+- :ref:`file_include_shad_core_unordered_set.h`
+
+- :ref:`file_include_shad_data_structures_hashmap.h`
+
+- :ref:`file_include_shad_data_structures_local_hashmap.h`
+
+- :ref:`file_include_shad_data_structures_local_set.h`
+
+- :ref:`file_include_shad_data_structures_set.h`
+
+- :ref:`file_include_shad_extensions_graph_library_attributed_edge_index.h`
+
+- :ref:`file_include_shad_extensions_graph_library_edge_index.h`
+
+- :ref:`file_include_shad_extensions_graph_library_local_edge_index.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1hash`
+
+- :ref:`exhale_struct_structshad_1_1hash_3_01Key_00_01false_01_4`
+
+- :ref:`exhale_class_classshad_1_1MemCmp`
+
+- :ref:`exhale_class_classshad_1_1MemCmp_3_01std_1_1vector_3_01KeyTy_01_4_01_4`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_compare__and__hash__utils_8h_1a21c73a78973e58a8ed4a246a74bff5b9`
+
+- :ref:`exhale_function_compare__and__hash__utils_8h_1a1bce4c68f2c688517fdc5dca70da59da`
+

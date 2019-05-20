@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1is__block__contiguous_3_01shad_1_1buffered__insert__iterator_3_01Container_01_4_01_4:
+
+Template Struct is_block_contiguous< shad::buffered_insert_iterator< Container > >
+==================================================================================
+
+- Defined in :ref:`file_include_shad_core_iterator.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::is_block_contiguous< shad::buffered_insert_iterator< Container > >
+   :members:
+   :protected-members:
+   :undoc-members:

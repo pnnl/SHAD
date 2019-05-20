@@ -1,0 +1,22 @@
+.. _exhale_class_classshad_1_1map__iterator_1_1local__iterator__range:
+
+Class map_iterator::local_iterator_range
+========================================
+
+- Defined in :ref:`file_include_shad_data_structures_hashmap.h`
+
+
+Nested Relationships
+--------------------
+
+This class is a nested type of :ref:`exhale_class_classshad_1_1map__iterator`.
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::map_iterator::local_iterator_range
+   :members:
+   :protected-members:
+   :undoc-members:

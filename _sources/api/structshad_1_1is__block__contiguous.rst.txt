@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1is__block__contiguous:
+
+Template Struct is_block_contiguous
+===================================
+
+- Defined in :ref:`file_include_shad_core_iterator.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::is_block_contiguous
+   :members:
+   :protected-members:
+   :undoc-members:

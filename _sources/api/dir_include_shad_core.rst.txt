@@ -1,0 +1,32 @@
+.. _dir_include_shad_core:
+
+
+Directory core
+==============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad>` (``include/shad``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad/core``
+
+Subdirectories
+--------------
+
+- :ref:`dir_include_shad_core_impl`
+
+
+Files
+-----
+
+- :ref:`file_include_shad_core_algorithm.h`
+- :ref:`file_include_shad_core_array.h`
+- :ref:`file_include_shad_core_execution.h`
+- :ref:`file_include_shad_core_iterator.h`
+- :ref:`file_include_shad_core_numeric.h`
+- :ref:`file_include_shad_core_type_traits.h`
+- :ref:`file_include_shad_core_unordered_map.h`
+- :ref:`file_include_shad_core_unordered_set.h`
+
+

@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1rt_1_1impl_1_1LockTrait:
+
+Template Struct LockTrait
+=========================
+
+- Defined in :ref:`file_include_shad_runtime_mapping_traits.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::rt::impl::LockTrait
+   :members:
+   :protected-members:
+   :undoc-members:

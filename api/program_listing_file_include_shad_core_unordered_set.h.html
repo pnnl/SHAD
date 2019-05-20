@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File unordered_set.h &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="File utils.h" href="file_include_shad_core_impl_utils.h.html" />
+    <link rel="prev" title="File unordered_set.h" href="file_include_shad_core_unordered_set.h.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#files">Files</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_abstract_data_structure.h.html">File abstract_data_structure.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_algorithm.h.html">File algorithm.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_array.h.html">File array.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_array.h.html">File array.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_asynchronous_interface.h.html">File asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_attributed_edge_index.h.html">File attributed_edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_available_mappings.h.html">File available_mappings.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_available_traits_mappings.h.html">File available_traits_mappings.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_binary_search_ops.h.html">File binary_search_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_buffer.h.html">File buffer.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_compare_and_hash_utils.h.html">File compare_and_hash_utils.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_comparison_ops.h.html">File comparison_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_asynchronous_interface.h.html">File cpp_simple_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_synchronous_interface.h.html">File cpp_simple_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_traits_mapping.h.html">File cpp_simple_traits_mapping.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h.html">File cpp_simple_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_distributed_iterator_traits.h.html">File distributed_iterator_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_edge_index.h.html">File edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_execution.h.html">File execution.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h.html">File gmt_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_synchronous_interface.h.html">File gmt_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_traits_mapping.h.html">File gmt_traits_mapping.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_utility.h.html">File gmt_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_handle.h.html">File handle.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_hashmap.h.html">File hashmap.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_heap_ops.h.html">File heap_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_impl_patterns.h.html">File impl_patterns.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_iterator.h.html">File iterator.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_local_edge_index.h.html">File local_edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_local_hashmap.h.html">File local_hashmap.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_local_set.h.html">File local_set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_locality.h.html">File locality.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mapping_traits.h.html">File mapping_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_util_measure.h.html">File measure.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_minimum_maximum_ops.h.html">File minimum_maximum_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_modifyng_sequence_ops.h.html">File modifyng_sequence_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_non_modifyng_sequence_ops.h.html">File non_modifyng_sequence_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_numeric.h.html">File numeric.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_numeric_ops.h.html">File numeric_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_object_identifier.h.html">File object_identifier.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_one_per_locality.h.html">File one_per_locality.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_ops_on_uninitialized_memory.h.html">File ops_on_uninitialized_memory.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_other_ops_on_sorted_ranges.h.html">File other_ops_on_sorted_ranges.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_partitioning_ops.h.html">File partitioning_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_permutation_ops.h.html">File permutation_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_runtime.h.html">File runtime.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_set.h.html">File set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_set_ops.h.html">File set_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_shad.h.html">File shad.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_util_shadmain.h.html">File shadmain.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_sorting_ops.h.html">File sorting_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_algorithms_sssp.h.html">File sssp.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_synchronous_interface.h.html">File synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_asynchronous_interface.h.html">File tbb_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_synchronous_interface.h.html">File tbb_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_traits_mapping.h.html">File tbb_traits_mapping.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_utility.h.html">File tbb_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_type_traits.h.html">File type_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_unordered_map.h.html">File unordered_map.h</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="file_include_shad_core_unordered_set.h.html">File unordered_set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_utils.h.html">File utils.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_vector.h.html">File vector.h</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+          <li><a href="file_include_shad_core_unordered_set.h.html">File unordered_set.h</a> &raquo;</li>
+        
+      <li>Program Listing for File unordered_set.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_include_shad_core_unordered_set.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-unordered-set-h">
+<span id="program-listing-file-include-shad-core-unordered-set-h"></span><h1>Program Listing for File unordered_set.h<a class="headerlink" href="#program-listing-for-file-unordered-set-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_include_shad_core_unordered_set.h.html#file-include-shad-core-unordered-set-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">include/shad/core/unordered_set.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//===------------------------------------------------------------*- C++ -*-===//</span>
+<span class="c1">//</span>
+<span class="c1">//                                     SHAD</span>
+<span class="c1">//</span>
+<span class="c1">//      The Scalable High-performance Algorithms and Data Structure Library</span>
+<span class="c1">//</span>
+<span class="c1">//===----------------------------------------------------------------------===//</span>
+<span class="c1">//</span>
+<span class="c1">// Copyright 2018 Battelle Memorial Institute</span>
+<span class="c1">//</span>
+<span class="c1">// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not</span>
+<span class="c1">// use this file except in compliance with the License. You may obtain a copy</span>
+<span class="c1">// of the License at</span>
+<span class="c1">//</span>
+<span class="c1">//     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">//</span>
+<span class="c1">// Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">// distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c1">// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c1">// License for the specific language governing permissions and limitations</span>
+<span class="c1">// under the License.</span>
+<span class="c1">//</span>
+<span class="c1">//===----------------------------------------------------------------------===//</span>
+
+<span class="cp">#ifndef INCLUDE_SHAD_CORE_UNORDERED_SET_H_</span>
+<span class="cp">#define INCLUDE_SHAD_CORE_UNORDERED_SET_H_</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;shad/core/iterator.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;shad/data_structures/compare_and_hash_utils.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;shad/data_structures/set.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">shad</span> <span class="p">{</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">Key</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Hash</span> <span class="o">=</span> <span class="n">shad</span><span class="o">::</span><span class="n">hash</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;&gt;</span>
+<span class="k">class</span> <span class="nc">unordered_set</span> <span class="p">{</span>
+  <span class="k">using</span> <span class="n">set_t</span> <span class="o">=</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;</span><span class="p">;</span>
+
+  <span class="k">friend</span> <span class="k">class</span> <span class="nc">insert_iterator</span><span class="o">&lt;</span><span class="n">unordered_set</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">friend</span> <span class="k">class</span> <span class="nc">buffered_insert_iterator</span><span class="o">&lt;</span><span class="n">unordered_set</span><span class="o">&gt;</span><span class="p">;</span>
+
+ <span class="k">public</span><span class="o">:</span>
+  <span class="k">using</span> <span class="n">key_type</span> <span class="o">=</span> <span class="n">Key</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">value_type</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">set_t</span><span class="o">::</span><span class="n">value_type</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">size_type</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">difference_type</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="kt">ptrdiff_t</span><span class="p">;</span>
+  <span class="c1">// todo hasher</span>
+  <span class="c1">// todo key_equal</span>
+  <span class="c1">// todo allocator_type</span>
+  <span class="c1">// todo reference</span>
+  <span class="c1">// todo const_reference</span>
+  <span class="k">using</span> <span class="n">pointer</span> <span class="o">=</span> <span class="n">value_type</span> <span class="o">*</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">const_pointer</span> <span class="o">=</span> <span class="k">const</span> <span class="n">value_type</span> <span class="o">*</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">iterator</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">set_t</span><span class="o">::</span><span class="n">iterator</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">const_iterator</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">set_t</span><span class="o">::</span><span class="n">const_iterator</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">local_iterator</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">set_t</span><span class="o">::</span><span class="n">local_iterator</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">const_local_iterator</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">set_t</span><span class="o">::</span><span class="n">const_local_iterator</span><span class="p">;</span>
+  <span class="c1">// todo node_type</span>
+  <span class="c1">// todo insert_return_type</span>
+
+ <span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">unordered_set</span><span class="p">(</span><span class="n">size_type</span> <span class="n">bucket_count</span> <span class="o">=</span> <span class="mi">1021</span><span class="p">,</span>
+                         <span class="k">const</span> <span class="n">Hash</span> <span class="o">&amp;</span><span class="n">hash</span> <span class="o">=</span> <span class="n">Hash</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">set_t</span><span class="o">::</span><span class="n">Create</span><span class="p">(</span><span class="n">bucket_count</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="o">~</span><span class="n">unordered_set</span><span class="p">()</span> <span class="p">{</span> <span class="n">set_t</span><span class="o">::</span><span class="n">Destroy</span><span class="p">(</span><span class="n">ptr</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">GetGlobalID</span><span class="p">());</span> <span class="p">}</span>
+
+  <span class="c1">// todo assignment</span>
+  <span class="c1">// todo get_allocator</span>
+
+  <span class="n">iterator</span> <span class="n">begin</span><span class="p">()</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span> <span class="p">}</span>
+  <span class="n">const_iterator</span> <span class="n">begin</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span> <span class="p">}</span>
+  <span class="n">const_iterator</span> <span class="n">cbegin</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">cbegin</span><span class="p">();</span> <span class="p">}</span>
+  <span class="n">iterator</span> <span class="n">end</span><span class="p">()</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span> <span class="p">}</span>
+  <span class="n">const_iterator</span> <span class="n">end</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span> <span class="p">}</span>
+  <span class="n">const_iterator</span> <span class="n">cend</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">cend</span><span class="p">();</span> <span class="p">}</span>
+
+  <span class="kt">bool</span> <span class="n">empty</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+  <span class="n">size_type</span> <span class="n">size</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span> <span class="p">{</span> <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Size</span><span class="p">();</span> <span class="p">}</span>
+  <span class="c1">// todo max_size</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">iterator</span><span class="p">,</span> <span class="kt">bool</span><span class="o">&gt;</span> <span class="n">insert</span><span class="p">(</span><span class="k">const</span> <span class="n">value_type</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">insert</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">iterator</span> <span class="n">insert</span><span class="p">(</span><span class="n">const_iterator</span> <span class="n">hint</span><span class="p">,</span> <span class="k">const</span> <span class="n">value_type</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">insert</span><span class="p">(</span><span class="n">hint</span><span class="p">,</span> <span class="n">value</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+  <span class="p">}</span>
+
+
+
+
+
+
+
+
+
+ <span class="k">private</span><span class="o">:</span>
+  <span class="k">using</span> <span class="n">internal_container_t</span> <span class="o">=</span> <span class="n">set_t</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">oid_t</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">internal_container_t</span><span class="o">::</span><span class="n">ObjectID</span><span class="p">;</span>
+  <span class="n">oid_t</span> <span class="nf">global_id</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">impl</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">GetGlobalID</span><span class="p">();</span> <span class="p">}</span>
+  <span class="k">static</span> <span class="n">internal_container_t</span> <span class="o">*</span><span class="nf">from_global_id</span><span class="p">(</span><span class="n">oid_t</span> <span class="n">oid</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">internal_container_t</span><span class="o">::</span><span class="n">GetPtr</span><span class="p">(</span><span class="n">oid</span><span class="p">).</span><span class="n">get</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set_t</span><span class="o">&gt;</span> <span class="n">ptr</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+  <span class="k">const</span> <span class="n">set_t</span> <span class="o">*</span><span class="nf">impl</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">ptr</span><span class="p">.</span><span class="n">get</span><span class="p">();</span> <span class="p">}</span>
+  <span class="n">set_t</span> <span class="o">*</span><span class="nf">impl</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">ptr</span><span class="p">.</span><span class="n">get</span><span class="p">();</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// todo operator==</span>
+<span class="c1">// todo operator!=</span>
+<span class="c1">// todo std::swap</span>
+
+<span class="p">}</span>  <span class="c1">// namespace shad</span>
+
+<span class="cp">#endif </span><span class="cm">/* INCLUDE_SHAD_CORE_UNORDERED_SET_H_ */</span><span class="cp"></span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="file_include_shad_core_impl_utils.h.html" class="btn btn-neutral float-right" title="File utils.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="file_include_shad_core_unordered_set.h.html" class="btn btn-neutral float-left" title="File unordered_set.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

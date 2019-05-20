@@ -1,0 +1,13 @@
+.. _exhale_function_numeric__ops_8h_1a0db4b4455586e07d5837a7af5c4c9faf:
+
+Template Function shad::impl::transform_exclusive_scan(distributed_sequential_tag&&, InputIt, InputIt, OutputIt, T, BinaryOperation, UnaryOperation)
+====================================================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_numeric_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::transform_exclusive_scan(distributed_sequential_tag&&, InputIt, InputIt, OutputIt, T, BinaryOperation, UnaryOperation)

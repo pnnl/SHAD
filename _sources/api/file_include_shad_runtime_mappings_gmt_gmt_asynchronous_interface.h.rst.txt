@@ -1,0 +1,77 @@
+
+.. _file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h:
+
+File gmt_asynchronous_interface.h
+=================================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime_mappings_gmt>` (``include/shad/runtime/mappings/gmt``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/runtime/mappings/gmt/gmt_asynchronous_interface.h``)
+-------------------------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``gmt/gmt.h``
+
+- ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
+
+- ``mutex``
+
+- ``set`` (:ref:`file_include_shad_data_structures_local_set.h`)
+
+- ``shad/runtime/asynchronous_interface.h`` (:ref:`file_include_shad_runtime_asynchronous_interface.h`)
+
+- ``shad/runtime/handle.h`` (:ref:`file_include_shad_runtime_handle.h`)
+
+- ``shad/runtime/locality.h`` (:ref:`file_include_shad_runtime_locality.h`)
+
+- ``shad/runtime/mapping_traits.h`` (:ref:`file_include_shad_runtime_mapping_traits.h`)
+
+- ``shad/runtime/mappings/gmt/gmt_traits_mapping.h`` (:ref:`file_include_shad_runtime_mappings_gmt_gmt_traits_mapping.h`)
+
+- ``shad/runtime/mappings/gmt/gmt_utility.h`` (:ref:`file_include_shad_runtime_mappings_gmt_gmt_utility.h`)
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__rt`
+
+- :ref:`namespace_shad__rt__impl`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01gmt__tag_01_4`
+

@@ -1,0 +1,43 @@
+
+.. _file_include_shad_shad.h:
+
+File shad.h
+===========
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad>` (``include/shad``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+The API to the shad library. 
+ 
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/shad.h``)
+------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_shad.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``shad/runtime/runtime.h`` (:ref:`file_include_shad_runtime_runtime.h`)
+
+- ``shad/util/shadmain.h`` (:ref:`file_include_shad_util_shadmain.h`)
+
+
+
+
+

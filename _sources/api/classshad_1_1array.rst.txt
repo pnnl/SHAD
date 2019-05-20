@@ -1,0 +1,16 @@
+.. _exhale_class_classshad_1_1array:
+
+Template Class array
+====================
+
+- Defined in :ref:`file_include_shad_core_array.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::array
+   :members:
+   :protected-members:
+   :undoc-members:

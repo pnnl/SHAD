@@ -1,0 +1,16 @@
+.. _exhale_struct_structshad_1_1impl_1_1Apply:
+
+Template Struct Apply
+=====================
+
+- Defined in :ref:`file_include_shad_core_impl_impl_patterns.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: shad::impl::Apply
+   :members:
+   :protected-members:
+   :undoc-members:

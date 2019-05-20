@@ -1,0 +1,13 @@
+.. _exhale_function_algorithm_8h_1a0c0ef45cc72fdfcc83ec82af01154289:
+
+Template Function shad::replace
+===============================
+
+- Defined in :ref:`file_include_shad_core_algorithm.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::replace(ExecutionPolicy&&, ForwardIt, ForwardIt, const T&, const T&)

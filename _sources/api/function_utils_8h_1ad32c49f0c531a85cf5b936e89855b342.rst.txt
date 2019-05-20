@@ -1,0 +1,13 @@
+.. _exhale_function_utils_8h_1ad32c49f0c531a85cf5b936e89855b342:
+
+Template Function shad::impl::flush_iterator(It&)
+=================================================
+
+- Defined in :ref:`file_include_shad_core_impl_utils.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::flush_iterator(It&)

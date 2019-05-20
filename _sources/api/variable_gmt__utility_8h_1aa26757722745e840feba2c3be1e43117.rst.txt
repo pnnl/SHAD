@@ -1,0 +1,13 @@
+.. _exhale_variable_gmt__utility_8h_1aa26757722745e840feba2c3be1e43117:
+
+Variable shad::rt::impl::garbageSize
+====================================
+
+- Defined in :ref:`file_include_shad_runtime_mappings_gmt_gmt_utility.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: shad::rt::impl::garbageSize

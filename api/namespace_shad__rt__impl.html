@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Namespace shad::rt::impl &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Struct Array::AtArgs" href="structshad_1_1Array_1_1AtArgs.html" />
+    <link rel="prev" title="Namespace shad::rt" href="namespace_shad__rt.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad.html">Namespace shad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__constants.html">Namespace shad::constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__impl.html">Namespace shad::impl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__impl__transform_impl.html">Namespace shad::impl::transform_impl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__rt.html">Namespace shad::rt</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Namespace shad::rt::impl</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Namespace shad::rt::impl</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/namespace_shad__rt__impl.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="namespace-shad-rt-impl">
+<span id="id1"></span><h1>Namespace shad::rt::impl<a class="headerlink" href="#namespace-shad-rt-impl" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#classes" id="id2">Classes</a></li>
+<li><a class="reference internal" href="#functions" id="id3">Functions</a></li>
+<li><a class="reference internal" href="#variables" id="id4">Variables</a></li>
+</ul>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01cpp__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1asynchronousinterface-3-01cpp-tag-01-4"><span class="std std-ref">Template Struct AsynchronousInterface&lt; cpp_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01gmt__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1asynchronousinterface-3-01gmt-tag-01-4"><span class="std std-ref">Template Struct AsynchronousInterface&lt; gmt_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1AsynchronousInterface_3_01tbb__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1asynchronousinterface-3-01tbb-tag-01-4"><span class="std std-ref">Template Struct AsynchronousInterface&lt; tbb_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1cpp__tag.html#exhale-struct-structshad-1-1rt-1-1impl-1-1cpp-tag"><span class="std std-ref">Struct cpp_tag</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1CppHandle.html#exhale-struct-structshad-1-1rt-1-1impl-1-1cpphandle"><span class="std std-ref">Struct CppHandle</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1ExecFunWrapperArgs.html#exhale-struct-structshad-1-1rt-1-1impl-1-1execfunwrapperargs"><span class="std std-ref">Template Struct ExecFunWrapperArgs</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1gmt__tag.html#exhale-struct-structshad-1-1rt-1-1impl-1-1gmt-tag"><span class="std std-ref">Struct gmt_tag</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait.html#exhale-struct-structshad-1-1rt-1-1impl-1-1handletrait"><span class="std std-ref">Template Struct HandleTrait</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01cpp__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1handletrait-3-01cpp-tag-01-4"><span class="std std-ref">Template Struct HandleTrait&lt; cpp_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01gmt__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1handletrait-3-01gmt-tag-01-4"><span class="std std-ref">Template Struct HandleTrait&lt; gmt_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1HandleTrait_3_01tbb__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1handletrait-3-01tbb-tag-01-4"><span class="std std-ref">Template Struct HandleTrait&lt; tbb_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait.html#exhale-struct-structshad-1-1rt-1-1impl-1-1locktrait"><span class="std std-ref">Template Struct LockTrait</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01cpp__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1locktrait-3-01cpp-tag-01-4"><span class="std std-ref">Template Struct LockTrait&lt; cpp_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01gmt__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1locktrait-3-01gmt-tag-01-4"><span class="std std-ref">Template Struct LockTrait&lt; gmt_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1LockTrait_3_01tbb__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1locktrait-3-01tbb-tag-01-4"><span class="std std-ref">Template Struct LockTrait&lt; tbb_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait.html#exhale-struct-structshad-1-1rt-1-1impl-1-1runtimeinternalstrait"><span class="std std-ref">Template Struct RuntimeInternalsTrait</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01cpp__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1runtimeinternalstrait-3-01cpp-tag-01-4"><span class="std std-ref">Template Struct RuntimeInternalsTrait&lt; cpp_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01gmt__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1runtimeinternalstrait-3-01gmt-tag-01-4"><span class="std std-ref">Template Struct RuntimeInternalsTrait&lt; gmt_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1RuntimeInternalsTrait_3_01tbb__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1runtimeinternalstrait-3-01tbb-tag-01-4"><span class="std std-ref">Template Struct RuntimeInternalsTrait&lt; tbb_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface.html#exhale-struct-structshad-1-1rt-1-1impl-1-1synchronousinterface"><span class="std std-ref">Template Struct SynchronousInterface</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01cpp__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1synchronousinterface-3-01cpp-tag-01-4"><span class="std std-ref">Template Struct SynchronousInterface&lt; cpp_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1synchronousinterface-3-01gmt-tag-01-4"><span class="std std-ref">Template Struct SynchronousInterface&lt; gmt_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01tbb__tag_01_4.html#exhale-struct-structshad-1-1rt-1-1impl-1-1synchronousinterface-3-01tbb-tag-01-4"><span class="std std-ref">Template Struct SynchronousInterface&lt; tbb_tag &gt;</span></a></li>
+<li><a class="reference internal" href="structshad_1_1rt_1_1impl_1_1tbb__tag.html#exhale-struct-structshad-1-1rt-1-1impl-1-1tbb-tag"><span class="std std-ref">Struct tbb_tag</span></a></li>
+<li><a class="reference internal" href="class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface.html#exhale-class-structshad-1-1rt-1-1impl-1-1asynchronousinterface"><span class="std std-ref">Template Class AsynchronousInterface</span></a></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="function_gmt__utility_8h_1a1083a9a4e08beddf6cb708be42f534dc.html#exhale-function-gmt-utility-8h-1a1083a9a4e08beddf6cb708be42f534dc"><span class="std std-ref">Template Function shad::rt::impl::asyncExecFunWithRetBuffWrapper</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1a55c46191640e8d8a7645014d181f00ae.html#exhale-function-gmt-utility-8h-1a55c46191640e8d8a7645014d181f00ae"><span class="std std-ref">Template Function shad::rt::impl::asyncExecFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1aeb1d47c4176c24034814421f636b23de.html#exhale-function-gmt-utility-8h-1aeb1d47c4176c24034814421f636b23de"><span class="std std-ref">Template Function shad::rt::impl::asyncExecFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1a89c8b8b587a013c3793d26b04e7450bd.html#exhale-function-gmt-utility-8h-1a89c8b8b587a013c3793d26b04e7450bd"><span class="std std-ref">Function shad::rt::impl::asyncForEachWrapper</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1a40e34c2573f1fdae32b86d25ee8e91b5.html#exhale-function-gmt-utility-8h-1a40e34c2573f1fdae32b86d25ee8e91b5"><span class="std std-ref">Function shad::rt::impl::checkInputSize</span></a></li>
+<li><a class="reference internal" href="function_cpp__simple__utility_8h_1a41b29efba127bb02b8832829aa4068a5.html#exhale-function-cpp-simple-utility-8h-1a41b29efba127bb02b8832829aa4068a5"><span class="std std-ref">Function shad::rt::impl::checkLocality</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1aedf5441850db5b49d9087b262201a110.html#exhale-function-gmt-utility-8h-1aedf5441850db5b49d9087b262201a110"><span class="std std-ref">Function shad::rt::impl::checkOutputSize</span></a></li>
+<li><a class="reference internal" href="function_runtime_8h_1a87fb03e4e73b219e6af16fab7e3bd859.html#exhale-function-runtime-8h-1a87fb03e4e73b219e6af16fab7e3bd859"><span class="std std-ref">Function shad::rt::impl::createHandle</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1a6d5636a04f872bf517e80633221aedcc.html#exhale-function-gmt-utility-8h-1a6d5636a04f872bf517e80633221aedcc"><span class="std std-ref">Template Function shad::rt::impl::execAsyncFunWithRetBuffWrapper</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1aa16cf992cde01fe6edc90bfad09ae7ed.html#exhale-function-gmt-utility-8h-1aa16cf992cde01fe6edc90bfad09ae7ed"><span class="std std-ref">Template Function shad::rt::impl::execAsyncFunWrapper</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1af66aff5703d8f5570ba41b7e82534495.html#exhale-function-gmt-utility-8h-1af66aff5703d8f5570ba41b7e82534495"><span class="std std-ref">Template Function shad::rt::impl::execFunWithRetBuffWrapper</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1a0b03dc6a28c611e5d4dd5de70742ea31.html#exhale-function-gmt-utility-8h-1a0b03dc6a28c611e5d4dd5de70742ea31"><span class="std std-ref">Template Function shad::rt::impl::execFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1aad275d30b5531baf4bcb8d23e1e029f9.html#exhale-function-gmt-utility-8h-1aad275d30b5531baf4bcb8d23e1e029f9"><span class="std std-ref">Template Function shad::rt::impl::execFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1af5be7cb69b6233f3f0dd9dc9f4b73857.html#exhale-function-gmt-utility-8h-1af5be7cb69b6233f3f0dd9dc9f4b73857"><span class="std std-ref">Template Function shad::rt::impl::execFunWrapper</span></a></li>
+<li><a class="reference internal" href="function_runtime_8h_1af8972bdca686d5f92b727e66cf488952.html#exhale-function-runtime-8h-1af8972bdca686d5f92b727e66cf488952"><span class="std std-ref">Function shad::rt::impl::finalize</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1a192dc9ed14e865f5225af9e84f69ce72.html#exhale-function-gmt-utility-8h-1a192dc9ed14e865f5225af9e84f69ce72"><span class="std std-ref">Function shad::rt::impl::forEachWrapper</span></a></li>
+<li><a class="reference internal" href="function_runtime_8h_1a0b42bee7c35d7ff623e550bed3691446.html#exhale-function-runtime-8h-1a0b42bee7c35d7ff623e550bed3691446"><span class="std std-ref">Function shad::rt::impl::getConcurrency</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1a073825e7287c921463359f537effb40a.html#exhale-function-gmt-utility-8h-1a073825e7287c921463359f537effb40a"><span class="std std-ref">Function shad::rt::impl::getGmtHandle</span></a></li>
+<li><a class="reference internal" href="function_gmt__utility_8h_1ab44c57562ebda6cbe85ac96d97ca56d9.html#exhale-function-gmt-utility-8h-1ab44c57562ebda6cbe85ac96d97ca56d9"><span class="std std-ref">Function shad::rt::impl::getNodeId</span></a></li>
+<li><a class="reference internal" href="function_runtime_8h_1acb5252cd1e313926bfca7f10a909a22f.html#exhale-function-runtime-8h-1acb5252cd1e313926bfca7f10a909a22f"><span class="std std-ref">Function shad::rt::impl::initialize</span></a></li>
+<li><a class="reference internal" href="function_runtime_8h_1a1fafbf6312400979472b258faab97d01.html#exhale-function-runtime-8h-1a1fafbf6312400979472b258faab97d01"><span class="std std-ref">Function shad::rt::impl::yield</span></a></li>
+</ul>
+</div>
+<div class="section" id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="variable_gmt__utility_8h_1aa26757722745e840feba2c3be1e43117.html#exhale-variable-gmt-utility-8h-1aa26757722745e840feba2c3be1e43117"><span class="std std-ref">Variable shad::rt::impl::garbageSize</span></a></li>
+<li><a class="reference internal" href="variable_gmt__utility_8h_1a6aae37512ab6054b8870a363e8fec7fe.html#exhale-variable-gmt-utility-8h-1a6aae37512ab6054b8870a363e8fec7fe"><span class="std std-ref">Variable shad::rt::impl::kOverSubscriptionFactor</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="structshad_1_1Array_1_1AtArgs.html" class="btn btn-neutral float-right" title="Struct Array::AtArgs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="namespace_shad__rt.html" class="btn btn-neutral float-left" title="Namespace shad::rt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

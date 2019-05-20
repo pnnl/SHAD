@@ -1,0 +1,23 @@
+.. _dir_include_shad_runtime_mappings_gmt:
+
+
+Directory gmt
+=============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_runtime_mappings>` (``include/shad/runtime/mappings``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``include/shad/runtime/mappings/gmt``
+
+
+Files
+-----
+
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h`
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_synchronous_interface.h`
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_traits_mapping.h`
+- :ref:`file_include_shad_runtime_mappings_gmt_gmt_utility.h`
+
+

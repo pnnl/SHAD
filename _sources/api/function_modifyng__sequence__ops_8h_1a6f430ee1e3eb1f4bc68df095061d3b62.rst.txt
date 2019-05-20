@@ -1,0 +1,13 @@
+.. _exhale_function_modifyng__sequence__ops_8h_1a6f430ee1e3eb1f4bc68df095061d3b62:
+
+Template Function shad::impl::transform_impl::dpar_kernel(std::false_type, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)
+==============================================================================================================================
+
+- Defined in :ref:`file_include_shad_core_impl_modifyng_sequence_ops.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::transform_impl::dpar_kernel(std::false_type, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)

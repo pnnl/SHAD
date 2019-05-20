@@ -1,0 +1,13 @@
+.. _exhale_function_numeric_8h_1affad70e4283f19271fe3ab0ea3ce1b90:
+
+Template Function shad::adjacent_difference(ExecutionPolicy&&, InputIt, InputIt, OutputIt)
+==========================================================================================
+
+- Defined in :ref:`file_include_shad_core_numeric.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::adjacent_difference(ExecutionPolicy&&, InputIt, InputIt, OutputIt)

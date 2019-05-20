@@ -1,0 +1,16 @@
+.. _exhale_class_structshad_1_1rt_1_1impl_1_1AsynchronousInterface:
+
+Template Class AsynchronousInterface
+====================================
+
+- Defined in :ref:`file_include_shad_runtime_asynchronous_interface.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: shad::rt::impl::AsynchronousInterface
+   :members:
+   :protected-members:
+   :undoc-members:

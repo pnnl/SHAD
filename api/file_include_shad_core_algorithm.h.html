@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>File algorithm.h &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Program Listing for File algorithm.h" href="program_listing_file_include_shad_core_algorithm.h.html" />
+    <link rel="prev" title="Program Listing for File abstract_data_structure.h" href="program_listing_file_include_shad_data_structures_abstract_data_structure.h.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#files">Files</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_abstract_data_structure.h.html">File abstract_data_structure.h</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">File algorithm.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_array.h.html">File array.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_array.h.html">File array.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_asynchronous_interface.h.html">File asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_attributed_edge_index.h.html">File attributed_edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_available_mappings.h.html">File available_mappings.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_available_traits_mappings.h.html">File available_traits_mappings.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_binary_search_ops.h.html">File binary_search_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_buffer.h.html">File buffer.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_compare_and_hash_utils.h.html">File compare_and_hash_utils.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_comparison_ops.h.html">File comparison_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_asynchronous_interface.h.html">File cpp_simple_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_synchronous_interface.h.html">File cpp_simple_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_traits_mapping.h.html">File cpp_simple_traits_mapping.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h.html">File cpp_simple_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_distributed_iterator_traits.h.html">File distributed_iterator_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_edge_index.h.html">File edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_execution.h.html">File execution.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_asynchronous_interface.h.html">File gmt_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_synchronous_interface.h.html">File gmt_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_traits_mapping.h.html">File gmt_traits_mapping.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_gmt_gmt_utility.h.html">File gmt_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_handle.h.html">File handle.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_hashmap.h.html">File hashmap.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_heap_ops.h.html">File heap_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_impl_patterns.h.html">File impl_patterns.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_iterator.h.html">File iterator.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_local_edge_index.h.html">File local_edge_index.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_local_hashmap.h.html">File local_hashmap.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_local_set.h.html">File local_set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_locality.h.html">File locality.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mapping_traits.h.html">File mapping_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_util_measure.h.html">File measure.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_minimum_maximum_ops.h.html">File minimum_maximum_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_modifyng_sequence_ops.h.html">File modifyng_sequence_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_non_modifyng_sequence_ops.h.html">File non_modifyng_sequence_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_numeric.h.html">File numeric.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_numeric_ops.h.html">File numeric_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_object_identifier.h.html">File object_identifier.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_one_per_locality.h.html">File one_per_locality.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_ops_on_uninitialized_memory.h.html">File ops_on_uninitialized_memory.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_other_ops_on_sorted_ranges.h.html">File other_ops_on_sorted_ranges.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_partitioning_ops.h.html">File partitioning_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_permutation_ops.h.html">File permutation_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_runtime.h.html">File runtime.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_set.h.html">File set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_set_ops.h.html">File set_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_shad.h.html">File shad.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_util_shadmain.h.html">File shadmain.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_sorting_ops.h.html">File sorting_ops.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_extensions_graph_library_algorithms_sssp.h.html">File sssp.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_synchronous_interface.h.html">File synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_asynchronous_interface.h.html">File tbb_asynchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_synchronous_interface.h.html">File tbb_synchronous_interface.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_traits_mapping.h.html">File tbb_traits_mapping.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_runtime_mappings_tbb_tbb_utility.h.html">File tbb_utility.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_type_traits.h.html">File type_traits.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_unordered_map.h.html">File unordered_map.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_unordered_set.h.html">File unordered_set.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_core_impl_utils.h.html">File utils.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file_include_shad_data_structures_vector.h.html">File vector.h</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>File algorithm.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/file_include_shad_core_algorithm.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="file-algorithm-h">
+<span id="file-include-shad-core-algorithm-h"></span><h1>File algorithm.h<a class="headerlink" href="#file-algorithm-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="dir_include_shad_core.html#dir-include-shad-core"><span class="std std-ref">Parent directory</span></a> (<code class="docutils literal notranslate"><span class="pre">include/shad/core</span></code>)</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#definition-include-shad-core-algorithm-h" id="id1">Definition (<code class="docutils literal notranslate"><span class="pre">include/shad/core/algorithm.h</span></code>)</a></li>
+<li><a class="reference internal" href="#includes" id="id2">Includes</a></li>
+<li><a class="reference internal" href="#namespaces" id="id3">Namespaces</a></li>
+<li><a class="reference internal" href="#functions" id="id4">Functions</a></li>
+</ul>
+</div>
+<div class="section" id="definition-include-shad-core-algorithm-h">
+<h2>Definition (<code class="docutils literal notranslate"><span class="pre">include/shad/core/algorithm.h</span></code>)<a class="headerlink" href="#definition-include-shad-core-algorithm-h" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="program_listing_file_include_shad_core_algorithm.h.html">Program Listing for File algorithm.h</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="includes">
+<h2>Includes<a class="headerlink" href="#includes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> (<a class="reference internal" href="#file-include-shad-core-algorithm-h"><span class="std std-ref">File algorithm.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">functional</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">iterator</span></code> (<a class="reference internal" href="file_include_shad_distributed_iterator_traits.h.html#file-include-shad-distributed-iterator-traits-h"><span class="std std-ref">File distributed_iterator_traits.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">numeric</span></code> (<a class="reference internal" href="file_include_shad_core_numeric.h.html#file-include-shad-core-numeric-h"><span class="std std-ref">File numeric.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">shad/core/execution.h</span></code> (<a class="reference internal" href="file_include_shad_core_execution.h.html#file-include-shad-core-execution-h"><span class="std std-ref">File execution.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">shad/core/impl/comparison_ops.h</span></code> (<a class="reference internal" href="file_include_shad_core_impl_comparison_ops.h.html#file-include-shad-core-impl-comparison-ops-h"><span class="std std-ref">File comparison_ops.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">shad/core/impl/minimum_maximum_ops.h</span></code> (<a class="reference internal" href="file_include_shad_core_impl_minimum_maximum_ops.h.html#file-include-shad-core-impl-minimum-maximum-ops-h"><span class="std std-ref">File minimum_maximum_ops.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">shad/core/impl/modifyng_sequence_ops.h</span></code> (<a class="reference internal" href="file_include_shad_core_impl_modifyng_sequence_ops.h.html#file-include-shad-core-impl-modifyng-sequence-ops-h"><span class="std std-ref">File modifyng_sequence_ops.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">shad/core/impl/non_modifyng_sequence_ops.h</span></code> (<a class="reference internal" href="file_include_shad_core_impl_non_modifyng_sequence_ops.h.html#file-include-shad-core-impl-non-modifyng-sequence-ops-h"><span class="std std-ref">File non_modifyng_sequence_ops.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">shad/distributed_iterator_traits.h</span></code> (<a class="reference internal" href="file_include_shad_distributed_iterator_traits.h.html#file-include-shad-distributed-iterator-traits-h"><span class="std std-ref">File distributed_iterator_traits.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">shad/runtime/runtime.h</span></code> (<a class="reference internal" href="file_include_shad_runtime_runtime.h.html#file-include-shad-runtime-runtime-h"><span class="std std-ref">File runtime.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">tuple</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">utility</span></code> (<a class="reference internal" href="file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h.html#file-include-shad-runtime-mappings-cpp-simple-cpp-simple-utility-h"><span class="std std-ref">File cpp_simple_utility.h</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">vector</span></code> (<a class="reference internal" href="file_include_shad_data_structures_vector.h.html#file-include-shad-data-structures-vector-h"><span class="std std-ref">File vector.h</span></a>)</li>
+</ul>
+</div>
+<div class="section" id="namespaces">
+<h2>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="namespace_shad.html#namespace-shad"><span class="std std-ref">Namespace shad</span></a></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="function_algorithm_8h_1ab0314482e6cdabff5bcb7f2833b0f937.html#exhale-function-algorithm-8h-1ab0314482e6cdabff5bcb7f2833b0f937"><span class="std std-ref">Template Function shad::all_of</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a8d17ad3a3f5f25ecfee20a7ae6ebf924.html#exhale-function-algorithm-8h-1a8d17ad3a3f5f25ecfee20a7ae6ebf924"><span class="std std-ref">Template Function shad::any_of</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a2abc6976d67b071eccbb8d17e9a602fe.html#exhale-function-algorithm-8h-1a2abc6976d67b071eccbb8d17e9a602fe"><span class="std std-ref">Template Function shad::count</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a08f4233aef9435fb627ebb82d186715e.html#exhale-function-algorithm-8h-1a08f4233aef9435fb627ebb82d186715e"><span class="std std-ref">Template Function shad::count_if</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1ae452511628cb333e23458bb2af8cfa83.html#exhale-function-algorithm-8h-1ae452511628cb333e23458bb2af8cfa83"><span class="std std-ref">Template Function shad::equal(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a729216b8f76b721c9e1ae8fdcb63ee03.html#exhale-function-algorithm-8h-1a729216b8f76b721c9e1ae8fdcb63ee03"><span class="std std-ref">Template Function shad::equal(InputIt1, InputIt1, InputIt2, InputIt2, BinaryPredicate)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a8141e857a877c6eb44095a7578281ecd.html#exhale-function-algorithm-8h-1a8141e857a877c6eb44095a7578281ecd"><span class="std std-ref">Template Function shad::equal(InputIt1, InputIt1, InputIt2)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1ad909faa4c50e8fe776668cd39e776602.html#exhale-function-algorithm-8h-1ad909faa4c50e8fe776668cd39e776602"><span class="std std-ref">Template Function shad::equal(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a8566c24e54c82d15757af3f776c54c40.html#exhale-function-algorithm-8h-1a8566c24e54c82d15757af3f776c54c40"><span class="std std-ref">Template Function shad::equal(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2, BinaryPredicate)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a9be869b9241eafbec6af016a45fa8f45.html#exhale-function-algorithm-8h-1a9be869b9241eafbec6af016a45fa8f45"><span class="std std-ref">Template Function shad::equal(InputIt1, InputIt1, InputIt2, BinaryPredicate)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a1d99da6ce33f2013b3ff47b9a05a0916.html#exhale-function-algorithm-8h-1a1d99da6ce33f2013b3ff47b9a05a0916"><span class="std std-ref">Template Function shad::equal(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, BinaryPredicate)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1aa5dcd90777a8948f8cb240d51bd1346b.html#exhale-function-algorithm-8h-1aa5dcd90777a8948f8cb240d51bd1346b"><span class="std std-ref">Template Function shad::equal(InputIt1, InputIt1, InputIt2, InputIt2)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1ab21c74ec57b46160ad590b2e989c4ea6.html#exhale-function-algorithm-8h-1ab21c74ec57b46160ad590b2e989c4ea6"><span class="std std-ref">Template Function shad::fill</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a63ec34eb3f98177db268051179d6057a.html#exhale-function-algorithm-8h-1a63ec34eb3f98177db268051179d6057a"><span class="std std-ref">Template Function shad::find</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1ae5272738a131b86c7d9349bfff977aa4.html#exhale-function-algorithm-8h-1ae5272738a131b86c7d9349bfff977aa4"><span class="std std-ref">Template Function shad::find_if</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a42458d0084e37bb16f4745ee085aa2f5.html#exhale-function-algorithm-8h-1a42458d0084e37bb16f4745ee085aa2f5"><span class="std std-ref">Template Function shad::find_if_not</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a7daf2afb8d216454ff4143be21237d0c.html#exhale-function-algorithm-8h-1a7daf2afb8d216454ff4143be21237d0c"><span class="std std-ref">Template Function shad::for_each</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a9bd5736fe5e18ec23a7d7e5913a11df8.html#exhale-function-algorithm-8h-1a9bd5736fe5e18ec23a7d7e5913a11df8"><span class="std std-ref">Template Function shad::generate</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a10090ea72775e10b015408d8c9050ac3.html#exhale-function-algorithm-8h-1a10090ea72775e10b015408d8c9050ac3"><span class="std std-ref">Template Function shad::lexicographical_compare(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2, Compare)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a65aac88682894c75b4b1caee38cc9c8f.html#exhale-function-algorithm-8h-1a65aac88682894c75b4b1caee38cc9c8f"><span class="std std-ref">Template Function shad::lexicographical_compare(InputIt1, InputIt1, InputIt2, InputIt2)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a060c390865e5dbec41c7e2526fae8803.html#exhale-function-algorithm-8h-1a060c390865e5dbec41c7e2526fae8803"><span class="std std-ref">Template Function shad::lexicographical_compare(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a05a181e15eb05bb17cf7bedcacc98585.html#exhale-function-algorithm-8h-1a05a181e15eb05bb17cf7bedcacc98585"><span class="std std-ref">Template Function shad::lexicographical_compare(InputIt1, InputIt1, InputIt2, InputIt2, Compare)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a81976ee44edd512260a625c628f6094b.html#exhale-function-algorithm-8h-1a81976ee44edd512260a625c628f6094b"><span class="std std-ref">Template Function shad::max_element(ForwardIt, ForwardIt)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a3f4b06918fc7b1425c9bc8aa942d894d.html#exhale-function-algorithm-8h-1a3f4b06918fc7b1425c9bc8aa942d894d"><span class="std std-ref">Template Function shad::max_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1aceab28870f92123bc4489897c5e7d640.html#exhale-function-algorithm-8h-1aceab28870f92123bc4489897c5e7d640"><span class="std std-ref">Template Function shad::max_element(ForwardIt, ForwardIt, Compare)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a507fdc64c5881f464e3c6dd7e470bfa1.html#exhale-function-algorithm-8h-1a507fdc64c5881f464e3c6dd7e470bfa1"><span class="std std-ref">Template Function shad::max_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, Compare)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a8fa362bdd1e3f20d68a86f80cd5d47e5.html#exhale-function-algorithm-8h-1a8fa362bdd1e3f20d68a86f80cd5d47e5"><span class="std std-ref">Template Function shad::min_element(ForwardIt, ForwardIt)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1ab2b1735a5a797bce70247ebf95081238.html#exhale-function-algorithm-8h-1ab2b1735a5a797bce70247ebf95081238"><span class="std std-ref">Template Function shad::min_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1aaea0353fe93d75d2a5dbe4409921a25e.html#exhale-function-algorithm-8h-1aaea0353fe93d75d2a5dbe4409921a25e"><span class="std std-ref">Template Function shad::min_element(ForwardIt, ForwardIt, Compare)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1ade79004d9d2b57d94717640536689f30.html#exhale-function-algorithm-8h-1ade79004d9d2b57d94717640536689f30"><span class="std std-ref">Template Function shad::min_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, Compare)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1af24b9e8c34031c3eb513512540d75220.html#exhale-function-algorithm-8h-1af24b9e8c34031c3eb513512540d75220"><span class="std std-ref">Template Function shad::minmax_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a16fcfebd88d79295c4f5ff4762e17329.html#exhale-function-algorithm-8h-1a16fcfebd88d79295c4f5ff4762e17329"><span class="std std-ref">Template Function shad::minmax_element(ForwardIt, ForwardIt, Compare)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a19b6f97e22a10d008622ad4e49de5f6b.html#exhale-function-algorithm-8h-1a19b6f97e22a10d008622ad4e49de5f6b"><span class="std std-ref">Template Function shad::minmax_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, Compare)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a04498eaaa7278dc429fcdf93f5915bfd.html#exhale-function-algorithm-8h-1a04498eaaa7278dc429fcdf93f5915bfd"><span class="std std-ref">Template Function shad::minmax_element(ForwardIt, ForwardIt)</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a00b17ed7d3482e7fc389d344c68b42e8.html#exhale-function-algorithm-8h-1a00b17ed7d3482e7fc389d344c68b42e8"><span class="std std-ref">Template Function shad::none_of</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a0c0ef45cc72fdfcc83ec82af01154289.html#exhale-function-algorithm-8h-1a0c0ef45cc72fdfcc83ec82af01154289"><span class="std std-ref">Template Function shad::replace</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1aef6165d38034e9fd6e2fa8bb433a6f61.html#exhale-function-algorithm-8h-1aef6165d38034e9fd6e2fa8bb433a6f61"><span class="std std-ref">Template Function shad::replace_if</span></a></li>
+<li><a class="reference internal" href="function_algorithm_8h_1a7a39d855612f2a2957f27b7571e9dc54.html#exhale-function-algorithm-8h-1a7a39d855612f2a2957f27b7571e9dc54"><span class="std std-ref">Template Function shad::transform</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="program_listing_file_include_shad_core_algorithm.h.html" class="btn btn-neutral float-right" title="Program Listing for File algorithm.h" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="program_listing_file_include_shad_data_structures_abstract_data_structure.h.html" class="btn btn-neutral float-left" title="Program Listing for File abstract_data_structure.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+.. _exhale_function_compare__and__hash__utils_8h_1a21c73a78973e58a8ed4a246a74bff5b9:
+
+Template Function shad::HashFunction(const KeyTy&, uint8_t)
+===========================================================
+
+- Defined in :ref:`file_include_shad_data_structures_compare_and_hash_utils.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::HashFunction(const KeyTy&, uint8_t)
