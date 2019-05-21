@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  head:
+    image: mminutoli/shad-dev-env
+    user: root
+    entrypoint: [ "/usr/sbin/sshd", "-D" ]
+    volumes:
+      - ..:/home/mpi/shad
+    ports:
+      - 22
+    networks:
+      - net
+  worker:
+    image: mminutoli/shad-dev-env
+    user: root
+    entrypoint: [ "/usr/sbin/sshd", "-D" ]
+    volumes:
+      - ..:/home/mpi/shad
+    ports:
+      - 22
+    networks:
+      - net
+
+networks:
+  net:
