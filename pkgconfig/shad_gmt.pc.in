@@ -3,7 +3,6 @@ exec_prefix=${prefix}
 includedir=${prefix}/include
 libdir=${exec_prefix}/lib
 runtimeincludedirs=@GMT_INCLUDE_DIRS@
-gmtlibs=@GMT_LIBRARIES@
 
 Name: @CMAKE_PROJECT_NAME@_GMT
 Description: SHAD - Scalable and High-Performance Algorithms and Data-Structures, GMT Backend.
