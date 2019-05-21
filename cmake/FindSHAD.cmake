@@ -3,6 +3,10 @@
 #   SHAD_ROOT          - The SHAD install diretory
 #   SHAD_INCLUDE       - The SHAD include directory
 #   SHAD_LIBRARY       - The SHAD library directory
+
+# add rt as input param
+
+
 # Output variables:
 #   SHAD_FOUND         - System has SHAD
 #   SHAD_INCLUDE_DIRS  - The SHAD include directory
@@ -23,6 +27,7 @@ if (NOT DEFINED SHAD_FOUND)
     list(APPEND SHAD_LIBRARIES "${SHAD_UTIL_LIBRARY}")
   endif()
 
+  set(SHAD_LIBRARY lib${SHAD_RUNTIME}_runtime)
   find_library(SHAD_RUNTIME_LIBRARY runtime HINTS ${SHAD_LIBRARY})
   if (SHAD_RUNTIME_LIBRARY)
     list(APPEND SHAD_LIBRARIES "${SHAD_RUNTIME_LIBRARY}")

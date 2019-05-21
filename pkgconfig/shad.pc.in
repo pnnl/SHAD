@@ -6,5 +6,5 @@ libdir=${exec_prefix}/lib
 Name: @CMAKE_PROJECT_NAME@
 Description: SHAD - Scalable and High-Performance Algorithms and Data-Structures.
 Version: @PACKAGE_VERSION@
-Cflags: @CMAKE_CXX_FLAGS@ -I${includedir}
+Cflags: @CMAKE_CXX_FLAGS@ -D HAVE_@SHAD_RUNTIME_SYSTEM@=1 -I${includedir}
 Libs: -L${libdir} -Wl,-rpath,${libdir} -lruntime -lutils @LINK_FLAGS@

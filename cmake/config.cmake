@@ -54,6 +54,24 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS
 # include files checks
 
 # library checks:
+
+# CPP_SIMPLE Always built
+find_package(Threads REQUIRED)
+list(APPEND CPP_SIMPLE_INCLUED_DIR ${CMAKE_PTHREADS_INCLUDE_DIR})
+list(APPEND CPP_SIMPLE_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+
+if (TBB_ROOT)
+#   Threads package already required for CPP_SIMPLE
+#   find_package(Threads REQUIRED)
+  list(APPEND TBB_INCLUED_DIR ${CMAKE_PTHREADS_INCLUDE_DIR})
+  find_package(TBB REQUIRED)
+  list(APPEND TBB_LIBRARIES ${CMAKE_THREAD_LIBS_INIT} ${TBB_LIBRARIES})
+endif()
+if (GMT_ROOT)
+  find_package(GMT REQUIRED)
+  # FindGMT will set libs and include dirs
+endif()
+
 if (SHAD_RUNTIME_SYSTEM STREQUAL "CPP_SIMPLE")
   message(STATUS "Using the default C++ implementation of the Abstract Runtime API.")
   find_package(Threads REQUIRED)
