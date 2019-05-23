@@ -35,6 +35,8 @@ Includes
 
 - ``shad/runtime/locality.h`` (:ref:`file_include_shad_runtime_locality.h`)
 
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
 
 
 Included By

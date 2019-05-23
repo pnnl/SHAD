@@ -39,6 +39,7 @@ Program Listing for File distributed_iterator_traits.h
    
    #include <cassert>
    #include <iterator>
+   #include <vector>
    
    #include "shad/runtime/locality.h"
    
