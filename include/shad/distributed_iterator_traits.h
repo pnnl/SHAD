@@ -27,6 +27,7 @@
 
 #include <cassert>
 #include <iterator>
+#include <vector>
 
 #include "shad/runtime/locality.h"
 
