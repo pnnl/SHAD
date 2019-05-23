@@ -105,6 +105,7 @@ TEST(shad_uset, buffered_insert_iterator) {
   for (auto i = batch_size; i > 0; --i) {
     ins_begin = i;
   }
+  ins_begin.wait();
   ins_begin.flush();
   for (auto i = batch_size; i > 0; --i) {
     ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
@@ -117,6 +118,7 @@ TEST(shad_uset, buffered_insert_iterator) {
   for (auto i = batch_size; i > 0; --i) {
     ins_begin_ = first + i;
   }
+  ins_begin_.wait();
   ins_begin_.flush();
   for (auto i = batch_size; i > 0; --i) {
     ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
@@ -129,6 +131,7 @@ TEST(shad_uset, buffered_insert_iterator) {
   for (auto i = batch_size; i > 0; --i) {
     ins_end = first + i;
   }
+  ins_end.wait();
   ins_end.flush();
   for (auto i = batch_size; i > 0; --i) {
     ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
@@ -183,6 +186,7 @@ TEST(shad_umap, buffered_insert_iterator) {
   for (auto i = batch_size; i > 0; --i) {
     ins_begin = kv(i);
   }
+  ins_begin.wait();
   ins_begin.flush();
   for (auto i = batch_size; i > 0; --i)
     ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
@@ -194,6 +198,7 @@ TEST(shad_umap, buffered_insert_iterator) {
   for (auto i = batch_size; i > 0; --i) {
     ins_begin_ = kv(first + i);
   }
+  ins_begin_.wait();
   ins_begin_.flush();
   for (auto i = batch_size; i > 0; --i)
     ASSERT_TRUE(shad_test_stl::find_(cnt.begin(),
@@ -205,6 +210,7 @@ TEST(shad_umap, buffered_insert_iterator) {
   for (auto i = batch_size; i > 0; --i) {
     ins_end = kv(first + i);
   }
+  ins_end.wait();
   ins_end.flush();
   for (auto i = batch_size; i > 0; --i)
     ASSERT_TRUE(shad_test_stl::find_(cnt.begin(), cnt.end(), kv(first + i)) !=

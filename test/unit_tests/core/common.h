@@ -141,6 +141,7 @@ struct create_set_<shad::unordered_set<U>, even> {
     auto res = std::make_shared<T>(size);
     shad::buffered_insert_iterator<T> ins(*res, res->end());
     for (size_t i = 0; i < size; ++i) ins = (2 * i + !even);
+    ins.wait();
     ins.flush();
     return res;
   }
@@ -163,6 +164,7 @@ struct create_map_<shad::unordered_map<U, V>, even> {
     auto res = std::make_shared<T>(size);
     shad::buffered_insert_iterator<T> ins(*res, res->begin());
     for (size_t i = 0; i < size; i++) ins = std::make_pair(i, 2 * i + !even);
+    ins.wait();
     ins.flush();
     return res;
   }
@@ -236,6 +238,7 @@ struct subseq_from_<shad::unordered_set<U>> {
       ins = *first;
       ++first;
     }
+    ins.wait();
     ins.flush();
     return res;
   }
@@ -274,6 +277,7 @@ struct subseq_from_<shad::unordered_map<U, V>> {
       ins = std::make_pair((*first).first, (*first).second);
       ++first;
     }
+    ins.wait();
     ins.flush();
     return res;
   }
