@@ -437,10 +437,9 @@
     <span class="n">BufferedAsyncInsert</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">value</span><span class="p">.</span><span class="n">first</span><span class="p">,</span> <span class="n">value</span><span class="p">.</span><span class="n">second</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">buffered_async_flush</span><span class="p">(</span><span class="n">rt</span><span class="o">::</span><span class="n">Handle</span> <span class="o">&amp;</span><span class="n">h</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">rt</span><span class="o">::</span><span class="n">waitForCompletion</span><span class="p">(</span><span class="n">h</span><span class="p">);</span>
-    <span class="n">WaitForBufferedInsert</span><span class="p">();</span>
-  <span class="p">}</span>
+  <span class="kt">void</span> <span class="n">buffered_async_wait</span><span class="p">(</span><span class="n">rt</span><span class="o">::</span><span class="n">Handle</span> <span class="o">&amp;</span><span class="n">h</span><span class="p">)</span> <span class="p">{</span> <span class="n">rt</span><span class="o">::</span><span class="n">waitForCompletion</span><span class="p">(</span><span class="n">h</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">buffered_async_flush</span><span class="p">()</span> <span class="p">{</span> <span class="n">WaitForBufferedInsert</span><span class="p">();</span> <span class="p">}</span>
 
  <span class="k">private</span><span class="o">:</span>
   <span class="n">ObjectID</span> <span class="n">oid_</span><span class="p">;</span>

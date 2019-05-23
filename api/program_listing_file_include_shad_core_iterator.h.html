@@ -310,7 +310,7 @@
   <span class="k">typename</span> <span class="n">internal_container_t</span><span class="o">::</span><span class="n">ObjectID</span> <span class="n">global_id_</span><span class="p">;</span>
   <span class="n">Iterator</span> <span class="n">iterator_</span><span class="p">;</span>
   <span class="n">internal_container_t</span><span class="o">*</span> <span class="n">local_container_ptr_</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
-  <span class="n">rt</span><span class="o">::</span><span class="n">Locality</span> <span class="n">locality_</span><span class="p">;</span>
+  <span class="n">rt</span><span class="o">::</span><span class="n">Locality</span> <span class="n">locality_</span><span class="p">{</span><span class="n">rt</span><span class="o">::</span><span class="n">numLocalities</span><span class="p">()};</span>
 <span class="p">};</span>
 
 <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Container</span><span class="o">&gt;</span>
@@ -330,18 +330,23 @@
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">local_container_ptr_</span> <span class="o">||</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">locality_</span> <span class="o">!=</span> <span class="n">rt</span><span class="o">::</span><span class="n">thisLocality</span><span class="p">())</span> <span class="p">{</span>
       <span class="k">this</span><span class="o">-&gt;</span><span class="n">locality_</span> <span class="o">=</span> <span class="n">rt</span><span class="o">::</span><span class="n">thisLocality</span><span class="p">();</span>
       <span class="k">this</span><span class="o">-&gt;</span><span class="n">local_container_ptr_</span> <span class="o">=</span> <span class="n">Container</span><span class="o">::</span><span class="n">from_global_id</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">global_id_</span><span class="p">);</span>
-      <span class="n">rt</span><span class="o">::</span><span class="n">Handle</span> <span class="n">h</span><span class="p">;</span>
-      <span class="n">handle_</span> <span class="o">=</span> <span class="n">h</span><span class="p">;</span>
+      <span class="n">handle_</span> <span class="o">=</span> <span class="n">rt</span><span class="o">::</span><span class="n">Handle</span><span class="p">{};</span>  <span class="c1">// reset</span>
     <span class="p">}</span>
     <span class="k">this</span><span class="o">-&gt;</span><span class="n">local_container_ptr_</span><span class="o">-&gt;</span><span class="n">buffered_async_insert</span><span class="p">(</span><span class="n">handle_</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
     <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
   <span class="p">}</span>
 
+  <span class="kt">void</span> <span class="n">wait</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">local_container_ptr_</span> <span class="o">!=</span> <span class="k">nullptr</span> <span class="o">&amp;&amp;</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">locality_</span> <span class="o">==</span> <span class="n">rt</span><span class="o">::</span><span class="n">thisLocality</span><span class="p">())</span> <span class="p">{</span>
+      <span class="k">this</span><span class="o">-&gt;</span><span class="n">local_container_ptr_</span><span class="o">-&gt;</span><span class="n">buffered_async_wait</span><span class="p">(</span><span class="n">handle_</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
   <span class="kt">void</span> <span class="n">flush</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">local_container_ptr_</span> <span class="o">!=</span> <span class="k">nullptr</span> <span class="o">&amp;&amp;</span>
         <span class="k">this</span><span class="o">-&gt;</span><span class="n">locality_</span> <span class="o">==</span> <span class="n">rt</span><span class="o">::</span><span class="n">thisLocality</span><span class="p">())</span> <span class="p">{</span>
-      <span class="c1">// if(!handle_.IsNull()) FIXME</span>
-      <span class="k">this</span><span class="o">-&gt;</span><span class="n">local_container_ptr_</span><span class="o">-&gt;</span><span class="n">buffered_async_flush</span><span class="p">(</span><span class="n">handle_</span><span class="p">);</span>
+      <span class="k">this</span><span class="o">-&gt;</span><span class="n">local_container_ptr_</span><span class="o">-&gt;</span><span class="n">buffered_async_flush</span><span class="p">();</span>
     <span class="p">}</span>
   <span class="p">}</span>
 

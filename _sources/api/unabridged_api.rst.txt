@@ -1278,6 +1278,16 @@ Functions
 .. toctree::
    :maxdepth: 5
 
+   function_utils_8h_1a22f1e41a5b5e7205ab943dbc846c4e10.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_utils_8h_1a42fdab8157ef88e4bb43ec961fcd08fd.rst
+
+.. toctree::
+   :maxdepth: 5
+
    function_numeric_8h_1a2854c58c1b96a1d20320f22a34bc2231.rst
 
 .. toctree::

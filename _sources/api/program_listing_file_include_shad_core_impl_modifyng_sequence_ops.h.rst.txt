@@ -309,6 +309,7 @@ Program Listing for File modifyng_sequence_ops.h
      auto begin = local_range.begin();
      auto end = local_range.end();
      auto res = std::transform(begin, end, d_first, op);
+     wait_iterator(res);
      flush_iterator(res);
      return res;
    }
@@ -318,7 +319,27 @@ Program Listing for File modifyng_sequence_ops.h
    template <class ForwardIt1, class ForwardIt2, class UnaryOperation>
    ForwardIt2 dpar_kernel(std::false_type, ForwardIt1 first, ForwardIt1 last,
                           ForwardIt2 d_first, UnaryOperation op) {
-     return dseq_kernel(std::false_type{}, first, last, d_first, op);
+     using itr_traits = distributed_iterator_traits<ForwardIt1>;
+     using local_iterator_t = typename itr_traits::local_iterator_type;
+   
+     // local map
+     auto lrange = itr_traits::local_range(first, last);
+   
+     auto map_res = local_map_init(
+         // range
+         lrange.begin(), lrange.end(),
+         // kernel
+         [&](local_iterator_t b, local_iterator_t e) {
+           auto res = std::transform(b, e, d_first, op);
+           wait_iterator(res);
+           return res;
+         },
+         // init value
+         d_first);
+   
+     // local reduce
+     flush_iterator(map_res.back());
+     return map_res.back();
    }
    
    //

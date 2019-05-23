@@ -1,0 +1,13 @@
+.. _exhale_function_utils_8h_1a22f1e41a5b5e7205ab943dbc846c4e10:
+
+Template Function shad::impl::wait_iterator(It&)
+================================================
+
+- Defined in :ref:`file_include_shad_core_impl_utils.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::impl::wait_iterator(It&)

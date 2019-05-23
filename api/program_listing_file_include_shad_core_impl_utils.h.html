@@ -294,6 +294,14 @@
 <span class="kt">void</span> <span class="n">advance_output_iterator</span><span class="p">(</span><span class="n">shad</span><span class="o">::</span><span class="n">buffered_insert_iterator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">It2</span><span class="p">,</span> <span class="n">It2</span><span class="p">)</span> <span class="p">{}</span>
 
 <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">It</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">wait_iterator</span><span class="p">(</span><span class="n">It</span> <span class="o">&amp;</span><span class="p">)</span> <span class="p">{}</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">wait_iterator</span><span class="p">(</span><span class="n">shad</span><span class="o">::</span><span class="n">buffered_insert_iterator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">it</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">it</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">It</span><span class="o">&gt;</span>
 <span class="kt">void</span> <span class="n">flush_iterator</span><span class="p">(</span><span class="n">It</span> <span class="o">&amp;</span><span class="p">)</span> <span class="p">{}</span>
 
 <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>

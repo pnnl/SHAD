@@ -544,6 +544,7 @@
   <span class="k">auto</span> <span class="n">begin</span> <span class="o">=</span> <span class="n">local_range</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
   <span class="k">auto</span> <span class="n">end</span> <span class="o">=</span> <span class="n">local_range</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
   <span class="k">auto</span> <span class="n">res</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">transform</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">d_first</span><span class="p">,</span> <span class="n">op</span><span class="p">);</span>
+  <span class="n">wait_iterator</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
   <span class="n">flush_iterator</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
   <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
 <span class="p">}</span>
@@ -553,7 +554,27 @@
 <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">ForwardIt1</span><span class="p">,</span> <span class="k">class</span> <span class="nc">ForwardIt2</span><span class="p">,</span> <span class="k">class</span> <span class="nc">UnaryOperation</span><span class="o">&gt;</span>
 <span class="n">ForwardIt2</span> <span class="n">dpar_kernel</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">false_type</span><span class="p">,</span> <span class="n">ForwardIt1</span> <span class="n">first</span><span class="p">,</span> <span class="n">ForwardIt1</span> <span class="n">last</span><span class="p">,</span>
                        <span class="n">ForwardIt2</span> <span class="n">d_first</span><span class="p">,</span> <span class="n">UnaryOperation</span> <span class="n">op</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="n">dseq_kernel</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">false_type</span><span class="p">{},</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">d_first</span><span class="p">,</span> <span class="n">op</span><span class="p">);</span>
+  <span class="k">using</span> <span class="n">itr_traits</span> <span class="o">=</span> <span class="n">distributed_iterator_traits</span><span class="o">&lt;</span><span class="n">ForwardIt1</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">local_iterator_t</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">itr_traits</span><span class="o">::</span><span class="n">local_iterator_type</span><span class="p">;</span>
+
+  <span class="c1">// local map</span>
+  <span class="k">auto</span> <span class="n">lrange</span> <span class="o">=</span> <span class="n">itr_traits</span><span class="o">::</span><span class="n">local_range</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">);</span>
+
+  <span class="k">auto</span> <span class="n">map_res</span> <span class="o">=</span> <span class="n">local_map_init</span><span class="p">(</span>
+      <span class="c1">// range</span>
+      <span class="n">lrange</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">lrange</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span>
+      <span class="c1">// kernel</span>
+      <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">local_iterator_t</span> <span class="n">b</span><span class="p">,</span> <span class="n">local_iterator_t</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">auto</span> <span class="n">res</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">transform</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d_first</span><span class="p">,</span> <span class="n">op</span><span class="p">);</span>
+        <span class="n">wait_iterator</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+      <span class="p">},</span>
+      <span class="c1">// init value</span>
+      <span class="n">d_first</span><span class="p">);</span>
+
+  <span class="c1">// local reduce</span>
+  <span class="n">flush_iterator</span><span class="p">(</span><span class="n">map_res</span><span class="p">.</span><span class="n">back</span><span class="p">());</span>
+  <span class="k">return</span> <span class="n">map_res</span><span class="p">.</span><span class="n">back</span><span class="p">();</span>
 <span class="p">}</span>
 
 <span class="c1">//</span>

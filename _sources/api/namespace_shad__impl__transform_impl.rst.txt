@@ -38,8 +38,8 @@ Functions
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a11dd25628534978b66ed88ffde4c9fab`
 
-- :ref:`exhale_function_modifyng__sequence__ops_8h_1af05711d9a2b1646724faef347de7af1d`
-
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a4d366f0ce05854aa4c82583306c8e100`
+
+- :ref:`exhale_function_modifyng__sequence__ops_8h_1af05711d9a2b1646724faef347de7af1d`
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a6e008ff324ae4b1405907c2e8e0ef082`

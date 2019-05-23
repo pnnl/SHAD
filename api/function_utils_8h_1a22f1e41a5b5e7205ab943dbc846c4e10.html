@@ -1,0 +1,480 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Template Function shad::impl::wait_iterator(It&amp;) &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Template Function shad::impl::wait_iterator(shad::buffered_insert_iterator&lt;T&gt;&amp;)" href="function_utils_8h_1a42fdab8157ef88e4bb43ec961fcd08fd.html" />
+    <link rel="prev" title="Template Function shad::impl::transform_reduce(distributed_parallel_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOp1, BinaryOp2)" href="function_numeric__ops_8h_1a3fd931d2f89809175443eb4fd47ddb28.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#functions">Functions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="function_sssp_8h_1a91dbf7a5e8a0b37d677fa6205e512175.html">Template Function __sssp_iteration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_sssp_8h_1a17b1af260814a1672d47efda6de4aa4c.html">Template Function __sssp_length</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_sssp_8h_1a72623075971e28869aabb30d7d5f5b83.html">Template Function __sssp_neigh_iter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a79535b2ad05d27266485f8e299b776cd.html">Template Function shad::accumulate(InputIt, InputIt, T, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a7286bb0b681bec70602b31083a0b0680.html">Template Function shad::accumulate(InputIt, InputIt, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a740dc92192ebb80d0651a62c31ad92ec.html">Template Function shad::adjacent_difference(InputIt, InputIt, OutputIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1affad70e4283f19271fe3ab0ea3ce1b90.html">Template Function shad::adjacent_difference(ExecutionPolicy&amp;&amp;, InputIt, InputIt, OutputIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1ac72a7771f9b490b5948c84da221e9a83.html">Template Function shad::adjacent_difference(InputIt, InputIt, OutputIt, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a390a66f6af57d674bfcd5aced6b69a9d.html">Template Function shad::adjacent_difference(ExecutionPolicy&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1ab0314482e6cdabff5bcb7f2833b0f937.html">Template Function shad::all_of</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a8d17ad3a3f5f25ecfee20a7ae6ebf924.html">Template Function shad::any_of</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_buffer_8h_1aac7ae90c75b229f8454ade064737e2db.html">Template Function shad::constants::max</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_buffer_8h_1a8a85d4fe7d902968e0b727efc68d3c31.html">Template Function shad::constants::min</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a2abc6976d67b071eccbb8d17e9a602fe.html">Template Function shad::count</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a08f4233aef9435fb627ebb82d186715e.html">Template Function shad::count_if</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a8141e857a877c6eb44095a7578281ecd.html">Template Function shad::equal(InputIt1, InputIt1, InputIt2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1ad909faa4c50e8fe776668cd39e776602.html">Template Function shad::equal(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a9be869b9241eafbec6af016a45fa8f45.html">Template Function shad::equal(InputIt1, InputIt1, InputIt2, BinaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a1d99da6ce33f2013b3ff47b9a05a0916.html">Template Function shad::equal(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, BinaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1aa5dcd90777a8948f8cb240d51bd1346b.html">Template Function shad::equal(InputIt1, InputIt1, InputIt2, InputIt2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1ae452511628cb333e23458bb2af8cfa83.html">Template Function shad::equal(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a729216b8f76b721c9e1ae8fdcb63ee03.html">Template Function shad::equal(InputIt1, InputIt1, InputIt2, InputIt2, BinaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a8566c24e54c82d15757af3f776c54c40.html">Template Function shad::equal(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2, BinaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1af0252dc307b8ba0b96885c00e8871bbc.html">Template Function shad::exclusive_scan(InputIt, InputIt, OutputIt, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a04c9040a1562793e895edaf3517dcfd6.html">Template Function shad::exclusive_scan(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a3c4542507eba2afe28bb5d8af386b76d.html">Template Function shad::exclusive_scan(InputIt, InputIt, OutputIt, T, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1af1776fbb5971b5b37331938fa9f55e09.html">Template Function shad::exclusive_scan(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1ab21c74ec57b46160ad590b2e989c4ea6.html">Template Function shad::fill</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a63ec34eb3f98177db268051179d6057a.html">Template Function shad::find</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1ae5272738a131b86c7d9349bfff977aa4.html">Template Function shad::find_if</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a42458d0084e37bb16f4745ee085aa2f5.html">Template Function shad::find_if_not</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a7daf2afb8d216454ff4143be21237d0c.html">Template Function shad::for_each</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a9bd5736fe5e18ec23a7d7e5913a11df8.html">Template Function shad::generate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_data__structures_2array_8h_1a6687ecc25017a77995f49bfd5707f6be.html">Function shad::getTargetLocalityFromTargePosition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_compare__and__hash__utils_8h_1a21c73a78973e58a8ed4a246a74bff5b9.html">Template Function shad::HashFunction(const KeyTy&amp;, uint8_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_compare__and__hash__utils_8h_1a1bce4c68f2c688517fdc5dca70da59da.html">Template Function shad::HashFunction(const std::vector&lt;KeyTy&gt;&amp;, uint8_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a6778b7804ca8433086cb33d2ae68ee07.html">Template Function shad::impl::accumulate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1acdf2491ae99e6d69e4bd98b9754871c2.html">Template Function shad::impl::adjacent_difference(distributed_sequential_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a5878e1265f2a092ccf92a06e954f1c81.html">Template Function shad::impl::adjacent_difference(distributed_parallel_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_utils_8h_1a8b3b049ff641f41f340c7c6ebede785e.html">Template Function shad::impl::advance_output_iterator(It&amp;, It2, It2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_utils_8h_1ab024cb7759d99abdbc4354cccec9887c.html">Template Function shad::impl::advance_output_iterator(shad::insert_iterator&lt;T&gt;&amp;, It2, It2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_utils_8h_1a1470dba8d08fdfc79c91a2e4f63b0c08.html">Template Function shad::impl::advance_output_iterator(shad::buffered_insert_iterator&lt;T&gt;, It2, It2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a752c11475059b2ab06116285a440a2af.html">Template Function shad::impl::all_of(distributed_sequential_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a7c555d0569119cc7ebea02248e120234.html">Template Function shad::impl::all_of(distributed_parallel_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a06a1bd6f89efe2813209738b882e83cb.html">Template Function shad::impl::any_of(distributed_sequential_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1ab8c70eb5ae1c2f4696052c7d389e5c9a.html">Template Function shad::impl::any_of(distributed_parallel_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1aaa60357de2f3eaaf01d8563738f5dbbe.html">Template Function shad::impl::apply_from</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a0290bcb45c99355e4813a2a66cb8ef3c.html">Template Function shad::impl::count(distributed_sequential_tag&amp;&amp;, InputItr, InputItr, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1aa791b85ba19db652abe0fc0ef4227738.html">Template Function shad::impl::count(distributed_parallel_tag&amp;&amp;, InputItr, InputItr, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a39b464a80148f40b370afc52c00b3068.html">Template Function shad::impl::count_if(distributed_sequential_tag&amp;&amp;, InputItr, InputItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a3492634cc68c358b63b9dbc2cbc97555.html">Template Function shad::impl::count_if(distributed_parallel_tag&amp;&amp;, InputItr, InputItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1aa5242e01a049077428b271dedc22ba31.html">Template Function shad::impl::distributed_folding_map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1acdf8b9c4ede8af2e7209694cebe855bf.html">Template Function shad::impl::distributed_folding_map_early_termination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1ae3198e995caf16706ae51020545ef11d.html">Template Function shad::impl::distributed_folding_map_void</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1ada96d05cbfda53aa6a513d7ac05d2236.html">Template Function shad::impl::distributed_map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1ab93b059ad765dbee67a83c80c3e6c131.html">Template Function shad::impl::distributed_map_init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1adc0b80f80c342ccb8d6c54e37ba30c33.html">Template Function shad::impl::distributed_map_void</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_comparison__ops_8h_1ae35b0e915c284573f0169e3047577c89.html">Template Function shad::impl::equal(distributed_sequential_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, BinaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_comparison__ops_8h_1a75b88935efbcf0f050f9ddf4b8ef7ebd.html">Template Function shad::impl::equal(distributed_parallel_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, BinaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1ac0e9533ce03d8323df2da1c4d33f6810.html">Template Function shad::impl::exclusive_scan(distributed_sequential_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a9df9cc7b857d3b443f6f5266748ec577.html">Template Function shad::impl::exclusive_scan(distributed_parallel_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a917a06d4792c8a73a05c27df43979d42.html">Template Function shad::impl::fill(distributed_parallel_tag&amp;&amp;, ForwardIt, ForwardIt, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1aeb36a74de817bc5d3828c2d0c7dd6052.html">Template Function shad::impl::fill(distributed_sequential_tag&amp;&amp;, ForwardIt, ForwardIt, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1aa80b4e44eea016449484bf9c096caa38.html">Template Function shad::impl::find(distributed_sequential_tag&amp;&amp;, ForwardItr, ForwardItr, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a7d6654b93471400a7ee8942da4ada07f.html">Template Function shad::impl::find(distributed_parallel_tag&amp;&amp;, ForwardItr, ForwardItr, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a93a0d973aa1c8f34cb6690cb20d93f4b.html">Template Function shad::impl::find_if(distributed_sequential_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a493ad5c9070f71bcb9b1aca4688a585a.html">Template Function shad::impl::find_if(distributed_parallel_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1a57773ff0a22421e942e68cf6d602e4fb.html">Template Function shad::impl::find_if_not(distributed_sequential_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1ac422afd3c5b6bd9704e422e9381ab080.html">Template Function shad::impl::find_if_not(distributed_parallel_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_utils_8h_1ad32c49f0c531a85cf5b936e89855b342.html">Template Function shad::impl::flush_iterator(It&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_utils_8h_1aa26f94aa4e333fb107863ff76bc5c8b4.html">Template Function shad::impl::flush_iterator(shad::buffered_insert_iterator&lt;T&gt;&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1ae1412ca0ba7dde890c047cd95712e841.html">Template Function shad::impl::for_each(distributed_sequential_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_non__modifyng__sequence__ops_8h_1afb2c61b05a67d5866e715bcd0f0bbc9d.html">Template Function shad::impl::for_each(distributed_parallel_tag&amp;&amp;, ForwardItr, ForwardItr, UnaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a1cc602e4f0d9ec4e0de7c8dec5cdd056.html">Template Function shad::impl::generate(distributed_parallel_tag&amp;&amp;, ForwardIt, ForwardIt, Generator)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a104359469463063a5731e7e416f92e48.html">Template Function shad::impl::generate(distributed_sequential_tag&amp;&amp;, ForwardIt, ForwardIt, Generator)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a16a47e02cde21be27f0d0d4cae1fa971.html">Template Function shad::impl::inclusive_scan(distributed_sequential_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1ad1cdc8f5cbba50490302762e79a6c9e2.html">Template Function shad::impl::inclusive_scan(distributed_parallel_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1aadca65f3d0fc5648b3de85b15012c595.html">Template Function shad::impl::inclusive_scan(distributed_sequential_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1af2c7162bbc9a4ac28f61ce116f6c6971.html">Template Function shad::impl::inclusive_scan(distributed_parallel_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a4c7f38aad04b1866ca0f51f338eb9748.html">Template Function shad::impl::inner_product(InputIt1, InputIt1, InputIt2, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a6c996eec8df6b704861bae6348440a0f.html">Template Function shad::impl::inner_product(InputIt1, InputIt1, InputIt2, T, BinaryOperation1, BinaryOperation2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a8f954a2011ea42c5d9060e207ab67749.html">Template Function shad::impl::iota</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_comparison__ops_8h_1ad3aada55cb3b8fa78334b6c8d44a5d85.html">Template Function shad::impl::lexicographical_compare(distributed_sequential_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2, BinaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_comparison__ops_8h_1a1fa1317d224502e223288526b775c16e.html">Template Function shad::impl::lexicographical_compare(distributed_parallel_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2, BinaryPredicate)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1a41d3f8271a46b16d658dae5a970ccb50.html">Template Function shad::impl::local_map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1aab8f79f543022668c46491dd24ff986e.html">Template Function shad::impl::local_map_init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1ae56194f13576644715a17d570926acfc.html">Template Function shad::impl::local_map_void</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_impl__patterns_8h_1acb91c9af4a31a73faa6ea8f71a0be42a.html">Template Function shad::impl::local_map_void_offset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_minimum__maximum__ops_8h_1ab42bc947de3c81671581ee2016fa2040.html">Template Function shad::impl::max_element(distributed_sequential_tag&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_minimum__maximum__ops_8h_1a381d52cbdba7b857ceac91ee8eb8fcdd.html">Template Function shad::impl::max_element(distributed_parallel_tag&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_minimum__maximum__ops_8h_1adfebf0e80301a20f84968a0ddf15953c.html">Template Function shad::impl::min_element(distributed_sequential_tag&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_minimum__maximum__ops_8h_1a83136697aad39dd0e3a1c7975f20663c.html">Template Function shad::impl::min_element(distributed_parallel_tag&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_minimum__maximum__ops_8h_1ab9de78c4bd93c5e2de3483e8bb4bc1ee.html">Template Function shad::impl::minmax_element(distributed_sequential_tag&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_minimum__maximum__ops_8h_1aed037b97b6d5e1bd2d2f23a0c9ddf9b5.html">Template Function shad::impl::minmax_element(distributed_parallel_tag&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_core_2array_8h_1a5a0e2e842f8d9a65fba49018ca00dd9e.html">Template Function shad::impl::operator&lt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_core_2array_8h_1ac83fa97005ee61fbec468ff8e9061ba0.html">Template Function shad::impl::operator==</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_core_2array_8h_1aa507c289525cb4803ea5db4611c5458a.html">Template Function shad::impl::operator&gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1af71e2fff31d97e2d0e60d33a818fe64f.html">Template Function shad::impl::partial_sum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1adb47097b66f7a100bfbd7ecaa9f5774b.html">Template Function shad::impl::reduce(distributed_sequential_tag&amp;&amp;, InputIt, InputIt, T, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a13273194ba498ef17d05633d554927d2.html">Template Function shad::impl::reduce(distributed_parallel_tag&amp;&amp;, InputIt, InputIt, T, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a07d66cfaa643d3233d69cdaa30741501.html">Template Function shad::impl::replace(distributed_parallel_tag&amp;&amp;, ForwardIt, ForwardIt, const T&amp;, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a6a1767600912490fd07f16afec0dcb94.html">Template Function shad::impl::replace(distributed_sequential_tag&amp;&amp;, ForwardIt, ForwardIt, const T&amp;, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1abef163bbc7540e659973b4c97f7e2916.html">Template Function shad::impl::replace_if(distributed_parallel_tag&amp;&amp;, ForwardIt, ForwardIt, UnaryPredicate, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1af60bc6eaef1f7ed831bfd111abaac888.html">Template Function shad::impl::replace_if(distributed_sequential_tag&amp;&amp;, ForwardIt, ForwardIt, UnaryPredicate, const T&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1af4235126bba064e589c87b9eef1cd89a.html">Template Function shad::impl::transform(distributed_parallel_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1ae264d31ab6bd6e91536c9114bd721e14.html">Template Function shad::impl::transform(distributed_sequential_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a0db4b4455586e07d5837a7af5c4c9faf.html">Template Function shad::impl::transform_exclusive_scan(distributed_sequential_tag&amp;&amp;, InputIt, InputIt, OutputIt, T, BinaryOperation, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a3fb69fca10b8929afac4c3b0342a3d00.html">Template Function shad::impl::transform_exclusive_scan(distributed_parallel_tag&amp;&amp;, InputIt, InputIt, OutputIt, T, BinaryOperation, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a9e0c0239c1524dfe2ad0c0a6a34f80c7.html">Template Function shad::impl::transform_impl::async_block_contiguous_remote</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1aa2240a5e9cf1080adc029f91e3272293.html">Template Function shad::impl::transform_impl::block_contiguous_local</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a3e3b9f461765f4b53f38a2702be3dcbb.html">Template Function shad::impl::transform_impl::block_contiguous_local_par</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a1bc6b199cf047a1e76ea475dec947251.html">Template Function shad::impl::transform_impl::block_contiguous_remote</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a0433f3888ef3066041edda8925b6f3dc.html">Template Function shad::impl::transform_impl::dpar_kernel(std::true_type, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a6f430ee1e3eb1f4bc68df095061d3b62.html">Template Function shad::impl::transform_impl::dpar_kernel(std::false_type, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a11dd25628534978b66ed88ffde4c9fab.html">Template Function shad::impl::transform_impl::dpar_kernel(ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1af05711d9a2b1646724faef347de7af1d.html">Template Function shad::impl::transform_impl::dseq_kernel(std::true_type, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a6e008ff324ae4b1405907c2e8e0ef082.html">Template Function shad::impl::transform_impl::dseq_kernel(std::false_type, ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_modifyng__sequence__ops_8h_1a4d366f0ce05854aa4c82583306c8e100.html">Template Function shad::impl::transform_impl::dseq_kernel(ForwardIt1, ForwardIt1, ForwardIt2, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a994d10772359d93e389f376ee9cd05a3.html">Template Function shad::impl::transform_inclusive_scan(distributed_sequential_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a388dbfcc7dca58b881cd61370da14f1d.html">Template Function shad::impl::transform_inclusive_scan(distributed_parallel_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1af4764964e73da24626df70bf937018d4.html">Template Function shad::impl::transform_inclusive_scan(distributed_sequential_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation, UnaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a1d7be6e3729a4f335ea852c2b0c0f679.html">Template Function shad::impl::transform_inclusive_scan(distributed_parallel_tag&amp;&amp;, InputIt, InputIt, OutputIt, BinaryOperation, UnaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1ac1826723f8bdee0328088af31479516d.html">Template Function shad::impl::transform_reduce(distributed_sequential_tag&amp;&amp;, ForwardIt, ForwardIt, T, BinaryOp, UnaryOp)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a582cc7253b0dbfeeffb5c2303e1b0f2f.html">Template Function shad::impl::transform_reduce(distributed_parallel_tag&amp;&amp;, ForwardIt, ForwardIt, T, BinaryOp, UnaryOp)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a230e00400b7f35776c9d5f4cb9797fc8.html">Template Function shad::impl::transform_reduce(distributed_sequential_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOp1, BinaryOp2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric__ops_8h_1a3fd931d2f89809175443eb4fd47ddb28.html">Template Function shad::impl::transform_reduce(distributed_parallel_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOp1, BinaryOp2)</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Template Function shad::impl::wait_iterator(It&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_utils_8h_1a42fdab8157ef88e4bb43ec961fcd08fd.html">Template Function shad::impl::wait_iterator(shad::buffered_insert_iterator&lt;T&gt;&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a2854c58c1b96a1d20320f22a34bc2231.html">Template Function shad::inclusive_scan(InputIt, InputIt, OutputIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a1d3a1d24cc9d681bd236220c3db36a4b.html">Template Function shad::inclusive_scan(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1ab2f0bce9d14c5ec29670dbbcae4a7e58.html">Template Function shad::inclusive_scan(InputIt, InputIt, OutputIt, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1adc86ffac5f28d6798c40434c5017d86f.html">Template Function shad::inclusive_scan(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a3a46378a583f1c96000caa42e640ab5c.html">Template Function shad::inclusive_scan(InputIt, InputIt, OutputIt, BinaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1ac268ceb6647308bdfa9a510f346cc560.html">Template Function shad::inclusive_scan(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, BinaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1ae17dfe23117ed2d68100db112d13d5e2.html">Template Function shad::inner_product(InputIt1, InputIt1, InputIt2, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a9e35d019afa66a7d241f01c4c28a5c14.html">Template Function shad::inner_product(InputIt1, InputIt1, InputIt2, T, BinaryOperation1, BinaryOperation2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a1406d52ae9f56d5b4a160d37b2b20f3a.html">Template Function shad::iota</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a65aac88682894c75b4b1caee38cc9c8f.html">Template Function shad::lexicographical_compare(InputIt1, InputIt1, InputIt2, InputIt2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a060c390865e5dbec41c7e2526fae8803.html">Template Function shad::lexicographical_compare(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a05a181e15eb05bb17cf7bedcacc98585.html">Template Function shad::lexicographical_compare(InputIt1, InputIt1, InputIt2, InputIt2, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a10090ea72775e10b015408d8c9050ac3.html">Template Function shad::lexicographical_compare(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, ForwardIt2, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_shadmain_8h_1a9f30a41da5e389095d44fe5b1c9e6f5e.html">Function shad::main</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a81976ee44edd512260a625c628f6094b.html">Template Function shad::max_element(ForwardIt, ForwardIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a3f4b06918fc7b1425c9bc8aa942d894d.html">Template Function shad::max_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1aceab28870f92123bc4489897c5e7d640.html">Template Function shad::max_element(ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a507fdc64c5881f464e3c6dd7e470bfa1.html">Template Function shad::max_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a8fa362bdd1e3f20d68a86f80cd5d47e5.html">Template Function shad::min_element(ForwardIt, ForwardIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1ab2b1735a5a797bce70247ebf95081238.html">Template Function shad::min_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1aaea0353fe93d75d2a5dbe4409921a25e.html">Template Function shad::min_element(ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1ade79004d9d2b57d94717640536689f30.html">Template Function shad::min_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a04498eaaa7278dc429fcdf93f5915bfd.html">Template Function shad::minmax_element(ForwardIt, ForwardIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1af24b9e8c34031c3eb513512540d75220.html">Template Function shad::minmax_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a16fcfebd88d79295c4f5ff4762e17329.html">Template Function shad::minmax_element(ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a19b6f97e22a10d008622ad4e49de5f6b.html">Template Function shad::minmax_element(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, Compare)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a00b17ed7d3482e7fc389d344c68b42e8.html">Template Function shad::none_of</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_object__identifier_8h_1a73513752568c47bd71b06a4fc328eec4.html">Template Function shad::operator!=</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_object__identifier_8h_1a5761ac18b234d1551ab55f1ce32214cb.html">Template Function shad::operator&lt;&lt;(std::ostream&amp;, const ObjectIdentifier&lt;T&gt;&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_object__identifier_8h_1aa50b0a9ddf671edce6ba55be6975896a.html">Template Function shad::operator&lt;&lt;(std::ostream&amp;, const ObjectIdentifierCounter&lt;T&gt;&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_object__identifier_8h_1a3c37dd61ed6b63c4eb35b3bc7c35d6c0.html">Template Function shad::operator&lt;=</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_object__identifier_8h_1a82a20cc9e8de1bf3341c2506f7c1abc9.html">Template Function shad::operator==</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_object__identifier_8h_1a6eca4ffdbc7555d2e0b549a0a6eeffdd.html">Template Function shad::operator&gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_object__identifier_8h_1a59733f17e9061a22cd234fcfa3e022ff.html">Template Function shad::operator&gt;=</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a08d8882161e132a6fb3f9253b9a3bdef.html">Template Function shad::partial_sum(InputIt, InputIt, OutputIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a82089f3b0373f5062395613e51d16fa3.html">Template Function shad::partial_sum(InputIt, InputIt, OutputIt, BinaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a23bc7c39dc6aa69f526570d07967a185.html">Template Function shad::reduce(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, T, BinaryOp)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a0cb65c2ad084f15e5fd33058445b7f10.html">Template Function shad::reduce(InputIt, InputIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a329ef698d7c8b55b8b967ad07e9bf84d.html">Template Function shad::reduce(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1aea9e6912fe7e3a494de8b7eaad2fd345.html">Template Function shad::reduce(InputIt, InputIt, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a047e9c9a109948515a14306d4a169893.html">Template Function shad::reduce(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a2807d313b1e6586657c742ae2b4c132d.html">Template Function shad::reduce(InputIt, InputIt, T, BinaryOp)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a0c0ef45cc72fdfcc83ec82af01154289.html">Template Function shad::replace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1aef6165d38034e9fd6e2fa8bb433a6f61.html">Template Function shad::replace_if</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1adea42bceb84b2161df8fece9d20cb7cf.html">Function shad::rt::allLocalities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1aad88d972c54520fa6da6661c0972ca66.html">Template Function shad::rt::asyncExecuteAt(Handle&amp;, const Locality&amp;, FunT&amp;&amp;, const InArgsT&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a8690d0c19d1d2e7acce51b9c83223c94.html">Template Function shad::rt::asyncExecuteAt(Handle&amp;, const Locality&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a5ef970b04fc171862dc8b0c4cb6308d4.html">Template Function shad::rt::asyncExecuteAtWithRet(Handle&amp;, const Locality&amp;, FunT&amp;&amp;, const InArgsT&amp;, ResT *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a52c8bfa7986d1786079e81e772a9d425.html">Template Function shad::rt::asyncExecuteAtWithRet(Handle&amp;, const Locality&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t, ResT *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a7021749e6a86c90e762645385e22ac5c.html">Template Function shad::rt::asyncExecuteAtWithRetBuff(Handle&amp;, const Locality&amp;, FunT&amp;&amp;, const InArgsT&amp;, uint8_t *, uint32_t *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a112df602ea3878eab5f2d2ed424d8d87.html">Template Function shad::rt::asyncExecuteAtWithRetBuff(Handle&amp;, const Locality&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t, uint8_t *, uint32_t *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a35ae5113d8da4942705af0a77305fe0c.html">Template Function shad::rt::asyncExecuteOnAll(Handle&amp;, FunT&amp;&amp;, const InArgsT&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1aafcdb9446fa49c00add25b4cf61f92f0.html">Template Function shad::rt::asyncExecuteOnAll(Handle&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a36e675e25238d9b5c81b8a755dce61cd.html">Template Function shad::rt::asyncForEachAt(Handle&amp;, const Locality&amp;, FunT&amp;&amp;, const InArgsT&amp;, const size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a8f5647851b74b49dc7c35d5025b07cf3.html">Template Function shad::rt::asyncForEachAt(Handle&amp;, const Locality&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t, const size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a540b5cecb449199c0c829141cc2ae7d5.html">Template Function shad::rt::asyncForEachOnAll(Handle&amp;, FunT&amp;&amp;, const InArgsT&amp;, const size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a4737e1c84ac7e830a1a306ac5b136a7d.html">Template Function shad::rt::asyncForEachOnAll(Handle&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t, const size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1ae4b428e7e47fc07e01707b3abb01caa2.html">Template Function shad::rt::executeAt(const Locality&amp;, FunT&amp;&amp;, const InArgsT&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a5bc582ecab17be55af910f8a6e3e31f5.html">Template Function shad::rt::executeAt(const Locality&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a750ac93a8d339b97e3a11e182b50ffbc.html">Template Function shad::rt::executeAtWithRet(const Locality&amp;, FunT&amp;&amp;, const InArgsT&amp;, ResT *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1aa1c240408fd99868fe25dc35e78c9c79.html">Template Function shad::rt::executeAtWithRet(const Locality&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t, ResT *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1acadca86a92a75be85e51534f905b7fef.html">Template Function shad::rt::executeAtWithRetBuff(const Locality&amp;, FunT&amp;&amp;, const InArgsT&amp;, uint8_t *, uint32_t *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a9a77fcd35f06e3e2200ee1ca940ba8d1.html">Template Function shad::rt::executeAtWithRetBuff(const Locality&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t, uint8_t *, uint32_t *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1aeff4031b9c8382aa34ec65c853cf45b8.html">Template Function shad::rt::executeOnAll(FunT&amp;&amp;, const InArgsT&amp;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1af82c01717fef30752cd60051a92a9bee.html">Template Function shad::rt::executeOnAll(FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a3701740e6d6681499063a0b5fa43645b.html">Template Function shad::rt::forEachAt(const Locality&amp;, FunT&amp;&amp;, const InArgsT&amp;, const size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a7d0647bae3b6f6a7c870fee9b69bbf8e.html">Template Function shad::rt::forEachAt(const Locality&amp;, FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t, const size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a681ee8fbfec5d92c2bc8cd3851eae0c7.html">Template Function shad::rt::forEachOnAll(FunT&amp;&amp;, const InArgsT&amp;, const size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a3642b67c7ddc6f9d527616e4eb6cdbde.html">Template Function shad::rt::forEachOnAll(FunT&amp;&amp;, const std::shared_ptr&lt;uint8_t&gt;&amp;, const uint32_t, const size_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1a1083a9a4e08beddf6cb708be42f534dc.html">Template Function shad::rt::impl::asyncExecFunWithRetBuffWrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1a55c46191640e8d8a7645014d181f00ae.html">Template Function shad::rt::impl::asyncExecFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1aeb1d47c4176c24034814421f636b23de.html">Template Function shad::rt::impl::asyncExecFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1a89c8b8b587a013c3793d26b04e7450bd.html">Function shad::rt::impl::asyncForEachWrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1a40e34c2573f1fdae32b86d25ee8e91b5.html">Function shad::rt::impl::checkInputSize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_cpp__simple__utility_8h_1a41b29efba127bb02b8832829aa4068a5.html">Function shad::rt::impl::checkLocality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1aedf5441850db5b49d9087b262201a110.html">Function shad::rt::impl::checkOutputSize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a87fb03e4e73b219e6af16fab7e3bd859.html">Function shad::rt::impl::createHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1a6d5636a04f872bf517e80633221aedcc.html">Template Function shad::rt::impl::execAsyncFunWithRetBuffWrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1aa16cf992cde01fe6edc90bfad09ae7ed.html">Template Function shad::rt::impl::execAsyncFunWrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1af66aff5703d8f5570ba41b7e82534495.html">Template Function shad::rt::impl::execFunWithRetBuffWrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1a0b03dc6a28c611e5d4dd5de70742ea31.html">Template Function shad::rt::impl::execFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1aad275d30b5531baf4bcb8d23e1e029f9.html">Template Function shad::rt::impl::execFunWithRetWrapper(const void *, uint32_t, void *, uint32_t *, gmt_handle_t)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1af5be7cb69b6233f3f0dd9dc9f4b73857.html">Template Function shad::rt::impl::execFunWrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1af8972bdca686d5f92b727e66cf488952.html">Function shad::rt::impl::finalize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1a192dc9ed14e865f5225af9e84f69ce72.html">Function shad::rt::impl::forEachWrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a0b42bee7c35d7ff623e550bed3691446.html">Function shad::rt::impl::getConcurrency</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1a073825e7287c921463359f537effb40a.html">Function shad::rt::impl::getGmtHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_gmt__utility_8h_1ab44c57562ebda6cbe85ac96d97ca56d9.html">Function shad::rt::impl::getNodeId</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1acb5252cd1e313926bfca7f10a909a22f.html">Function shad::rt::impl::initialize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a1fafbf6312400979472b258faab97d01.html">Function shad::rt::impl::yield</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a199bb50c21e9012f615520413872aef6.html">Function shad::rt::numLocalities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a7536c33738a5dd285f3a44aa6a199faf.html">Function shad::rt::thisLocality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_runtime_8h_1a6ea1d3672bac3a80032863b6732a0c0a.html">Function shad::rt::waitForCompletion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_algorithm_8h_1a7a39d855612f2a2957f27b7571e9dc54.html">Template Function shad::transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a58f5206d294f2437782ed7f197eb1d0d.html">Template Function shad::transform_exclusive_scan(InputIt, InputIt, OutputIt, T, BinaryOperation, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a1ad8ba4e807e353d19cbe7f118914856.html">Template Function shad::transform_exclusive_scan(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOperation, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1abae2714cc427e081f0f399648d5cfdef.html">Template Function shad::transform_inclusive_scan(InputIt, InputIt, OutputIt, BinaryOperation, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a0d3e58f6b91d06bf7d3f46e7d2e478bc.html">Template Function shad::transform_inclusive_scan(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, BinaryOperation, UnaryOperation)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1aa7967d1c57c2457d65e5a8dc09b98c0e.html">Template Function shad::transform_inclusive_scan(InputIt, InputIt, OutputIt, BinaryOperation, UnaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a7731b3ca77801af3286844f6db55364c.html">Template Function shad::transform_inclusive_scan(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, BinaryOperation, UnaryOperation, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a45c6b8c67b4d583819c334dc29a969b1.html">Template Function shad::transform_reduce(ExecutionPolicy&amp;&amp;, ForwardIt, ForwardIt, T, BinaryOp, UnaryOp)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a9ada8d6b6cb63fd3b5b459ff608b5027.html">Template Function shad::transform_reduce(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOp1, BinaryOp2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a9fb77cb6187be97748be38c5632a406c.html">Template Function shad::transform_reduce(InputIt1, InputIt1, InputIt2, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a6764e68a376e02ec492499b12eac8dc1.html">Template Function shad::transform_reduce(InputIt1, InputIt1, InputIt2, T, BinaryOp1, BinaryOp2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a68e4deac86c665ff2d3d3550c7042331.html">Template Function shad::transform_reduce(InputIt, InputIt, T, BinaryOp, UnaryOp)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_numeric_8h_1a1de0e51e5616aabd05a68412086358ae.html">Template Function shad::transform_reduce(ExecutionPolicy&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_sssp_8h_1a9abfeb102e5cfcb3eac353f1fa9b3bb7.html">Template Function sssp_length</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Template Function shad::impl::wait_iterator(It&amp;)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/function_utils_8h_1a22f1e41a5b5e7205ab943dbc846c4e10.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="template-function-shad-impl-wait-iterator-it">
+<span id="exhale-function-utils-8h-1a22f1e41a5b5e7205ab943dbc846c4e10"></span><h1>Template Function shad::impl::wait_iterator(It&amp;)<a class="headerlink" href="#template-function-shad-impl-wait-iterator-it" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Defined in <a class="reference internal" href="file_include_shad_core_impl_utils.h.html#file-include-shad-core-impl-utils-h"><span class="std std-ref">File utils.h</span></a></li>
+</ul>
+<div class="section" id="function-documentation">
+<h2>Function Documentation<a class="headerlink" href="#function-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="_CPPv3N4shad4impl13wait_iteratorER2It">
+<span id="_CPPv2N4shad4impl13wait_iteratorER2It"></span><span id="shad::impl::wait_iterator__ItR"></span><em class="property">template </em>&lt;<em class="property">typename</em> It&gt;<br /><span class="target" id="utils_8h_1a22f1e41a5b5e7205ab943dbc846c4e10"></span>void <code class="descclassname">shad::impl<code class="descclassname">::</code></code><code class="descname">wait_iterator</code><span class="sig-paren">(</span>It&amp;<span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="function_utils_8h_1a42fdab8157ef88e4bb43ec961fcd08fd.html" class="btn btn-neutral float-right" title="Template Function shad::impl::wait_iterator(shad::buffered_insert_iterator&lt;T&gt;&amp;)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="function_numeric__ops_8h_1a3fd931d2f89809175443eb4fd47ddb28.html" class="btn btn-neutral float-left" title="Template Function shad::impl::transform_reduce(distributed_parallel_tag&amp;&amp;, ForwardIt1, ForwardIt1, ForwardIt2, T, BinaryOp1, BinaryOp2)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
