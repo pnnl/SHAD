@@ -65,11 +65,11 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_utils_8h_1a1470dba8d08fdfc79c91a2e4f63b0c08`
-
 - :ref:`exhale_function_utils_8h_1a8b3b049ff641f41f340c7c6ebede785e`
 
 - :ref:`exhale_function_utils_8h_1ab024cb7759d99abdbc4354cccec9887c`
+
+- :ref:`exhale_function_utils_8h_1a1470dba8d08fdfc79c91a2e4f63b0c08`
 
 - :ref:`exhale_function_utils_8h_1ad32c49f0c531a85cf5b936e89855b342`
 
