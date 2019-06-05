@@ -688,7 +688,10 @@ class alignas(64) array<T, N>::array_iterator {
 
   bool operator!=(const array_iterator &O) const { return !(*this == O); }
 
-  reference operator*() { return reference(locality_, offset_, oid_, chunk_); }
+  reference operator*() {
+    update_chunk_pointer();
+    return reference(locality_, offset_, oid_, chunk_);
+  }
 
   array_iterator &operator++() {
     if (N < rt::numLocalities()) {
@@ -696,7 +699,6 @@ class alignas(64) array<T, N>::array_iterator {
         ++offset_;
       } else {
         ++locality_;
-        update_chunk_pointer();
       }
       return *this;
     }
@@ -709,8 +711,6 @@ class alignas(64) array<T, N>::array_iterator {
     if (offset_ == chunk && locality_ < rt::Locality(rt::numLocalities() - 1)) {
       ++locality_;
       offset_ = 0;
-
-      update_chunk_pointer();
     }
     return *this;
   }
@@ -728,8 +728,6 @@ class alignas(64) array<T, N>::array_iterator {
         offset_ = chunk_size() - 1;
       else
         offset_ = chunk_size();
-
-      update_chunk_pointer();
     }
 
     --offset_;
@@ -770,7 +768,6 @@ class alignas(64) array<T, N>::array_iterator {
 
         n -= chunk;
       }
-      update_chunk_pointer();
     }
 
     offset_ += n;
@@ -806,7 +803,6 @@ class alignas(64) array<T, N>::array_iterator {
           offset_ = chunk - 1;
         }
       }
-      update_chunk_pointer();
     }
 
     offset_ -= n;
