@@ -251,9 +251,9 @@ Functions
 
 - :ref:`exhale_function_numeric_8h_1a2854c58c1b96a1d20320f22a34bc2231`
 
-- :ref:`exhale_function_numeric_8h_1a1d3a1d24cc9d681bd236220c3db36a4b`
-
 - :ref:`exhale_function_numeric_8h_1ab2f0bce9d14c5ec29670dbbcae4a7e58`
+
+- :ref:`exhale_function_numeric_8h_1a1d3a1d24cc9d681bd236220c3db36a4b`
 
 - :ref:`exhale_function_numeric_8h_1adc86ffac5f28d6798c40434c5017d86f`
 

@@ -844,7 +844,10 @@
 
   <span class="kt">bool</span> <span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="k">const</span> <span class="n">array_iterator</span> <span class="o">&amp;</span><span class="n">O</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="k">this</span> <span class="o">==</span> <span class="n">O</span><span class="p">);</span> <span class="p">}</span>
 
-  <span class="n">reference</span> <span class="k">operator</span><span class="o">*</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">reference</span><span class="p">(</span><span class="n">locality_</span><span class="p">,</span> <span class="n">offset_</span><span class="p">,</span> <span class="n">oid_</span><span class="p">,</span> <span class="n">chunk_</span><span class="p">);</span> <span class="p">}</span>
+  <span class="n">reference</span> <span class="k">operator</span><span class="o">*</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">update_chunk_pointer</span><span class="p">();</span>
+    <span class="k">return</span> <span class="nf">reference</span><span class="p">(</span><span class="n">locality_</span><span class="p">,</span> <span class="n">offset_</span><span class="p">,</span> <span class="n">oid_</span><span class="p">,</span> <span class="n">chunk_</span><span class="p">);</span>
+  <span class="p">}</span>
 
   <span class="n">array_iterator</span> <span class="o">&amp;</span><span class="k">operator</span><span class="o">++</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">&lt;</span> <span class="n">rt</span><span class="o">::</span><span class="n">numLocalities</span><span class="p">())</span> <span class="p">{</span>
@@ -852,7 +855,6 @@
         <span class="o">++</span><span class="n">offset_</span><span class="p">;</span>
       <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
         <span class="o">++</span><span class="n">locality_</span><span class="p">;</span>
-        <span class="n">update_chunk_pointer</span><span class="p">();</span>
       <span class="p">}</span>
       <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
     <span class="p">}</span>
@@ -865,8 +867,6 @@
     <span class="k">if</span> <span class="p">(</span><span class="n">offset_</span> <span class="o">==</span> <span class="n">chunk</span> <span class="o">&amp;&amp;</span> <span class="n">locality_</span> <span class="o">&lt;</span> <span class="n">rt</span><span class="o">::</span><span class="n">Locality</span><span class="p">(</span><span class="n">rt</span><span class="o">::</span><span class="n">numLocalities</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
       <span class="o">++</span><span class="n">locality_</span><span class="p">;</span>
       <span class="n">offset_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-      <span class="n">update_chunk_pointer</span><span class="p">();</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
   <span class="p">}</span>
@@ -884,8 +884,6 @@
         <span class="n">offset_</span> <span class="o">=</span> <span class="n">chunk_size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
       <span class="k">else</span>
         <span class="n">offset_</span> <span class="o">=</span> <span class="n">chunk_size</span><span class="p">();</span>
-
-      <span class="n">update_chunk_pointer</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="o">--</span><span class="n">offset_</span><span class="p">;</span>
@@ -926,7 +924,6 @@
 
         <span class="n">n</span> <span class="o">-=</span> <span class="n">chunk</span><span class="p">;</span>
       <span class="p">}</span>
-      <span class="n">update_chunk_pointer</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="n">offset_</span> <span class="o">+=</span> <span class="n">n</span><span class="p">;</span>
@@ -962,7 +959,6 @@
           <span class="n">offset_</span> <span class="o">=</span> <span class="n">chunk</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
         <span class="p">}</span>
       <span class="p">}</span>
-      <span class="n">update_chunk_pointer</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="n">offset_</span> <span class="o">-=</span> <span class="n">n</span><span class="p">;</span>
