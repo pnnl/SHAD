@@ -259,26 +259,18 @@ Program Listing for File impl_patterns.h
      std::vector<mapped_t> map_res(parts.size(), init);
    
      if (parts.size()) {
-       rt::Handle map_h;
-       size_t part_id = 0;
-       for (auto pit = parts.begin(); pit != parts.end(); ++pit) {
-         auto map_args = std::make_tuple(pit->begin(), pit->end(), map_kernel,
-                                         &map_res[part_id]);
-         rt::asyncExecuteAt(
-             map_h, rt::thisLocality(),
-             [](rt::Handle&, const typeof(map_args)& map_args) {
-               auto pfirst = std::get<0>(map_args);
-               auto plast = std::get<1>(map_args);
-               auto map_kernel = std::get<2>(map_args);
-               auto res_unit = std::get<3>(map_args);
-               // map over the partition
-               assert(pfirst != plast);
-               *res_unit = map_kernel(pfirst, plast);
-             },
-             map_args);
-         ++part_id;
-       }
-       rt::waitForCompletion(map_h);
+       auto map_args = std::make_tuple(parts.data(), map_kernel, map_res.data());
+       shad::rt::forEachAt(
+           rt::thisLocality(),
+           [](const typeof(map_args)& map_args, size_t iter) {
+             auto pfirst = std::get<0>(map_args) + iter;
+             auto map_kernel = std::get<1>(map_args);
+             auto res_unit = std::get<2>(map_args) + iter;
+             // map over the partition
+             assert(pfirst->begin() != pfirst->end());
+             *res_unit = map_kernel(pfirst->begin(), pfirst->end());
+           },
+           map_args, parts.size());
      }
    
      return map_res;
@@ -305,22 +297,17 @@ Program Listing for File impl_patterns.h
          first, last, rt::impl::getConcurrency());
    
      if (parts.size()) {
-       rt::Handle map_h;
-       for (auto pit = parts.begin(); pit != parts.end(); ++pit) {
-         auto map_args = std::make_tuple(pit->begin(), pit->end(), map_kernel);
-         rt::asyncExecuteAt(
-             map_h, rt::thisLocality(),
-             [](rt::Handle&, const typeof(map_args)& map_args) {
-               auto pfirst = std::get<0>(map_args);
-               auto plast = std::get<1>(map_args);
-               auto map_kernel = std::get<2>(map_args);
-               // map over the partition
-               assert(pfirst != plast);
-               map_kernel(pfirst, plast);
-             },
-             map_args);
-       }
-       rt::waitForCompletion(map_h);
+       auto map_args = std::make_tuple(parts.data(), map_kernel);
+       shad::rt::forEachAt(
+           rt::thisLocality(),
+           [](const typeof(map_args)& map_args, size_t iter) {
+             auto pfirst = std::get<0>(map_args) + iter;
+             auto map_kernel = std::get<1>(map_args);
+             // map over the partition
+             assert(pfirst->begin() != pfirst->end());
+             map_kernel(pfirst->begin(), pfirst->end());
+           },
+           map_args, parts.size());
      }
    }
    
@@ -332,24 +319,20 @@ Program Listing for File impl_patterns.h
          first, last, rt::impl::getConcurrency());
    
      if (parts.size()) {
-       rt::Handle map_h;
-       for (auto pit = parts.begin(); pit != parts.end(); ++pit) {
-         auto map_args = std::make_tuple(pit->begin(), pit->end(), map_kernel,
-                                         std::distance(first, pit->begin()));
-         rt::asyncExecuteAt(
-             map_h, rt::thisLocality(),
-             [](rt::Handle&, const typeof(map_args)& map_args) {
-               auto pfirst = std::get<0>(map_args);
-               auto plast = std::get<1>(map_args);
-               auto map_kernel = std::get<2>(map_args);
-               auto poffset = std::get<3>(map_args);
-               // map over the partition
-               assert(pfirst != plast);
-               map_kernel(pfirst, plast, poffset);
-             },
-             map_args);
-       }
-       rt::waitForCompletion(map_h);
+       auto map_args = std::make_tuple(parts.data(), map_kernel, first);
+       shad::rt::forEachAt(
+           rt::thisLocality(),
+           [](const typeof(map_args)& map_args, size_t iter) {
+             auto pfirst = std::get<0>(map_args) + iter;
+             auto map_kernel = std::get<1>(map_args);
+             auto first = std::get<2>(map_args);
+   
+             // map over the partition
+             assert(pfirst->begin() != pfirst->end());
+             map_kernel(pfirst->begin(), pfirst->end(),
+                        std::distance(first, pfirst->begin()));
+           },
+           map_args, parts.size());
      }
    }
    
