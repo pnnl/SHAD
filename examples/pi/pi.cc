@@ -36,10 +36,10 @@ namespace shad {
 
 int main(int argc, char *argv[]) {
 
-  shad::array<size_t, 128> counters;
+  shad::array<uint64_t, 128> counters;
 
-  size_t numberOfPoints = 1e10;
-  size_t numberOfPointsPerSim = numberOfPoints / counters.size();
+  const static size_t numberOfPoints = 1e10;
+  const static size_t numberOfPointsPerSim = numberOfPoints / counters.size();
 
   shad::transform(
       shad::distributed_parallel_tag{},
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         return counter;
       });
 
-  size_t count = shad::reduce(
+  uint64_t count = shad::reduce(
       shad::distributed_parallel_tag{}, counters.begin(), counters.end());
 
   std::cout << "Pi is roughly "
