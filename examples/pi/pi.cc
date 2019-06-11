@@ -41,10 +41,9 @@ int main(int argc, char *argv[]) {
   const static size_t numberOfPoints = 1e10;
   const static size_t numberOfPointsPerSim = numberOfPoints / counters.size();
 
-  shad::transform(
+  shad::generate(
       shad::distributed_parallel_tag{},
-      seeds.begin(), seeds.end(),
-      counters.begin(),
+      counters.begin(), counters.end(),
       [=](const uint64_t & S) -> size_t {
         size_t counter = 0;
 
