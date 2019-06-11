@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   shad::generate(
       shad::distributed_parallel_tag{},
       counters.begin(), counters.end(),
-      [=](const uint64_t & S) -> size_t {
+      [=]() -> uint64_t {
         size_t counter = 0;
 
         std::random_device rd;
