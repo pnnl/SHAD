@@ -102,11 +102,6 @@ class Hashmap : public AbstractDataStructure<
   static ShadHashmapPtr Create(const size_t numEntries);
 #endif
 
-  /// @brief Getter of the Global Identifier.
-  ///
-  /// @return The global identifier associated with the hashmap instance.
-  ObjectID GetGlobalID() const { return oid_; }
-
   /// @brief Overall size of the hashmap (number of entries).
   /// @warning Calling the size method may result in one-to-all
   /// communication among localities to retrieve consinstent information.
@@ -156,7 +151,7 @@ class Hashmap : public AbstractDataStructure<
       auto ptr = HmapT::GetPtr(oid);
       ptr->buffers_.FlushAll();
     };
-    rt::executeOnAll(flushLambda_, oid_);
+    rt::executeOnAll(flushLambda_, this->oid_);
   }
   /// @brief Remove a key-value pair from the hashmap.
   /// @param[in] key the key.
@@ -176,7 +171,7 @@ class Hashmap : public AbstractDataStructure<
       auto mapPtr = HmapT::GetPtr(oid);
       mapPtr->localMap_.Clear();
     };
-    rt::executeOnAll(clearLambda, oid_);
+    rt::executeOnAll(clearLambda, this->oid_);
   }
 
   using LookupResult =
@@ -297,7 +292,7 @@ class Hashmap : public AbstractDataStructure<
       std::cout << "---- Locality: " << rt::thisLocality() << std::endl;
       mapPtr->localMap_.PrintAllEntries();
     };
-    rt::executeOnAll(printLambda, oid_);
+    rt::executeOnAll(printLambda, this->oid_);
   }
 
   // FIXME it should be protected
@@ -339,7 +334,6 @@ class Hashmap : public AbstractDataStructure<
   void buffered_async_flush() { WaitForBufferedInsert(); }
 
  private:
-  ObjectID oid_;
   LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> localMap_;
   BuffersVector buffers_;
 
@@ -356,7 +350,8 @@ class Hashmap : public AbstractDataStructure<
 
  protected:
   Hashmap(ObjectID oid, const size_t numEntries)
-      : oid_(oid),
+      : AbstractDataStructure<
+            Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>>(oid),
         localMap_(std::max(
             numEntries /
                 (constants::kDefaultNumEntriesPerBucket * rt::numLocalities()),
@@ -375,7 +370,7 @@ inline size_t Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Size() const {
   };
   for (auto tgtLoc : rt::allLocalities()) {
     if (tgtLoc != rt::thisLocality()) {
-      rt::executeAtWithRet(tgtLoc, sizeLambda, oid_, &remoteSize);
+      rt::executeAtWithRet(tgtLoc, sizeLambda, this->oid_, &remoteSize);
       size += remoteSize;
     }
   }
@@ -410,7 +405,8 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
         };
     rt::executeAtWithRet(
         targetLocality, insertLambda,
-        std::make_tuple(begin(), end(), InsertArgs{oid_, key, value}), &res);
+        std::make_tuple(begin(), end(), InsertArgs{this->oid_, key, value}),
+        &res);
   }
   return res;
 }
@@ -429,7 +425,7 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
       auto mapPtr = HmapT::GetPtr(args.oid);
       mapPtr->localMap_.AsyncInsert(handle, args.key, args.value);
     };
-    InsertArgs args = {oid_, key, value};
+    InsertArgs args = {this->oid_, key, value};
     rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
   }
 }
@@ -468,7 +464,7 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Erase(
       auto mapPtr = HmapT::GetPtr(args.oid);
       mapPtr->localMap_.Erase(args.key);
     };
-    LookupArgs args = {oid_, key};
+    LookupArgs args = {this->oid_, key};
     rt::executeAt(targetLocality, eraseLambda, args);
   }
 }
@@ -487,7 +483,7 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncErase(
       auto mapPtr = HmapT::GetPtr(args.oid);
       mapPtr->localMap_.AsyncErase(handle, args.key);
     };
-    LookupArgs args = {oid_, key};
+    LookupArgs args = {this->oid_, key};
     rt::asyncExecuteAt(handle, targetLocality, eraseLambda, args);
   }
 }
@@ -506,7 +502,7 @@ inline bool Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Lookup(
       auto mapPtr = HmapT::GetPtr(args.oid);
       res->found = mapPtr->localMap_.Lookup(args.key, &res->value);
     };
-    LookupArgs args = {oid_, key};
+    LookupArgs args = {this->oid_, key};
     LookupResult lres;
     rt::executeAtWithRet(targetLocality, lookupLambda, args, &lres);
     if (lres.found) {
@@ -534,7 +530,7 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncLookup(
       mapPtr->localMap_.Lookup(args.key, &tres);
       *res = tres;
     };
-    LookupArgs args = {oid_, key};
+    LookupArgs args = {this->oid_, key};
     rt::asyncExecuteAtWithRet(handle, targetLocality, lookupLambda, args, res);
   }
 }
@@ -549,7 +545,7 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::ForEachEntry(
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE> *;
   using ArgsTuple = std::tuple<LMapT *, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
     ArgsTuple argsTuple(&mapPtr->localMap_, std::get<1>(args),
@@ -570,7 +566,7 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncForEachEntry(
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<LMapT *, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
     ArgsTuple argsTuple(&mapPtr->localMap_, std::get<1>(args),
@@ -592,7 +588,7 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::ForEachKey(
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<LMapT *, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
     ArgsTuple argsTuple(&mapPtr->localMap_, std::get<1>(args),
@@ -613,7 +609,7 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncForEachKey(
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<LMapT *, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
     ArgsTuple argsTuple(&mapPtr->localMap_, std::get<1>(args),
@@ -640,7 +636,7 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Apply(
     FunctionTy fn = std::forward<decltype(function)>(function);
     using ArgsTuple =
         std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
-    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+    ArgsTuple arguments(this->oid_, key, fn, std::tuple<Args...>(args...));
     auto feLambda = [](const ArgsTuple &args) {
       constexpr auto Size = std::tuple_size<
           typename std::decay<decltype(std::get<3>(args))>::type>::value;
@@ -670,7 +666,7 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncApply(
     FunctionTy fn = std::forward<decltype(function)>(function);
     using ArgsTuple =
         std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
-    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+    ArgsTuple arguments(this->oid_, key, fn, std::tuple<Args...>(args...));
     auto feLambda = [](rt::Handle &handle, const ArgsTuple &args) {
       constexpr auto Size = std::tuple_size<
           typename std::decay<decltype(std::get<3>(args))>::type>::value;

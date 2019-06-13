@@ -493,8 +493,6 @@ class Vector : public AbstractDataStructure<Vector<T, Allocator>> {
 
   /// @}
 
-  ObjectID GetGlobalID() const { return oid_; }
-
   /// @brief Destructor.
   ~Vector() { _clear(); }
 
@@ -506,7 +504,7 @@ class Vector : public AbstractDataStructure<Vector<T, Allocator>> {
 
  protected:
   Vector(ObjectID oid, size_type n)
-      : oid_(oid),
+      : AbstractDataStructure<Vector<T, Allocator>>(oid),
         dataBlocks_(),
         mainLocality_(static_cast<uint64_t>(oid) % rt::numLocalities()),
         sizeCapacityLock_(),
@@ -601,7 +599,7 @@ class Vector : public AbstractDataStructure<Vector<T, Allocator>> {
                       This->allocator_, kBlockSize));
             }
           },
-          std::make_pair(oid_, newBlocks[i]));
+          std::make_pair(this->oid_, newBlocks[i]));
     }
 
     rt::waitForCompletion(handle);
@@ -722,7 +720,6 @@ class Vector : public AbstractDataStructure<Vector<T, Allocator>> {
       impl::BuffersVector<std::tuple<size_t, T>, Vector<T, Allocator>>;
   friend class impl::BuffersVector<std::tuple<size_t, T>, Vector<T, Allocator>>;
 
-  ObjectID oid_;
   rt::Locality mainLocality_;
   std::vector<value_type *> dataBlocks_;
   rt::Lock sizeCapacityLock_;
@@ -841,7 +838,7 @@ typename Vector<T, Allocator>::size_type Vector<T, Allocator>::Size() const
                          auto This = Vector<T, Allocator>::GetPtr(oid);
                          *size = This->size_;
                        },
-                       oid_, &size);
+                       this->oid_, &size);
   return size;
 }
 
@@ -862,7 +859,7 @@ typename Vector<T, Allocator>::size_type Vector<T, Allocator>::Capacity() const
                          auto ptr = Vector<T, Allocator>::GetPtr(oid);
                          *capacity = ptr->capacity_;
                        },
-                       oid_, &capacity);
+                       this->oid_, &capacity);
   return capacity;
 }
 
@@ -881,7 +878,7 @@ void Vector<T, Allocator>::Reserve(Vector<T, Allocator>::size_type n) {
                   std::lock_guard<rt::Lock> _(This->sizeCapacityLock_);
                   This->_reserve(n);
                 },
-                std::make_pair(oid_, n));
+                std::make_pair(this->oid_, n));
 }
 
 template <typename T, typename Allocator>
@@ -897,7 +894,7 @@ void Vector<T, Allocator>::Resize(Vector<T, Allocator>::size_type n) {
                   This->_reserve(n);
                   This->size_ = n;
                 },
-                std::make_pair(oid_, n));
+                std::make_pair(this->oid_, n));
 }
 
 template <typename T, typename Allocator>
@@ -922,7 +919,7 @@ typename Vector<T, Allocator>::value_type Vector<T, Allocator>::At(
 
           *result = This->dataBlocks_[localBlock][std::get<2>(args)];
         },
-        std::make_tuple(oid_, blockNumber, offset), &value);
+        std::make_tuple(this->oid_, blockNumber, offset), &value);
     return value;
   }
 }
@@ -963,7 +960,7 @@ void Vector<T, Allocator>::AsyncAt(
 
         *result = This->dataBlocks_[localBlock][std::get<2>(args)];
       },
-      std::make_tuple(oid_, blockNumber, offset), result);
+      std::make_tuple(this->oid_, blockNumber, offset), result);
 }
 
 template <typename T, typename Allocator>
@@ -983,7 +980,7 @@ void Vector<T, Allocator>::Clear() noexcept {
                       },
                       args);
                 },
-                oid_);
+                this->oid_);
 }
 
 template <typename T, typename Allocator>
@@ -1000,7 +997,7 @@ void Vector<T, Allocator>::PushBack(
                          if (This->size_ > This->capacity_)
                            This->_reserve(This->size_);
                        },
-                       oid_, &newSize);
+                       this->oid_, &newSize);
 
   size_type position = newSize - 1;
 
@@ -1024,7 +1021,7 @@ void Vector<T, Allocator>::PushBack(
                     This->dataBlocks_[localBlock][std::get<2>(args)] =
                         std::get<3>(args);
                   },
-                  std::make_tuple(oid_, blockNumber, offset, value));
+                  std::make_tuple(this->oid_, blockNumber, offset, value));
   }
 }
 
@@ -1052,10 +1049,10 @@ typename Vector<T, Allocator>::iterator Vector<T, Allocator>::InsertAt(
                     This->dataBlocks_[localBlock][std::get<2>(args)] =
                         std::get<3>(args);
                   },
-                  std::make_tuple(oid_, blockNumber, offset, value));
+                  std::make_tuple(this->oid_, blockNumber, offset, value));
   }
 
-  return Vector<T, Allocator>::iterator(position, GetGlobalID());
+  return Vector<T, Allocator>::iterator(position, this->GetGlobalID());
 }
 
 template <typename T, typename Allocator>
@@ -1069,7 +1066,7 @@ typename Vector<T, Allocator>::iterator Vector<T, Allocator>::InsertAt(
 
   rt::waitForCompletion(handle);
 
-  return Vector<T, Allocator>::iterator(position, GetGlobalID());
+  return Vector<T, Allocator>::iterator(position, this->GetGlobalID());
 }
 
 template <typename T, typename Allocator>
@@ -1098,7 +1095,7 @@ void Vector<T, Allocator>::AsyncInsertAt(
 
           This->dataBlocks_[localBlock][std::get<2>(args)] = std::get<3>(args);
         },
-        std::make_tuple(oid_, blockNumber, offset, value));
+        std::make_tuple(this->oid_, blockNumber, offset, value));
   }
 }
 
@@ -1132,7 +1129,7 @@ void Vector<T, Allocator>::AsyncInsertAt(
 
         *size = This->size_;
       },
-      std::make_tuple(oid_, position, newElements), &newSize);
+      std::make_tuple(this->oid_, position, newElements), &newSize);
 
   // Trying to insert in an invalid position.
   if (position > newSize) {
@@ -1167,7 +1164,7 @@ void Vector<T, Allocator>::AsyncInsertAt(
   InsertMessage args;
   size_t spaceLeftInBlock = kBlockSize - (startingPoint % kBlockSize);
   // first block
-  args.objID = oid_;
+  args.objID = this->oid_;
   args.startPosition = startingPoint;
   args.numElements =
       std::min(newElements, std::min(kNumElements, spaceLeftInBlock));
@@ -1254,7 +1251,7 @@ void Vector<T, Allocator>::Apply(const Vector<T, Allocator>::size_type position,
   FunctionTy fn = std::forward<decltype(function)>(function);
   using ArgsTuple =
       std::tuple<ObjectID, size_t, FunctionTy, std::tuple<Args...>>;
-  ArgsTuple argsTuple{oid_, position, fn, std::tuple<Args...>(args...)};
+  ArgsTuple argsTuple{this->oid_, position, fn, std::tuple<Args...>(args...)};
 
   rt::executeAt(target, ApplyFunWrapper<ArgsTuple, Args...>, argsTuple);
 }
@@ -1274,7 +1271,7 @@ void Vector<T, Allocator>::AsyncApply(
   FunctionTy fn = std::forward<decltype(function)>(function);
   using ArgsTuple =
       std::tuple<ObjectID, size_t, FunctionTy, std::tuple<Args...>>;
-  ArgsTuple argsTuple{oid_, position, fn, std::tuple<Args...>(args...)};
+  ArgsTuple argsTuple{this->oid_, position, fn, std::tuple<Args...>(args...)};
 
   rt::asyncExecuteAt(handle, target, AsyncApplyFunWrapper<ArgsTuple, Args...>,
                      argsTuple);
@@ -1303,7 +1300,7 @@ void Vector<T, Allocator>::ForEachInRange(const size_type begin,
   std::tie(target, std::ignore, std::ignore) =
       _targetFromPosition(start, kBlockSize);
 
-  ArgsTuple argsTuple{oid_, start, fn, std::tuple<Args...>(args...)};
+  ArgsTuple argsTuple{this->oid_, start, fn, std::tuple<Args...>(args...)};
 
   rt::forEachAt(target, ForEachInRangeFunWrapper<ArgsTuple, Args...>, argsTuple,
                 blockSize);
@@ -1351,7 +1348,7 @@ void Vector<T, Allocator>::AsyncForEachInRange(rt::Handle &handle,
   std::tie(target, std::ignore, std::ignore) =
       _targetFromPosition(start, kBlockSize);
 
-  ArgsTuple argsTuple{oid_, start, fn, std::tuple<Args...>(args...)};
+  ArgsTuple argsTuple{this->oid_, start, fn, std::tuple<Args...>(args...)};
 
   rt::asyncForEachAt(handle, target,
                      AsyncForEachInRangeFunWrapper<ArgsTuple, Args...>,
