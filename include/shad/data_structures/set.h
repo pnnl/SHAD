@@ -78,11 +78,6 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   static ShadSetPtr Create(const size_t numEntries);
 #endif
 
-  /// @brief Getter of the Global Identifier.
-  ///
-  /// @return The global identifier associated with the set instance.
-  ObjectID GetGlobalID() const { return oid_; }
-
   /// @brief Overall size of the set (number of elements).
   /// @warning Calling the size method may result in one-to-all
   /// communication among localities to retrieve consinstent information.
@@ -140,7 +135,7 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
       auto setPtr = SetT::GetPtr(oid);
       setPtr->localSet_.Clear();
     };
-    rt::executeOnAll(clearLambda, oid_);
+    rt::executeOnAll(clearLambda, this->oid_);
   }
 
   /// @brief Clear the content of the set.
@@ -149,7 +144,7 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
       auto setPtr = SetT::GetPtr(std::get<0>(t));
       setPtr->localSet_.Reset(std::get<1>(t));
     };
-    rt::executeOnAll(resetLambda, std::make_tuple(oid_, numElements));
+    rt::executeOnAll(resetLambda, std::make_tuple(this->oid_, numElements));
   }
   /// @brief Check if the set contains a given element.
   /// @param[in] element the element to find.
@@ -203,7 +198,7 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
       std::cout << "---- Locality: " << rt::thisLocality() << std::endl;
       setPtr->localSet_.PrintAllElements();
     };
-    rt::executeOnAll(printLambda, oid_);
+    rt::executeOnAll(printLambda, this->oid_);
   }
 
   // FIXME it should be protected
@@ -243,7 +238,6 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   void buffered_async_flush() { WaitForBufferedInsert(); }
 
  private:
-  ObjectID oid_;
   LocalSet<T, ELEM_COMPARE> localSet_;
   BuffersVector buffers_;
 
@@ -254,7 +248,7 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
 
  protected:
   Set(ObjectID oid, const size_t numEntries)
-      : oid_(oid),
+      : AbstractDataStructure<Set<T, ELEM_COMPARE>>(oid),
         localSet_(
             std::max(numEntries / (constants::kSetDefaultNumEntriesPerBucket *
                                    rt::numLocalities()),
@@ -272,7 +266,7 @@ inline size_t Set<T, ELEM_COMPARE>::Size() const {
   };
   for (auto tgtLoc : rt::allLocalities()) {
     if (tgtLoc != rt::thisLocality()) {
-      rt::executeAtWithRet(tgtLoc, sizeLambda, oid_, &remoteSize);
+      rt::executeAtWithRet(tgtLoc, sizeLambda, this->oid_, &remoteSize);
       size += remoteSize;
     }
   }
@@ -302,7 +296,7 @@ Set<T, ELEM_COMPARE>::Insert(const T& element) {
         *res_ptr = std::make_pair(git, lres.second);
       };
   rt::executeAtWithRet(targetLocality, insertLambda,
-                       std::make_tuple(begin(), end(), oid_, element), &res);
+                       std::make_tuple(begin(), end(), this->oid_, element), &res);
   return res;
 }
 
@@ -318,7 +312,7 @@ inline void Set<T, ELEM_COMPARE>::AsyncInsert(rt::Handle& handle,
       auto setPtr = SetT::GetPtr(args.oid);
       setPtr->localSet_.AsyncInsert(handle, args.element);
     };
-    ExeAtArgs args = {oid_, element};
+    ExeAtArgs args = {this->oid_, element};
     rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
   }
 }
@@ -349,7 +343,7 @@ inline void Set<T, ELEM_COMPARE>::Erase(const T& element) {
       auto setPtr = SetT::GetPtr(args.oid);
       setPtr->localSet_.Erase(args.element);
     };
-    ExeAtArgs args = {oid_, element};
+    ExeAtArgs args = {this->oid_, element};
     rt::executeAt(targetLocality, eraseLambda, args);
   }
 }
@@ -366,7 +360,7 @@ inline void Set<T, ELEM_COMPARE>::AsyncErase(rt::Handle& handle,
       auto setPtr = SetT::GetPtr(args.oid);
       setPtr->localSet_.AsyncErase(handle, args.element);
     };
-    ExeAtArgs args = {oid_, element};
+    ExeAtArgs args = {this->oid_, element};
     rt::asyncExecuteAt(handle, targetLocality, eraseLambda, args);
   }
 }
@@ -382,7 +376,7 @@ inline bool Set<T, ELEM_COMPARE>::Find(const T& element) {
       auto setPtr = SetT::GetPtr(args.oid);
       *res = setPtr->localSet_.Find(args.element);
     };
-    ExeAtArgs args = {oid_, element};
+    ExeAtArgs args = {this->oid_, element};
     bool found;
     rt::executeAtWithRet(targetLocality, findLambda, args, &found);
     return found;
@@ -403,7 +397,7 @@ inline void Set<T, ELEM_COMPARE>::AsyncFind(rt::Handle& handle,
       auto setPtr = SetT::GetPtr(args.oid);
       *res = setPtr->localSet_.Find(args.element);
     };
-    ExeAtArgs args = {oid_, element};
+    ExeAtArgs args = {this->oid_, element};
     rt::asyncExecuteAtWithRet(handle, targetLocality, findLambda, args, found);
   }
 }
@@ -415,7 +409,7 @@ void Set<T, ELEM_COMPARE>::ForEachElement(ApplyFunT&& function, Args&... args) {
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<LSetT*, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs& args) {
     auto setPtr = SetT::GetPtr(std::get<0>(args));
     ArgsTuple argsTuple(&setPtr->localSet_, std::get<1>(args),
@@ -436,7 +430,7 @@ void Set<T, ELEM_COMPARE>::AsyncForEachElement(rt::Handle& handle,
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<LSetT*, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments{oid_, fn, std::tuple<Args...>(args...)};
+  feArgs arguments{this->oid_, fn, std::tuple<Args...>(args...)};
   auto feLambda = [](rt::Handle& handle, const feArgs& args) {
     auto setPtr = SetT::GetPtr(std::get<0>(args));
     ArgsTuple argsTuple = std::make_tuple(&setPtr->localSet_, std::get<1>(args),

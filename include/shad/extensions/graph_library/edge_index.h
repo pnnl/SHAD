@@ -85,11 +85,6 @@ class EdgeIndex
   static EdgeIndexPtr Create(const size_t numVertices);
 #endif
 
-  /// @brief Getter of the Global Identifier.
-  ///
-  /// @return The global identifier associated with the hashmap instance.
-  ObjectID GetGlobalID() const { return oid_; }
-
   /// @brief Overall size of the edge index (number of unique sources).
   /// @return the number of unique source vertices in the index.
   size_t Size() const;
@@ -192,7 +187,7 @@ class EdgeIndex
       auto ptr = EdgeIndex<SrcT, DestT, StorageT>::GetPtr(oid);
       ptr->buffers_.FlushAll();
     };
-    rt::executeOnAll(flushLambda_, oid_);
+    rt::executeOnAll(flushLambda_, this->oid_);
   }
 
   /// @brief Delete an edge.
@@ -357,7 +352,6 @@ class EdgeIndex
                              Args &... args);
 
  private:
-  ObjectID oid_;
   LocalEdgeIndex<SrcT, DestT, StorageT> localIndex_;
   BuffersVector buffers_;
 
@@ -380,7 +374,7 @@ class EdgeIndex
 
   using LocalEdgeListChunk = typename StorageT::LocalEdgeListChunk;
   struct EdgeListChunk {
-    EdgeListChunk(ObjectID &_oid, SrcT _src, LocalEdgeListChunk &_chunk)
+    EdgeListChunk(ObjectID _oid, SrcT _src, LocalEdgeListChunk &_chunk)
         : oid(_oid), src(_src), chunk(_chunk) {}
     typename EdgeIndex<SrcT, DestT, StorageT>::ObjectID oid;
     SrcT src;
@@ -445,10 +439,14 @@ class EdgeIndex
 
  protected:
   EdgeIndex(ObjectID oid, const size_t numVertices)
-      : oid_(oid), localIndex_(numVertices), buffers_(oid) {}
+      : AbstractDataStructure<EdgeIndex<SrcT, DestT, StorageT>>(oid),
+        localIndex_(numVertices),
+        buffers_(oid) {}
   EdgeIndex(ObjectID oid, const size_t numVertices,
             const typename StorageT::SrcAttributesT &initAttr)
-      : oid_(oid), localIndex_(numVertices, initAttr), buffers_(oid) {}
+      : AbstractDataStructure<EdgeIndex<SrcT, DestT, StorageT>>(oid),
+        localIndex_(numVertices, initAttr),
+        buffers_(oid) {}
 };
 
 template <typename SrcT, typename DestT, typename StorageT>
@@ -461,7 +459,7 @@ inline size_t EdgeIndex<SrcT, DestT, StorageT>::Size() const {
   };
   for (auto tgtLoc : rt::allLocalities()) {
     if (tgtLoc != rt::thisLocality()) {
-      rt::executeAtWithRet(tgtLoc, sizeLambda, oid_, &remoteSize);
+      rt::executeAtWithRet(tgtLoc, sizeLambda, this->oid_, &remoteSize);
       size += remoteSize;
     }
   }
@@ -478,7 +476,7 @@ inline size_t EdgeIndex<SrcT, DestT, StorageT>::NumEdges() {
   };
   for (auto tgtLoc : rt::allLocalities()) {
     if (tgtLoc != rt::thisLocality()) {
-      rt::executeAtWithRet(tgtLoc, sizeLambda, oid_, &remoteSize);
+      rt::executeAtWithRet(tgtLoc, sizeLambda, this->oid_, &remoteSize);
       size += remoteSize;
     }
   }
@@ -499,7 +497,7 @@ inline size_t EdgeIndex<SrcT, DestT, StorageT>::GetDegree(const SrcT &src) {
       *res = ptr->localIndex_.GetDegree(std::get<1>(args));
     };
     rt::executeAtWithRet(targetLocality, degreeLambda,
-                         std::make_tuple(oid_, src), &degree);
+                         std::make_tuple(this->oid_, src), &degree);
   }
   return degree;
 }
@@ -517,7 +515,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::Insert(const SrcT &src,
       auto ptr = EdgeIndex<SrcT, DestT, StorageT>::GetPtr(args.oid);
       ptr->localIndex_.Insert(args.src, args.dest);
     };
-    InsertArgs args{oid_, src, dest};
+    InsertArgs args{this->oid_, src, dest};
     rt::executeAt(targetLocality, insertLambda, args);
   }
 }
@@ -538,14 +536,14 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::InsertEdgeList(
     size_t locSize = StorageT::kEdgeListChunkSize_;
     size_t chunkSize = std::min<size_t>(locSize, toInsert);
     LocalEdgeListChunk lchunk(numDest, overwrite, destinations);
-    EdgeListChunk args(oid_, src, lchunk);
+    EdgeListChunk args(this->oid_, src, lchunk);
     rt::executeAt(targetLocality, insertLambda, args);
     toInsert -= chunkSize;
     while (toInsert > 0) {
       destinations += chunkSize;
       chunkSize = std::min<size_t>(locSize, toInsert);
       LocalEdgeListChunk lchunk(chunkSize, false, destinations);
-      EdgeListChunk args(oid_, src, lchunk);
+      EdgeListChunk args(this->oid_, src, lchunk);
       rt::executeAt(targetLocality, insertLambda, args);
       toInsert -= chunkSize;
     }
@@ -575,7 +573,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncInsertEdgeList(
     size_t locSize = StorageT::kEdgeListChunkSize_;
     size_t chunkSize = std::min<size_t>(locSize, toInsert);
     LocalEdgeListChunk lchunk(numDest, overwrite, destinations);
-    EdgeListChunk args(oid_, src, lchunk);
+    EdgeListChunk args(this->oid_, src, lchunk);
     if (numDest <= locSize) {
       rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
       return;
@@ -587,7 +585,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncInsertEdgeList(
       destinations += chunkSize;
       chunkSize = std::min<size_t>(locSize, toInsert);
       lchunk = LocalEdgeListChunk(chunkSize, false, destinations);
-      args = EdgeListChunk(oid_, src, lchunk);
+      args = EdgeListChunk(this->oid_, src, lchunk);
       rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
       toInsert -= chunkSize;
     }
@@ -608,7 +606,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncInsert(rt::Handle &handle,
       auto ptr = EdgeIndex<SrcT, DestT, StorageT>::GetPtr(args.oid);
       ptr->localIndex_.AsyncInsert(handle, args.src, args.dest);
     };
-    InsertArgs args = {oid_, src, dest};
+    InsertArgs args = {this->oid_, src, dest};
     rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
   }
 }
@@ -626,7 +624,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::Erase(const SrcT &src,
       auto ptr = EdgeIndex<SrcT, DestT, StorageT>::GetPtr(args.oid);
       ptr->localIndex_.Erase(args.src, args.dest);
     };
-    InsertArgs args = {oid_, src, dest};
+    InsertArgs args = {this->oid_, src, dest};
     rt::executeAt(targetLocality, eraseLambda, args);
   }
 }
@@ -645,7 +643,7 @@ inline void EdgeIndex<SrcT, DestT, StorageT>::AsyncErase(rt::Handle &handle,
       auto ptr = EdgeIndex<SrcT, DestT, StorageT>::GetPtr(args.oid);
       ptr->localIndex_.AsyncErase(handle, args.src, args.dest);
     };
-    InsertArgs args = {oid_, src, dest};
+    InsertArgs args = {this->oid_, src, dest};
     rt::asyncExecuteAt(handle, targetLocality, eraseLambda, args);
   }
 }
@@ -681,7 +679,7 @@ void EdgeIndex<SrcT, DestT, StorageT>::ForEachVertex(ApplyFunT &&function,
   using FunctionTy = void (*)(const SrcT &src, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     constexpr auto size = std::tuple_size<
         typename std::decay<decltype(std::get<2>(args))>::type>::value;
@@ -700,7 +698,7 @@ void EdgeIndex<SrcT, DestT, StorageT>::AsyncForEachVertex(rt::Handle &handle,
   using FunctionTy = void (*)(rt::Handle & h, const SrcT &src, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     constexpr auto size = std::tuple_size<
         typename std::decay<decltype(std::get<2>(args))>::type>::value;
@@ -726,7 +724,7 @@ void EdgeIndex<SrcT, DestT, StorageT>::ForEachNeighbor(const SrcT &src,
   using FunctionTy = void (*)(const SrcT &src, const DestT &dest, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, SrcT, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, src, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, src, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     feArgs &fargs = const_cast<feArgs &>(args);
     constexpr auto size = std::tuple_size<
@@ -752,7 +750,7 @@ void EdgeIndex<SrcT, DestT, StorageT>::AsyncForEachNeighbor(
                               const DestT &dest, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, SrcT, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, src, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, src, fn, std::tuple<Args...>(args...));
   auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     feArgs &fargs = const_cast<feArgs &>(args);
     constexpr auto size = std::tuple_size<
@@ -771,7 +769,7 @@ void EdgeIndex<SrcT, DestT, StorageT>::ForEachEdge(ApplyFunT &&function,
   using FunctionTy = void (*)(const SrcT &src, const DestT &dest, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     feArgs &fargs = const_cast<feArgs &>(args);
     constexpr auto size = std::tuple_size<
@@ -791,7 +789,7 @@ void EdgeIndex<SrcT, DestT, StorageT>::AsyncForEachEdge(rt::Handle &handle,
                               const DestT &dest, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
-  feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
+  feArgs arguments(this->oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     feArgs &fargs = const_cast<feArgs &>(args);
     constexpr auto size = std::tuple_size<
@@ -816,7 +814,7 @@ bool EdgeIndex<SrcT, DestT, StorageT>::GetVertexAttributes(
       auto eiPtr = EdgeIndex<SrcT, DestT, StorageT>::GetPtr(args.oid);
       res->found = eiPtr->localIndex_.GetVertexAttributes(args.src, &res->attr);
     };
-    LookupArgs args = {oid_, src};
+    LookupArgs args = {this->oid_, src};
     LookupResult lres;
     rt::executeAtWithRet(targetLocality, lookupLambda, args, &lres);
     if (lres.found) {
@@ -843,7 +841,7 @@ void EdgeIndex<SrcT, DestT, StorageT>::VertexAttributesApply(
     FunctionTy fn = std::forward<decltype(function)>(function);
     using ApplyArgs =
         std::tuple<ObjectID, const SrcT, FunctionTy, std::tuple<Args...>>;
-    ApplyArgs arguments(oid_, src, fn, std::tuple<Args...>(args...));
+    ApplyArgs arguments(this->oid_, src, fn, std::tuple<Args...>(args...));
     auto applyLambda = [](const ApplyArgs &args) {
       ApplyArgs &tuple = const_cast<ApplyArgs &>(args);
       constexpr auto Size = std::tuple_size<

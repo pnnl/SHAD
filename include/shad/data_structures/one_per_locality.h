@@ -57,11 +57,6 @@ class OnePerLocality : public AbstractDataStructure<OnePerLocality<T>> {
   static SharedPtr Create(Args... args);
 #endif
 
-  /// @brief Retieve the Global Identifier.
-  ///
-  /// @return The global identifier associated with the array instance.
-  ObjectID GetGlobalID() const { return oid_; }
-
   /// @brief Access the local instance.
   ///
   /// @return A pointer to the local instance.
@@ -83,13 +78,12 @@ class OnePerLocality : public AbstractDataStructure<OnePerLocality<T>> {
   /// @brief Constructor.
   template <typename... Args>
   explicit OnePerLocality(ObjectID oid, Args... args)
-      : oid_{oid}, localInstance_{args...} {}
+      : AbstractDataStructure<OnePerLocality<T>>{oid}, localInstance_{args...} {}
 
  private:
   template <typename>
   friend class AbstractDataStructure;
 
-  ObjectID oid_;
   T localInstance_;
 };
 

@@ -61,8 +61,8 @@ class AbstractDataStructure {
   /// SharedPtr to DataStructure
   using SharedPtr = std::shared_ptr<DataStructure>;
 
-  /// @brief Default constructor
-  AbstractDataStructure() = default;
+/// @brief Constructor.
+  explicit AbstractDataStructure(ObjectID oid) : oid_(oid) {}
 
   /// @brief Create method.
   ///
@@ -125,11 +125,11 @@ class AbstractDataStructure {
   ///
   /// Returns the global object identifier associated to a DataStructure
   /// instance.
-  ///
-  /// @warning It must be implemented in the inheriting DataStructure.
-  virtual ObjectID GetGlobalID() const = 0;
+  ObjectID GetGlobalID() const { return oid_; }
 
  protected:
+  const ObjectID oid_;
+
   template <typename... Args>
   static void UpdateCatalogAndConstruct(const ObjectID &oid, Args &&... args) {
     // Get a local instance on the remote node.
