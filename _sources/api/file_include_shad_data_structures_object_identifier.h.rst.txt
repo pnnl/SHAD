@@ -70,9 +70,9 @@ Functions
 
 - :ref:`exhale_function_object__identifier_8h_1a73513752568c47bd71b06a4fc328eec4`
 
-- :ref:`exhale_function_object__identifier_8h_1aa50b0a9ddf671edce6ba55be6975896a`
-
 - :ref:`exhale_function_object__identifier_8h_1a5761ac18b234d1551ab55f1ce32214cb`
+
+- :ref:`exhale_function_object__identifier_8h_1aa50b0a9ddf671edce6ba55be6975896a`
 
 - :ref:`exhale_function_object__identifier_8h_1a3c37dd61ed6b63c4eb35b3bc7c35d6c0`
 
