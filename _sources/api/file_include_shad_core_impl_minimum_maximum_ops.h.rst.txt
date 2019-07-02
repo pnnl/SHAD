@@ -77,9 +77,9 @@ Functions
 
 - :ref:`exhale_function_minimum__maximum__ops_8h_1a381d52cbdba7b857ceac91ee8eb8fcdd`
 
-- :ref:`exhale_function_minimum__maximum__ops_8h_1a83136697aad39dd0e3a1c7975f20663c`
-
 - :ref:`exhale_function_minimum__maximum__ops_8h_1adfebf0e80301a20f84968a0ddf15953c`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1a83136697aad39dd0e3a1c7975f20663c`
 
 - :ref:`exhale_function_minimum__maximum__ops_8h_1ab9de78c4bd93c5e2de3483e8bb4bc1ee`
 
