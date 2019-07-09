@@ -61,9 +61,9 @@ Functions
 
 - :ref:`exhale_function_numeric__ops_8h_1a5878e1265f2a092ccf92a06e954f1c81`
 
-- :ref:`exhale_function_utils_8h_1a8b3b049ff641f41f340c7c6ebede785e`
-
 - :ref:`exhale_function_utils_8h_1a1470dba8d08fdfc79c91a2e4f63b0c08`
+
+- :ref:`exhale_function_utils_8h_1a8b3b049ff641f41f340c7c6ebede785e`
 
 - :ref:`exhale_function_utils_8h_1ab024cb7759d99abdbc4354cccec9887c`
 
@@ -133,13 +133,13 @@ Functions
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a104359469463063a5731e7e416f92e48`
 
+- :ref:`exhale_function_numeric__ops_8h_1ad1cdc8f5cbba50490302762e79a6c9e2`
+
 - :ref:`exhale_function_numeric__ops_8h_1aadca65f3d0fc5648b3de85b15012c595`
 
 - :ref:`exhale_function_numeric__ops_8h_1af2c7162bbc9a4ac28f61ce116f6c6971`
 
 - :ref:`exhale_function_numeric__ops_8h_1a16a47e02cde21be27f0d0d4cae1fa971`
-
-- :ref:`exhale_function_numeric__ops_8h_1ad1cdc8f5cbba50490302762e79a6c9e2`
 
 - :ref:`exhale_function_numeric__ops_8h_1a4c7f38aad04b1866ca0f51f338eb9748`
 
@@ -163,13 +163,13 @@ Functions
 
 - :ref:`exhale_function_minimum__maximum__ops_8h_1a381d52cbdba7b857ceac91ee8eb8fcdd`
 
-- :ref:`exhale_function_minimum__maximum__ops_8h_1a83136697aad39dd0e3a1c7975f20663c`
-
 - :ref:`exhale_function_minimum__maximum__ops_8h_1adfebf0e80301a20f84968a0ddf15953c`
 
-- :ref:`exhale_function_minimum__maximum__ops_8h_1ab9de78c4bd93c5e2de3483e8bb4bc1ee`
+- :ref:`exhale_function_minimum__maximum__ops_8h_1a83136697aad39dd0e3a1c7975f20663c`
 
 - :ref:`exhale_function_minimum__maximum__ops_8h_1aed037b97b6d5e1bd2d2f23a0c9ddf9b5`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1ab9de78c4bd93c5e2de3483e8bb4bc1ee`
 
 - :ref:`exhale_function_core_2array_8h_1a5a0e2e842f8d9a65fba49018ca00dd9e`
 
@@ -207,14 +207,14 @@ Functions
 
 - :ref:`exhale_function_numeric__ops_8h_1a1d7be6e3729a4f335ea852c2b0c0f679`
 
+- :ref:`exhale_function_numeric__ops_8h_1a3fd931d2f89809175443eb4fd47ddb28`
+
 - :ref:`exhale_function_numeric__ops_8h_1ac1826723f8bdee0328088af31479516d`
 
 - :ref:`exhale_function_numeric__ops_8h_1a582cc7253b0dbfeeffb5c2303e1b0f2f`
 
-- :ref:`exhale_function_numeric__ops_8h_1a3fd931d2f89809175443eb4fd47ddb28`
-
 - :ref:`exhale_function_numeric__ops_8h_1a230e00400b7f35776c9d5f4cb9797fc8`
 
-- :ref:`exhale_function_utils_8h_1a42fdab8157ef88e4bb43ec961fcd08fd`
-
 - :ref:`exhale_function_utils_8h_1a22f1e41a5b5e7205ab943dbc846c4e10`
+
+- :ref:`exhale_function_utils_8h_1a42fdab8157ef88e4bb43ec961fcd08fd`
