@@ -94,7 +94,7 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_compare__and__hash__utils_8h_1a1bce4c68f2c688517fdc5dca70da59da`
-
 - :ref:`exhale_function_compare__and__hash__utils_8h_1a21c73a78973e58a8ed4a246a74bff5b9`
+
+- :ref:`exhale_function_compare__and__hash__utils_8h_1a1bce4c68f2c688517fdc5dca70da59da`
 
