@@ -76,9 +76,9 @@ Functions
 
 - :ref:`exhale_function_gmt__utility_8h_1a1083a9a4e08beddf6cb708be42f534dc`
 
-- :ref:`exhale_function_gmt__utility_8h_1aeb1d47c4176c24034814421f636b23de`
-
 - :ref:`exhale_function_gmt__utility_8h_1a55c46191640e8d8a7645014d181f00ae`
+
+- :ref:`exhale_function_gmt__utility_8h_1aeb1d47c4176c24034814421f636b23de`
 
 - :ref:`exhale_function_gmt__utility_8h_1a89c8b8b587a013c3793d26b04e7450bd`
 
