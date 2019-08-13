@@ -293,13 +293,13 @@ Functions
 
 - :ref:`exhale_function_algorithm_8h_1ade79004d9d2b57d94717640536689f30`
 
+- :ref:`exhale_function_algorithm_8h_1a19b6f97e22a10d008622ad4e49de5f6b`
+
 - :ref:`exhale_function_algorithm_8h_1a04498eaaa7278dc429fcdf93f5915bfd`
 
 - :ref:`exhale_function_algorithm_8h_1af24b9e8c34031c3eb513512540d75220`
 
 - :ref:`exhale_function_algorithm_8h_1a16fcfebd88d79295c4f5ff4762e17329`
-
-- :ref:`exhale_function_algorithm_8h_1a19b6f97e22a10d008622ad4e49de5f6b`
 
 - :ref:`exhale_function_algorithm_8h_1a00b17ed7d3482e7fc389d344c68b42e8`
 
