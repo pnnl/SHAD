@@ -174,9 +174,9 @@ Functions
 
 - :ref:`exhale_function_runtime_8h_1a112df602ea3878eab5f2d2ed424d8d87`
 
-- :ref:`exhale_function_runtime_8h_1aafcdb9446fa49c00add25b4cf61f92f0`
-
 - :ref:`exhale_function_runtime_8h_1a35ae5113d8da4942705af0a77305fe0c`
+
+- :ref:`exhale_function_runtime_8h_1aafcdb9446fa49c00add25b4cf61f92f0`
 
 - :ref:`exhale_function_runtime_8h_1a36e675e25238d9b5c81b8a755dce61cd`
 
