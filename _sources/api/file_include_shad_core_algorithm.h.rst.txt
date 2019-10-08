@@ -81,14 +81,6 @@ Functions
 
 - :ref:`exhale_function_algorithm_8h_1a08f4233aef9435fb627ebb82d186715e`
 
-- :ref:`exhale_function_algorithm_8h_1a1d99da6ce33f2013b3ff47b9a05a0916`
-
-- :ref:`exhale_function_algorithm_8h_1a8141e857a877c6eb44095a7578281ecd`
-
-- :ref:`exhale_function_algorithm_8h_1aa5dcd90777a8948f8cb240d51bd1346b`
-
-- :ref:`exhale_function_algorithm_8h_1ae452511628cb333e23458bb2af8cfa83`
-
 - :ref:`exhale_function_algorithm_8h_1a729216b8f76b721c9e1ae8fdcb63ee03`
 
 - :ref:`exhale_function_algorithm_8h_1ad909faa4c50e8fe776668cd39e776602`
@@ -96,6 +88,14 @@ Functions
 - :ref:`exhale_function_algorithm_8h_1a8566c24e54c82d15757af3f776c54c40`
 
 - :ref:`exhale_function_algorithm_8h_1a9be869b9241eafbec6af016a45fa8f45`
+
+- :ref:`exhale_function_algorithm_8h_1a8141e857a877c6eb44095a7578281ecd`
+
+- :ref:`exhale_function_algorithm_8h_1a1d99da6ce33f2013b3ff47b9a05a0916`
+
+- :ref:`exhale_function_algorithm_8h_1aa5dcd90777a8948f8cb240d51bd1346b`
+
+- :ref:`exhale_function_algorithm_8h_1ae452511628cb333e23458bb2af8cfa83`
 
 - :ref:`exhale_function_algorithm_8h_1ab21c74ec57b46160ad590b2e989c4ea6`
 
@@ -133,13 +133,13 @@ Functions
 
 - :ref:`exhale_function_algorithm_8h_1ade79004d9d2b57d94717640536689f30`
 
+- :ref:`exhale_function_algorithm_8h_1a16fcfebd88d79295c4f5ff4762e17329`
+
 - :ref:`exhale_function_algorithm_8h_1a19b6f97e22a10d008622ad4e49de5f6b`
 
 - :ref:`exhale_function_algorithm_8h_1a04498eaaa7278dc429fcdf93f5915bfd`
 
 - :ref:`exhale_function_algorithm_8h_1af24b9e8c34031c3eb513512540d75220`
-
-- :ref:`exhale_function_algorithm_8h_1a16fcfebd88d79295c4f5ff4762e17329`
 
 - :ref:`exhale_function_algorithm_8h_1a00b17ed7d3482e7fc389d344c68b42e8`
 
