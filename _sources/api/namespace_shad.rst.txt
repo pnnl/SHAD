@@ -116,9 +116,9 @@ Classes
 
 - :ref:`exhale_class_classshad_1_1AbstractDataStructure_1_1Catalog`
 
-- :ref:`exhale_class_classshad_1_1array`
-
 - :ref:`exhale_class_classshad_1_1Array`
+
+- :ref:`exhale_class_classshad_1_1array`
 
 - :ref:`exhale_class_classshad_1_1AttrEdgesPair`
 
@@ -351,17 +351,17 @@ Functions
 
 - :ref:`exhale_function_numeric_8h_1a7731b3ca77801af3286844f6db55364c`
 
+- :ref:`exhale_function_numeric_8h_1a1de0e51e5616aabd05a68412086358ae`
+
 - :ref:`exhale_function_numeric_8h_1a45c6b8c67b4d583819c334dc29a969b1`
 
 - :ref:`exhale_function_numeric_8h_1a9ada8d6b6cb63fd3b5b459ff608b5027`
 
 - :ref:`exhale_function_numeric_8h_1a9fb77cb6187be97748be38c5632a406c`
 
-- :ref:`exhale_function_numeric_8h_1a68e4deac86c665ff2d3d3550c7042331`
-
-- :ref:`exhale_function_numeric_8h_1a1de0e51e5616aabd05a68412086358ae`
-
 - :ref:`exhale_function_numeric_8h_1a6764e68a376e02ec492499b12eac8dc1`
+
+- :ref:`exhale_function_numeric_8h_1a68e4deac86c665ff2d3d3550c7042331`
 
 
 Typedefs
