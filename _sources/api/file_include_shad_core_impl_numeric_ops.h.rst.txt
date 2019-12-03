@@ -103,13 +103,13 @@ Functions
 
 - :ref:`exhale_function_numeric__ops_8h_1a3fb69fca10b8929afac4c3b0342a3d00`
 
-- :ref:`exhale_function_numeric__ops_8h_1a994d10772359d93e389f376ee9cd05a3`
-
-- :ref:`exhale_function_numeric__ops_8h_1a388dbfcc7dca58b881cd61370da14f1d`
-
 - :ref:`exhale_function_numeric__ops_8h_1af4764964e73da24626df70bf937018d4`
 
 - :ref:`exhale_function_numeric__ops_8h_1a1d7be6e3729a4f335ea852c2b0c0f679`
+
+- :ref:`exhale_function_numeric__ops_8h_1a994d10772359d93e389f376ee9cd05a3`
+
+- :ref:`exhale_function_numeric__ops_8h_1a388dbfcc7dca58b881cd61370da14f1d`
 
 - :ref:`exhale_function_numeric__ops_8h_1ac1826723f8bdee0328088af31479516d`
 
