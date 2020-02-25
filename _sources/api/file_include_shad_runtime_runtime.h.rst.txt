@@ -190,9 +190,9 @@ Functions
 
 - :ref:`exhale_function_runtime_8h_1a5bc582ecab17be55af910f8a6e3e31f5`
 
-- :ref:`exhale_function_runtime_8h_1aa1c240408fd99868fe25dc35e78c9c79`
-
 - :ref:`exhale_function_runtime_8h_1a750ac93a8d339b97e3a11e182b50ffbc`
+
+- :ref:`exhale_function_runtime_8h_1aa1c240408fd99868fe25dc35e78c9c79`
 
 - :ref:`exhale_function_runtime_8h_1acadca86a92a75be85e51534f905b7fef`
 
