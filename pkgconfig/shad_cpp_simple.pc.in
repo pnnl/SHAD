@@ -6,5 +6,5 @@ libdir=${exec_prefix}/lib
 Name: @CMAKE_PROJECT_NAME@_CPP_SIMPLE
 Description: SHAD - Scalable and High-Performance Algorithms and Data-Structures, CPP_SIMPLE Backend.
 Version: @PACKAGE_VERSION@
-Cflags: @CMAKE_CXX_FLAGS@ -D HAVE_CPP_SIMPLE=1 -I${includedir}
+Cflags: @CMAKE_CXX_FLAGS@ -DHAVE_CPP_SIMPLE=1 -I${includedir}
 Libs: -L${libdir} -Wl,-rpath,${libdir} -lcpp_simple_runtime -lutils @LINK_FLAGS@

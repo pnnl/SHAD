@@ -7,5 +7,5 @@ runtimeincludedirs=@GMT_INCLUDE_DIRS@
 Name: @CMAKE_PROJECT_NAME@_GMT
 Description: SHAD - Scalable and High-Performance Algorithms and Data-Structures, GMT Backend.
 Version: @PACKAGE_VERSION@
-Cflags: @CMAKE_CXX_FLAGS@ -D HAVE_GMT=1 -I${includedir} -I${runtimeincludedirs}
+Cflags: @CMAKE_CXX_FLAGS@ -DHAVE_GMT=1 -I${includedir} -I${runtimeincludedirs}
 Libs: -L${libdir} -Wl,-rpath,${libdir} -lgmt_runtime -lutils @LINK_FLAGS@
