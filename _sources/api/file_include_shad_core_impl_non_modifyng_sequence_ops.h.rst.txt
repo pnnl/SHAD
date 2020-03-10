@@ -91,15 +91,15 @@ Functions
 
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a7d6654b93471400a7ee8942da4ada07f`
 
-- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a93a0d973aa1c8f34cb6690cb20d93f4b`
-
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a493ad5c9070f71bcb9b1aca4688a585a`
+
+- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a93a0d973aa1c8f34cb6690cb20d93f4b`
 
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1ac422afd3c5b6bd9704e422e9381ab080`
 
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a57773ff0a22421e942e68cf6d602e4fb`
 
-- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1ae1412ca0ba7dde890c047cd95712e841`
-
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1afb2c61b05a67d5866e715bcd0f0bbc9d`
+
+- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1ae1412ca0ba7dde890c047cd95712e841`
 
