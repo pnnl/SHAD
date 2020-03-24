@@ -116,9 +116,9 @@ Classes
 
 - :ref:`exhale_class_classshad_1_1AbstractDataStructure_1_1Catalog`
 
-- :ref:`exhale_class_classshad_1_1array`
-
 - :ref:`exhale_class_classshad_1_1Array`
+
+- :ref:`exhale_class_classshad_1_1array`
 
 - :ref:`exhale_class_classshad_1_1AttrEdgesPair`
 
