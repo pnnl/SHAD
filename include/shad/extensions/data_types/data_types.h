@@ -63,11 +63,23 @@ enum data_t {
   
   template <>
   constexpr uint64_t kNullValue<uint64_t> = std::numeric_limits<int64_t>::max();
+
+  // template <data_t DT>
+  // class mapped_type {
+  //   template <typename T>
+  //   std::any get();
+  // };
+
+  // template <>
+  // std::any mapped_type<data_t::FLOAT>::get() {
+  //   return std::enable_if<true, float>::type;
+  // }
+
   
   using schema_t = std::vector<std::pair<std::string, data_t>>;  
 
-  template <typename ENC_t, data_t ST>
-  ENC_t encode(std::string &str);
+  template <typename ENC_t, typename IN_t, data_t ST>
+  ENC_t encode(IN_t &str);
 
   template <typename ENC_t, size_t MAX_s, data_t ST>
   std::array<ENC_t, MAX_s> encode(std::string &str) {
@@ -80,9 +92,31 @@ enum data_t {
     return res;
   }
 
-  template <typename ENC_t, data_t ST>
-  std::string decode(ENC_t value);
+  template <typename ENC_t, typename DEC_t>
+  typename std::enable_if<std::is_arithmetic<DEC_t>::value, DEC_t>::type
+  decode(ENC_t encvalue) {
+    DEC_t val;
+    memcpy(&val, &encvalue, sizeof(DEC_t));
+    return val;
+  }
 
+  template <typename ENC_t, typename DEC_t, data_t ST>
+  DEC_t decode(ENC_t value);
+
+  template <typename ENC_t, data_t ST>
+  typename std::enable_if<(ST==data_t::INT), int64_t>::type 
+  decode(ENC_t encvalue) {
+    int64_t val;
+    memcpy(&val, &encvalue, sizeof(int64_t));
+    return val;
+  }
+
+  // template <typename ENC_t, typename DEC_t, data_t ST>
+  // DEC_t decode(ENC_t value);
+  
+  // template <typename ENC_t, typename DEC_t>
+  // DEC_t decode (ENC_t value);
+  
   template <typename ENC_t, size_t MAX_s, data_t ST>
   std::string decode(std::array<ENC_t, MAX_s> &val) {
     return std::string(reinterpret_cast<const char*>(val.data()));
@@ -92,7 +126,9 @@ enum data_t {
 
 // METHODS SPECIALIZATION FOR UINT64 ENC_t
 template<>
-uint64_t data_types::encode<uint64_t, data_types::UINT>(std::string &str) {
+uint64_t data_types::encode<uint64_t,
+                            std::string,
+                            data_types::UINT>(std::string &str) {
   uint64_t value;
   try { value = std::stoull(str); }
   catch(...) { value = kNullValue<uint64_t>; }
@@ -100,7 +136,9 @@ uint64_t data_types::encode<uint64_t, data_types::UINT>(std::string &str) {
 }
 
 template<>
-uint64_t data_types::encode<uint64_t, data_types::INT>(std::string &str) {
+uint64_t data_types::encode<uint64_t,
+                            std::string,
+                            data_types::INT>(std::string &str) {
   uint64_t encval;
   int64_t value;
   try { value = stoll(str); }
@@ -110,7 +148,9 @@ uint64_t data_types::encode<uint64_t, data_types::INT>(std::string &str) {
 }
 
 template<>
-uint64_t data_types::encode<uint64_t, data_types::FLOAT>(std::string &str) {
+uint64_t data_types::encode<uint64_t,
+                            std::string,
+                            data_types::FLOAT>(std::string &str) {
   uint64_t encval;
   float value;
   try { value = stof(str); }
@@ -120,7 +160,9 @@ uint64_t data_types::encode<uint64_t, data_types::FLOAT>(std::string &str) {
 }
 
 template<>
-uint64_t data_types::encode<uint64_t, data_types::DOUBLE>(std::string &str) {
+uint64_t data_types::encode<uint64_t,
+                            std::string,
+                            data_types::DOUBLE>(std::string &str) {
   uint64_t encval;
   double value;
   try { value = stod(str); }
@@ -130,7 +172,9 @@ uint64_t data_types::encode<uint64_t, data_types::DOUBLE>(std::string &str) {
 }
 
 template<>
-uint64_t data_types::encode<uint64_t, data_types::BOOL>(std::string &str) {
+uint64_t data_types::encode<uint64_t,
+                            std::string,
+                            data_types::BOOL>(std::string &str) {
   if (str.size() == 0) return kNullValue<uint64_t>;
   uint64_t encval = 1;
   if ((str == "F") || (str == "f") || (str == "FALSE") 
@@ -140,7 +184,9 @@ uint64_t data_types::encode<uint64_t, data_types::BOOL>(std::string &str) {
 
 
 template<>
-uint64_t data_types::encode<uint64_t, data_types::CHARS>(std::string &str) {
+uint64_t data_types::encode<uint64_t,
+                            std::string,
+                            data_types::CHARS>(std::string &str) {
   uint64_t encval = 0;
   memset(&encval, '\0', sizeof(encval));
   memcpy(&encval, str.c_str(), sizeof(encval)-1);
@@ -149,6 +195,7 @@ uint64_t data_types::encode<uint64_t, data_types::CHARS>(std::string &str) {
 
 template<>
 uint64_t data_types::encode<uint64_t,
+                            std::string,
                             data_types::IP_ADDRESS>(std::string &str) {
   uint64_t val, value = 0;
   std::string::iterator start = str.begin();
@@ -169,7 +216,9 @@ uint64_t data_types::encode<uint64_t,
 }
 
 template<>
-uint64_t data_types::encode<uint64_t, data_types::DATE>(std::string &str) {
+uint64_t data_types::encode<uint64_t,
+                            std::string,
+                            data_types::DATE>(std::string &str) {
   uint64_t value = 0;
   struct tm date{};
   date.tm_isdst = -1;
@@ -186,7 +235,9 @@ uint64_t data_types::encode<uint64_t, data_types::DATE>(std::string &str) {
 }
 
 template<>
-uint64_t data_types::encode<uint64_t, data_types::USDATE>(std::string &str) {
+uint64_t data_types::encode<uint64_t,
+                            std::string,
+                            data_types::USDATE>(std::string &str) {
   uint64_t value = 0;
   struct tm date{};
   date.tm_isdst = -1;
@@ -204,6 +255,7 @@ uint64_t data_types::encode<uint64_t, data_types::USDATE>(std::string &str) {
 
 template<>
 uint64_t data_types::encode<uint64_t,
+                            std::string,
                             data_types::DATE_TIME>(std::string &str) {
   uint64_t value = 0;
   struct tm date{};
@@ -221,13 +273,17 @@ uint64_t data_types::encode<uint64_t,
 }
 
 template<>
-std::string data_types::decode<uint64_t, data_types::UINT>(uint64_t value) {
+std::string data_types::decode<uint64_t,
+                               std::string,
+                               data_types::UINT>(uint64_t value) {
   if (value == kNullValue<uint64_t>) return "";
   return std::to_string(value);
 }
 
 template<>
-std::string data_types::decode<uint64_t, data_types::INT>(uint64_t value) {
+std::string data_types::decode<uint64_t,
+                               std::string,
+                               data_types::INT>(uint64_t value) {
   if (value == kNullValue<uint64_t>) return "";
   int64_t v;
   memcpy(&v, &value, sizeof(v));
@@ -235,7 +291,9 @@ std::string data_types::decode<uint64_t, data_types::INT>(uint64_t value) {
 }
 
 template<>
-std::string data_types::decode<uint64_t, data_types::FLOAT>(uint64_t value) {
+std::string data_types::decode<uint64_t,
+                               std::string,
+                               data_types::FLOAT>(uint64_t value) {
   if (value == kNullValue<uint64_t>) return "";
   float v;
   memcpy(&v, &value, sizeof(v));
@@ -243,7 +301,9 @@ std::string data_types::decode<uint64_t, data_types::FLOAT>(uint64_t value) {
 }
 
 template<>
-std::string data_types::decode<uint64_t, data_types::DOUBLE>(uint64_t value) {
+std::string data_types::decode<uint64_t,
+                               std::string,
+                               data_types::DOUBLE>(uint64_t value) {
   if (value == kNullValue<uint64_t>) return "";
   double v;
   memcpy(&v, &value, sizeof(v));
@@ -251,16 +311,55 @@ std::string data_types::decode<uint64_t, data_types::DOUBLE>(uint64_t value) {
 }
 
 template<>
-std::string data_types::decode<uint64_t, data_types::BOOL>(uint64_t value) {
+std::string data_types::decode<uint64_t,
+                               std::string,
+                               data_types::BOOL>(uint64_t value) {
   if (value == kNullValue<uint64_t>) return "";
   return std::to_string(value);
 }
 
 template<>
-std::string data_types::decode<uint64_t, data_types::CHARS>(uint64_t value) {
+std::string data_types::decode<uint64_t,
+                               std::string,
+                               data_types::CHARS>(uint64_t value) {
   const char* c = reinterpret_cast<const char*>(&value);
   return std::string(c);
 }
+
+template <>
+uint64_t data_types::decode<uint64_t, uint64_t>(uint64_t encvalue) {
+  return encvalue;
+}
+
+
+// template <>
+// int64_t data_types::decode<uint64_t, int64_t>(uint64_t encvalue) {
+//   int64_t val;
+//   memcpy(&val, &encvalue, sizeof(val));
+//   return val;
+// }
+
+// template <>
+// float data_types::decode<uint64_t, float>(uint64_t encvalue) {
+//   float val;
+//   memcpy(&val, &encvalue, sizeof(val));
+//   return val;
+// }
+
+// template <>
+// double data_types::decode<uint64_t, double>(uint64_t encvalue) {
+//   double val;
+//   memcpy(&val, &encvalue, sizeof(val));
+//   return val;
+// }
+
+// template <>
+// bool data_types::decode<uint64_t, bool>(uint64_t encvalue) {
+//   float val;
+//   memcpy(&val, &encvalue, sizeof(val));
+//   return val;
+// }
+
 
 }  // namespace shad
 
