@@ -182,9 +182,9 @@ Functions
 
 - :ref:`exhale_function_runtime_8h_1a8f5647851b74b49dc7c35d5025b07cf3`
 
-- :ref:`exhale_function_runtime_8h_1a4737e1c84ac7e830a1a306ac5b136a7d`
-
 - :ref:`exhale_function_runtime_8h_1a540b5cecb449199c0c829141cc2ae7d5`
+
+- :ref:`exhale_function_runtime_8h_1a4737e1c84ac7e830a1a306ac5b136a7d`
 
 - :ref:`exhale_function_runtime_8h_1ae4b428e7e47fc07e01707b3abb01caa2`
 
