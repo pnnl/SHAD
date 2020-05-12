@@ -32,9 +32,9 @@ Functions
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a1bc6b199cf047a1e76ea475dec947251`
 
-- :ref:`exhale_function_modifyng__sequence__ops_8h_1a11dd25628534978b66ed88ffde4c9fab`
-
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a0433f3888ef3066041edda8925b6f3dc`
+
+- :ref:`exhale_function_modifyng__sequence__ops_8h_1a11dd25628534978b66ed88ffde4c9fab`
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a6f430ee1e3eb1f4bc68df095061d3b62`
 

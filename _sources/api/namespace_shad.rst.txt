@@ -116,9 +116,9 @@ Classes
 
 - :ref:`exhale_class_classshad_1_1AbstractDataStructure_1_1Catalog`
 
-- :ref:`exhale_class_classshad_1_1array`
-
 - :ref:`exhale_class_classshad_1_1Array`
+
+- :ref:`exhale_class_classshad_1_1array`
 
 - :ref:`exhale_class_classshad_1_1AttrEdgesPair`
 
@@ -321,17 +321,17 @@ Functions
 
 - :ref:`exhale_function_numeric_8h_1a82089f3b0373f5062395613e51d16fa3`
 
-- :ref:`exhale_function_numeric_8h_1aea9e6912fe7e3a494de8b7eaad2fd345`
-
-- :ref:`exhale_function_numeric_8h_1a047e9c9a109948515a14306d4a169893`
-
-- :ref:`exhale_function_numeric_8h_1a2807d313b1e6586657c742ae2b4c132d`
-
 - :ref:`exhale_function_numeric_8h_1a23bc7c39dc6aa69f526570d07967a185`
 
 - :ref:`exhale_function_numeric_8h_1a0cb65c2ad084f15e5fd33058445b7f10`
 
 - :ref:`exhale_function_numeric_8h_1a329ef698d7c8b55b8b967ad07e9bf84d`
+
+- :ref:`exhale_function_numeric_8h_1aea9e6912fe7e3a494de8b7eaad2fd345`
+
+- :ref:`exhale_function_numeric_8h_1a047e9c9a109948515a14306d4a169893`
+
+- :ref:`exhale_function_numeric_8h_1a2807d313b1e6586657c742ae2b4c132d`
 
 - :ref:`exhale_function_algorithm_8h_1a0c0ef45cc72fdfcc83ec82af01154289`
 
