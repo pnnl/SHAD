@@ -121,13 +121,13 @@ Functions
 
 - :ref:`exhale_function_numeric_8h_1a58f5206d294f2437782ed7f197eb1d0d`
 
+- :ref:`exhale_function_numeric_8h_1a7731b3ca77801af3286844f6db55364c`
+
 - :ref:`exhale_function_numeric_8h_1abae2714cc427e081f0f399648d5cfdef`
 
 - :ref:`exhale_function_numeric_8h_1a0d3e58f6b91d06bf7d3f46e7d2e478bc`
 
 - :ref:`exhale_function_numeric_8h_1aa7967d1c57c2457d65e5a8dc09b98c0e`
-
-- :ref:`exhale_function_numeric_8h_1a7731b3ca77801af3286844f6db55364c`
 
 - :ref:`exhale_function_numeric_8h_1a9fb77cb6187be97748be38c5632a406c`
 
