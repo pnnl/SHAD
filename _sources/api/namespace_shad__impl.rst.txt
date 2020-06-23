@@ -141,15 +141,15 @@ Functions
 
 - :ref:`exhale_function_numeric__ops_8h_1aadca65f3d0fc5648b3de85b15012c595`
 
-- :ref:`exhale_function_numeric__ops_8h_1a4c7f38aad04b1866ca0f51f338eb9748`
-
 - :ref:`exhale_function_numeric__ops_8h_1a6c996eec8df6b704861bae6348440a0f`
+
+- :ref:`exhale_function_numeric__ops_8h_1a4c7f38aad04b1866ca0f51f338eb9748`
 
 - :ref:`exhale_function_numeric__ops_8h_1a8f954a2011ea42c5d9060e207ab67749`
 
-- :ref:`exhale_function_comparison__ops_8h_1ad3aada55cb3b8fa78334b6c8d44a5d85`
-
 - :ref:`exhale_function_comparison__ops_8h_1a1fa1317d224502e223288526b775c16e`
+
+- :ref:`exhale_function_comparison__ops_8h_1ad3aada55cb3b8fa78334b6c8d44a5d85`
 
 - :ref:`exhale_function_impl__patterns_8h_1a41d3f8271a46b16d658dae5a970ccb50`
 
@@ -167,9 +167,9 @@ Functions
 
 - :ref:`exhale_function_minimum__maximum__ops_8h_1a83136697aad39dd0e3a1c7975f20663c`
 
-- :ref:`exhale_function_minimum__maximum__ops_8h_1aed037b97b6d5e1bd2d2f23a0c9ddf9b5`
-
 - :ref:`exhale_function_minimum__maximum__ops_8h_1ab9de78c4bd93c5e2de3483e8bb4bc1ee`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1aed037b97b6d5e1bd2d2f23a0c9ddf9b5`
 
 - :ref:`exhale_function_core_2array_8h_1a5a0e2e842f8d9a65fba49018ca00dd9e`
 
@@ -179,9 +179,9 @@ Functions
 
 - :ref:`exhale_function_numeric__ops_8h_1af71e2fff31d97e2d0e60d33a818fe64f`
 
-- :ref:`exhale_function_numeric__ops_8h_1adb47097b66f7a100bfbd7ecaa9f5774b`
-
 - :ref:`exhale_function_numeric__ops_8h_1a13273194ba498ef17d05633d554927d2`
+
+- :ref:`exhale_function_numeric__ops_8h_1adb47097b66f7a100bfbd7ecaa9f5774b`
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a07d66cfaa643d3233d69cdaa30741501`
 
@@ -199,9 +199,9 @@ Functions
 
 - :ref:`exhale_function_numeric__ops_8h_1a3fb69fca10b8929afac4c3b0342a3d00`
 
-- :ref:`exhale_function_numeric__ops_8h_1a388dbfcc7dca58b881cd61370da14f1d`
-
 - :ref:`exhale_function_numeric__ops_8h_1a994d10772359d93e389f376ee9cd05a3`
+
+- :ref:`exhale_function_numeric__ops_8h_1a388dbfcc7dca58b881cd61370da14f1d`
 
 - :ref:`exhale_function_numeric__ops_8h_1af4764964e73da24626df70bf937018d4`
 
