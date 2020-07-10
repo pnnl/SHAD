@@ -36,7 +36,7 @@ AssertionResult HasRemoteFailure(const char * /*result_expr */,
                                  const char * /* substr_expr*/,
                                  const TestPartResultArray &results,
                                  TestPartResult::Type type,
-                                 const string &substr) {
+                                 const std::string &substr) {
   const std::string expected(type == TestPartResult::kFatalFailure
                                  ? "a fatal failure"
                                  : "a non-fatal failure");
@@ -61,7 +61,7 @@ AssertionResult HasRemoteFailure(const char * /*result_expr */,
 class RemoteFailureChecker {
  public:
   RemoteFailureChecker(const TestPartResultArray *results,
-                       TestPartResult::Type type, const string &substr)
+                       TestPartResult::Type type, const std::string &substr)
       : results_(results), type_(type), substr_(substr) {}
 
   ~RemoteFailureChecker() {
@@ -74,7 +74,7 @@ class RemoteFailureChecker {
  private:
   const TestPartResultArray *const results_;
   const TestPartResult::Type type_;
-  const string substr_;
+  const std::string substr_;
 
   GTEST_DISALLOW_COPY_AND_ASSIGN_(RemoteFailureChecker);
 };
