@@ -1,0 +1,13 @@
+.. _exhale_function_data__types_8h_1a43d0a13d0e2a987f052e97dcdfeb207c:
+
+Function shad::data_types::decode< uint64_t, std::string, data_types::UINT >
+============================================================================
+
+- Defined in :ref:`file_include_shad_extensions_data_types_data_types.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::data_types::decode< uint64_t, std::string, data_types::UINT >(uint64_t)

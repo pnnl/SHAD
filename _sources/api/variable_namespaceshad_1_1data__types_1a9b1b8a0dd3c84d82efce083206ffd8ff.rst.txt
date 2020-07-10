@@ -1,0 +1,13 @@
+.. _exhale_variable_namespaceshad_1_1data__types_1a9b1b8a0dd3c84d82efce083206ffd8ff:
+
+Template Variable shad::data_types::kNullValue< uint64_t >
+==========================================================
+
+- Defined in :ref:`file_include_shad_extensions_data_types_data_types.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: shad::data_types::kNullValue< uint64_t >

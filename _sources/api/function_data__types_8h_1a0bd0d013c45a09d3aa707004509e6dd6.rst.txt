@@ -1,0 +1,13 @@
+.. _exhale_function_data__types_8h_1a0bd0d013c45a09d3aa707004509e6dd6:
+
+Function shad::data_types::encode< uint64_t, std::string, data_types::INT >
+===========================================================================
+
+- Defined in :ref:`file_include_shad_extensions_data_types_data_types.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::data_types::encode< uint64_t, std::string, data_types::INT >(std::string&)

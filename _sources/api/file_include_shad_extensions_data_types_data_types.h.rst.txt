@@ -1,0 +1,134 @@
+
+.. _file_include_shad_extensions_data_types_data_types.h:
+
+File data_types.h
+=================
+
+|exhale_lsh| :ref:`Parent directory <dir_include_shad_extensions_data_types>` (``include/shad/extensions/data_types``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``include/shad/extensions/data_types/data_types.h``)
+----------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_include_shad_extensions_data_types_data_types.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``algorithm`` (:ref:`file_include_shad_core_algorithm.h`)
+
+- ``ctime``
+
+- ``iomanip``
+
+- ``iostream``
+
+- ``string``
+
+- ``type_traits`` (:ref:`file_include_shad_core_type_traits.h`)
+
+- ``utility`` (:ref:`file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h`)
+
+- ``vector`` (:ref:`file_include_shad_data_structures_vector.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_shad`
+
+- :ref:`namespace_shad__data_types`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_namespaceshad_1_1data__types_1ac6c15494207c53ed32114b0bfb0c7225`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a9f436346f1a16a19c0d66978cc0e9e8f`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1ad8d92f20468d0d1d7c644b2692a90168`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a4d22f561461753aab67f8af5d40eaf74`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a449fa587be4e13981ebfbcc5cf2b7f43`
+
+- :ref:`exhale_function_data__types_8h_1a708b03d43cbaf6f959e8131a1cc125d9`
+
+- :ref:`exhale_function_data__types_8h_1a5054fedefdcf672346028b073b0e97e1`
+
+- :ref:`exhale_function_data__types_8h_1a361820c4935a2a7daeede2eb1ce25e08`
+
+- :ref:`exhale_function_data__types_8h_1aa5caa162bba4e8d2cd0e4227eaa96bed`
+
+- :ref:`exhale_function_data__types_8h_1a6f09a5baf679d63559922b87929a26a6`
+
+- :ref:`exhale_function_data__types_8h_1a43d0a13d0e2a987f052e97dcdfeb207c`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a14d1e654141e43d2721be034a22a4959`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a4dc5cd8ad90a0d36face1aec6199115a`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a75da5192986b9c674216b14bd608976e`
+
+- :ref:`exhale_function_data__types_8h_1abf7ad5487fc802f9404106099aa5e0c4`
+
+- :ref:`exhale_function_data__types_8h_1a471d7b4bb4bb7b4009f0530df540ed63`
+
+- :ref:`exhale_function_data__types_8h_1ae5fa6a29c102dbfea8246e72879dbdb6`
+
+- :ref:`exhale_function_data__types_8h_1a69a998c3e4c38de4655c273e8a1016d6`
+
+- :ref:`exhale_function_data__types_8h_1aabf14b06425808b8e89dde618f34c5f8`
+
+- :ref:`exhale_function_data__types_8h_1a13332526c9ea57b0c659b07b649955c3`
+
+- :ref:`exhale_function_data__types_8h_1a0bd0d013c45a09d3aa707004509e6dd6`
+
+- :ref:`exhale_function_data__types_8h_1a9d900f4c9989e7b6730a64ea2a355e12`
+
+- :ref:`exhale_function_data__types_8h_1af81b1b4fb34ae2fe9ac7410bc1693a0f`
+
+- :ref:`exhale_function_data__types_8h_1a75d1bc704a2005bf52119104072ebe97`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_namespaceshad_1_1data__types_1ab3d5b1f29a1b7551a0b8dfb5e7ec0023`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_namespaceshad_1_1data__types_1a15521247d873badac7f417d184db78ac`
+
+- :ref:`exhale_variable_namespaceshad_1_1data__types_1a9b1b8a0dd3c84d82efce083206ffd8ff`
+

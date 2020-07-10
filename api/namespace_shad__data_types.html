@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Namespace shad::data_types &mdash; SHAD  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'',
+              LANGUAGE:'en',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Namespace shad::impl" href="namespace_shad__impl.html" />
+    <link rel="prev" title="Namespace shad::constants" href="namespace_shad__constants.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SHAD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad.html">Namespace shad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__constants.html">Namespace shad::constants</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Namespace shad::data_types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__impl.html">Namespace shad::impl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__impl__transform_impl.html">Namespace shad::impl::transform_impl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__rt.html">Namespace shad::rt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_shad__rt__impl.html">Namespace shad::rt::impl</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#typedefs">Typedefs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#directories">Directories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="library_root.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SHAD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Namespace shad::data_types</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/namespace_shad__data_types.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="namespace-shad-data-types">
+<span id="id1"></span><h1>Namespace shad::data_types<a class="headerlink" href="#namespace-shad-data-types" title="Permalink to this headline">¶</a></h1>
+<p>Data conversion utilities.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#detailed-description" id="id2">Detailed Description</a></li>
+<li><a class="reference internal" href="#enums" id="id3">Enums</a></li>
+<li><a class="reference internal" href="#functions" id="id4">Functions</a></li>
+<li><a class="reference internal" href="#typedefs" id="id5">Typedefs</a></li>
+<li><a class="reference internal" href="#variables" id="id6">Variables</a></li>
+</ul>
+</div>
+<div class="section" id="detailed-description">
+<h2>Detailed Description<a class="headerlink" href="#detailed-description" title="Permalink to this headline">¶</a></h2>
+<p>Please refer to methods specialization to check which data types are supported.</p>
+</div>
+<div class="section" id="enums">
+<h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="enum_namespaceshad_1_1data__types_1ac6c15494207c53ed32114b0bfb0c7225.html#exhale-enum-namespaceshad-1-1data-types-1ac6c15494207c53ed32114b0bfb0c7225"><span class="std std-ref">Enum data_t</span></a></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="function_namespaceshad_1_1data__types_1a9f436346f1a16a19c0d66978cc0e9e8f.html#exhale-function-namespaceshad-1-1data-types-1a9f436346f1a16a19c0d66978cc0e9e8f"><span class="std std-ref">Template Function shad::data_types::decode(ENC_t)</span></a></li>
+<li><a class="reference internal" href="function_namespaceshad_1_1data__types_1ad8d92f20468d0d1d7c644b2692a90168.html#exhale-function-namespaceshad-1-1data-types-1ad8d92f20468d0d1d7c644b2692a90168"><span class="std std-ref">Template Function shad::data_types::decode(ENC_t)</span></a></li>
+<li><a class="reference internal" href="function_namespaceshad_1_1data__types_1a4d22f561461753aab67f8af5d40eaf74.html#exhale-function-namespaceshad-1-1data-types-1a4d22f561461753aab67f8af5d40eaf74"><span class="std std-ref">Template Function shad::data_types::decode(ENC_t)</span></a></li>
+<li><a class="reference internal" href="function_namespaceshad_1_1data__types_1a449fa587be4e13981ebfbcc5cf2b7f43.html#exhale-function-namespaceshad-1-1data-types-1a449fa587be4e13981ebfbcc5cf2b7f43"><span class="std std-ref">Template Function shad::data_types::decode(std::array&lt;ENC_t, MAX_s&gt;&amp;)</span></a></li>
+<li><a class="reference internal" href="function_namespaceshad_1_1data__types_1a14d1e654141e43d2721be034a22a4959.html#exhale-function-namespaceshad-1-1data-types-1a14d1e654141e43d2721be034a22a4959"><span class="std std-ref">Template Function shad::data_types::encode(IN_t&amp;)</span></a></li>
+<li><a class="reference internal" href="function_namespaceshad_1_1data__types_1a75da5192986b9c674216b14bd608976e.html#exhale-function-namespaceshad-1-1data-types-1a75da5192986b9c674216b14bd608976e"><span class="std std-ref">Template Function shad::data_types::encode(IN_t&amp;)</span></a></li>
+<li><a class="reference internal" href="function_namespaceshad_1_1data__types_1a4dc5cd8ad90a0d36face1aec6199115a.html#exhale-function-namespaceshad-1-1data-types-1a4dc5cd8ad90a0d36face1aec6199115a"><span class="std std-ref">Template Function shad::data_types::encode(std::string&amp;)</span></a></li>
+</ul>
+</div>
+<div class="section" id="typedefs">
+<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="typedef_namespaceshad_1_1data__types_1ab3d5b1f29a1b7551a0b8dfb5e7ec0023.html#exhale-typedef-namespaceshad-1-1data-types-1ab3d5b1f29a1b7551a0b8dfb5e7ec0023"><span class="std std-ref">Typedef shad::data_types::schema_t</span></a></li>
+</ul>
+</div>
+<div class="section" id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="variable_namespaceshad_1_1data__types_1a15521247d873badac7f417d184db78ac.html#exhale-variable-namespaceshad-1-1data-types-1a15521247d873badac7f417d184db78ac"><span class="std std-ref">Variable shad::data_types::kNullValue</span></a></li>
+<li><a class="reference internal" href="variable_namespaceshad_1_1data__types_1a9b1b8a0dd3c84d82efce083206ffd8ff.html#exhale-variable-namespaceshad-1-1data-types-1a9b1b8a0dd3c84d82efce083206ffd8ff"><span class="std std-ref">Template Variable shad::data_types::kNullValue&lt; uint64_t &gt;</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="namespace_shad__impl.html" class="btn btn-neutral float-right" title="Namespace shad::impl" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="namespace_shad__constants.html" class="btn btn-neutral float-left" title="Namespace shad::constants" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Battelle Memorial Institute
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

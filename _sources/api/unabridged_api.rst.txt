@@ -20,6 +20,11 @@ Namespaces
 .. toctree::
    :maxdepth: 5
 
+   namespace_shad__data_types.rst
+
+.. toctree::
+   :maxdepth: 5
+
    namespace_shad__impl.rst
 
 .. toctree::
@@ -641,6 +646,15 @@ Classes and Structs
 
    classshad_1_1Vector_1_1Iterator.rst
 
+Enums
+*****
+
+
+.. toctree::
+   :maxdepth: 5
+
+   enum_namespaceshad_1_1data__types_1ac6c15494207c53ed32114b0bfb0c7225.rst
+
 Functions
 *********
 
@@ -719,6 +733,121 @@ Functions
    :maxdepth: 5
 
    function_algorithm_8h_1a08f4233aef9435fb627ebb82d186715e.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a9f436346f1a16a19c0d66978cc0e9e8f.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1ad8d92f20468d0d1d7c644b2692a90168.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a4d22f561461753aab67f8af5d40eaf74.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a449fa587be4e13981ebfbcc5cf2b7f43.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a708b03d43cbaf6f959e8131a1cc125d9.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a5054fedefdcf672346028b073b0e97e1.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a361820c4935a2a7daeede2eb1ce25e08.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1aa5caa162bba4e8d2cd0e4227eaa96bed.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a6f09a5baf679d63559922b87929a26a6.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a43d0a13d0e2a987f052e97dcdfeb207c.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a14d1e654141e43d2721be034a22a4959.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a75da5192986b9c674216b14bd608976e.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a4dc5cd8ad90a0d36face1aec6199115a.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1abf7ad5487fc802f9404106099aa5e0c4.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a471d7b4bb4bb7b4009f0530df540ed63.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1ae5fa6a29c102dbfea8246e72879dbdb6.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a69a998c3e4c38de4655c273e8a1016d6.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1aabf14b06425808b8e89dde618f34c5f8.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a13332526c9ea57b0c659b07b649955c3.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a0bd0d013c45a09d3aa707004509e6dd6.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a9d900f4c9989e7b6730a64ea2a355e12.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1af81b1b4fb34ae2fe9ac7410bc1693a0f.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_data__types_8h_1a75d1bc704a2005bf52119104072ebe97.rst
 
 .. toctree::
    :maxdepth: 5
@@ -1842,6 +1971,16 @@ Variables
 .. toctree::
    :maxdepth: 5
 
+   variable_namespaceshad_1_1data__types_1a15521247d873badac7f417d184db78ac.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   variable_namespaceshad_1_1data__types_1a9b1b8a0dd3c84d82efce083206ffd8ff.rst
+
+.. toctree::
+   :maxdepth: 5
+
    variable_gmt__utility_8h_1aa26757722745e840feba2c3be1e43117.rst
 
 .. toctree::
@@ -1857,6 +1996,11 @@ Typedefs
    :maxdepth: 5
 
    typedef_attributed__edge__index_8h_1a4fcdd0f79705e26acfcc087f7299e70e.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   typedef_namespaceshad_1_1data__types_1ab3d5b1f29a1b7551a0b8dfb5e7ec0023.rst
 
 .. toctree::
    :maxdepth: 5
@@ -1901,6 +2045,11 @@ Directories
    :maxdepth: 5
 
    dir_include_shad_extensions.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_include_shad_extensions_data_types.rst
 
 .. toctree::
    :maxdepth: 5
@@ -2025,6 +2174,11 @@ Files
    :maxdepth: 5
 
    file_include_shad_runtime_mappings_cpp_simple_cpp_simple_utility.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_include_shad_extensions_data_types_data_types.h.rst
 
 .. toctree::
    :maxdepth: 5

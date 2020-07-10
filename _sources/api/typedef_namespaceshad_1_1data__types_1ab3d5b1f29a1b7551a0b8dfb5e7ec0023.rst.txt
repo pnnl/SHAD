@@ -1,0 +1,13 @@
+.. _exhale_typedef_namespaceshad_1_1data__types_1ab3d5b1f29a1b7551a0b8dfb5e7ec0023:
+
+Typedef shad::data_types::schema_t
+==================================
+
+- Defined in :ref:`file_include_shad_extensions_data_types_data_types.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: shad::data_types::schema_t

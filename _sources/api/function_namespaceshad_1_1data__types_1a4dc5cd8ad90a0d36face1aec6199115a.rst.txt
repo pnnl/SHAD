@@ -1,0 +1,13 @@
+.. _exhale_function_namespaceshad_1_1data__types_1a4dc5cd8ad90a0d36face1aec6199115a:
+
+Template Function shad::data_types::encode(std::string&)
+========================================================
+
+- Defined in :ref:`file_include_shad_extensions_data_types_data_types.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::data_types::encode(std::string&)
