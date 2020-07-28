@@ -125,9 +125,9 @@ Functions
 
 - :ref:`exhale_function_utils_8h_1aa26f94aa4e333fb107863ff76bc5c8b4`
 
-- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1afb2c61b05a67d5866e715bcd0f0bbc9d`
-
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1ae1412ca0ba7dde890c047cd95712e841`
+
+- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1afb2c61b05a67d5866e715bcd0f0bbc9d`
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a1cc602e4f0d9ec4e0de7c8dec5cdd056`
 
