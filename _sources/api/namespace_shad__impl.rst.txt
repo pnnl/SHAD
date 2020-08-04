@@ -77,9 +77,9 @@ Functions
 
 - :ref:`exhale_function_impl__patterns_8h_1aaa60357de2f3eaaf01d8563738f5dbbe`
 
-- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a0290bcb45c99355e4813a2a66cb8ef3c`
-
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1aa791b85ba19db652abe0fc0ef4227738`
+
+- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a0290bcb45c99355e4813a2a66cb8ef3c`
 
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a39b464a80148f40b370afc52c00b3068`
 
@@ -159,9 +159,9 @@ Functions
 
 - :ref:`exhale_function_impl__patterns_8h_1acb91c9af4a31a73faa6ea8f71a0be42a`
 
-- :ref:`exhale_function_minimum__maximum__ops_8h_1ab42bc947de3c81671581ee2016fa2040`
-
 - :ref:`exhale_function_minimum__maximum__ops_8h_1a381d52cbdba7b857ceac91ee8eb8fcdd`
+
+- :ref:`exhale_function_minimum__maximum__ops_8h_1ab42bc947de3c81671581ee2016fa2040`
 
 - :ref:`exhale_function_minimum__maximum__ops_8h_1adfebf0e80301a20f84968a0ddf15953c`
 
@@ -187,9 +187,9 @@ Functions
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1a6a1767600912490fd07f16afec0dcb94`
 
-- :ref:`exhale_function_modifyng__sequence__ops_8h_1abef163bbc7540e659973b4c97f7e2916`
-
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1af60bc6eaef1f7ed831bfd111abaac888`
+
+- :ref:`exhale_function_modifyng__sequence__ops_8h_1abef163bbc7540e659973b4c97f7e2916`
 
 - :ref:`exhale_function_modifyng__sequence__ops_8h_1af4235126bba064e589c87b9eef1cd89a`
 
