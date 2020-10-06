@@ -83,9 +83,9 @@ Functions
 
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1aa791b85ba19db652abe0fc0ef4227738`
 
-- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a3492634cc68c358b63b9dbc2cbc97555`
-
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a39b464a80148f40b370afc52c00b3068`
+
+- :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a3492634cc68c358b63b9dbc2cbc97555`
 
 - :ref:`exhale_function_non__modifyng__sequence__ops_8h_1a7d6654b93471400a7ee8942da4ada07f`
 
