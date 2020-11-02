@@ -58,6 +58,9 @@ friend class LocalTable;
                hedges_(hedges), vertices_(vertices),
                he2v_(he2v), v2he_(v2he) { }
   void Collapse(shad::LocalSet<std::pair<ENC_t, ENC_t> >&collapse);
+  static void S_LineGraph(uint32_t s,
+                          shad::LocalIndex<ENC_t, ENC_t> &in_index,
+                          shad::LocalIndex<ENC_t, ENC_t> &s_index);
  private:
   StorageT* hedges_;
   StorageT* vertices_;
@@ -71,7 +74,6 @@ void Hypergraph<StorageT>::Collapse(shad::LocalSet<std::pair<Hypergraph<StorageT
   using it_t = typename std::vector<row_t>::iterator;
   uint64_t num_edges = hedges_->num_rows();
   uint64_t num_vertices = he2v_->num_rows();
-  std::cout << "************ num_vertices: " << num_vertices << ", num_edges: " << num_edges << std::endl;
   StorageT table(num_edges, num_vertices+num_edges);
 
   auto nthreads = shad::rt::impl::getConcurrency();
@@ -166,7 +168,32 @@ void Hypergraph<StorageT>::Collapse(shad::LocalSet<std::pair<Hypergraph<StorageT
   shad::rt::asyncForEachOnAll(h, fun_2, args2, niter);
   shad::rt::waitForCompletion(h);
 }
-  
+
+template <class StorageT>
+void Hypergraph<StorageT>::S_LineGraph(uint32_t S,
+                                       shad::LocalIndex<ENC_t, ENC_t> &in_index,
+                                       shad::LocalIndex<ENC_t, ENC_t> &overlaps) {
+  for (auto it = in_index.begin(); it != in_index.end(); ++it) {
+    auto vneigh = (*it);
+    auto v1beg = vneigh.second.begin();
+    auto v1end = vneigh.second.end();
+    auto v1Id = vneigh.first;
+    auto it2 = it;
+    ++it2;
+    for (; it2 != in_index.end(); ++it2) {
+      auto vneigh2 = (*it2);
+      std::vector<int> v_intersection;
+      std::set_intersection(v1beg, v1end,
+                            vneigh2.second.begin(), vneigh2.second.end(),
+                            std::back_inserter(v_intersection));
+      if (v_intersection.size() >= S) {
+        overlaps.Insert(v1Id, vneigh2.first);
+        overlaps.Insert(vneigh2.first, v1Id);
+      }
+    }
+  }
+}
+
 }  // namespace shad
 
 #endif  // INCLUDE_SHAD_EXTENSIONS_HYPERGRAPH_LIBRARY_HYPERGRAPH_H_
