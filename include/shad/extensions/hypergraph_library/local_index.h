@@ -252,7 +252,7 @@ class LocalIndex {
   }
 
   typename StorageT::NeighborListStorageT* GetNeighbors(const SrcT& src) {
-    return nullptr; //edges_.edgeList_.Lookup(src);
+    return edges_.edgeList_.Lookup(src);
   }
 
   void AsyncGetNeighbors(rt::Handle& handle, const SrcT src,
