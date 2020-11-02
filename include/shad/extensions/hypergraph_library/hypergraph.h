@@ -38,7 +38,7 @@
 #include "shad/extensions/hypergraph_library/index.h"
 #include "shad/extensions/table_library/local_table.h"
 #include "shad/data_structures/local_set.h"
-
+#include "shad/data_structures/local_hashmap.h"
 
 namespace shad {
 
@@ -74,6 +74,9 @@ friend class LocalTable;
 
   static size_t S_Distance(shad::LocalIndex<ENC_t, ENC_t> &s_graph_index,
                            ENC_t src, ENC_t dest);
+
+  static std::vector<ENC_t> S_ShortestPath(shad::LocalIndex<ENC_t, ENC_t> &s_graph_index,
+                                           ENC_t src, ENC_t dest);
  private:
   StorageT* hedges_;
   StorageT* vertices_;
@@ -240,15 +243,15 @@ size_t Hypergraph<StorageT>::S_Distance(shad::LocalIndex<ENC_t, ENC_t> &s_graph_
         shad::LocalSet<ENC_t> *visitedPtr = std::get<2>(args);        
         ENC_t target = std::get<4>(args);
         
-        if (visitedPtr->Find(dest) == true) return;
+        auto v = visitedPtr->Insert(dest);
+        if (v.second == false) return; // the vertex was already visited
         if (dest == target) {
           bool *foundPtr = std::get<3>(args);
           *foundPtr = true;
           return;
         }
         shad::LocalSet<ENC_t> *qnextPtr = std::get<1>(args);
-        qnextPtr->Insert(dest);
-        visitedPtr->Insert(dest);
+        qnextPtr->Insert(dest);        
       };
       auto neigh = graphPtr->GetNeighbors(curr_vertex);
       if (neigh == nullptr) return;
@@ -268,6 +271,86 @@ size_t Hypergraph<StorageT>::S_Distance(shad::LocalIndex<ENC_t, ENC_t> &s_graph_
   }
   return std::numeric_limits<size_t>::infinity();
 }
+
+template <class StorageT>
+std::vector<typename Hypergraph<StorageT>::ENC_t> 
+Hypergraph<StorageT>::S_ShortestPath(shad::LocalIndex<ENC_t, ENC_t> &s_graph_index,
+                                     ENC_t src, ENC_t dest) {
+  std::vector<ENC_t> shortest_path;
+  if (src == dest) return shortest_path;
+  size_t num_vertices = s_graph_index.Size();
+  shad::LocalSet<ENC_t> q(num_vertices/2);
+  shad::LocalSet<ENC_t> nextq(num_vertices/2);
+  shad::LocalSet<ENC_t> visited(num_vertices/2);
+  shad::LocalHashmap<ENC_t, ENC_t> predecessors(num_vertices/2);
+  auto predPtr = &predecessors;
+  bool found = false;
+  size_t level = 0;
+  shad::LocalSet<size_t> *qPtr, *nextqPtr;
+  qPtr = &q;
+  nextqPtr = &nextq;
+  qPtr->Insert(src);
+  visited.Insert(src);
+  auto visitedPtr = &visited;
+  auto foundPtr = &found;
+  auto graphPtr = &s_graph_index;
+  shad::rt::Handle handle;
+  while (qPtr->Size()) {
+    auto sssp_iteration = [](shad::rt::Handle &handle, 
+                             const ENC_t &curr_vertex,
+                             std::tuple<shad::LocalIndex<ENC_t, ENC_t> *,
+                                              shad::LocalSet<ENC_t> *,
+                                              shad::LocalSet<ENC_t> *,
+                                              bool *,
+                                              ENC_t,
+                                              shad::LocalHashmap<ENC_t, ENC_t> *> &args) {
+      shad::LocalIndex<ENC_t, ENC_t> *graphPtr = std::get<0>(args);
+
+      auto sssp_neigh_iter = [&args, curr_vertex](const ENC_t &dest) {
+        shad::LocalSet<ENC_t> *visitedPtr = std::get<2>(args);        
+        ENC_t target = std::get<4>(args);
+        
+        auto v = visitedPtr->Insert(dest);
+        if (v.second == false) return; // the vertex was already visited        
+        shad::LocalHashmap<ENC_t, ENC_t> *predPtr = std::get<5>(args);;
+        predPtr->Insert(dest, curr_vertex);
+        if (dest == target) {
+          bool *foundPtr = std::get<3>(args);
+          *foundPtr = true;
+          return;
+        }
+        shad::LocalSet<ENC_t> *qnextPtr = std::get<1>(args);
+        qnextPtr->Insert(dest); // FIXME can be removed
+      };
+      auto neigh = graphPtr->GetNeighbors(curr_vertex);
+      if (neigh == nullptr) return;
+      std::for_each(neigh->begin(), neigh->end(), sssp_neigh_iter);
+    };
+    auto args = std::make_tuple(graphPtr, nextqPtr, visitedPtr, foundPtr, dest, predPtr);
+    qPtr->AsyncForEachElement(handle, sssp_iteration, args);
+    shad::rt::waitForCompletion(handle);
+    // check solution
+    ++level;
+    if (found) {
+      shortest_path.resize(level);
+      shortest_path[--level] = dest;
+      while(level >0) {
+        dest = *predecessors.Lookup(dest);
+        shortest_path[--level] = dest;
+      }
+            
+      return shortest_path;
+    }
+    // prepare for next round
+    qPtr->Reset(num_vertices / 2);
+    auto tmp = qPtr;
+    qPtr = nextqPtr;
+    nextqPtr = tmp;
+  }
+  
+  return shortest_path;
+}
+
 }  // namespace shad
 
 #endif  // INCLUDE_SHAD_EXTENSIONS_HYPERGRAPH_LIBRARY_HYPERGRAPH_H_
