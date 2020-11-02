@@ -58,6 +58,14 @@ friend class LocalTable;
                hedges_(hedges), vertices_(vertices),
                he2v_(he2v), v2he_(v2he) { }
 
+  size_t NumHEdges() {
+    return hedges_.num_rows();
+  }
+
+  size_t NumVertices() {
+    return vertices_.num_rows();
+  }
+
   void Collapse(shad::LocalSet<std::pair<ENC_t, ENC_t> >&collapse);
 
   static void S_LineGraph(uint32_t s,
