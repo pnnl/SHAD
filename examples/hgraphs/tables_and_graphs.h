@@ -14,7 +14,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-double my_timer() {
+double my_custom_timer() {
   struct timeval tv;
   struct timezone tz;
   gettimeofday(&tv, &tz);

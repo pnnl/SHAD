@@ -6,7 +6,7 @@ int main ( int argc, char ** argv) {
 // READ FILE NAME FROM COMMAND LINE
   if (argc != 2) {printf("Usage: <input file>\n"); return 1;}
 
-  double time1 = my_timer();
+  double time1 = my_custom_timer();
 
 /**********  DATA TABLE **********/
   schema_t dataTableSchema(4);
@@ -17,7 +17,7 @@ int main ( int argc, char ** argv) {
   table_t Data(std::string(argv[1]), dataTableSchema);
   printf("   Number of data record = %lu\n", Data.num_rows());
 
-  printf("Time for table construction is %lf\n", my_timer() - time1);
+  printf("Time for table construction is %lf\n", my_custom_timer() - time1);
 
 
 /**********  VERTEX TABLES **********/
@@ -56,25 +56,25 @@ int main ( int argc, char ** argv) {
 /**********  CREATE GRAPH **********/
   hypergraph_t hgraph(&HE, &V, &HEV, &VHE);
 
-  time1 = my_timer();
+  time1 = my_custom_timer();
 
   collapse_set_t collapse(HE.num_rows()/16);
   hgraph.Collapse(collapse);
   printf("\n   Number of collapsed items = %lu\n", collapse.Size());
-  printf("Time for hgraph Collapse is %lf\n", my_timer() - time1);
+  printf("Time for hgraph Collapse is %lf\n", my_custom_timer() - time1);
   
-  time1 = my_timer();
+  time1 = my_custom_timer();
   
   index_t e2v(HEV.num_rows());
   table_t::CreateLocalIndex(HEV, e2v, 0, 1);
 
-  printf("Time for v2e2v is %lf\n", my_timer() - time1);
+  printf("Time for v2e2v is %lf\n", my_custom_timer() - time1);
   printf("e2v Index size is %lu\n", e2v.Size());
 
-  time1 = my_timer();
+  time1 = my_custom_timer();
   shad::LocalIndex<uint64_t, uint64_t> overlaps(HE.num_rows());
   hgraph.S_LineGraph(1, e2v, overlaps);
-  printf("Time for overlpas %lf\n", my_timer() - time1);
+  printf("Time for overlpas %lf\n", my_custom_timer() - time1);
   printf("overlaps size is %lu\n", overlaps.Size());
 
 // purposely introduce at least a path in the hgraph
