@@ -52,6 +52,7 @@ class LocalTable {
  public:
   using schema_t = data_types::schema_t;
   using row_t = ENC_t*;
+  using ENC_type = ENC_t;
   LocalTable() {}
   LocalTable(const LocalTable<ENC_t>&rhs) : 
                  num_cols_(rhs.num_cols_),
@@ -59,8 +60,6 @@ class LocalTable {
                  schema_(rhs.schema_),
                  rows_(rhs.rows_),
                  data_(rhs.data_) {
-        std::cout << "rhs num rows: " << rhs.num_rows_ <<std::endl;
-        std::cout << "rhs num rows: " << rhs.num_rows_ <<std::endl;
   }
   LocalTable(size_t num_rows, schema_t schema) 
                : num_cols_(schema.size()),
@@ -108,7 +107,6 @@ class LocalTable {
     data_ = std::vector<ENC_t>(num_rows_*num_cols_);
     
     auto nthreads = shad::rt::impl::getConcurrency();
-    std::cout << "concurrency: " << nthreads << std::endl;
     uint64_t blocksize = __CEILING(num_rows_, nthreads);
     using tuple_v2_t = std::tuple<row_t*, // rows
                                   ENC_t*, // data
@@ -705,7 +703,6 @@ public:
     using it_t = typename std::vector<row_t>::iterator;
     uint64_t num_edges = edges.num_rows();
     uint64_t num_vertices = vertices.num_rows();
-
     LocalTable<ENC_t> table(num_vertices, num_edges+num_vertices);
 
     auto nthreads = shad::rt::impl::getConcurrency();
@@ -802,7 +799,6 @@ public:
     shad::rt::asyncForEachOnAll(h, fun_2, args2, niter);
     shad::rt::waitForCompletion(h);
     printf("   Number of collapsed items = %lu\n", collapse.Size());
-
   }
   
   static void CreateLocalEdgeIndex(LocalTable<ENC_t>& edges,
