@@ -93,7 +93,16 @@ struct SynchronousInterface {
   static void forEachOnAll(FunT &&func,
                            const std::shared_ptr<uint8_t> &argsBuffer,
                            const uint32_t bufferSize, const size_t numIters);
-};
+
+  template <typename T>
+  static void dma(const Locality &destLoc, const T* remoteAddress,
+                  const T* localData, const size_t numElements);
+ 
+  template <typename T>
+  static void dma(const T* localAddress, const Locality &srcLoc,
+                  const T* remoteData, const size_t numElements);
+  
+  };
 
 }  // namespace impl
 

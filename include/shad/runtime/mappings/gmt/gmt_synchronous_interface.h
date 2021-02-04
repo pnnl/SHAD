@@ -324,6 +324,20 @@ struct SynchronousInterface<gmt_tag> {
     gmt_for_loop(numIters, workload, forEachWrapper, buffer.get(),
                  newBufferSize, GMT_SPAWN_SPREAD);
   }
+
+  template <typename T>
+  static void dma(const Locality &destLoc, const T* remoteAddress,
+                  const T* localData, const size_t numElements) {
+    gmt_mem_put(getNodeId(destLoc), (u_int8_t*)remoteAddress,
+                (u_int8_t*)(localData), numElements*sizeof(T));
+  }
+
+  template <typename T>
+  static void dma(const T* localAddress, const Locality &srcLoc,
+                  const T* remoteData, const size_t numElements) {
+    gmt_mem_get(getNodeId(srcLoc), (u_int8_t*)localAddress,
+                (u_int8_t*)(remoteData), numElements*sizeof(T));
+  }
 };
 
 }  // namespace impl
