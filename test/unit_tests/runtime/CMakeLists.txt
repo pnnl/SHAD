@@ -1,4 +1,4 @@
-set(tests execute_at_test execute_on_all_test for_each_test)
+set(tests execute_at_test execute_on_all_test for_each_test rdma_test)
 
 foreach(t ${tests})
   add_executable(${t} ${t}.cc)
