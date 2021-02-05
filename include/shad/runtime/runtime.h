@@ -1171,6 +1171,13 @@ void asyncForEachOnAll(Handle &handle, FunT &&func,
       handle, func, argsBuffer, bufferSize, numIters);
 }
 
+/// @brief Copies local data to a potentially remote memory allocation.
+///
+/// @tparam T type of the data to copy.
+/// @param destLoc The locality where to copy to.
+/// @param remoteAddress The pointer to the destination memory allocation.
+/// @param localeData The pointer to the memory allocation to copy from.
+/// @param numElements Number of elements to copy.
 template <typename T>
 void dma(const Locality &destLoc, const T* remoteAddress,
          const T* localData, const size_t numElements) {
@@ -1178,6 +1185,13 @@ void dma(const Locality &destLoc, const T* remoteAddress,
       destLoc, remoteAddress, localData, numElements);
 }
 
+/// @brief Copies potentially remote data to local memory allocation.
+///
+/// @tparam T type of the data to copy.
+/// @param localAddress The pointer to the local memory allocation.
+/// @param srcLoc The locality where to copy from.
+/// @param remoteData The pointer to the memory allocation to copy from.
+/// @param numElements Number of elements to copy.
 template <typename T>
 void dma(const T* localAddress, const Locality &srcLoc,
          const T* remoteData, const size_t numElements) {
@@ -1185,6 +1199,15 @@ void dma(const T* localAddress, const Locality &srcLoc,
       localAddress, srcLoc, remoteData, numElements);
 }
 
+/// @brief Copies local data to a potentially remote
+//         memory allocation, asynchronously.
+///
+/// @tparam T type of the data to copy
+/// @param handle An Handle for the associated task-group.
+/// @param destLoc The locality where to copy to.
+/// @param remoteAddress The pointer to the destination memory allocation.
+/// @param localeData The pointer to the memory allocation to copy from.
+/// @param numElements Number of elements to copy.
 template <typename T>
 void asyncDma(Handle &handle,
               const Locality &destLoc, const T* remoteAddress,
@@ -1199,6 +1222,15 @@ void asyncDma(Handle &handle,
         args); 
 }
 
+/// @brief Copies (potentially remote) data
+//         to local memory allocation, asynchronously.
+///
+/// @tparam T type of the data to copy
+/// @param handle An Handle for the associated task-group.
+/// @param localAddress The pointer to the local memory allocation.
+/// @param srcLoc The locality where to copy from.
+/// @param remoteData The pointer to the memory allocation to copy from.
+/// @param numElements Number of elements to copy.
 template <typename T>
 void asyncDma(Handle &handle,
               const T* localAddress, const Locality &srcLoc,
