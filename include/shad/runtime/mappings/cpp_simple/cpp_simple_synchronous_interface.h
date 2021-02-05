@@ -152,6 +152,20 @@ struct SynchronousInterface<cpp_tag> {
     FunctionTy fn = std::forward<decltype(function)>(function);
     for (auto i = 0; i < numIters; ++i) fn(argsBuffer.get(), bufferSize, i);
   }
+
+  template <typename T>
+  static void dma(const Locality &, const T* remoteAddress,
+                  const T* localData, const size_t numElements) {
+    memcpy(getNodeId((u_int8_t*)remoteAddress,
+                     (u_int8_t*)(localData), numElements*sizeof(T));
+  }
+
+  template <typename T>
+  static void dma(const T* localAddress, const Locality &,
+                  const T* remoteData, const size_t numElements) {
+    memcpy((u_int8_t*)localAddress, (u_int8_t*)(remoteData),
+           numElements*sizeof(T));
+  }
 };
 
 }  // namespace impl
