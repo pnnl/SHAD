@@ -25,6 +25,7 @@
 #ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_SYNCHRONOUS_INTERFACE_H_
 #define INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_SYNCHRONOUS_INTERFACE_H_
 
+#include <cstring>
 #include <memory>
 #include <utility>
 
@@ -156,14 +157,14 @@ struct SynchronousInterface<cpp_tag> {
   template <typename T>
   static void dma(const Locality &, const T* remoteAddress,
                   const T* localData, const size_t numElements) {
-    memcpy(getNodeId((u_int8_t*)remoteAddress,
-                     (u_int8_t*)(localData), numElements*sizeof(T));
+    memcpy((u_int8_t*)remoteAddress, (u_int8_t*)localData,
+           numElements*sizeof(T));
   }
 
   template <typename T>
   static void dma(const T* localAddress, const Locality &,
                   const T* remoteData, const size_t numElements) {
-    memcpy((u_int8_t*)localAddress, (u_int8_t*)(remoteData),
+    memcpy((u_int8_t*)localAddress, (u_int8_t*)remoteData,
            numElements*sizeof(T));
   }
 };
