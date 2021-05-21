@@ -8,6 +8,7 @@ Content
 
    api/library_root
    license
+   tutorials
 
 Indices and Tables
 ==================
