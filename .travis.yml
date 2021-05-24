@@ -110,7 +110,7 @@ before_install:
   - cmake --build build -- -j 2
   - cmake --build build --target install
   - cd ..
-  - git clone --depth 1 https://github.com/01org/tbb.git
+  - git clone https://github.com/oneapi-src/oneTBB.git --branch v2020.3 tbb
   - cd tbb
   - make work_dir=$(pwd)/build-tbb tbb_root=$(pwd)
   - mkdir $HOME/tbb-root && cp -r include $HOME/tbb-root/
