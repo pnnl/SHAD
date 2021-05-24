@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1aa786b052205592681178c5299bff35ec:
+
+Template Function shad::rt::dma(const T \*, const Locality&, const T \*, const size_t)
+======================================================================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::dma(const T *, const Locality&, const T *, const size_t)

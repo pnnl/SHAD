@@ -85,6 +85,9 @@ Program Listing for File data_types.h
      template <typename ENC_t, typename IN_t>
      ENC_t encode(IN_t &in);
    
+     template <typename ENC_t, typename IN_t>
+     ENC_t encode(IN_t &in, data_t dt);
+   
      template <typename ENC_t, size_t MAX_s, data_t ST>
      std::array<ENC_t, MAX_s> encode(std::string &str) {
        std::array<ENC_t, MAX_s> res;
@@ -97,7 +100,7 @@ Program Listing for File data_types.h
      }
    
      template <typename ENC_t, typename DEC_t>
-     typename std::enable_if<std::is_arithmetic<DEC_t>::value, DEC_t>::type
+     typename std::enable_if<(std::is_arithmetic<DEC_t>::value or (sizeof(DEC_t) == sizeof(ENC_t))), DEC_t>::type
      decode(ENC_t encvalue) {
        DEC_t val;
        memcpy(&val, &encvalue, sizeof(DEC_t));
@@ -110,16 +113,38 @@ Program Listing for File data_types.h
      template <typename ENC_t, data_t ST>
      typename std::enable_if<(ST==data_t::INT), int64_t>::type 
      decode(ENC_t encvalue) {
-       int64_t val;
-       memcpy(&val, &encvalue, sizeof(int64_t));
-       return val;
+       return decode<ENC_t, int64_t>(encvalue);
      }
    
-     // template <typename ENC_t, typename DEC_t, data_t ST>
-     // DEC_t decode(ENC_t value);
-     
-     // template <typename ENC_t, typename DEC_t>
-     // DEC_t decode (ENC_t value);
+     template <typename ENC_t, data_t ST>
+     typename std::enable_if<(ST==data_t::UINT), uint64_t>::type 
+     decode(ENC_t encvalue) {
+       return decode<ENC_t, uint64_t>(encvalue);
+     }
+   
+     template <typename ENC_t, data_t ST>
+     typename std::enable_if<(ST==data_t::FLOAT), float>::type 
+     decode(ENC_t encvalue) {
+       return decode<ENC_t, float>(encvalue);
+     }
+   
+     template <typename ENC_t, data_t ST>
+     typename std::enable_if<(ST==data_t::DOUBLE), double>::type 
+     decode(ENC_t encvalue) {
+       return decode<ENC_t, double>(encvalue);
+     }
+   
+     template <typename ENC_t, data_t ST>
+     typename std::enable_if<(ST==data_t::BOOL), bool>::type 
+     decode(ENC_t encvalue) {
+       return decode<ENC_t, bool>(encvalue);
+     }
+   
+     template <typename ENC_t, data_t ST>
+     typename std::enable_if<(ST==data_t::DATE), std::time_t>::type 
+     decode(ENC_t encvalue) {
+       return decode<ENC_t, std::time_t>(encvalue);
+     }
      
      template <typename ENC_t, size_t MAX_s, data_t ST>
      std::string decode(std::array<ENC_t, MAX_s> &val) {
@@ -276,6 +301,35 @@ Program Listing for File data_types.h
      return value;
    }
    
+   template <typename ENC_t, typename IN_t>
+   ENC_t data_types::encode(IN_t &in, data_types::data_t dt) {
+     switch (dt) {
+   //     case data_types::STRING :
+   //       return data_types::encode<ENC_t, IN_t, data_types::STRING>(in);
+   //     case data_types::CHARS :
+   //       return data_types::encode<ENC_t, IN_t, data_types::CHARS>(in);
+       case data_types::UINT :
+         return data_types::encode<ENC_t, IN_t, data_types::UINT>(in);
+       case data_types::INT :
+         return data_types::encode<ENC_t, IN_t, data_types::INT>(in);
+       case data_types::FLOAT :
+         return data_types::encode<ENC_t, IN_t, data_types::FLOAT>(in);
+       case data_types::DOUBLE :
+         return data_types::encode<ENC_t, IN_t, data_types::DOUBLE>(in);
+       case data_types::BOOL :
+         return data_types::encode<ENC_t, IN_t, data_types::BOOL>(in);
+       case data_types::DATE :
+         return data_types::encode<ENC_t, IN_t, data_types::DATE>(in);
+       case data_types::USDATE :
+         return data_types::encode<ENC_t, IN_t, data_types::USDATE>(in);
+       case data_types::DATE_TIME :
+         return data_types::encode<ENC_t, IN_t, data_types::DATE_TIME>(in);
+       case data_types::IP_ADDRESS :
+         return data_types::encode<ENC_t, IN_t, data_types::IP_ADDRESS>(in);
+     }
+     return data_types::kNullValue<ENC_t>;
+   }
+   
    template<>
    std::string data_types::decode<uint64_t,
                                   std::string,
@@ -317,9 +371,30 @@ Program Listing for File data_types.h
    template<>
    std::string data_types::decode<uint64_t,
                                   std::string,
+                                  data_types::IP_ADDRESS>(uint64_t value) {
+     std::string ipAddr = "";
+     uint64_t octets[4];
+     for (uint64_t k = 0; k < 4; k ++) {octets[k] = value & 255; value = value >> 8;}
+     for (uint64_t k = 3; k >= 1; k --) ipAddr += std::to_string(octets[k]) + '.';
+     return ipAddr + std::to_string(octets[0]);
+   }
+   
+   template<>
+   std::string data_types::decode<uint64_t,
+                                  std::string,
                                   data_types::BOOL>(uint64_t value) {
      if (value == kNullValue<uint64_t>) return "";
      return std::to_string(value);
+   }
+   
+   template<>
+   std::string data_types::decode<uint64_t,
+                                  std::string,
+                                  data_types::DATE>(uint64_t value) {
+     time_t t = data_types::decode<uint64_t, data_types::DATE>(value);
+     char dateString[11];
+     strftime(dateString, 11, "%Y-%m-%d", std::localtime(&t));
+     return std::string(dateString);
    }
    
    template<>
@@ -336,33 +411,6 @@ Program Listing for File data_types.h
    }
    
    
-   // template <>
-   // int64_t data_types::decode<uint64_t, int64_t>(uint64_t encvalue) {
-   //   int64_t val;
-   //   memcpy(&val, &encvalue, sizeof(val));
-   //   return val;
-   // }
-   
-   // template <>
-   // float data_types::decode<uint64_t, float>(uint64_t encvalue) {
-   //   float val;
-   //   memcpy(&val, &encvalue, sizeof(val));
-   //   return val;
-   // }
-   
-   // template <>
-   // double data_types::decode<uint64_t, double>(uint64_t encvalue) {
-   //   double val;
-   //   memcpy(&val, &encvalue, sizeof(val));
-   //   return val;
-   // }
-   
-   // template <>
-   // bool data_types::decode<uint64_t, bool>(uint64_t encvalue) {
-   //   float val;
-   //   memcpy(&val, &encvalue, sizeof(val));
-   //   return val;
-   // }
    
    
    }  // namespace shad

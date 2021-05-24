@@ -1,0 +1,13 @@
+.. _exhale_function_namespaceshad_1_1data__types_1a0326eb5223f82db5a6ff857d94cac55f:
+
+Template Function shad::data_types::decode(ENC_t)
+=================================================
+
+- Defined in :ref:`file_include_shad_extensions_data_types_data_types.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::data_types::decode(ENC_t)

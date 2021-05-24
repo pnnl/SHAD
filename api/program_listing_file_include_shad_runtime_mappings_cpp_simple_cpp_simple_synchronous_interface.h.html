@@ -95,8 +95,6 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a></li>
@@ -176,6 +174,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">SHAD Tutorials</a></li>
 </ul>
 
             
@@ -274,6 +273,7 @@
 <span class="cp">#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_SYNCHRONOUS_INTERFACE_H_</span>
 <span class="cp">#define INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_SYNCHRONOUS_INTERFACE_H_</span>
 
+<span class="cp">#include</span> <span class="cpf">&lt;cstring&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;memory&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;utility&gt;</span><span class="cp"></span>
 
@@ -400,6 +400,20 @@
     <span class="k">using</span> <span class="n">FunctionTy</span> <span class="o">=</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint32_t</span><span class="p">,</span> <span class="kt">size_t</span><span class="p">);</span>
     <span class="n">FunctionTy</span> <span class="n">fn</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">function</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span><span class="n">function</span><span class="p">);</span>
     <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numIters</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">fn</span><span class="p">(</span><span class="n">argsBuffer</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">bufferSize</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">dma</span><span class="p">(</span><span class="k">const</span> <span class="n">Locality</span> <span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">remoteAddress</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">localData</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span> <span class="n">numElements</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">memcpy</span><span class="p">((</span><span class="n">u_int8_t</span><span class="o">*</span><span class="p">)</span><span class="n">remoteAddress</span><span class="p">,</span> <span class="p">(</span><span class="n">u_int8_t</span><span class="o">*</span><span class="p">)</span><span class="n">localData</span><span class="p">,</span>
+           <span class="n">numElements</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+  <span class="k">static</span> <span class="kt">void</span> <span class="n">dma</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">localAddress</span><span class="p">,</span> <span class="k">const</span> <span class="n">Locality</span> <span class="o">&amp;</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">remoteData</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span> <span class="n">numElements</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">memcpy</span><span class="p">((</span><span class="n">u_int8_t</span><span class="o">*</span><span class="p">)</span><span class="n">localAddress</span><span class="p">,</span> <span class="p">(</span><span class="n">u_int8_t</span><span class="o">*</span><span class="p">)</span><span class="n">remoteData</span><span class="p">,</span>
+           <span class="n">numElements</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
   <span class="p">}</span>
 <span class="p">};</span>
 

@@ -37,6 +37,7 @@ Program Listing for File cpp_simple_synchronous_interface.h
    #ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_SYNCHRONOUS_INTERFACE_H_
    #define INCLUDE_SHAD_RUNTIME_MAPPINGS_CPP_SIMPLE_CPP_SIMPLE_SYNCHRONOUS_INTERFACE_H_
    
+   #include <cstring>
    #include <memory>
    #include <utility>
    
@@ -163,6 +164,20 @@ Program Listing for File cpp_simple_synchronous_interface.h
        using FunctionTy = void (*)(const uint8_t *, const uint32_t, size_t);
        FunctionTy fn = std::forward<decltype(function)>(function);
        for (auto i = 0; i < numIters; ++i) fn(argsBuffer.get(), bufferSize, i);
+     }
+   
+     template <typename T>
+     static void dma(const Locality &, const T* remoteAddress,
+                     const T* localData, const size_t numElements) {
+       memcpy((u_int8_t*)remoteAddress, (u_int8_t*)localData,
+              numElements*sizeof(T));
+     }
+   
+     template <typename T>
+     static void dma(const T* localAddress, const Locality &,
+                     const T* remoteData, const size_t numElements) {
+       memcpy((u_int8_t*)localAddress, (u_int8_t*)remoteData,
+              numElements*sizeof(T));
      }
    };
    

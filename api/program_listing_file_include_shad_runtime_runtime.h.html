@@ -95,8 +95,6 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a></li>
@@ -176,6 +174,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">SHAD Tutorials</a></li>
 </ul>
 
             
@@ -518,6 +517,51 @@
                        <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">bufferSize</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span> <span class="n">numIters</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">impl</span><span class="o">::</span><span class="n">AsynchronousInterface</span><span class="o">&lt;</span><span class="n">TargetSystemTag</span><span class="o">&gt;::</span><span class="n">asyncForEachOnAll</span><span class="p">(</span>
       <span class="n">handle</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">argsBuffer</span><span class="p">,</span> <span class="n">bufferSize</span><span class="p">,</span> <span class="n">numIters</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">dma</span><span class="p">(</span><span class="k">const</span> <span class="n">Locality</span> <span class="o">&amp;</span><span class="n">destLoc</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">remoteAddress</span><span class="p">,</span>
+         <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">localData</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span> <span class="n">numElements</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">impl</span><span class="o">::</span><span class="n">SynchronousInterface</span><span class="o">&lt;</span><span class="n">TargetSystemTag</span><span class="o">&gt;::</span><span class="n">dma</span><span class="p">(</span>
+      <span class="n">destLoc</span><span class="p">,</span> <span class="n">remoteAddress</span><span class="p">,</span> <span class="n">localData</span><span class="p">,</span> <span class="n">numElements</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">dma</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">localAddress</span><span class="p">,</span> <span class="k">const</span> <span class="n">Locality</span> <span class="o">&amp;</span><span class="n">srcLoc</span><span class="p">,</span>
+         <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">remoteData</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span> <span class="n">numElements</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">impl</span><span class="o">::</span><span class="n">SynchronousInterface</span><span class="o">&lt;</span><span class="n">TargetSystemTag</span><span class="o">&gt;::</span><span class="n">dma</span><span class="p">(</span>
+      <span class="n">localAddress</span><span class="p">,</span> <span class="n">srcLoc</span><span class="p">,</span> <span class="n">remoteData</span><span class="p">,</span> <span class="n">numElements</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">//         memory allocation, asynchronously.</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">asyncDma</span><span class="p">(</span><span class="n">Handle</span> <span class="o">&amp;</span><span class="n">handle</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">Locality</span> <span class="o">&amp;</span><span class="n">destLoc</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">remoteAddress</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">localData</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span> <span class="n">numElements</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Locality</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span><span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span><span class="o">*</span><span class="p">,</span><span class="k">const</span> <span class="kt">size_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="n">args_t</span> <span class="nf">args</span><span class="p">(</span><span class="n">destLoc</span><span class="p">,</span> <span class="n">remoteAddress</span><span class="p">,</span> <span class="n">localData</span><span class="p">,</span> <span class="n">numElements</span><span class="p">);</span>
+  <span class="n">asyncExecuteAt</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">thisLocality</span><span class="p">(),</span>
+        <span class="p">[](</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">args_t</span><span class="o">&amp;</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">dma</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">),</span>
+              <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">));</span>
+        <span class="p">},</span>
+        <span class="n">args</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">//         to local memory allocation, asynchronously.</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">asyncDma</span><span class="p">(</span><span class="n">Handle</span> <span class="o">&amp;</span><span class="n">handle</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">localAddress</span><span class="p">,</span> <span class="k">const</span> <span class="n">Locality</span> <span class="o">&amp;</span><span class="n">srcLoc</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">T</span><span class="o">*</span> <span class="n">remoteData</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span> <span class="n">numElements</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">using</span> <span class="n">args_t</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">T</span><span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="n">Locality</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="n">T</span><span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">size_t</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="n">args_t</span> <span class="nf">args</span><span class="p">(</span><span class="n">localAddress</span><span class="p">,</span> <span class="n">srcLoc</span><span class="p">,</span> <span class="n">remoteData</span><span class="p">,</span> <span class="n">numElements</span><span class="p">);</span>
+  <span class="n">asyncExecuteAt</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">thisLocality</span><span class="p">(),</span>
+        <span class="p">[](</span><span class="n">Handle</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">args_t</span><span class="o">&amp;</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">dma</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">),</span>
+              <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">));</span>
+        <span class="p">},</span>
+        <span class="n">args</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="kr">inline</span> <span class="kt">void</span> <span class="n">waitForCompletion</span><span class="p">(</span><span class="n">Handle</span> <span class="o">&amp;</span><span class="n">handle</span><span class="p">)</span> <span class="p">{</span>

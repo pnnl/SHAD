@@ -29,6 +29,8 @@ Includes
 --------
 
 
+- ``cstring``
+
 - ``memory`` (:ref:`file_include_shad_core_impl_ops_on_uninitialized_memory.h`)
 
 - ``shad/runtime/locality.h`` (:ref:`file_include_shad_runtime_locality.h`)

@@ -737,7 +737,7 @@ Functions
 .. toctree::
    :maxdepth: 5
 
-   function_namespaceshad_1_1data__types_1a9f436346f1a16a19c0d66978cc0e9e8f.rst
+   function_namespaceshad_1_1data__types_1a0326eb5223f82db5a6ff857d94cac55f.rst
 
 .. toctree::
    :maxdepth: 5
@@ -748,6 +748,31 @@ Functions
    :maxdepth: 5
 
    function_namespaceshad_1_1data__types_1a4d22f561461753aab67f8af5d40eaf74.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1ae8d280a7f9c3ad36dd9e4c47c09851b8.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1ab75b2b9f8076ddd9d246e925e05d88aa.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a591f6b0e5f78ef929e14bbf334b099ab.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a1f8b6b6e021ab84c6d8867453f93fa97.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a092066ba21ca9b8ffc02fb41c429ed2c.rst
 
 .. toctree::
    :maxdepth: 5
@@ -767,6 +792,11 @@ Functions
 .. toctree::
    :maxdepth: 5
 
+   function_data__types_8h_1a30ee222d2f2411e86f4becc992aeac92.rst
+
+.. toctree::
+   :maxdepth: 5
+
    function_data__types_8h_1a361820c4935a2a7daeede2eb1ce25e08.rst
 
 .. toctree::
@@ -782,6 +812,11 @@ Functions
 .. toctree::
    :maxdepth: 5
 
+   function_data__types_8h_1adba3d2dbf069284721d598ef2dd20210.rst
+
+.. toctree::
+   :maxdepth: 5
+
    function_data__types_8h_1a43d0a13d0e2a987f052e97dcdfeb207c.rst
 
 .. toctree::
@@ -793,6 +828,11 @@ Functions
    :maxdepth: 5
 
    function_namespaceshad_1_1data__types_1a75da5192986b9c674216b14bd608976e.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_namespaceshad_1_1data__types_1a6a509debac6606114a1a0d75e50e049b.rst
 
 .. toctree::
    :maxdepth: 5
@@ -1642,6 +1682,16 @@ Functions
 .. toctree::
    :maxdepth: 5
 
+   function_runtime_8h_1a2becd6502def829b6195485b0397b86a.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_runtime_8h_1aef549ea8c79898a6c9e679eab0978009.rst
+
+.. toctree::
+   :maxdepth: 5
+
    function_runtime_8h_1aad88d972c54520fa6da6661c0972ca66.rst
 
 .. toctree::
@@ -1698,6 +1748,16 @@ Functions
    :maxdepth: 5
 
    function_runtime_8h_1a4737e1c84ac7e830a1a306ac5b136a7d.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_runtime_8h_1a5494f3dde8a730e08db69d16b6da6acd.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_runtime_8h_1aa786b052205592681178c5299bff35ec.rst
 
 .. toctree::
    :maxdepth: 5

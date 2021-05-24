@@ -95,8 +95,6 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="library_root.html">Library API</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="library_root.html#class-hierarchy">Class Hierarchy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="library_root.html#file-hierarchy">File Hierarchy</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="library_root.html#full-api">Full API</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="library_root.html#namespaces">Namespaces</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="library_root.html#classes-and-structs">Classes and Structs</a><ul class="current">
@@ -233,6 +231,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">Apache License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">SHAD Tutorials</a></li>
 </ul>
 
             
@@ -369,6 +368,16 @@
 <dl class="function">
 <dt id="_CPPv3N4shad2rt4impl20SynchronousInterface12forEachOnAllERR4FunTRKNSt10shared_ptrI7uint8_tEEK8uint32_tK6size_t">
 <span id="_CPPv2N4shad2rt4impl20SynchronousInterface12forEachOnAllERR4FunTRKNSt10shared_ptrI7uint8_tEEK8uint32_tK6size_t"></span><span id="shad::rt::impl::SynchronousInterface::forEachOnAll__FunTRR.std::shared_ptr:uint8_t:CR.uint32_tC.sC"></span><em class="property">template </em>&lt;<em class="property">typename</em> FunT&gt;<br /><span class="target" id="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4_1ae29351b503d7e7774b94d2dab2121a39"></span><em class="property">static</em> void <code class="descname">forEachOnAll</code><span class="sig-paren">(</span>FunT &amp;&amp;<em>function</em>, <em class="property">const</em> std::shared_ptr&lt;uint8_t&gt; &amp;<em>argsBuffer</em>, <em class="property">const</em> uint32_t <em>bufferSize</em>, <em class="property">const</em> size_t <em>numIters</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad2rt4impl20SynchronousInterface12forEachOnAllERR4FunTRKNSt10shared_ptrI7uint8_tEEK8uint32_tK6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad2rt4impl20SynchronousInterface3dmaERK8LocalityPK1TPK1TK6size_t">
+<span id="_CPPv2N4shad2rt4impl20SynchronousInterface3dmaERK8LocalityPK1TPK1TK6size_t"></span><span id="shad::rt::impl::SynchronousInterface::dma__LocalityCR.TCP.TCP.sC"></span><em class="property">template </em>&lt;<em class="property">typename</em> T&gt;<br /><span class="target" id="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4_1a3b3a94e6284592f5fe8111aea4cee3a5"></span><em class="property">static</em> void <code class="descname">dma</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="classshad_1_1rt_1_1Locality.html#_CPPv3N4shad2rt8LocalityE" title="shad::rt::Locality">Locality</a> &amp;<em>destLoc</em>, <em class="property">const</em> T *<em>remoteAddress</em>, <em class="property">const</em> T *<em>localData</em>, <em class="property">const</em> size_t <em>numElements</em><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N4shad2rt4impl20SynchronousInterface3dmaEPK1TRK8LocalityPK1TK6size_t">
+<span id="_CPPv2N4shad2rt4impl20SynchronousInterface3dmaEPK1TRK8LocalityPK1TK6size_t"></span><span id="shad::rt::impl::SynchronousInterface::dma__TCP.LocalityCR.TCP.sC"></span><em class="property">template </em>&lt;<em class="property">typename</em> T&gt;<br /><span class="target" id="structshad_1_1rt_1_1impl_1_1SynchronousInterface_3_01gmt__tag_01_4_1a3f0c4d38f56f721c17502400d8c7feef"></span><em class="property">static</em> void <code class="descname">dma</code><span class="sig-paren">(</span><em class="property">const</em> T *<em>localAddress</em>, <em class="property">const</em> <a class="reference internal" href="classshad_1_1rt_1_1Locality.html#_CPPv3N4shad2rt8LocalityE" title="shad::rt::Locality">Locality</a> &amp;<em>srcLoc</em>, <em class="property">const</em> T *<em>remoteData</em>, <em class="property">const</em> size_t <em>numElements</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N4shad2rt4impl20SynchronousInterface3dmaEPK1TRK8LocalityPK1TK6size_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>

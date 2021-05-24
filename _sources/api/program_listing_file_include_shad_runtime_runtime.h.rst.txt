@@ -283,6 +283,51 @@ Program Listing for File runtime.h
          handle, func, argsBuffer, bufferSize, numIters);
    }
    
+   template <typename T>
+   void dma(const Locality &destLoc, const T* remoteAddress,
+            const T* localData, const size_t numElements) {
+     impl::SynchronousInterface<TargetSystemTag>::dma(
+         destLoc, remoteAddress, localData, numElements);
+   }
+   
+   template <typename T>
+   void dma(const T* localAddress, const Locality &srcLoc,
+            const T* remoteData, const size_t numElements) {
+     impl::SynchronousInterface<TargetSystemTag>::dma(
+         localAddress, srcLoc, remoteData, numElements);
+   }
+   
+   //         memory allocation, asynchronously.
+   template <typename T>
+   void asyncDma(Handle &handle,
+                 const Locality &destLoc, const T* remoteAddress,
+                 const T* localData, const size_t numElements) {
+     using args_t = std::tuple<const Locality, const T*, const T*,const size_t>;
+     args_t args(destLoc, remoteAddress, localData, numElements);
+     asyncExecuteAt(handle, thisLocality(),
+           [](Handle&, const args_t& args) {
+             dma(std::get<0>(args), std::get<1>(args),
+                 std::get<2>(args), std::get<3>(args));
+           },
+           args); 
+   }
+   
+   //         to local memory allocation, asynchronously.
+   template <typename T>
+   void asyncDma(Handle &handle,
+                 const T* localAddress, const Locality &srcLoc,
+                 const T* remoteData, const size_t numElements) {
+     using args_t = std::tuple<const T*, const Locality,
+                               const T*, const size_t>;
+     args_t args(localAddress, srcLoc, remoteData, numElements);
+     asyncExecuteAt(handle, thisLocality(),
+           [](Handle&, const args_t& args) {
+             dma(std::get<0>(args), std::get<1>(args),
+                 std::get<2>(args), std::get<3>(args));
+           },
+           args); 
+   }
+   
    inline void waitForCompletion(Handle &handle) {
      impl::HandleTrait<TargetSystemTag>::WaitFor(handle.id_);
    }

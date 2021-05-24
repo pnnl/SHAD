@@ -1,0 +1,13 @@
+.. _exhale_function_namespaceshad_1_1data__types_1a6a509debac6606114a1a0d75e50e049b:
+
+Template Function shad::data_types::encode(IN_t&, data_t)
+=========================================================
+
+- Defined in :ref:`file_include_shad_extensions_data_types_data_types.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::data_types::encode(IN_t&, data_t)

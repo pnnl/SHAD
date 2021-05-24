@@ -35,17 +35,29 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_namespaceshad_1_1data__types_1a9f436346f1a16a19c0d66978cc0e9e8f`
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a591f6b0e5f78ef929e14bbf334b099ab`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a1f8b6b6e021ab84c6d8867453f93fa97`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a092066ba21ca9b8ffc02fb41c429ed2c`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a449fa587be4e13981ebfbcc5cf2b7f43`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a0326eb5223f82db5a6ff857d94cac55f`
 
 - :ref:`exhale_function_namespaceshad_1_1data__types_1ad8d92f20468d0d1d7c644b2692a90168`
 
 - :ref:`exhale_function_namespaceshad_1_1data__types_1a4d22f561461753aab67f8af5d40eaf74`
 
-- :ref:`exhale_function_namespaceshad_1_1data__types_1a449fa587be4e13981ebfbcc5cf2b7f43`
+- :ref:`exhale_function_namespaceshad_1_1data__types_1ae8d280a7f9c3ad36dd9e4c47c09851b8`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1ab75b2b9f8076ddd9d246e925e05d88aa`
 
 - :ref:`exhale_function_namespaceshad_1_1data__types_1a14d1e654141e43d2721be034a22a4959`
 
 - :ref:`exhale_function_namespaceshad_1_1data__types_1a75da5192986b9c674216b14bd608976e`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a6a509debac6606114a1a0d75e50e049b`
 
 - :ref:`exhale_function_namespaceshad_1_1data__types_1a4dc5cd8ad90a0d36face1aec6199115a`
 

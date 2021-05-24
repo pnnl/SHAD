@@ -1,0 +1,13 @@
+.. _exhale_function_runtime_8h_1a2becd6502def829b6195485b0397b86a:
+
+Template Function shad::rt::asyncDma(Handle&, const Locality&, const T \*, const T \*, const size_t)
+====================================================================================================
+
+- Defined in :ref:`file_include_shad_runtime_runtime.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: shad::rt::asyncDma(Handle&, const Locality&, const T *, const T *, const size_t)
