@@ -143,7 +143,7 @@ deploy:
   provider: pages
   local-dir: $TRAVIS_BUILD_DIR/build-doxygen/docs/html
   skip-cleanup: true
-  github-token: $GH_REPO_TOKEN
+  github-token: $DOCS_DEPLOY_TOKEN
   keep-history: true
   on:
     branch: master
