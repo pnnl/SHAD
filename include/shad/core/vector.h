@@ -137,6 +137,68 @@ class vector : public AbstractDataStructure<vector<T>> {
         },
         std::make_pair(this->oid_, O.oid_));
   }
+  /// @defgroup Iterators
+  /// @{
+
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return an ::iterator to the beginning of the sequence.
+  constexpr iterator begin() noexcept {
+    if (rt::thisLocality() == rt::Locality(0)) {
+      return iterator{rt::Locality(0), 0, oid_, chunk_.get(), p_};
+    }
+    return iterator{rt::Locality(0), 0, oid_, nullptr, p_};
+  }
+
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return a ::const_iterator to the beginning of the sequence.
+  constexpr const_iterator begin() const noexcept { return cbegin(); }
+
+  /// @brief The iterator to the end of the sequence.
+  /// @return an ::iterator to the end of the sequence.
+  constexpr iterator end() noexcept {
+    const auto end_l = locate_index(p_.back()) - 1;
+
+    difference_type pos = p_[end_l + 1] - p_[end_l];
+
+    rt::Locality last(end_l);
+    pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
+    return iterator{std::forward<rt::Locality>(last), pos, oid_, chunk, p_};
+  }
+
+  /// @brief The iterator to the end of the sequence.
+  /// @return a ::const_iterator to the end of the sequence.
+  constexpr const_iterator end() const noexcept { return cend(); }
+
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return a ::const_iterator to the beginning of the sequence.
+  constexpr const_iterator cbegin() const noexcept {
+    if (rt::thisLocality() == rt::Locality(0)) {
+      return const_iterator{rt::Locality(0), 0, oid_, chunk_.get(), p_};
+    }
+
+    pointer chunk = nullptr; // TODO WHY?
+    rt::executeAtWithRet(rt::Locality(0),
+                         [](const ObjectID &ID, pointer *result) {
+                           auto This = vector<T>::GetPtr(ID);
+                           *result = This->chunk_.get();
+                         },
+                         GetGlobalID(), &chunk);
+    return const_iterator{rt::Locality(0), 0, oid_, chunk, p_};
+  }
+
+  /// @brief The iterator to the end of the sequence.
+  /// @return a ::const_iterator to the end of the sequence.
+  constexpr const_iterator cend() const noexcept {
+    const auto end_l = locate_index(p_.back()) - 1;
+
+    difference_type pos = p_[end_l + 1] - p_[end_l];
+
+    rt::Locality last(end_l);
+    pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
+    return const_iterator{std::forward<rt::Locality>(last), pos, oid_, chunk, p_};
+  }
+
+  /// @}
 
   /// @defgroup Capacity
   /// @{
@@ -623,7 +685,7 @@ class alignas(64) vector<T, N>::vector_iterator {
   }
 
   vector_iterator &operator++() {
-    const auto l = locality_.get();
+    const auto l = locality_.uint32_t();
     const auto g_offset = p_[l] + offset_ + 1;
     if (g_offset < p_[l + 1])
       ++offset_;
@@ -653,7 +715,7 @@ class alignas(64) vector<T, N>::vector_iterator {
     if (offset_ > 0)
       --offset_;
     else {
-      auto l = locality_.get();
+      auto l = locality_.uint32_t();
       const difference_type g_offset = p_[l] - 1;
       if (g_offset < 0) {
         locality_ = rt::Locality(0);
@@ -677,7 +739,7 @@ class alignas(64) vector<T, N>::vector_iterator {
   }
 
   vector_iterator &operator+=(difference_type n) {
-    const auto l = locality_.get();
+    const auto l = locality_.uint32_t();
     const auto g_offset = p_[l] + offset_ + n;
     if (p_[l] <= g_offset && g_offset < p_[l + 1])
       offset_ += n;
@@ -764,7 +826,7 @@ class alignas(64) vector<T, N>::vector_iterator {
     if (B.locality_ == rt::thisLocality())
       begin += B.offset_;
 
-    const auto l = rt::thisLocality().get();
+    const auto l = rt::thisLocality().uint32_t();
     const auto chunk = B.p_[l + 1] - B.p_[l];
 
     auto end{vectorPtr->chunk_.get() + chunk};
@@ -774,15 +836,12 @@ class alignas(64) vector<T, N>::vector_iterator {
   }
 
   static distribution_range
-      distribution(array_iterator &begin, array_iterator &end) {
+      distribution(vector_iterator &begin, vector_iterator &end) {
     distribution_range result;
 
     // First block:
-    typename array_iterator::difference_type start_block_size = chunk_size();
-    if (pivot_locality() != rt::Locality(0) &&
-        begin.locality_ >= pivot_locality()) {
-      start_block_size -= 1;
-    }
+    const auto begin_l = begin.locality_.uint32_t();
+    const auto start_block_size = begin.p_[begin_l + 1] - begin.p_[begin_l];
     if (begin.locality_ == end.locality_)
       start_block_size = end.offset_;
     result.push_back(std::make_pair(begin.locality_,
@@ -791,11 +850,8 @@ class alignas(64) vector<T, N>::vector_iterator {
     // Middle blocks:
     for (auto locality = begin.locality_ + 1;
          locality < end.locality_; ++locality) {
-      typename array_iterator::difference_type inner_block_size = chunk_size();
-      if (pivot_locality() != rt::Locality(0) &&
-          locality >= pivot_locality()) {
-        inner_block_size -= 1;
-      }
+      const auto mid_l = locality.uint32_t();
+      const auto inner_block_size = begin.p_[mid_l + 1] - begin.p_[mid_l];
       result.push_back(std::make_pair(locality, inner_block_size));
     }
 
@@ -806,39 +862,39 @@ class alignas(64) vector<T, N>::vector_iterator {
     return result;
   }
 
-  static rt::localities_range localities(array_iterator &B, array_iterator &E) {
+  static rt::localities_range localities(vector_iterator &B, vector_iterator &E) {
     return rt::localities_range(
-        B.locality_, rt::Locality(static_cast<uint32_t>(E.locality_) + 1));
+        B.locality_, rt::Locality(static_cast<uint32_t>(E.locality_) + (E.offset_ != 0 ? 1 : 0)));
   }
 
-  static array_iterator iterator_from_local(array_iterator &B,
-                                            array_iterator &E,
+  static vector_iterator iterator_from_local(vector_iterator &B,
+                                            vector_iterator &E,
                                             local_iterator_type itr) {
     if (rt::thisLocality() < B.locality_ || rt::thisLocality() > E.locality_)
       return E;
 
-    auto arrayPtr = array<T, N>::GetPtr(B.oid_);
-    return array_iterator(rt::thisLocality(),
-                          std::distance(arrayPtr->chunk_.get(), itr), B.oid_,
-                          arrayPtr->chunk_.get());
+    auto vectorPtr = vector<T>::GetPtr(B.oid_);
+    return vector_iterator(rt::thisLocality(),
+                          std::distance(vectorPtr->chunk_.get(), itr), B.oid_,
+                          vectorPtr->chunk_.get(), B.p_);
   }
 
  protected:
   constexpr difference_type get_global_id() const {
-    return p_[locality_.get()] + offset_;
+    return p_[locality_.uint32_t()] + offset_;
   }
 
  private:
   void update_chunk_pointer() const {
     if (locality_ == rt::thisLocality()) {
-      auto This = array<T, N>::GetPtr(oid_);
+      auto This = vector<T>::GetPtr(oid_);
       chunk_ = This->chunk_.get();
       return;
     }
 
     rt::executeAtWithRet(locality_,
                          [](const ObjectID &ID, pointer *result) {
-                           auto This = array<T, N>::GetPtr(ID);
+                           auto This = vector<T>::GetPtr(ID);
                            *result = This->chunk_.get();
                          },
                          oid_, &chunk_);
@@ -852,6 +908,182 @@ class alignas(64) vector<T, N>::vector_iterator {
 };
 
 }  // namespace impl
+
+/// @brief Fixed size distributed array.
+///
+/// Section 21.3.7.1 of the C++ standard defines the ::array as a fixed-size
+/// sequence of objects.  An ::array should be a contiguous container (as
+/// defined in section 21.2.1).  According to that definition, contiguous
+/// containers requires contiguous iterators.  The definition of contiguous
+/// iterators implies contiguous memory allocation for the sequence, and it
+/// cannot be guaranteed in many distributed settings.  Therefore, ::array
+/// relaxes this requirement.
+///
+/// @tparam T The type of the elements in the distributed array.
+template <class T>
+class vector {
+  using array_t = impl::vector<T>;
+
+ public:
+  /// @defgroup Types
+  /// @{
+  /// The type of the stored value.
+  using value_type = typename vector_t::value_type;
+  /// The type used to represent size.
+  using size_type = typename vector_t::size_type;
+  /// The type used to represent distances.
+  using difference_type = typename vector_t::difference_type;
+  /// The type of references to the element in the array.
+  using reference = typename vector_t::reference;
+  /// The type for const references to element in the array.
+  using const_reference = typename vector_t::const_reference;
+  /// The type for pointer to ::value_type.
+  using pointer = typename vector_t::pointer;
+  /// The type for pointer to ::const_value_type
+  using const_pointer = typename vector_t::const_pointer;
+  /// The type of iterators on the array.
+  using iterator = typename vector_t::iterator;
+  /// The type of const iterators on the array.
+  using const_iterator = typename vector_t::const_iterator;
+  // todo reverse_iterator
+  // todo const_reverse_iterator
+  /// @}
+
+ public:
+  /// @brief Constructor.
+  explicit vector() { ptr = vector_t::Create(); }
+
+  /// @brief Destructor.
+  ~vector() { vector_t::Destroy(impl()->GetGlobalID()); }
+
+  /// @brief The copy assignment operator.
+  ///
+  /// @param O The right-hand side of the operator.
+  /// @return A reference to the left-hand side.
+  vector<T> &operator=(const vector<T> &O) {
+    impl()->operator=(*O.ptr);
+    return *this;
+  }
+
+  /// @defgroup Element Access
+  /// @{
+
+  /// @brief Unchecked element access operator.
+  /// @return a ::reference to the n-th element in the array.
+  constexpr reference operator[](size_type n) { return impl()->operator[](n); }
+
+  /// @brief Unchecked element access operator.
+  /// @return a ::const_reference to the n-th element in the array.
+  constexpr const_reference operator[](size_type n) const {
+    return impl()->operator[](n);
+  }
+
+  /// @brief Checked element access operator.
+  /// @return a ::reference to the n-th element in the array.
+  constexpr reference at(size_type n) { return impl()->at(n); }
+
+  /// @brief Checked element access operator.
+  /// @return a ::const_reference to the n-th element in the array.
+  constexpr const_reference at(size_type n) const { return impl()->at(n); }
+
+  /// @brief the first element in the array.
+  /// @return a ::reference to the element in position 0.
+  constexpr reference front() { return impl()->front(); }
+
+  /// @brief the first element in the array.
+  /// @return a ::const_reference to the element in position 0.
+  constexpr const_reference front() const { return impl()->front(); }
+
+  /// @brief the last element in the array.
+  /// @return a ::reference to the element in position N - 1.
+  constexpr reference back() { return impl()->back(); }
+
+  /// @brief the last element in the array.
+  /// @return a ::const_reference to the element in position N - 1.
+  constexpr const_reference back() const { return impl()->back(); }
+  /// @}
+
+  /// @defgroup Iterators
+  /// @{
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return an ::iterator to the beginning of the sequence.
+  constexpr iterator begin() noexcept { return impl()->begin(); }
+
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return a ::const_iterator to the beginning of the sequence.
+  constexpr const_iterator begin() const noexcept { return impl()->begin(); }
+
+  /// @brief The iterator to the end of the sequence.
+  /// @return an ::iterator to the end of the sequence.
+  constexpr iterator end() noexcept { return impl()->end(); }
+
+  /// @brief The iterator to the end of the sequence.
+  /// @return a ::const_iterator to the end of the sequence.
+  constexpr const_iterator end() const noexcept { return impl()->end(); }
+
+  /// @brief The iterator to the beginning of the sequence.
+  /// @return a ::const_iterator to the beginning of the sequence.
+  constexpr const_iterator cbegin() const noexcept { return impl()->cbegin(); }
+
+  /// @brief The iterator to the end of the sequence.
+  /// @return a ::const_iterator to the end of the sequence.
+  constexpr const_iterator cend() const noexcept { return impl()->cend(); }
+
+  // todo rbegin
+  // todo crbegin
+  // todo rend
+  // todo crend
+  /// @}
+
+  /// @defgroup Capacity
+  /// @{
+  /// @brief Empty test.
+  /// @return true if empty (N=0), and false otherwise.
+  constexpr bool empty() const noexcept { return impl()->empty(); }
+
+  /// @brief The size of the container.
+  /// @return the size of the container (N).
+  constexpr size_type size() const noexcept { return impl()->size(); }
+
+  /// @brief The maximum size of the container.
+  /// @return the maximum size of the container (N).
+  constexpr size_type max_size() const noexcept { return impl()->max_size(); }
+  /// @}
+
+  /// @defgroup Operations
+  /// @{
+  /// @brief Fill the vector with an input value.
+  ///
+  /// @param v The input value used to fill the vector.
+  void fill(const value_type &v) { impl()->fill(v); }
+
+  /// @brief Swap the content of two vector.
+  ///
+  /// @param O The vector to swap the content with.
+  void swap(vector<T> &O) noexcept /* (std::is_nothrow_swappable_v<T>) */ {
+    impl()->swap(*O->ptr);
+  }
+  /// @}
+
+ private:
+  std::shared_ptr<vector_t> ptr = nullptr;
+
+  const vector_t *impl() const { return ptr.get(); }
+
+  vector_t *impl() { return ptr.get(); }
+
+  friend bool operator==(const vector &LHS, const vector &RHS) {
+    return *LHS.ptr == *RHS.ptr;
+  }
+
+  friend bool operator<(const vector &LHS, const vector &RHS) {
+    return operator<(*LHS.ptr, *RHS.ptr);
+  }
+
+  friend bool operator>(const vector &LHS, const vector &RHS) {
+    return operator>(*LHS.ptr, *RHS.ptr);
+  }
+};
 
 }  // namespace shad
 
