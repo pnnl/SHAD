@@ -43,9 +43,11 @@ template <typename PairType>
 class VectorTest : public ::testing::Test {
  public:
   using ElementType = typename PairType::value_type;
-  using VectorType = shad::vector<ElementType, PairType::size>;
+  using VectorType = shad::vector<ElementType>;
   using size_type = typename VectorType::size_type;
 
+  VectorTest() : vector_(PairType::size) {}
+  
   void SetUp() {
     for (size_type i = 0; i < vector_.size(); ++i) vector_.at(i) = i;
   }

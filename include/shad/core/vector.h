@@ -45,7 +45,6 @@ namespace impl {
 /// relaxes this requirement.
 ///
 /// @tparam T The type of the elements in the distributed array.
-/// @tparam N The number of element in the distributed array.
 template <typename T>
 class vector : public AbstractDataStructure<vector<T>> {
   template <typename U>
@@ -143,10 +142,7 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @brief The iterator to the beginning of the sequence.
   /// @return an ::iterator to the beginning of the sequence.
   constexpr iterator begin() noexcept {
-    if (rt::thisLocality() == rt::Locality(0)) {
-      return iterator{rt::Locality(0), 0, oid_, chunk_.get(), p_};
-    }
-    return iterator{rt::Locality(0), 0, oid_, nullptr, p_};
+    return iterator{rt::Locality(0), 0, oid_, ptrs_.data(), p_.data()};
   }
 
   /// @brief The iterator to the beginning of the sequence.
@@ -161,8 +157,8 @@ class vector : public AbstractDataStructure<vector<T>> {
     difference_type pos = p_[end_l + 1] - p_[end_l];
 
     rt::Locality last(end_l);
-    pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-    return iterator{std::forward<rt::Locality>(last), pos, oid_, chunk, p_};
+
+    return iterator{std::forward<rt::Locality>(last), pos, oid_, ptrs_.data(), p_.data()};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -172,18 +168,7 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @brief The iterator to the beginning of the sequence.
   /// @return a ::const_iterator to the beginning of the sequence.
   constexpr const_iterator cbegin() const noexcept {
-    if (rt::thisLocality() == rt::Locality(0)) {
-      return const_iterator{rt::Locality(0), 0, oid_, chunk_.get(), p_};
-    }
-
-    pointer chunk = nullptr; // TODO WHY?
-    rt::executeAtWithRet(rt::Locality(0),
-                         [](const ObjectID &ID, pointer *result) {
-                           auto This = vector<T>::GetPtr(ID);
-                           *result = This->chunk_.get();
-                         },
-                         GetGlobalID(), &chunk);
-    return const_iterator{rt::Locality(0), 0, oid_, chunk, p_};
+    return const_iterator{rt::Locality(0), 0, oid_, ptrs_.data(), p_.data()};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -194,8 +179,8 @@ class vector : public AbstractDataStructure<vector<T>> {
     difference_type pos = p_[end_l + 1] - p_[end_l];
 
     rt::Locality last(end_l);
-    pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-    return const_iterator{std::forward<rt::Locality>(last), pos, oid_, chunk, p_};
+
+    return const_iterator{std::forward<rt::Locality>(last), pos, oid_, ptrs_.data(), p_.data()};
   }
 
   /// @}
@@ -222,7 +207,7 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @brief Unchecked element access operator.
   /// @return a ::reference to the n-th element in the array.
   constexpr reference operator[](size_type n) {
-    const auto l = locate_index(n);
+    const std::uint32_t l = locate_index(n);
     return reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, nullptr};
   }
 
@@ -299,7 +284,7 @@ class vector : public AbstractDataStructure<vector<T>> {
 
     rt::waitForCompletion(H);
 
-    for (size_t i = 1; i < rt::numLocalities(); ++i) result[0] |= result[i];
+    for (std::uint32_t i = 1; i < rt::numLocalities(); ++i) result[0] |= result[i];
 
     return result[0];
   }
@@ -329,7 +314,7 @@ class vector : public AbstractDataStructure<vector<T>> {
 
     rt::waitForCompletion(H);
 
-    for (size_t i = 1; i < rt::numLocalities(); ++i) {
+    for (std::uint32_t i = 1; i < rt::numLocalities(); ++i) {
       result[0] &= result[i];
     }
 
@@ -361,7 +346,7 @@ class vector : public AbstractDataStructure<vector<T>> {
 
     rt::waitForCompletion(H);
 
-    for (size_t i = 1; i < rt::numLocalities(); ++i) {
+    for (std::uint32_t i = 1; i < rt::numLocalities(); ++i) {
       result[0] &= result[i];
     }
 
@@ -375,29 +360,54 @@ class vector : public AbstractDataStructure<vector<T>> {
     return std::distance(begin + 1, std::lower_bound(begin, end, v + 1));
   }
 
-  constexpr difference_type locate_index(std::size_t i) {
+  constexpr difference_type locate_index(size_type i) const {
     return lowerbound_index(p_.cbegin(), p_.cend(), i);
   }
 
-  constexpr std::uint32_t my_id() const {
-      return rt::thisLocality().uint32_t();
-  }
-
-  constexpr std::size_t chunk_size() const {
-      return p_[my_id() + 1] - p[my_id()];
+  constexpr size_type chunk_size() const {
+      return p_[to_int(rt::thisLocality()) + 1] - p_[to_int(rt::thisLocality())];
   }
 
   /// @brief Constructor.
-  explicit vector(ObjectID oid, std::size_t N) : oid_{oid} {
+  explicit vector(ObjectID oid, size_type N) : oid_{oid} {
     p_.reserve(rt::numLocalities() + 1);
     p_.emplace_back(0);
     for (std::uint32_t i = 1; i <= rt::numLocalities(); i++)
       p_.emplace_back(p_.back() + i * N / rt::numLocalities());
     chunk_ = std::unique_ptr<T[]>{new T[chunk_size()]};
+
+    ptrs_.resize(rt::numLocalities());
+
+    // TODO might want to change to alltoall
+    rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, pointer *> &args) {
+          const auto &[ID, master_l, master_ptrs] = args;
+          auto This = vector<T>::GetPtr(ID);
+          if (rt::thisLocality() != master_l) {
+            const auto my_ptr = This->chunk_.get();
+            rt::dma(master_l, master_ptrs + to_int(rt::thisLocality()), &my_ptr, 1);
+          }
+          else
+            This->ptrs_[to_int(rt::thisLocality())] = This->chunk_.get();
+        },
+        std::tuple{GetGlobalID(), rt::thisLocality(), ptrs_.data()});
+    
+    rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, pointer *> &args) {
+            const auto &[ID, master_l, master_ptrs] = args;
+            if (rt::thisLocality() != master_l) {
+              auto This = vector<T>::GetPtr(ID);
+              rt::dma(This->ptrs_.data(), master_l, master_ptrs, rt::numLocalities());
+            }
+        },
+        std::tuple{GetGlobalID(), rt::thisLocality(), ptrs_.data()});
   }
 
  private:
-  std::vector<std::size_t> p_;
+  static constexpr std::uint32_t to_int(rt::Locality l) {
+      return static_cast<std::uint32_t>(l);
+  }
+
+  std::vector<pointer> ptrs_;
+  std::vector<difference_type> p_;
   std::unique_ptr<T[]> chunk_;
   ObjectID oid_;
 };
@@ -412,7 +422,7 @@ class vector<T>::BaseVectorRef {
   using pointer = typename vector<T>::pointer;
 
   ObjectID oid_;
-  mutable pointer chunk_;
+  pointer chunk_;
   difference_type pos_;
   rt::Locality loc_;
 
@@ -450,43 +460,18 @@ class vector<T>::BaseVectorRef {
   }
 
   value_type get() const {
-    bool local = this->loc_ == rt::thisLocality();
-    if (local) {
-      if (chunk_ == nullptr) {
-        auto This = vector<T>::GetPtr(oid_);
-        chunk_ = This->chunk_.get();
-      }
+    if (this->loc_ == rt::thisLocality())
       return chunk_[pos_];
-    }
 
-    if (chunk_ != nullptr) {
-      value_type result;
-      rt::executeAtWithRet(
-          loc_,
-          [](const std::pair<pointer, difference_type> &args, T *result) {
-            *result = std::get<0>(args)[std::get<1>(args)];
-          },
-          std::make_pair(chunk_, pos_), &result);
-      return result;
-    }
-
-    std::pair<value_type, pointer> resultPair;
-    rt::executeAtWithRet(loc_,
-                         [](const std::pair<ObjectID, difference_type> &args,
-                            std::pair<T, pointer> *result) {
-                           auto This = vector<T>::GetPtr(std::get<0>(args));
-                           result->first = This->chunk_[std::get<1>(args)];
-                           result->second = This->chunk_.get();
-                         },
-                         std::make_pair(oid_, pos_), &resultPair);
-    chunk_ = resultPair.second;
-    return resultPair.first;
+    value_type result;
+    rt::dma(&result, loc_, chunk_ + pos_, 1);
+    return result;
   }
 };
 
 template <typename T>
 template <typename U>
-class alignas(64) array<T, N>::VectorRef
+class alignas(64) vector<T>::VectorRef
     : public vector<T>::template BaseVectorRef<U> {
  public:
   using value_type = U;
@@ -495,13 +480,13 @@ class alignas(64) array<T, N>::VectorRef
   using ObjectID = typename vector<T>::ObjectID;
 
   VectorRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
-      : vector<T, N>::template BaseVectorRef<U>(l, p, oid, chunk) {}
+      : vector<T>::template BaseVectorRef<U>(l, p, oid, chunk) {}
 
-  VectorRef(const VectorRef &O) : vector<T, N>::template BaseVectorRef<U>(O) {}
+  VectorRef(const VectorRef &O) : vector<T>::template BaseVectorRef<U>(O) {}
 
-  VectorRef(VectorRef &&O) : Vector<T, N>::template BaseVectorRef<U>(O) {}
+  VectorRef(VectorRef &&O) : vector<T>::template BaseVectorRef<U>(O) {}
 
-  VectorRef &operator=(const Ref &O) {
+  VectorRef &operator=(const VectorRef &O) {
     vector<T>::template BaseVectorRef<U>::operator=(O);
     return *this;
   }
@@ -522,31 +507,12 @@ class alignas(64) array<T, N>::VectorRef
   VectorRef &operator=(const T &v) {
     bool local = this->loc_ == rt::thisLocality();
     if (local) {
-      if (this->chunk_ == nullptr) {
-        auto This = vector<T>::GetPtr(this->oid_);
-        this->chunk_ = This->chunk_.get();
-      }
       this->chunk_[this->pos_] = v;
       return *this;
     }
 
-    if (this->chunk_ == nullptr) {
-      rt::executeAtWithRet(
-          this->loc_,
-          [](const std::tuple<ObjectID, difference_type, T> &args,
-             pointer *result) {
-            auto This = vector<T>::GetPtr(std::get<0>(args));
-            This->chunk_[std::get<1>(args)] = std::get<2>(args);
-            *result = This->chunk_.get();
-          },
-          std::make_tuple(this->oid_, this->pos_, v), &this->chunk_);
-    } else {
-      rt::executeAt(this->loc_,
-                    [](const std::tuple<pointer, difference_type, T> &args) {
-                      std::get<0>(args)[std::get<1>(args)] = std::get<2>(args);
-                    },
-                    std::make_tuple(this->chunk_, this->pos_, v));
-    }
+    rt::dma(this->loc_, this->chunk_ + this->pos_, &v, 1);
+
     return *this;
   }
 
@@ -556,7 +522,7 @@ class alignas(64) array<T, N>::VectorRef
   }
 };
 
-template <typename T, std::size_t N>
+template <typename T>
 template <typename U>
 class alignas(64) vector<T>::VectorRef<const U>
     : public vector<T>::template BaseVectorRef<U> {
@@ -614,7 +580,7 @@ bool operator>(const vector<T> &LHS, const vector<T> &RHS) {
 
 template <typename T>
 template <typename U>
-class alignas(64) vector<T, N>::vector_iterator {
+class alignas(64) vector<T>::vector_iterator {
  public:
   using reference = typename vector<T>::template VectorRef<U>;
   using pointer = typename vector<T>::pointer;
@@ -628,8 +594,8 @@ class alignas(64) vector<T, N>::vector_iterator {
 
   /// @brief Constructor.
   vector_iterator(rt::Locality &&l, difference_type offset, ObjectID oid,
-                 pointer chunk, std::size_t *p_)
-      : locality_(l), offset_(offset), oid_(oid), chunk_(chunk), p_(p_) {}
+                 pointer const *ptrs, difference_type const *p_)
+      : locality_(l), offset_(offset), oid_(oid), ptrs_(ptrs), p_(p_) {}
 
   /// @brief Default constructor.
   vector_iterator()
@@ -640,7 +606,7 @@ class alignas(64) vector<T, N>::vector_iterator {
       : locality_(O.locality_),
         offset_(O.offset_),
         oid_(O.oid_),
-        chunk_(O.chunk_),
+        ptrs_(O.ptrs_),
         p_(O.p_) {}
 
   /// @brief Move constructor.
@@ -648,7 +614,7 @@ class alignas(64) vector<T, N>::vector_iterator {
       : locality_(std::move(O.locality_)),
         offset_(std::move(O.offset_)),
         oid_(std::move(O.oid_)),
-        chunk_(std::move(O.chunk_)),
+        ptrs_(std::move(O.ptrs_)),
         p_(std::move(O.p_)) {}
 
   /// @brief Copy assignment operator.
@@ -656,7 +622,7 @@ class alignas(64) vector<T, N>::vector_iterator {
     locality_ = O.locality_;
     offset_ = O.offset_;
     oid_ = O.oid_;
-    chunk_ = O.chunk_;
+    ptrs_ = O.ptrs_;
     p_ = O.p_;
 
     return *this;
@@ -667,7 +633,7 @@ class alignas(64) vector<T, N>::vector_iterator {
     locality_ = std::move(O.locality_);
     offset_ = std::move(O.offset_);
     oid_ = std::move(O.oid_);
-    chunk_ = std::move(O.chunk_);
+    ptrs_ = std::move(O.ptrs_);
     p_ = std::move(O.p_);
 
     return *this;
@@ -680,12 +646,11 @@ class alignas(64) vector<T, N>::vector_iterator {
   bool operator!=(const vector_iterator &O) const { return !(*this == O); }
 
   reference operator*() {
-    update_chunk_pointer();
-    return reference(locality_, offset_, oid_, chunk_);
+    return reference(locality_, offset_, oid_, get_chunk());
   }
 
   vector_iterator &operator++() {
-    const auto l = locality_.uint32_t();
+    std::uint32_t l = locality_;
     const auto g_offset = p_[l] + offset_ + 1;
     if (g_offset < p_[l + 1])
       ++offset_;
@@ -715,7 +680,7 @@ class alignas(64) vector<T, N>::vector_iterator {
     if (offset_ > 0)
       --offset_;
     else {
-      auto l = locality_.uint32_t();
+      std::uint32_t l = locality_;
       const difference_type g_offset = p_[l] - 1;
       if (g_offset < 0) {
         locality_ = rt::Locality(0);
@@ -724,7 +689,7 @@ class alignas(64) vector<T, N>::vector_iterator {
       else {
         while(g_offset < p_[l - 1])
           l--;
-        locality_ = rt::locality(l - 1);
+        locality_ = rt::Locality(l - 1);
         offset_ = p_[l] - p_[l - 1] - 1;
       }
     }
@@ -739,7 +704,7 @@ class alignas(64) vector<T, N>::vector_iterator {
   }
 
   vector_iterator &operator+=(difference_type n) {
-    const auto l = locality_.uint32_t();
+    const std::uint32_t l = locality_;
     const auto g_offset = p_[l] + offset_ + n;
     if (p_[l] <= g_offset && g_offset < p_[l + 1])
       offset_ += n;
@@ -752,7 +717,7 @@ class alignas(64) vector<T, N>::vector_iterator {
       }
       else if (l >= num_l) {
         locality_ = rt::Locality(num_l - 1);
-        offset_ = p[num_l] - p[num_l - 1];
+        offset_ = p_[num_l] - p_[num_l - 1];
       }
       else {
         locality_ = rt::Locality(l);
@@ -817,8 +782,7 @@ class alignas(64) vector<T, N>::vector_iterator {
 
   static local_iterator_range local_range(vector_iterator &B,
                                           vector_iterator &E) {
-    auto vectorPtr = vector<T>::GetPtr(B.oid_);
-    auto begin{vectorPtr->chunk_.get()};
+    auto begin{B.get_local_chunk()};
     
     if (B.oid_ != E.oid_ || rt::thisLocality() < B.locality_ || rt::thisLocality() > E.locality_)
       return local_iterator_range(begin, begin);
@@ -826,12 +790,12 @@ class alignas(64) vector<T, N>::vector_iterator {
     if (B.locality_ == rt::thisLocality())
       begin += B.offset_;
 
-    const auto l = rt::thisLocality().uint32_t();
+    const std::uint32_t l = rt::thisLocality();
     const auto chunk = B.p_[l + 1] - B.p_[l];
 
-    auto end{vectorPtr->chunk_.get() + chunk};
+    auto end{B.get_local_chunk() + chunk};
     if (E.locality_ == rt::thisLocality())
-      end = vectorPtr->chunk_.get() + E.offset_;
+      end = B.get_local_chunk() + E.offset_;
     return local_iterator_range(begin, end);
   }
 
@@ -840,7 +804,7 @@ class alignas(64) vector<T, N>::vector_iterator {
     distribution_range result;
 
     // First block:
-    const auto begin_l = begin.locality_.uint32_t();
+    const std::uint32_t begin_l = begin.locality_;
     const auto start_block_size = begin.p_[begin_l + 1] - begin.p_[begin_l];
     if (begin.locality_ == end.locality_)
       start_block_size = end.offset_;
@@ -850,7 +814,7 @@ class alignas(64) vector<T, N>::vector_iterator {
     // Middle blocks:
     for (auto locality = begin.locality_ + 1;
          locality < end.locality_; ++locality) {
-      const auto mid_l = locality.uint32_t();
+      const std::uint32_t mid_l = locality;
       const auto inner_block_size = begin.p_[mid_l + 1] - begin.p_[mid_l];
       result.push_back(std::make_pair(locality, inner_block_size));
     }
@@ -873,38 +837,31 @@ class alignas(64) vector<T, N>::vector_iterator {
     if (rt::thisLocality() < B.locality_ || rt::thisLocality() > E.locality_)
       return E;
 
-    auto vectorPtr = vector<T>::GetPtr(B.oid_);
     return vector_iterator(rt::thisLocality(),
-                          std::distance(vectorPtr->chunk_.get(), itr), B.oid_,
-                          vectorPtr->chunk_.get(), B.p_);
+                          std::distance(B.get_local_chunk(), itr), B.oid_,
+                          B.get_local_chunk(), B.p_);
   }
 
  protected:
   constexpr difference_type get_global_id() const {
-    return p_[locality_.uint32_t()] + offset_;
+    return p_[to_int(locality_)] + offset_;
+  }
+
+  constexpr pointer get_chunk() const {
+    return ptrs_[to_int(locality_)];
+  }
+
+  constexpr pointer get_local_chunk() const {
+    return ptrs_[to_int(rt::thisLocality())];
   }
 
  private:
-  void update_chunk_pointer() const {
-    if (locality_ == rt::thisLocality()) {
-      auto This = vector<T>::GetPtr(oid_);
-      chunk_ = This->chunk_.get();
-      return;
-    }
-
-    rt::executeAtWithRet(locality_,
-                         [](const ObjectID &ID, pointer *result) {
-                           auto This = vector<T>::GetPtr(ID);
-                           *result = This->chunk_.get();
-                         },
-                         oid_, &chunk_);
-  }
 
   rt::Locality locality_;
   ObjectID oid_;
   difference_type offset_;
-  mutable pointer chunk_;
-  std::size_t *p_;
+  pointer const *ptrs_;
+  difference_type const *p_;
 };
 
 }  // namespace impl
@@ -922,7 +879,7 @@ class alignas(64) vector<T, N>::vector_iterator {
 /// @tparam T The type of the elements in the distributed array.
 template <class T>
 class vector {
-  using array_t = impl::vector<T>;
+  using vector_t = impl::vector<T>;
 
  public:
   /// @defgroup Types
@@ -951,7 +908,7 @@ class vector {
 
  public:
   /// @brief Constructor.
-  explicit vector() { ptr = vector_t::Create(); }
+  explicit vector(size_type N = 0) { ptr = vector_t::Create(N); }
 
   /// @brief Destructor.
   ~vector() { vector_t::Destroy(impl()->GetGlobalID()); }
