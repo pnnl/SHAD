@@ -371,34 +371,21 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @brief Constructor.
   explicit vector(ObjectID oid, size_type N) : oid_{oid} {
     p_.reserve(rt::numLocalities() + 1);
-    p_.emplace_back(0);
-    for (std::uint32_t i = 1; i <= rt::numLocalities(); i++)
-      p_.emplace_back(p_.back() + i * N / rt::numLocalities());
+    for (std::uint32_t i = 0; i <= rt::numLocalities(); i++)
+      p_.emplace_back(i * N / rt::numLocalities());
     chunk_ = std::unique_ptr<T[]>{new T[chunk_size()]};
 
     ptrs_.resize(rt::numLocalities());
 
-    // TODO might want to change to alltoall
-    rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, pointer *> &args) {
-          const auto &[ID, master_l, master_ptrs] = args;
-          auto This = vector<T>::GetPtr(ID);
-          if (rt::thisLocality() != master_l) {
-            const auto my_ptr = This->chunk_.get();
-            rt::dma(master_l, master_ptrs + to_int(rt::thisLocality()), &my_ptr, 1);
-          }
-          else
-            This->ptrs_[to_int(rt::thisLocality())] = This->chunk_.get();
+    std::cout << "NICELY DONE!" << std::endl;
+
+    rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, pointer> &args) {
+          auto This = vector<T>::GetPtr(std::get<0>(args));
+
+          This->ptrs_[to_int(std::get<1>(args))] = std::get<2>(args);
         },
-        std::tuple{GetGlobalID(), rt::thisLocality(), ptrs_.data()});
-    
-    rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, pointer *> &args) {
-            const auto &[ID, master_l, master_ptrs] = args;
-            if (rt::thisLocality() != master_l) {
-              auto This = vector<T>::GetPtr(ID);
-              rt::dma(This->ptrs_.data(), master_l, master_ptrs, rt::numLocalities());
-            }
-        },
-        std::tuple{GetGlobalID(), rt::thisLocality(), ptrs_.data()});
+        std::make_tuple(GetGlobalID(), rt::thisLocality(), chunk_.get()));
+    std::cout << "NICELY DONE!" << std::endl;
   }
 
  private:
