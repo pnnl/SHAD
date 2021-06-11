@@ -401,8 +401,6 @@ class vector : public AbstractDataStructure<vector<T>> {
   std::unique_ptr<T[]> chunk_;
   ObjectID oid_;
   std::vector<pointer> ptrs_;
-
- public:
 };
 
 template <typename T>
