@@ -39,9 +39,9 @@ using shad_buffered_inserter_t =
 
 std::pair<iterator, iterator> shad_minmax_algorithm(
     shad::unordered_map<int, int> &in) {
-  auto [min, max] = shad::minmax_element(shad::distributed_parallel_tag{},
-                                         in.begin(), in.end());
-  return {min, max};
+  auto res = shad::minmax_element(shad::distributed_parallel_tag{}, in.begin(),
+                                  in.end());
+  return res;
 }
 
 iterator shad_find_if_algorithm(shad::unordered_map<int, int> &in) {

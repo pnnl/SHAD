@@ -31,7 +31,8 @@
 #include "shad/util/measure.h"
 
 constexpr static size_t kArraySize = 1024;
-using iterator = shad::impl::array<int, kArraySize>::array_iterator<int>;
+using array_t = shad::impl::array<int, kArraySize>;
+using iterator = array_t::iterator;
 
 void shad_generate_algorithm(shad::array<int, kArraySize> &in) {
   shad::generate(shad::distributed_parallel_tag{}, in.begin(), in.end(), [=]() {
@@ -65,9 +66,9 @@ void shad_for_each_algorithm(shad::array<int, kArraySize> &in) {
 
 std::pair<iterator, iterator> shad_minmax_algorithm(
     shad::array<int, kArraySize> &in) {
-  auto [min, max] = shad::minmax_element(shad::distributed_parallel_tag{},
-                                         in.begin(), in.end());
-  return {min, max};
+  auto res = shad::minmax_element(shad::distributed_parallel_tag{}, in.begin(),
+                                  in.end());
+  return res;
 }
 
 void shad_transform_algorithm(shad::array<int, kArraySize> &in) {
