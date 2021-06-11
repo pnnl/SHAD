@@ -89,8 +89,6 @@ class vector : public AbstractDataStructure<vector<T>> {
 
  public:
 
-  constexpr pointer data() const { return chunk_.get(); } 
-
   /// @brief The copy assignment operator.
   ///
   /// @param O The right-hand side of the operator.
@@ -356,6 +354,18 @@ class vector : public AbstractDataStructure<vector<T>> {
     return result[0];
   }
 
+  constexpr void fill_ptrs() {
+    rt::executeOnAll([](const ObjectID &oid) {
+      auto This = vector<T>::GetPtr(oid);
+      rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, pointer> &args) {
+          auto This = vector<T>::GetPtr(std::get<0>(args));
+
+          This->ptrs_[to_int(std::get<1>(args))] = std::get<2>(args);
+        },
+        std::make_tuple(This->GetGlobalID(), rt::thisLocality(), This->chunk_.get()));
+      }, GetGlobalID());
+  }
+
  protected:
 
   template <typename Iter, typename Int>
@@ -393,9 +403,6 @@ class vector : public AbstractDataStructure<vector<T>> {
   std::vector<pointer> ptrs_;
 
  public:
-  void set_ptrs_i(const rt::Locality l, const pointer l_chunk) {
-    ptrs_[to_int(l)] = l_chunk;
-  }
 };
 
 template <typename T>
@@ -896,15 +903,7 @@ class vector {
   /// @brief Constructor.
   explicit vector(size_type N = 0) { 
     ptr = vector_t::Create(N);
-    rt::executeOnAll([](const typename vector_t::ObjectID &oid) {
-      auto This = vector_t::GetPtr(oid);
-      rt::executeOnAll([](const std::tuple<typename vector_t::ObjectID, rt::Locality, pointer> &args) {
-          auto This = vector_t::GetPtr(std::get<0>(args));
-
-          This->set_ptrs_i(std::get<1>(args), std::get<2>(args));
-        },
-        std::make_tuple(This->GetGlobalID(), rt::thisLocality(), This->data()));
-      }, ptr->GetGlobalID());
+    ptr->fill_ptrs();
   }
 
   /// @brief Destructor.
