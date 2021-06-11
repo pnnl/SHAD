@@ -88,6 +88,9 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @}
 
  public:
+
+  constexpr pointer data() const { return chunk_.get(); } 
+
   /// @brief The copy assignment operator.
   ///
   /// @param O The right-hand side of the operator.
@@ -208,14 +211,14 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @return a ::reference to the n-th element in the array.
   constexpr reference operator[](size_type n) {
     const std::uint32_t l = locate_index(n);
-    return reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, nullptr};
+    return reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, ptrs_[l]};
   }
 
   /// @brief Unchecked element access operator.
   /// @return a ::const_reference to the n-th element in the array.
   constexpr const_reference operator[](size_type n) const {
     const auto l = locate_index(n);
-    return const_reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, nullptr};
+    return const_reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, ptrs_[l]};
   }
 
   /// @brief Checked element access operator.
@@ -376,27 +379,23 @@ class vector : public AbstractDataStructure<vector<T>> {
     chunk_ = std::unique_ptr<T[]>{new T[chunk_size()]};
 
     ptrs_.resize(rt::numLocalities());
-
-    std::cout << "NICELY DONE!" << std::endl;
-
-    rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, pointer> &args) {
-          auto This = vector<T>::GetPtr(std::get<0>(args));
-
-          This->ptrs_[to_int(std::get<1>(args))] = std::get<2>(args);
-        },
-        std::make_tuple(GetGlobalID(), rt::thisLocality(), chunk_.get()));
-    std::cout << "NICELY DONE!" << std::endl;
   }
 
  private:
+
   static constexpr std::uint32_t to_int(rt::Locality l) {
       return static_cast<std::uint32_t>(l);
   }
 
-  std::vector<pointer> ptrs_;
   std::vector<difference_type> p_;
   std::unique_ptr<T[]> chunk_;
   ObjectID oid_;
+  std::vector<pointer> ptrs_;
+
+ public:
+  void set_ptrs_i(const rt::Locality l, const pointer l_chunk) {
+    ptrs_[to_int(l)] = l_chunk;
+  }
 };
 
 template <typename T>
@@ -895,7 +894,18 @@ class vector {
 
  public:
   /// @brief Constructor.
-  explicit vector(size_type N = 0) { ptr = vector_t::Create(N); }
+  explicit vector(size_type N = 0) { 
+    ptr = vector_t::Create(N);
+    rt::executeOnAll([](const typename vector_t::ObjectID &oid) {
+      auto This = vector_t::GetPtr(oid);
+      rt::executeOnAll([](const std::tuple<typename vector_t::ObjectID, rt::Locality, pointer> &args) {
+          auto This = vector_t::GetPtr(std::get<0>(args));
+
+          This->set_ptrs_i(std::get<1>(args), std::get<2>(args));
+        },
+        std::make_tuple(This->GetGlobalID(), rt::thisLocality(), This->data()));
+      }, ptr->GetGlobalID());
+  }
 
   /// @brief Destructor.
   ~vector() { vector_t::Destroy(impl()->GetGlobalID()); }
