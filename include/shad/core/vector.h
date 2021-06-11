@@ -34,17 +34,17 @@
 namespace shad {
 
 namespace impl {
-/// @brief Fixed size distributed array.
+/// @brief Distributed vector without resizing capabilities.
 /// TODO change the descriptions
-/// Section 21.3.7.1 of the C++ standard defines the ::array as a fixed-size
-/// sequence of objects.  An ::array should be a contiguous container (as
-/// defined in section 21.2.1).  According to that definition, contiguous
+/// Section XX.X.X.X of the C++ standard defines the ::vector as a dynamically
+/// resizeable sequence of objects.  A ::vector should be a contiguous container (as
+/// defined in section XX.X.X).  According to that definition, contiguous
 /// containers requires contiguous iterators.  The definition of contiguous
 /// iterators implies contiguous memory allocation for the sequence, and it
-/// cannot be guaranteed in many distributed settings.  Therefore, ::array
+/// cannot be guaranteed in many distributed settings.  Therefore, ::vector
 /// relaxes this requirement.
 ///
-/// @tparam T The type of the elements in the distributed array.
+/// @tparam T The type of the elements in the distributed vector.
 template <typename T>
 class vector : public AbstractDataStructure<vector<T>> {
   template <typename U>
@@ -70,17 +70,17 @@ class vector : public AbstractDataStructure<vector<T>> {
   using size_type = std::size_t;
   /// The type used to represent distances.
   using difference_type = std::ptrdiff_t;
-  /// The type of references to the element in the array.
+  /// The type of references to the element in the vector.
   using reference = VectorRef<value_type>;
-  /// The type for const references to element in the array.
+  /// The type for const references to element in the vector.
   using const_reference = VectorRef<const value_type>;
   /// The type for pointer to ::value_type.
   using pointer = value_type *;
   /// The type for pointer to ::const_value_type
   using const_pointer = const value_type *;
-  /// The type of iterators on the array.
+  /// The type of iterators on the vector.
   using iterator = vector_iterator<value_type>;
-  /// The type of const iterators on the array.
+  /// The type of const iterators on the vector.
   using const_iterator = vector_iterator<const value_type>;
 
   // using reverse_iterator = TBD;
@@ -111,9 +111,9 @@ class vector : public AbstractDataStructure<vector<T>> {
     return *this;
   }
 
-  /// @brief Fill the array with an input value.
+  /// @brief Fill the vector with an input value.
   ///
-  /// @param v The input value used to fill the array.
+  /// @param v The input value used to fill the vector.
   void fill(const value_type &v) {
     rt::executeOnAll(
         [](const std::pair<ObjectID, value_type> &args) {
@@ -125,9 +125,9 @@ class vector : public AbstractDataStructure<vector<T>> {
         std::make_pair(this->oid_, v));
   }
 
-  /// @brief Swap the content of two array.
+  /// @brief Swap the content of two vector.
   ///
-  /// @param O The array to swap the content with.
+  /// @param O The vector to swap the content with.
   void swap(vector<T> &O) noexcept /* (std::is_nothrow_swappable_v<T>) */ {
     rt::executeOnAll(
         [](const std::pair<ObjectID, ObjectID> &IDs) {
@@ -209,14 +209,14 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @{
 
   /// @brief Unchecked element access operator.
-  /// @return a ::reference to the n-th element in the array.
+  /// @return a ::reference to the n-th element in the vector.
   constexpr reference operator[](size_type n) {
     const std::uint32_t l = locate_index(n);
     return reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, ptrs_[l]};
   }
 
   /// @brief Unchecked element access operator.
-  /// @return a ::const_reference to the n-th element in the array.
+  /// @return a ::const_reference to the n-th element in the vector.
   constexpr const_reference operator[](size_type n) const {
     const auto l = locate_index(n);
     return const_reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, ptrs_[l]};
@@ -236,17 +236,17 @@ class vector : public AbstractDataStructure<vector<T>> {
     return operator[](n);
   }
 
-  /// @brief the first element in the array.
+  /// @brief the first element in the vector.
   /// @return a ::reference to the element in position 0.
   constexpr reference front() { return *begin(); }
-  /// @brief the first element in the array.
+  /// @brief the first element in the vector.
   /// @return a ::const_reference to the element in position 0.
   constexpr const_reference front() const { return *cbegin(); }
 
-  /// @brief the last element in the array.
+  /// @brief the last element in the vector.
   /// @return a ::reference to the element in position N - 1.
   constexpr reference back() { return *(end() - 1); }
-  /// @brief the last element in the array.
+  /// @brief the last element in the vector.
   /// @return a ::const_reference to the element in position N - 1.
   constexpr const_reference back() const { return *(cend() - 1); }
 
@@ -860,17 +860,17 @@ class alignas(64) vector<T>::vector_iterator {
 
 }  // namespace impl
 
-/// @brief Fixed size distributed array.
+/// @brief Fixed size distributed vector.
 ///
-/// Section 21.3.7.1 of the C++ standard defines the ::array as a fixed-size
-/// sequence of objects.  An ::array should be a contiguous container (as
-/// defined in section 21.2.1).  According to that definition, contiguous
+/// Section XX.X.X.X of the C++ standard defines the ::vector as a dynamically
+/// resizeable sequence of objects.  A ::vector should be a contiguous container (as
+/// defined in section XX.X.X).  According to that definition, contiguous
 /// containers requires contiguous iterators.  The definition of contiguous
 /// iterators implies contiguous memory allocation for the sequence, and it
-/// cannot be guaranteed in many distributed settings.  Therefore, ::array
+/// cannot be guaranteed in many distributed settings.  Therefore, ::vector
 /// relaxes this requirement.
 ///
-/// @tparam T The type of the elements in the distributed array.
+/// @tparam T The type of the elements in the distributed vector.
 template <class T>
 class vector {
   using vector_t = impl::vector<T>;
@@ -884,17 +884,17 @@ class vector {
   using size_type = typename vector_t::size_type;
   /// The type used to represent distances.
   using difference_type = typename vector_t::difference_type;
-  /// The type of references to the element in the array.
+  /// The type of references to the element in the vector.
   using reference = typename vector_t::reference;
-  /// The type for const references to element in the array.
+  /// The type for const references to element in the vector.
   using const_reference = typename vector_t::const_reference;
   /// The type for pointer to ::value_type.
   using pointer = typename vector_t::pointer;
   /// The type for pointer to ::const_value_type
   using const_pointer = typename vector_t::const_pointer;
-  /// The type of iterators on the array.
+  /// The type of iterators on the vector.
   using iterator = typename vector_t::iterator;
-  /// The type of const iterators on the array.
+  /// The type of const iterators on the vector.
   using const_iterator = typename vector_t::const_iterator;
   // todo reverse_iterator
   // todo const_reverse_iterator
@@ -923,36 +923,36 @@ class vector {
   /// @{
 
   /// @brief Unchecked element access operator.
-  /// @return a ::reference to the n-th element in the array.
+  /// @return a ::reference to the n-th element in the vector.
   constexpr reference operator[](size_type n) { return impl()->operator[](n); }
 
   /// @brief Unchecked element access operator.
-  /// @return a ::const_reference to the n-th element in the array.
+  /// @return a ::const_reference to the n-th element in the vector.
   constexpr const_reference operator[](size_type n) const {
     return impl()->operator[](n);
   }
 
   /// @brief Checked element access operator.
-  /// @return a ::reference to the n-th element in the array.
+  /// @return a ::reference to the n-th element in the vector.
   constexpr reference at(size_type n) { return impl()->at(n); }
 
   /// @brief Checked element access operator.
-  /// @return a ::const_reference to the n-th element in the array.
+  /// @return a ::const_reference to the n-th element in the vector.
   constexpr const_reference at(size_type n) const { return impl()->at(n); }
 
-  /// @brief the first element in the array.
+  /// @brief the first element in the vector.
   /// @return a ::reference to the element in position 0.
   constexpr reference front() { return impl()->front(); }
 
-  /// @brief the first element in the array.
+  /// @brief the first element in the vector.
   /// @return a ::const_reference to the element in position 0.
   constexpr const_reference front() const { return impl()->front(); }
 
-  /// @brief the last element in the array.
+  /// @brief the last element in the vector.
   /// @return a ::reference to the element in position N - 1.
   constexpr reference back() { return impl()->back(); }
 
-  /// @brief the last element in the array.
+  /// @brief the last element in the vector.
   /// @return a ::const_reference to the element in position N - 1.
   constexpr const_reference back() const { return impl()->back(); }
   /// @}
