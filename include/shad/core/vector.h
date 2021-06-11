@@ -106,6 +106,8 @@ class vector : public AbstractDataStructure<vector<T>> {
           std::copy(Other->chunk_, Other->chunk_ + chunk_size(), This->chunk_);
         },
         std::make_pair(this->oid_, O.oid_));
+
+    fill_ptrs();
     return *this;
   }
 
@@ -134,6 +136,7 @@ class vector : public AbstractDataStructure<vector<T>> {
 
           std::swap(This->p_, Other->p_);
           std::swap(This->chunk_, Other->chunk_);
+          std::swap(This->ptrs_, Other->ptrs_);
         },
         std::make_pair(this->oid_, O.oid_));
   }
