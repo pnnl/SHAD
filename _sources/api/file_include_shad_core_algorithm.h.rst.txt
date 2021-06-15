@@ -81,10 +81,6 @@ Functions
 
 - :ref:`exhale_function_algorithm_8h_1a08f4233aef9435fb627ebb82d186715e`
 
-- :ref:`exhale_function_algorithm_8h_1ad909faa4c50e8fe776668cd39e776602`
-
-- :ref:`exhale_function_algorithm_8h_1a8566c24e54c82d15757af3f776c54c40`
-
 - :ref:`exhale_function_algorithm_8h_1a9be869b9241eafbec6af016a45fa8f45`
 
 - :ref:`exhale_function_algorithm_8h_1a1d99da6ce33f2013b3ff47b9a05a0916`
@@ -93,9 +89,13 @@ Functions
 
 - :ref:`exhale_function_algorithm_8h_1ae452511628cb333e23458bb2af8cfa83`
 
+- :ref:`exhale_function_algorithm_8h_1a729216b8f76b721c9e1ae8fdcb63ee03`
+
+- :ref:`exhale_function_algorithm_8h_1ad909faa4c50e8fe776668cd39e776602`
+
 - :ref:`exhale_function_algorithm_8h_1a8141e857a877c6eb44095a7578281ecd`
 
-- :ref:`exhale_function_algorithm_8h_1a729216b8f76b721c9e1ae8fdcb63ee03`
+- :ref:`exhale_function_algorithm_8h_1a8566c24e54c82d15757af3f776c54c40`
 
 - :ref:`exhale_function_algorithm_8h_1ab21c74ec57b46160ad590b2e989c4ea6`
 

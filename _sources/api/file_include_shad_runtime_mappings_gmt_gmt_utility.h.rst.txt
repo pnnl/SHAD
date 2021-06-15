@@ -92,9 +92,9 @@ Functions
 
 - :ref:`exhale_function_gmt__utility_8h_1af66aff5703d8f5570ba41b7e82534495`
 
-- :ref:`exhale_function_gmt__utility_8h_1aad275d30b5531baf4bcb8d23e1e029f9`
-
 - :ref:`exhale_function_gmt__utility_8h_1a0b03dc6a28c611e5d4dd5de70742ea31`
+
+- :ref:`exhale_function_gmt__utility_8h_1aad275d30b5531baf4bcb8d23e1e029f9`
 
 - :ref:`exhale_function_gmt__utility_8h_1af5be7cb69b6233f3f0dd9dc9f4b73857`
 

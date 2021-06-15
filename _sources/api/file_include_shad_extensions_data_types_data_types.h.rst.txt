@@ -70,8 +70,6 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_namespaceshad_1_1data__types_1a591f6b0e5f78ef929e14bbf334b099ab`
-
 - :ref:`exhale_function_namespaceshad_1_1data__types_1a1f8b6b6e021ab84c6d8867453f93fa97`
 
 - :ref:`exhale_function_namespaceshad_1_1data__types_1a092066ba21ca9b8ffc02fb41c429ed2c`
@@ -87,6 +85,8 @@ Functions
 - :ref:`exhale_function_namespaceshad_1_1data__types_1ae8d280a7f9c3ad36dd9e4c47c09851b8`
 
 - :ref:`exhale_function_namespaceshad_1_1data__types_1ab75b2b9f8076ddd9d246e925e05d88aa`
+
+- :ref:`exhale_function_namespaceshad_1_1data__types_1a591f6b0e5f78ef929e14bbf334b099ab`
 
 - :ref:`exhale_function_data__types_8h_1a708b03d43cbaf6f959e8131a1cc125d9`
 
