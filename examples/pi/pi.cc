@@ -22,15 +22,13 @@
 //
 //===----------------------------------------------------------------------===/
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <random>
 
-#include "shad/core/array.h"
 #include "shad/core/algorithm.h"
+#include "shad/core/array.h"
 #include "shad/core/numeric.h"
-#include "shad/core/execution.h"
-#include "shad/data_structures/one_per_locality.h"
 
 namespace shad {
 
@@ -38,8 +36,8 @@ int main(int argc, char *argv[]) {
 
   shad::array<uint64_t, 128> counters;
 
-  const static size_t numberOfPoints = 1e10;
-  const static size_t numberOfPointsPerSim = numberOfPoints / counters.size();
+  const size_t numberOfPoints = 1e10;
+  const size_t numberOfPointsPerSim = numberOfPoints / counters.size();
 
   shad::generate(
       shad::distributed_parallel_tag{},
