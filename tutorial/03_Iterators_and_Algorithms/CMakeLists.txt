@@ -1,4 +1,4 @@
-set(program )
+set(program array unordered_set unordered_map)
 
 foreach(p ${program})
   add_executable(${p} ${p}.cc)
