@@ -12,7 +12,9 @@ int main(int argc, char **argv) {
       [](const shad::MyNewDS<int>::ObjectID& oid) {
         auto ptr = shad::MyNewDS<int>::GetPtr(oid);
         if(ptr != nullptr) {
-          std::cout << "Pointer looks good on " << rt::thisLocality() << ", value is " << *ptr << std::endl;
+          std::cout << "Pointer looks good on "
+                    << rt::thisLocality() << ", value is "
+                    << static_cast<int>(*ptr) << std::endl;
         }
       },
       anInt->GetGlobalID());
