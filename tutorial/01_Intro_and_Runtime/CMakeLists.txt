@@ -1,4 +1,4 @@
-set(program ex1_hello_SHAD ex2_rdma)
+set(program ex1_hello_SHAD ex1_solution ex2_rdma)
 
 foreach(p ${program})
   add_executable(${p} ${p}.cc)
