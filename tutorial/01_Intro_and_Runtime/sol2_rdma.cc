@@ -67,8 +67,29 @@ int main(int argc, char **argv) {
     // send a task to any locality to update their own data
     // then do a dma to the caller locality (write localData)
     // PLUS: async is better
-    // HINT: there is an async version for RDMA as well.
-    // You can check the syntax in runtime.h. Or... Guess it
+    for (auto loc2 : rt::allLocalities()) {
+        if (loc2 != loc) {
+            loc = loc2;
+            break;
+        }
+    }
+    rt::Handle h;
+    std::tuple<rt::Locality, myelement_t*> argsTuple(rt::thisLocality(), localData.data());
+    rt::asyncExecuteAt(h, loc,
+      [](rt::Handle& h, const std::tuple<rt::Locality, myelement_t*> &args) {
+        myelement_t el({1, 1, 1});
+        std::fill(remoteData.begin(), remoteData.end(), el);
+        rt::asyncDma(h, std::get<0>(args), std::get<1>(args), remoteData.data(), n_elements);
+      },
+      argsTuple
+    );
+    rt::waitForCompletion(h);
+    size_t field_cnt = 0;
+    for (auto el : localData) {
+        field_cnt += el.first;
+    }
+    std::cout << "\n After we got data back, AGGR(first) = " << field_cnt << std::endl;
+
   }
 
 
