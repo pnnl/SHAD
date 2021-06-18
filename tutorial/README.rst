@@ -17,6 +17,7 @@ Agenda
 Getting Started
 ****
 Get the tutorial docker files from github
+
 .. code-block:: shell
 
    $ git clone https://github.com/mminutoli/shad-tutorial-cluster.git
