@@ -7,10 +7,9 @@
 #include <numeric>
 #include <utility>
 
-#include "shad/core/algorithm.h"
-#include "shad/core/array.h"
-#include "shad/core/unordered_set.h"
+#include "shad/data_structures/set.h"
 #include "shad/extensions/data_types/data_types.h"
+#include "shad/extensions/graph_library/edge_index.h"
 #include "shad/runtime/runtime.h"
 
 namespace shad {
@@ -40,10 +39,7 @@ static entry_t parse_entry(std::string str,
 
 
 int main(int argc, char **argv) {
-  if (argc != 2) {
-    printf("Usage: <input file>\n"); return 1;
-  }
-  std::string filename = std::string(argv[1]);
+  std::string filename = "../tutorial/02_DS_Ext_and_Utils/tinyfile.csv";
   std::string line;
   std::ifstream file(filename);
   std::vector<std::string> records;
@@ -57,37 +53,27 @@ int main(int argc, char **argv) {
   }
   file.close();
 
-  shad::array<entry_t, n_records> data;
-  size_t i = 0;
-  using insert_args_t = std::tuple<shad::array<entry_t, n_records>*, size_t, std::string*>;
-  auto insert_lambda = [] (rt::Handle&, const insert_args_t& args) {
-    std::get<0>(args)->at(std::get<1>(args)) = parse_entry(*std::get<2>(args), entry_schema);
-  };
-  rt::Handle h;
-  for (; i < records.size(); ++i) {
-    insert_args_t args(&data, i, &records[i]);
-    rt::asyncExecuteAt(h, rt::thisLocality(), insert_lambda, args);
-    // data.at(i) = parse_entry(records[i], entry_schema);
+  // Let's create a graph with edges between domains and ips
+  auto eiGraph = shad::EdgeIndex<uint64_t, uint64_t>::Create(n_records);
+  rt::Handle handle;
+  for (auto row : records) {
+    entry_t encoded = parse_entry(row, entry_schema);
+    eiGraph->AsyncInsert(handle, encoded[0], encoded[1]);
   }
-  rt::waitForCompletion(h);
-  
-  auto compare = [] (const entry_t& a, const entry_t& b)->bool {
-    return a[3] < b[3];
+  rt::waitForCompletion(handle);
+
+  // let's compute the number of unique destination vertices
+  auto setPtr = shad::Set<uint64_t>::Create(n_records);
+  shad::Set<uint64_t>::ObjectID oid = setPtr->GetGlobalID();
+  auto ForEachELambda = [](shad::rt::Handle &h, const uint64_t &src,
+                           const uint64_t &dest, shad::Set<uint64_t>::ObjectID& oid) {
+    auto setPtr = shad::Set<uint64_t>::GetPtr(oid);
+    setPtr->AsyncInsert(h, dest);
   };
-  auto max = shad::max_element(shad::distributed_parallel_tag{}, data.begin(), data.end(), compare);
-  entry_t max_entry = *max;
-  std::cout << "max el is " << max_entry[3] << std::endl;
-  std::string decoded = shad::data_types::decode<uint64_t, std::string, shad::data_types::IP_ADDRESS>(max_entry[1]);
-  std::cout << "decoded " << decoded << std::endl;
-
-
-  shad::unordered_set<uint64_t> myset(n_records/8);
-  shad::buffered_insert_iterator<shad::unordered_set<uint64_t>> ins_it(myset, myset.end());
-  auto transf_lambda = [](entry_t e)->uint64_t {return e[1];};
-  shad::transform(shad::distributed_parallel_tag{}, data.begin(), data.end(), ins_it, transf_lambda);
-
-  std::cout << "set size " << myset.size() << std::endl;
-
+  eiGraph->AsyncForEachEdge(handle, ForEachELambda, oid);
+  rt::waitForCompletion(handle);
+  size_t size = setPtr->Size();
+  std::cout << "The Graph has " << size << " unique destinations" << std::endl;
 
   return 0;
 }
