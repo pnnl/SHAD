@@ -72,6 +72,17 @@ class MyNewDS : public AbstractDataStructure<MyNewDS<T>> {
     rt::waitForCompletion(h);
   }
 
+
+  // Exercise
+  // Implement the gather operation
+  // Hint1: Very similar to the scatter
+  // Hint2: We have seen the needed shad::rt function in ex2_rdma
+  std::vector<T> gather() {
+    std::vector<T> res(rt::numLocalities());
+
+    return res;
+  }
+
  protected:
   /// @brief Constructor.
   template <typename... Args>
