@@ -59,8 +59,8 @@ class MyNewDS : public AbstractDataStructure<MyNewDS<T>> {
   void scatter(std::vector<T> &v) {
     uint32_t idx = 0;
     rt::Handle h;
-    std::pair<ObjectID, T> args(oid_, v[idx]);
     for (auto loc : shad::rt::allLocalities()) {
+      std::pair<ObjectID, T> args(oid_, v[idx]);
       rt::asyncExecuteAt(h, loc,
         [](rt::Handle&, const std::pair<ObjectID, T> &args) {
           auto ptr = MyNewDS<T>::GetPtr(args.first);
