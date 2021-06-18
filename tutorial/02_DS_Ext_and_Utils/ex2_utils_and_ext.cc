@@ -39,7 +39,7 @@ static entry_t parse_entry(std::string str,
 
 
 int main(int argc, char **argv) {
-  std::string filename = "../tutorial/02_DS_Ext_and_Utils/tinyfile.csv";
+  std::string filename = "../SHAD/tutorial/02_DS_Ext_and_Utils/tinyfile.csv";
   std::string line;
   std::ifstream file(filename);
   std::vector<std::string> records;

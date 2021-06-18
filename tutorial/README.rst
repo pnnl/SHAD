@@ -36,5 +36,5 @@ The container prompt should appear:
 
 .. code-block:: shell
 
-   $ mpiexec -n 4 -pernode --hostfile machines hostname
-   $ mpiexec --pernode -n 4 -pernode --hostfile machines ./SHAD-build/examples/pi/pi --gmt_num_workers 3
+   $ mpiexec -n 4 -pernode --hostfile ~/machines hostname
+   $ mpiexec --pernode -n 4 -pernode --hostfile ~/machines ./SHAD-build/examples/pi/pi --gmt_num_workers 3
