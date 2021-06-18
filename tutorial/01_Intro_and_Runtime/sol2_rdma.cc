@@ -63,12 +63,16 @@ int main(int argc, char **argv) {
     std::cout << "(L)Acc2: " << acc2 << ", expected: " << 24*n_elements << std::endl;
     std::cout << "(L)Acc3: " << acc3 << ", expected: " << 42*n_elements << std::endl;
 
+
+  }
+
     // exercise 2
     // send a task to any locality to update their own data
     // then do a dma to the caller locality (write localData)
     // PLUS: async is better
+    auto loc = rt::thisLocality();
     for (auto loc2 : rt::allLocalities()) {
-        if (loc2 != loc) {
+        if (loc2!=rt::thisLocality()) {
             loc = loc2;
             break;
         }
@@ -76,12 +80,12 @@ int main(int argc, char **argv) {
     rt::Handle h;
     std::tuple<rt::Locality, myelement_t*> argsTuple(rt::thisLocality(), localData.data());
     rt::asyncExecuteAt(h, loc,
-      [](rt::Handle& h, const std::tuple<rt::Locality, myelement_t*> &args) {
+        [](rt::Handle& h, const std::tuple<rt::Locality, myelement_t*> &args) {
         myelement_t el({1, 1, 1});
         std::fill(remoteData.begin(), remoteData.end(), el);
         rt::asyncDma(h, std::get<0>(args), std::get<1>(args), remoteData.data(), n_elements);
-      },
-      argsTuple
+        },
+        argsTuple
     );
     rt::waitForCompletion(h);
     size_t field_cnt = 0;
@@ -89,9 +93,6 @@ int main(int argc, char **argv) {
         field_cnt += el.first;
     }
     std::cout << "\n After we got data back, AGGR(first) = " << field_cnt << std::endl;
-
-  }
-
 
   return 0;
 }

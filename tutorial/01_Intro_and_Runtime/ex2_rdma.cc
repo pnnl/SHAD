@@ -62,15 +62,14 @@ int main(int argc, char **argv) {
     std::cout << "(L)Acc1: " << acc1 << ", expected: " << 8*n_elements << std::endl;
     std::cout << "(L)Acc2: " << acc2 << ", expected: " << 24*n_elements << std::endl;
     std::cout << "(L)Acc3: " << acc3 << ", expected: " << 42*n_elements << std::endl;
-
+}
     // exercise 2
     // send a task to any locality to update their own data
     // then do a dma to the caller locality (write localData)
     // PLUS: async is better
     // HINT: there is an async version for RDMA as well.
     // You can check the syntax in runtime.h. Or... Guess it
-  }
-
+  
 
   return 0;
 }
