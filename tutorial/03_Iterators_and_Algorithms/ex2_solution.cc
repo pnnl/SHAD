@@ -14,19 +14,16 @@ int main(int argc, char *argv[]) {
   // #HINT: shad::transform
 
   using value_type = shad::Set<int>::value_type;
-  using shad_buffered_inserter_t =
-      shad::buffered_insert_iterator<shad::unordered_set<int>>;
+  using insert_iterator = shad::insert_iterator<shad::unordered_set<int>>;
 
   // unordered_set
   shad::unordered_set<int> set_;
 
   // create set
-  shad_buffered_inserter_t ins(set_, set_.begin());
   for (size_t i = 0; i < 4; ++i) {
-    ins = i + 2;
+    set_.insert(i + 2);
   }
-  ins.wait();
-  ins.flush();
+
 
   std::cout << "==> Create the unodered_set: \n";
   for (auto v: set_) std::cout << v << std::endl;
@@ -36,7 +33,7 @@ int main(int argc, char *argv[]) {
 
   shad::transform(
      shad::distributed_parallel_tag{}, set_.begin(), set_.end(),
-     shad_buffered_inserter_t(out, out.begin()), [](const value_type &i) { return i * 2; });
+     insert_iterator(out, out.begin()), [](const value_type &i) { return i * 2; });
 
   std::cout << "==> After using shad::transform, another unodered_set is: \n";
   for (auto v: out) std::cout << v << std::endl;
