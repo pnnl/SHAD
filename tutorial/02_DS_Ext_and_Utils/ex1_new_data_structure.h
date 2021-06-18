@@ -55,6 +55,23 @@ class MyNewDS : public AbstractDataStructure<MyNewDS<T>> {
   /// @brief Retrieve a copy of the local instance.
   explicit operator T() const { return localInstance_; }
 
+  /// @brief Scatter operation
+  void scatter(std::vector<T> &v) {
+    uint32_t idx = 0;
+    rt::Handle h;
+    std::pair<ObjectID, T> args(oid_, v[idx]);
+    for (auto loc : shad::rt::allLocalities()) {
+      rt::asyncExecuteAt(h, loc,
+        [](rt::Handle&, const std::pair<ObjectID, T> &args) {
+          auto ptr = MyNewDS<T>::GetPtr(args.first);
+          (*ptr) = args.second;
+        },  
+        args);
+      ++idx;
+    }
+    rt::waitForCompletion(h);
+  }
+
  protected:
   /// @brief Constructor.
   template <typename... Args>
