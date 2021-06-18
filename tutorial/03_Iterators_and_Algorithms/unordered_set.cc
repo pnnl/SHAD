@@ -4,21 +4,10 @@
 #include "shad/core/unordered_set.h"
 #include "shad/util/measure.h"
 
-constexpr static size_t kSize = 128;
 using iterator = shad::Set<int>::iterator;
 using value_type = shad::Set<int>::value_type;
-using shad_inserter_t = shad::insert_iterator<shad::unordered_set<int>>;
-using shad_buffered_inserter_t =
-    shad::buffered_insert_iterator<shad::unordered_set<int>>;
+using insert_iterator = shad::insert_iterator<shad::unordered_set<int>>;
 
-
-template <typename shad_inserter>
-void shad_transform_algorithm(shad::unordered_set<int> &in) {
-  shad::unordered_set<int> out;
-  shad::transform(
-      shad::distributed_parallel_tag{}, in.begin(), in.end(),
-      shad_inserter(out, out.begin()), [](const value_type &i) { return i; });
-}
 
 namespace shad {
 
@@ -27,17 +16,18 @@ int main(int argc, char *argv[]) {
   shad::unordered_set<int> set_;
 
   // create set
-  shad_buffered_inserter_t ins(set_, set_.begin());
-  for (size_t i = 0; i < kSize; ++i) {
-    ins = 2 * (i + 1);
+  for (size_t i = 0; i < 4; ++i) {
+    set_.insert(2 * (i + 1));
   }
-  ins.wait();
-  ins.flush();
+  
+  std::cout << "==> Create unodered_set: " << std::endl;
+  for (auto v: set_) std::cout << v << std::endl;
+
 
   // shad minmax algorithm
   std::pair<iterator, iterator> min_max = shad::minmax_element(
       shad::distributed_parallel_tag{}, set_.begin(), set_.end());
-  std::cout << "==> After using shad::count, min = " << *min_max.first
+  std::cout << "==> After using shad::minmax_element, min = " << *min_max.first
             << ", max = " << *min_max.second << std::endl;
 
   
@@ -78,15 +68,14 @@ int main(int argc, char *argv[]) {
 
 
   // shad transform algorithm
-  auto execute_time = shad::measure<std::chrono::seconds>::duration(
-      [&]() { shad_transform_algorithm<shad_inserter_t>(set_); });
-  std::cout << "==> Using shad::transform with insert_iterator, took " << execute_time.count()
-            << " seconds" << std::endl;
+  shad::unordered_set<int> out;
+  shad::transform(
+      shad::distributed_parallel_tag{}, set_.begin(), set_.end(),
+      insert_iterator(out, out.begin()), [](const value_type &i) { return i; });
 
-  auto execute_time_ = shad::measure<std::chrono::seconds>::duration(
-      [&]() { shad_transform_algorithm<shad_buffered_inserter_t>(set_); });
-  std::cout << "==> Using shad::transform with buffered_insert_iterator, took " 
-            << execute_time_.count() << " seconds" << std::endl;
+  std::cout << "==> Using shad::transform, the output set is: " << std::endl;
+  for(auto v:out) std::cout << v << std::endl;
+
 
   // Exercise 2
   // Create an unorder_set containing int value 2, 3, 4, 5,
