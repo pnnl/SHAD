@@ -73,7 +73,7 @@ endif()
 # Build options:
 option(SHAD_ENABLE_CPPLINT "Enable the linting of source code" ON)
 option(SHAD_ENABLE_DOXYGEN "Use doxygen to generate the shad API documentation" OFF)
-option(SHAD_ENABLE_UNIT_TEST "Enable the compilation of Unit Tests" ON)
+option(SHAD_ENABLE_UNIT_TEST "Enable the compilation of Unit Tests" OFF)
 option(SHAD_ENABLE_PERFORMANCE_TEST "Enable the compilation of the Performance Tests" OFF)
 
 set(
@@ -150,7 +150,7 @@ if (SHAD_ENABLE_DOXYGEN)
   add_subdirectory(docs)
 endif()
 add_subdirectory(examples)
-
+add_subdirectory(tutorial)
 install(DIRECTORY ${SHAD_MAIN_INCLUDE_DIR}/shad
   DESTINATION include
   PATTERN "*.h"
