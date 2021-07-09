@@ -99,7 +99,7 @@ class array : public AbstractDataStructure<array<T, N>> {
           auto This = array<T, N>::GetPtr(std::get<0>(IDs));
           auto Other = array<T, N>::GetPtr(std::get<1>(IDs));
 
-          std::copy(Other->chunk_, Other->chunk_ + chunk_size(), This->churk_);
+          std::copy(Other->chunk_, Other->chunk_ + chunk_size(), This->chunk_);
         },
         std::make_pair(this->oid_, O.oid_));
     return *this;
