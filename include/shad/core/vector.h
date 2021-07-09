@@ -36,9 +36,9 @@ namespace shad {
 namespace impl {
 /// @brief Distributed vector without resizing capabilities.
 /// TODO change the descriptions
-/// Section XX.X.X.X of the C++ standard defines the ::vector as a dynamically
+/// The C++ standard defines the ::vector as a dynamically
 /// resizeable sequence of objects.  A ::vector should be a contiguous container (as
-/// defined in section XX.X.X).  According to that definition, contiguous
+/// defined in the C++ standard).  According to that definition, contiguous
 /// containers requires contiguous iterators.  The definition of contiguous
 /// iterators implies contiguous memory allocation for the sequence, and it
 /// cannot be guaranteed in many distributed settings.  Therefore, ::vector
