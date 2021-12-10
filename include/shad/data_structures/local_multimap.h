@@ -61,9 +61,10 @@ class LocalMultimap {
 
   friend class Multimap;
   friend class lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
-               const std::pair<KTYPE, VTYPE>>;
-  friend class lmultimap_key_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>, const std::pair<KTYPE,
-               std::vector<VTYPE>>>;
+                                  const std::pair<KTYPE, VTYPE>>;
+  friend class lmultimap_key_iterator<
+      LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
+      const std::pair<KTYPE, std::vector<VTYPE>>>;
 
   template <typename, typename, typename>
   friend class multimap_iterator;
@@ -74,15 +75,16 @@ class LocalMultimap {
  public:
   using inner_type = VTYPE;
   using iterator = lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
-        const std::pair<KTYPE, VTYPE>>;
-  using const_iterator = lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
-        const std::pair<KTYPE, VTYPE>>;
-  using key_iterator = lmultimap_key_iterator<
-        LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
-        const std::pair<KTYPE, std::vector<VTYPE>>>;
-  using const_key_iterator = lmultimap_key_iterator<
-        LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
-        const std::pair<KTYPE, std::vector<VTYPE>>>;
+                                      const std::pair<KTYPE, VTYPE>>;
+  using const_iterator =
+      lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
+                         const std::pair<KTYPE, VTYPE>>;
+  using key_iterator =
+      lmultimap_key_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
+                             const std::pair<KTYPE, std::vector<VTYPE>>>;
+  using const_key_iterator =
+      lmultimap_key_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
+                             const std::pair<KTYPE, std::vector<VTYPE>>>;
 
   /// @brief Constructor.
   /// @param numInitBuckets initial number of Buckets.
@@ -91,12 +93,12 @@ class LocalMultimap {
         buckets_array_(numInitBuckets),
         deleter_array_(numInitBuckets),
         inserter_array_(numInitBuckets),
-        size_(0) 
-    {
-      for (uint64_t i = 0; i < numInitBuckets; i ++) {
-        deleter_array_[i] = 0; inserter_array_[i] = 0;
-      }
+        size_(0) {
+    for (uint64_t i = 0; i < numInitBuckets; i++) {
+      deleter_array_[i] = 0;
+      inserter_array_[i] = 0;
     }
+  }
 
   /// @brief Size of the multimap (number of entries).
   /// @return the size of the multimap.
@@ -114,10 +116,11 @@ class LocalMultimap {
   /// @brief Asynchronously Insert a key-value pair in the multimap.
   /// @warning Asynchronous operations are guaranteed to have completed
   /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.
-  /// @param[in,out] handle Reference to the handle to be used to wait for completion.
+  /// @param[in,out] handle Reference to the handle to be used to wait for
+  /// completion.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the multimap.
-  /// @return a pointer to the inserted value 
+  /// @return a pointer to the inserted value
   void AsyncInsert(rt::Handle &handle, const KTYPE &key, const VTYPE &value);
 
   template <typename ELTYPE>
@@ -130,7 +133,8 @@ class LocalMultimap {
   /// @brief Asynchronously remove a key and value from the multimap.
   /// @warning Asynchronous operations are guaranteed to have completed.
   /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.
-  /// @param[in,out] handle Reference to the handle to be used to wait for completion.
+  /// @param[in,out] handle Reference to the handle to be used to wait for
+  /// completion.
   /// @param[in] key the key.
   void AsyncErase(rt::Handle &handle, const KTYPE &key);
 
@@ -139,27 +143,28 @@ class LocalMultimap {
     size_ = 0;
     buckets_array_.clear();
     buckets_array_ = std::vector<Bucket>(numBuckets_);
-    for (uint64_t i = 0; i < numBuckets_; i ++) {
-      deleter_array_[i] = 0; inserter_array_[i] = 0;
+    for (uint64_t i = 0; i < numBuckets_; i++) {
+      deleter_array_[i] = 0;
+      inserter_array_[i] = 0;
     }
   }
 
   /// @brief Result for the Lookup and AsyncLookup methods.
   struct LookupResult {
     bool found;
-    size_t size;                  /// Size of the value vector.
-    std::vector<VTYPE> value;     /// A copy of the value vector.
+    size_t size;               /// Size of the value vector.
+    std::vector<VTYPE> value;  /// A copy of the value vector.
   };
 
   /// @brief Result for the Remote Lookup method.
-  struct  LookupRemoteResult {
+  struct LookupRemoteResult {
     bool found;
-    size_t size;               /// Size of the value vector.
-    rt::Locality localLoc;     /// Locality of the local site.
-    VTYPE * local_elems;       /// Address of the value vector 
-                               /// elements at the local site
-    VTYPE * remote_elems;      /// Address of a copy of the 
-                               /// value vector elements at the remote site
+    size_t size;            /// Size of the value vector.
+    rt::Locality localLoc;  /// Locality of the local site.
+    VTYPE *local_elems;     /// Address of the value vector
+                            /// elements at the local site
+    VTYPE *remote_elems;    /// Address of a copy of the
+                            /// value vector elements at the remote site
   };
 
   /// @brief Asynchronously get the values associated to a key.
@@ -170,22 +175,24 @@ class LocalMultimap {
   ///                       to wait for completion.
   /// @param[in] key The key.
   /// @param[out] res The result of the lookup operation.
-  void AsyncLookup(rt::Handle & handle, const KTYPE & key, LookupResult * result);
+  void AsyncLookup(rt::Handle &handle, const KTYPE &key, LookupResult *result);
 
   /// @brief Get the values associated to a key.
   /// @param[in] key The key.
   /// @param[out] res The result of the lookup operation.
-  bool Lookup(const KTYPE & key, LookupResult * result);
+  bool Lookup(const KTYPE &key, LookupResult *result);
 
   /// @brief Make a local copy of the values associated to a key and
   /// return the size and address of the local copy.
   ///
   /// @param[in] key The key.
   /// @param[out] local_result The result of the lookup operation.
-  void LookupFromRemote(KTYPE & key, LookupRemoteResult * remote_result);
+  void LookupFromRemote(KTYPE &key, LookupRemoteResult *remote_result);
 
-  /// @brief Apply a user-defined function to every element of an entry's value array.
-  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @brief Apply a user-defined function to every element of an entry's value
+  /// array.
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
   /// @code
   /// void(const KTYPE&, VTYPE&, Args&);
   /// @endcode
@@ -195,14 +202,15 @@ class LocalMultimap {
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void Apply(const KTYPE &key, ApplyFunT &&function, Args &... args) {
+  void Apply(const KTYPE &key, ApplyFunT &&function, Args &...args) {
     LookupResult result;
-    Lookup(key, & result);
+    Lookup(key, &result);
     for (auto x : result.value) function(key, x, args...);
   }
 
   /// @brief Asynchronously apply a user-defined function to a key-value pair.
-  /// @tparam ApplyFunT User-defined function type.  The function prototype should be:
+  /// @tparam ApplyFunT User-defined function type.  The function prototype
+  /// should be:
   /// @code
   /// void(rt::Handle &handle, const KTYPE&, VTYPE&, Args&);
   /// @endcode
@@ -213,10 +221,12 @@ class LocalMultimap {
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function, Args &... args);
+  void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
+                  Args &...args);
 
   /// @brief Apply a user-defined function to each key-value pair.
-  /// @tparam ApplyFunT User-defined function type.  The function prototype should be:
+  /// @tparam ApplyFunT User-defined function type.  The function prototype
+  /// should be:
   /// @code
   /// void(const KTYPE&, VTYPE&, Args&);
   /// @endcode
@@ -225,11 +235,12 @@ class LocalMultimap {
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void ForEachEntry(ApplyFunT &&function, Args &... args);
+  void ForEachEntry(ApplyFunT &&function, Args &...args);
 
-  /// @brief Asynchronously apply a user-defined function to each key-value pair.
+  /// @brief Asynchronously apply a user-defined function to each key-value
+  /// pair.
   ///
-  /// @tparam ApplyFunT User-defined function type. The function prototype 
+  /// @tparam ApplyFunT User-defined function type. The function prototype
   ///         should be:
   /// @code
   /// void(shad::rt::Handle&, const KTYPE&, VTYPE&, Args&);
@@ -239,11 +250,13 @@ class LocalMultimap {
   /// @warning Asynchronous operations are guaranteed to have completed only
   /// after calling the rt::waitForCompletion(rt::Handle &handle) method.
   ///
-  /// @param[in,out] handle Reference to the handle to be used to wait for completion.
+  /// @param[in,out] handle Reference to the handle to be used to wait for
+  /// completion.
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void AsyncForEachEntry(rt::Handle &handle, ApplyFunT &&function, Args &... args);
+  void AsyncForEachEntry(rt::Handle &handle, ApplyFunT &&function,
+                         Args &...args);
 
   /// @brief Apply a user-defined function to each key.
   /// @tparam ApplyFunT User-defined function type.
@@ -255,7 +268,7 @@ class LocalMultimap {
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void ForEachKey(ApplyFunT &&function, Args &... args);
+  void ForEachKey(ApplyFunT &&function, Args &...args);
 
   /// @brief Asynchronously apply a user-defined function to each key.
   /// @tparam ApplyFunT User-defined function type.
@@ -266,29 +279,34 @@ class LocalMultimap {
   /// @tparam ...Args Types of the function arguments.
   /// @warning Asynchronous operations are guaranteed to have completed.
   /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.
-  /// @param[in,out] handle Reference to the handle to be used to wait for completion.
+  /// @param[in,out] handle Reference to the handle to be used to wait for
+  /// completion.
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void AsyncForEachKey(rt::Handle &handle, ApplyFunT &&function, Args &... args);
+  void AsyncForEachKey(rt::Handle &handle, ApplyFunT &&function, Args &...args);
 
   /// @brief Print all the entries in the multimap.
-  /// @warning std::ostream & operator<< must be defined for both KTYPE and VTYPE
+  /// @warning std::ostream & operator<< must be defined for both KTYPE and
+  /// VTYPE
   void PrintAllEntries();
 
   /// @brief Print all the keys in the multimap.
-  /// @warning std::ostream & operator<< must be defined for both KTYPE and VTYPE
+  /// @warning std::ostream & operator<< must be defined for both KTYPE and
+  /// VTYPE
   void PrintAllKeys();
 
   iterator begin() {
     Entry *firstEntry = &buckets_array_[0].getEntry(0);
 
     if (firstEntry->state == USED) {
-      iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry, firstEntry->value.begin());
+      iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry,
+                    firstEntry->value.begin());
       return cbeg;
     }
 
-    iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry, std::vector<inner_type>::iterator());
+    iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry,
+                  std::vector<inner_type>::iterator());
     return ++cbeg;
   }
 
@@ -306,56 +324,60 @@ class LocalMultimap {
     return ++cbeg;
   }
 
-  key_iterator key_end() { return key_iterator::lmultimap_key_end(numBuckets_); }
+  key_iterator key_end() {
+    return key_iterator::lmultimap_key_end(numBuckets_);
+  }
 
   const_iterator cbegin() { return begin(); }
-  const_iterator cend()   { return const_iterator::lmultimap_end(numBuckets_); }
+  const_iterator cend() { return const_iterator::lmultimap_end(numBuckets_); }
 
   void allow_inserter(size_t i) {
-     while (true) {
-         uint32_t prev_inserters = inserter_array_[i];
+    while (true) {
+      uint32_t prev_inserters = inserter_array_[i];
 
-         if ((prev_inserters != has_deleter) && (deleter_array_[i] == 0)) {
-            uint32_t new_inserters = prev_inserters + 1;
-            if (inserter_array_[i].compare_exchange_weak(prev_inserters, new_inserters)) {
-               return;
-            } else {
-               rt::impl::yield();
-            }
-         } else {
-            rt::impl::yield();
-         }
+      if ((prev_inserters != has_deleter) && (deleter_array_[i] == 0)) {
+        uint32_t new_inserters = prev_inserters + 1;
+        if (inserter_array_[i].compare_exchange_weak(prev_inserters,
+                                                     new_inserters)) {
+          return;
+        } else {
+          rt::impl::yield();
+        }
+      } else {
+        rt::impl::yield();
       }
-   }
+    }
+  }
 
-   void release_inserter(size_t i) { inserter_array_[i] --; }
+  void release_inserter(size_t i) { inserter_array_[i]--; }
 
-   void allow_deleter(size_t i) {
-      deleter_array_[i] ++;
+  void allow_deleter(size_t i) {
+    deleter_array_[i]++;
 
-      while (true) {
-         uint32_t prev_inserters = inserter_array_[i];
+    while (true) {
+      uint32_t prev_inserters = inserter_array_[i];
 
-         if (prev_inserters == 0) {
-            if (inserter_array_[i].compare_exchange_weak(prev_inserters, has_deleter)) {
-               deleter_array_[i] --;
-               return;
-            } else {
-               rt::impl::yield();
-            }
-         } else {
-            rt::impl::yield();
-         }
+      if (prev_inserters == 0) {
+        if (inserter_array_[i].compare_exchange_weak(prev_inserters,
+                                                     has_deleter)) {
+          deleter_array_[i]--;
+          return;
+        } else {
+          rt::impl::yield();
+        }
+      } else {
+        rt::impl::yield();
       }
-   }
+    }
+  }
 
-   void release_deleter(size_t i) { inserter_array_[i] = 0; }
+  void release_deleter(size_t i) { inserter_array_[i] = 0; }
 
  private:
-  static const uint8_t  kHashSeed = 0;
-  static const size_t   kAllocPending = 0x1;
-  static const size_t   kNumEntriesPerBucket = 
-                          constants::kMMapDefaultNumEntriesPerBucket;
+  static const uint8_t kHashSeed = 0;
+  static const size_t kAllocPending = 0x1;
+  static const size_t kNumEntriesPerBucket =
+      constants::kMMapDefaultNumEntriesPerBucket;
   static const uint32_t kKeyWords = sizeof(KTYPE) > sizeof(uint64_t)
                                         ? sizeof(KTYPE) / sizeof(uint64_t)
                                         : 1;
@@ -365,7 +387,7 @@ class LocalMultimap {
 
   struct Entry {
     KTYPE key;
-    std::vector <VTYPE> value;
+    std::vector<VTYPE> value;
     volatile State state;
     Entry() : state(EMPTY) {}
   };
@@ -382,12 +404,12 @@ class LocalMultimap {
 
     Entry &getEntry(size_t i) {
       if (!entries) {
-         std::lock_guard<rt::Lock> _(_entriesLock);
+        std::lock_guard<rt::Lock> _(_entriesLock);
 
-         if (!entries) {
-            entries = std::move(std::shared_ptr<Entry>(
-                  new Entry[bucketSize_], std::default_delete<Entry[]>()));
-         }
+        if (!entries) {
+          entries = std::move(std::shared_ptr<Entry>(
+              new Entry[bucketSize_], std::default_delete<Entry[]>()));
+        }
       }
       return entries.get()[i];
     }
@@ -414,7 +436,6 @@ class LocalMultimap {
       const size_t i, LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
       ApplyFunT function, std::tuple<Args...> &args,
       std::index_sequence<is...>) {
-
     Bucket *bucket = &mapPtr->buckets_array_[i];
 
     while (bucket != nullptr) {
@@ -426,7 +447,7 @@ class LocalMultimap {
         if (entry->state == USED) {
           function(entry->key, entry->value, std::get<is>(args)...);
         } else if (entry->state != EMPTY) {
-          printf( "Entry in PENDING state while iterating over entries\n");
+          printf("Entry in PENDING state while iterating over entries\n");
         }
       }
 
@@ -436,23 +457,19 @@ class LocalMultimap {
 
   template <typename Tuple, typename... Args>
   static void ForEachEntryFunWrapper(const Tuple &args, size_t i) {
-
-    constexpr auto Size = std::tuple_size<typename std::decay<
-                                  decltype(std::get<2>(args))>::type>::value;
+    constexpr auto Size = std::tuple_size<
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
     Tuple &tuple = const_cast<Tuple &>(args);
 
-    CallForEachEntryFun(i, std::get<0>(tuple),
-                        std::get<1>(tuple), std::get<2>(tuple),
-                        std::make_index_sequence<Size>{});
+    CallForEachEntryFun(i, std::get<0>(tuple), std::get<1>(tuple),
+                        std::get<2>(tuple), std::make_index_sequence<Size>{});
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
   static void AsyncCallForEachEntryFun(
       rt::Handle &handle, const size_t i,
-      LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
-      ApplyFunT function, std::tuple<Args...> &args,
-      std::index_sequence<is...>) {
-
+      LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr, ApplyFunT function,
+      std::tuple<Args...> &args, std::index_sequence<is...>) {
     Bucket *bucket = &mapPtr->buckets_array_[i];
 
     while (bucket != nullptr) {
@@ -473,14 +490,14 @@ class LocalMultimap {
   }
 
   template <typename Tuple, typename... Args>
-  static void AsyncForEachEntryFunWrapper(rt::Handle &handle,
-                                          const Tuple &args, size_t i) {
+  static void AsyncForEachEntryFunWrapper(rt::Handle &handle, const Tuple &args,
+                                          size_t i) {
     constexpr auto Size = std::tuple_size<
-          typename std::decay<decltype(std::get<2>(args))>::type>::value;
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
     Tuple &tuple = const_cast<Tuple &>(args);
 
-    AsyncCallForEachEntryFun(handle, i, std::get<0>(tuple),
-                             std::get<1>(tuple), std::get<2>(tuple),
+    AsyncCallForEachEntryFun(handle, i, std::get<0>(tuple), std::get<1>(tuple),
+                             std::get<2>(tuple),
                              std::make_index_sequence<Size>{});
   }
 
@@ -489,7 +506,6 @@ class LocalMultimap {
       const size_t i, LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
       ApplyFunT function, std::tuple<Args...> &args,
       std::index_sequence<is...>) {
-
     size_t cnt = 0;
     Bucket *buckets_array = mapPtr->buckets_array_.data();
     Bucket *bucket = &buckets_array[i];
@@ -512,19 +528,18 @@ class LocalMultimap {
   template <typename Tuple, typename... Args>
   static void ForEachKeyFunWrapper(const Tuple &args, size_t i) {
     constexpr auto Size = std::tuple_size<
-               typename std::decay<decltype(std::get<2>(args))>::type>::value;
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
     Tuple &tuple = const_cast<Tuple &>(args);
 
-    CallForEachKeyFun(i, std::get<0>(tuple),
-         std::get<1>(tuple), std::get<2>(tuple), std::make_index_sequence<Size>{});
+    CallForEachKeyFun(i, std::get<0>(tuple), std::get<1>(tuple),
+                      std::get<2>(tuple), std::make_index_sequence<Size>{});
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
   static void AsyncCallForEachKeyFun(
       rt::Handle &handle, const size_t i,
-      LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
-      ApplyFunT function, std::tuple<Args...> &args, std::index_sequence<is...>) {
-
+      LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr, ApplyFunT function,
+      std::tuple<Args...> &args, std::index_sequence<is...>) {
     Bucket *buckets_array = mapPtr->buckets_array_.data();
     Bucket *bucket = &buckets_array[i];
 
@@ -544,23 +559,22 @@ class LocalMultimap {
   }
 
   template <typename Tuple, typename... Args>
-  static void AsyncForEachKeyFunWrapper(rt::Handle &handle,
-                                        const Tuple &args, size_t i) {
-    constexpr auto Size = std::tuple_size< typename std::decay<
-                            decltype(std::get<2>(args))>::type>::value;
+  static void AsyncForEachKeyFunWrapper(rt::Handle &handle, const Tuple &args,
+                                        size_t i) {
+    constexpr auto Size = std::tuple_size<
+        typename std::decay<decltype(std::get<2>(args))>::type>::value;
     Tuple &tuple = const_cast<Tuple &>(args);
 
-    AsyncCallForEachKeyFun(handle, i, std::get<0>(tuple),
-         std::get<1>(tuple), std::get<2>(tuple), std::make_index_sequence<Size>{});
+    AsyncCallForEachKeyFun(handle, i, std::get<0>(tuple), std::get<1>(tuple),
+                           std::get<2>(tuple),
+                           std::make_index_sequence<Size>{});
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
   static void AsyncCallApplyFun(
-      rt::Handle &handle,
-      LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
+      rt::Handle &handle, LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
       const KTYPE &key, ApplyFunT function, std::tuple<Args...> &args,
       std::index_sequence<is...>) {
-
     size_t bucketIdx = shad::hash<KTYPE>{}(key) % mapPtr->numBuckets_;
     Bucket *bucket = &(mapPtr->buckets_array_[bucketIdx]);
 
@@ -588,11 +602,10 @@ class LocalMultimap {
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
-  static void CallApplyFun(
-      LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
-      const KTYPE &key, ApplyFunT function, std::tuple<Args...> &args,
-      std::index_sequence<is...>) {
-
+  static void CallApplyFun(LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
+                           const KTYPE &key, ApplyFunT function,
+                           std::tuple<Args...> &args,
+                           std::index_sequence<is...>) {
     size_t bucketIdx = shad::hash<KTYPE>{}(key) % mapPtr->numBuckets_;
     Bucket *bucket = &(mapPtr->buckets_array_[bucketIdx]);
 
@@ -621,25 +634,24 @@ class LocalMultimap {
 
   template <typename Tuple, typename... Args>
   static void AsyncApplyFunWrapper(rt::Handle &handle, const Tuple &args) {
-    constexpr auto Size = std::tuple_size< typename std::decay<
-                            decltype(std::get<3>(args))>::type>::value;
+    constexpr auto Size = std::tuple_size<
+        typename std::decay<decltype(std::get<3>(args))>::type>::value;
     Tuple &tuple = const_cast<Tuple &>(args);
 
-    AsyncCallApplyFun(handle, std::get<0>(tuple),
-                      std::get<1>(tuple), std::get<2>(tuple),
-                      std::get<3>(tuple), std::make_index_sequence<Size>{});
+    AsyncCallApplyFun(handle, std::get<0>(tuple), std::get<1>(tuple),
+                      std::get<2>(tuple), std::get<3>(tuple),
+                      std::make_index_sequence<Size>{});
   }
 };
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncLookup(
-    rt::Handle & handle, const KTYPE & key, LookupResult * result) {
-
+    rt::Handle &handle, const KTYPE &key, LookupResult *result) {
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
   auto args = std::tuple<LMapPtr, KTYPE, LookupResult *>(this, key, result);
 
-  auto lookupLambda = [](rt::Handle &, const std::tuple<LMapPtr, KTYPE,
-                         LookupResult *> &t) {
+  auto lookupLambda = [](rt::Handle &,
+                         const std::tuple<LMapPtr, KTYPE, LookupResult *> &t) {
     (std::get<0>(t))->Lookup(std::get<1>(t), std::get<2>(t));
   };
 
@@ -647,16 +659,14 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncLookup(
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-bool LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE & key,
-                                                      LookupResult * result) {
-
+bool LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE &key,
+                                                      LookupResult *result) {
   size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
   // concurrent inserts okay; concurrent delete not okay
   allow_inserter(bucketIdx);
-  
-  while (bucket != nullptr) {
 
+  while (bucket != nullptr) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
       Entry *entry = &bucket->getEntry(i);
 
@@ -668,19 +678,20 @@ bool LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE & key,
 
       // if key matches this entry's key, return entry's value
       if (KeyComp_(&entry->key, &key) == 0) {
-        while (!__sync_bool_compare_and_swap(&entry->state,
-                                              USED, PENDING_INSERT)) {
+        while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_INSERT)) {
           rt::impl::yield();
         }
 
-         result->found  = true;
-         result->size  = entry->value.size();
-         result->value = entry->value;
+        result->found = true;
+        result->size = entry->value.size();
+        result->value = entry->value;
 
-         entry->state = USED;
-         release_inserter(bucketIdx);
-         return true;
-    } }
+        entry->state = USED;
+        release_inserter(bucketIdx);
+        return true;
+      }
+    }
 
     bucket = bucket->next.get();
   }
@@ -689,51 +700,50 @@ bool LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE & key,
   result->size = 0;
 
   release_inserter(bucketIdx);
-  return false;     // key not found
+  return false;  // key not found
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupFromRemote(KTYPE & key,
-                                                LookupRemoteResult * result) {
-
+void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupFromRemote(
+    KTYPE &key, LookupRemoteResult *result) {
   size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
   // concurrent inserts okay; concurrent delete not okay
   allow_inserter(bucketIdx);
 
   while (bucket != nullptr) {
-
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
       Entry *entry = &bucket->getEntry(i);
 
       // Reached first unused entry, key not found, return
       if (entry->state == EMPTY) {
-         result->found = false;
-         result->size = 0;
-         release_inserter(bucketIdx);
+        result->found = false;
+        result->size = 0;
+        release_inserter(bucketIdx);
       }
 
       // Wait for some other thread to finish with this entry
       while (entry->state == PENDING_INSERT) {
-       rt::impl::yield();
+        rt::impl::yield();
       }
       // if key matches this entry's key, return entry's value
       if (KeyComp_(&entry->key, &key) == 0) {
-         while (!__sync_bool_compare_and_swap(&entry->state,
-                                              USED, PENDING_INSERT)) {
-           rt::impl::yield();
-         }
+        while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_INSERT)) {
+          rt::impl::yield();
+        }
 
-         result->found  = true;
-         result->size  = entry->value.size();
-         result->remote_elems = (VTYPE *) malloc(result->size * sizeof(VTYPE));
-         memcpy(result->remote_elems, entry->value.data(),
-                result->size * sizeof(VTYPE));
+        result->found = true;
+        result->size = entry->value.size();
+        result->remote_elems = (VTYPE *)malloc(result->size * sizeof(VTYPE));
+        memcpy(result->remote_elems, entry->value.data(),
+               result->size * sizeof(VTYPE));
 
-         entry->state = USED;
-         release_inserter(bucketIdx);
-         return;
-    } }
+        entry->state = USED;
+        release_inserter(bucketIdx);
+        return;
+      }
+    }
 
     bucket = bucket->next.get();
   }
@@ -747,22 +757,21 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupFromRemote(KTYPE & key,
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::PrintAllEntries() {
-
-  for (auto itr = begin(); itr != end(); ++ itr) {
-      auto key = (* itr).first;
-      std::cout << std::get<0>(key) << " " << std::get<1>(key);
-      std::cout << "\n";
+  for (auto itr = begin(); itr != end(); ++itr) {
+    auto key = (*itr).first;
+    std::cout << std::get<0>(key) << " " << std::get<1>(key);
+    std::cout << "\n";
   }
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::PrintAllKeys() {
-
-  for (auto itr = key_begin(); itr != key_end(); ++ itr) {
-      auto key = (* itr).first;
-      auto value = (* itr).second;
-      std::cout << value.size() << " " << std::get<0>(key) << " " << std::get<1>(key);
-      std::cout << "\n";
+  for (auto itr = key_begin(); itr != key_end(); ++itr) {
+    auto key = (*itr).first;
+    auto value = (*itr).second;
+    std::cout << value.size() << " " << std::get<0>(key) << " "
+              << std::get<1>(key);
+    std::cout << "\n";
   }
 }
 
@@ -776,10 +785,13 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Erase(const KTYPE &key) {
   for (;;) {
     // loop over entries in this bucket
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry * entry = &bucket->getEntry(i);
+      Entry *entry = &bucket->getEntry(i);
 
       // Reached first unused entry, key not found, return
-      if (entry->state == EMPTY) { release_deleter(bucketIdx); return; }
+      if (entry->state == EMPTY) {
+        release_deleter(bucketIdx);
+        return;
+      }
 
       // If key does not match this entry's key, continue inner for loop
       if (KeyComp_(&entry->key, &key) != 0) continue;
@@ -792,58 +804,61 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Erase(const KTYPE &key) {
       //    lastEntry == last entry in this bucket
       //    nextEntry == first unused entry in this bucket
 
-      Entry * lastEntry = entry;
+      Entry *lastEntry = entry;
       size_t j = i + 1;
       // loop over linked buckets
       for (;;) {
         // loop over entries in this bucket
-        for ( ; j < bucket->BucketSize(); ++j) {
-            Entry * nextEntry = & bucket->getEntry(j);
-            if (nextEntry->state == USED) {lastEntry = nextEntry; continue;}
+        for (; j < bucket->BucketSize(); ++j) {
+          Entry *nextEntry = &bucket->getEntry(j);
+          if (nextEntry->state == USED) {
+            lastEntry = nextEntry;
+            continue;
+          }
 
-            // entry is last entry, so set it to empty
-            if (entry == lastEntry) {
-               entry->state = EMPTY;
-               std::swap(entry->value, emptyValue);
-               release_deleter(bucketIdx);
-               return;
+          // entry is last entry, so set it to empty
+          if (entry == lastEntry) {
+            entry->state = EMPTY;
+            std::swap(entry->value, emptyValue);
+            release_deleter(bucketIdx);
+            return;
 
-            // set entry {key, value} to lastEntry {key, value} 
+            // set entry {key, value} to lastEntry {key, value}
             // and set lastEntry to empty
-            } else {
-               entry->key   = std::move(lastEntry->key);
-               entry->value = std::move(lastEntry->value);
+          } else {
+            entry->key = std::move(lastEntry->key);
+            entry->value = std::move(lastEntry->value);
 
-               lastEntry->state = EMPTY;
-               std::swap(lastEntry->value, emptyValue);
-               release_deleter(bucketIdx);
-               return;
-            }
-        }     // Second inner for loop
+            lastEntry->state = EMPTY;
+            std::swap(lastEntry->value, emptyValue);
+            release_deleter(bucketIdx);
+            return;
+          }
+        }  // Second inner for loop
         // Exhausted linked buckets, so lastEntry is last USED entry
         if (bucket->next == nullptr) {
-           entry->key   = std::move(lastEntry->key);
-           entry->value = std::move(lastEntry->value);
+          entry->key = std::move(lastEntry->key);
+          entry->value = std::move(lastEntry->value);
 
-           lastEntry->state = EMPTY;
-           std::swap(lastEntry->value, emptyValue);
-           release_deleter(bucketIdx);
-           return;
+          lastEntry->state = EMPTY;
+          std::swap(lastEntry->value, emptyValue);
+          release_deleter(bucketIdx);
+          return;
 
         } else {
-           bucket = bucket->next.get();
+          bucket = bucket->next.get();
         }
-      }     // Second outer for loop
-    }     // First inner for loop
+      }  // Second outer for loop
+    }    // First inner for loop
 
     // Exhausted linked buckets without finding key, return
     if (bucket->next == nullptr) {
-       release_deleter(bucketIdx);
-       return;
+      release_deleter(bucketIdx);
+      return;
     } else {
-       bucket = bucket->next.get();
+      bucket = bucket->next.get();
     }
-  }     // First outer for loop
+  }  // First outer for loop
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
@@ -864,53 +879,55 @@ std::pair<typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::iterator, bool>
 LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
                                                  const VTYPE &value) {
   size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
-  Bucket * bucket = &(buckets_array_[bucketIdx]);
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
   allow_inserter(bucketIdx);
   // loop over linked buckets
   for (;;) {
     // loop over entries in this bucket
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
-      Entry *entry = & bucket->getEntry(i);
+      Entry *entry = &bucket->getEntry(i);
 
       // Reached end of used entries without finding key, so new key
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
-         entry->key = std::move(key);
-         entry->value.push_back(value);
+        entry->key = std::move(key);
+        entry->value.push_back(value);
 
-         size_ += 1;
-         entry->state = USED;
-         release_inserter(bucketIdx);
-         return std::make_pair(iterator(this, bucketIdx, i, bucket, entry,
-                                        entry->value.end() - 1), true);
+        size_ += 1;
+        entry->state = USED;
+        release_inserter(bucketIdx);
+        return std::make_pair(
+            iterator(this, bucketIdx, i, bucket, entry, entry->value.end() - 1),
+            true);
       }
 
       // Wait for some other thread to finish with this entry
       while (entry->state == PENDING_INSERT) rt::impl::yield();
 
-      // if key matches this entry's key, insert value; else continue inner for loop
+      // if key matches this entry's key, insert value; else continue inner for
+      // loop
       if (KeyComp_(&entry->key, &key) == 0) {
-         while (!__sync_bool_compare_and_swap(&entry->state,
-                                              USED, PENDING_INSERT)) {
-            rt::impl::yield();
-         }
-         entry->value.push_back(value);
+        while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_INSERT)) {
+          rt::impl::yield();
+        }
+        entry->value.push_back(value);
 
-         size_ += 1;
-         entry->state = USED;
-         release_inserter(bucketIdx);
-         return std::make_pair(iterator(this, bucketIdx, i, bucket, entry,
-                                        entry->value.end() - 1), true);
+        size_ += 1;
+        entry->state = USED;
+        release_inserter(bucketIdx);
+        return std::make_pair(
+            iterator(this, bucketIdx, i, bucket, entry, entry->value.end() - 1),
+            true);
       }
-    }     // Inner for loop
+    }  // Inner for loop
 
     // Exhausted entries in this buckets
     // ...  if no more buckets, link new bucket
     if (bucket->next == nullptr) {
-      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated,
-                                       false, true)) {
-         // Allocate new bucket
+      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
+        // Allocate new bucket
         std::shared_ptr<Bucket> newBucket(
-                    new Bucket(constants::kMMapDefaultNumEntriesPerBucket));
+            new Bucket(constants::kMMapDefaultNumEntriesPerBucket));
         bucket->next.swap(newBucket);
       } else {
         // Wait for pending allocation to finish
@@ -920,13 +937,13 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
 
     // move to next bucket
     bucket = bucket->next.get();
-  }     // Outer for loop
+  }  // Outer for loop
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncInsert(
-    rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
-
+void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncInsert(rt::Handle &handle,
+                                                           const KTYPE &key,
+                                                           const VTYPE &value) {
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
   auto args = std::tuple<LMapPtr, KTYPE, VTYPE>(this, key, value);
 
@@ -940,25 +957,22 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncInsert(
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
-void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(ApplyFunT &&function,
-                                                            Args &... args) {
-
+void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(
+    ApplyFunT &&function, Args &...args) {
   using FunctionTy = void (*)(const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
   using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
 
   ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
-                      rt::forEachAt(rt::thisLocality(), 
-                      ForEachEntryFunWrapper<ArgsTuple, Args...>,
-                      argsTuple, numBuckets_);
+  rt::forEachAt(rt::thisLocality(), ForEachEntryFunWrapper<ArgsTuple, Args...>,
+                argsTuple, numBuckets_);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachEntry(
-    rt::Handle &handle, ApplyFunT &&function, Args &... args) {
-
+    rt::Handle &handle, ApplyFunT &&function, Args &...args) {
   using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
@@ -966,14 +980,14 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachEntry(
   ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
 
   rt::asyncForEachAt(handle, rt::thisLocality(),
-       AsyncForEachEntryFunWrapper<ArgsTuple, Args...>, argsTuple, numBuckets_);
+                     AsyncForEachEntryFunWrapper<ArgsTuple, Args...>, argsTuple,
+                     numBuckets_);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachKey(ApplyFunT &&function,
-                                                          Args &... args) {
-
+                                                          Args &...args) {
   using FunctionTy = void (*)(const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
@@ -987,8 +1001,7 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachKey(ApplyFunT &&function,
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(
-    rt::Handle &handle, ApplyFunT &&function, Args &... args) {
-
+    rt::Handle &handle, ApplyFunT &&function, Args &...args) {
   using FunctionTy = void (*)(rt::Handle &, const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
@@ -996,18 +1009,21 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(
   ArgsTuple argsTuple(this, fn, std::tuple<Args...>(args...));
 
   rt::asyncForEachAt(handle, rt::thisLocality(),
-       AsyncForEachKeyFunWrapper<ArgsTuple, Args...>, argsTuple, numBuckets_);
+                     AsyncForEachKeyFunWrapper<ArgsTuple, Args...>, argsTuple,
+                     numBuckets_);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
-void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(
-    rt::Handle &handle, const KTYPE &key, ApplyFunT &&function, Args &... args) {
-
+void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(rt::Handle &handle,
+                                                          const KTYPE &key,
+                                                          ApplyFunT &&function,
+                                                          Args &...args) {
   using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
-  using ArgsTuple = std::tuple<LMapPtr, const KTYPE, FunctionTy, std::tuple<Args...>>;
+  using ArgsTuple =
+      std::tuple<LMapPtr, const KTYPE, FunctionTy, std::tuple<Args...>>;
 
   ArgsTuple argsTuple(this, key, fn, std::tuple<Args...>(args...));
   rt::asyncExecuteAt(handle, rt::thisLocality(),
@@ -1030,42 +1046,43 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
 
       // Reached end of used entries without finding key, so new key
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
-         entry->key = std::move(key);
-         entry->value.push_back(value);
+        entry->key = std::move(key);
+        entry->value.push_back(value);
 
-         size_ += 1;
-         entry->state = USED;
-         release_inserter(bucketIdx);
-         return std::make_pair(iterator(this, bucketIdx, i, bucket, entry), true);
+        size_ += 1;
+        entry->state = USED;
+        release_inserter(bucketIdx);
+        return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
+                              true);
       }
 
       // Wait for some other thread to finish with this entry
       while (entry->state == PENDING_INSERT) rt::impl::yield();
 
-      //if key matches entry's key, insert value; else continue inner for loop
+      // if key matches entry's key, insert value; else continue inner for loop
       if (KeyComp_(&entry->key, &key) == 0) {
-         while (!__sync_bool_compare_and_swap(&entry->state,
-                                              USED, PENDING_INSERT)) {
-           rt::impl::yield();
-         }
-         entry->value.push_back(value);
+        while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_INSERT)) {
+          rt::impl::yield();
+        }
+        entry->value.push_back(value);
 
-         size_ += 1;
-         entry->state = USED;
-         release_inserter(bucketIdx);
-         return std::make_pair(iterator(this, bucketIdx, i, bucket, entry), true);
+        size_ += 1;
+        entry->state = USED;
+        release_inserter(bucketIdx);
+        return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
+                              true);
       }
-    }     // Inner for loop
+    }  // Inner for loop
 
     // Exhausted linked buckets, so link new bucket
     // Exhausted entries in this buckets
     // ...  if no more buckets, link new bucket
     if (bucket->next == nullptr) {
-      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated,
-                                       false, true)) {
+      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
         // Allocate new bucket
         std::shared_ptr<Bucket> newBucket(
-                    new Bucket(constants::kMMapDefaultNumEntriesPerBucket));
+            new Bucket(constants::kMMapDefaultNumEntriesPerBucket));
         bucket->next.swap(newBucket);
       } else {
         // Wait for pending allocation to finish
@@ -1075,18 +1092,18 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
 
     // move to next bucket
     bucket = bucket->next.get();
-  }     // Outer for loop
+  }  // Outer for loop
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ELTYPE>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncInsert(
     rt::Handle &handle, const KTYPE &key, const ELTYPE &value) {
-
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
   auto args = std::tuple<LMapPtr, KTYPE, ELTYPE>(this, key, value);
 
-  auto insertLambda = [](rt::Handle &, const std::tuple<LMapPtr, KTYPE, ELTYPE> &t) {
+  auto insertLambda = [](rt::Handle &,
+                         const std::tuple<LMapPtr, KTYPE, ELTYPE> &t) {
     (std::get<0>(t))->Insert(std::get<1>(t), std::get<2>(t));
   };
 
@@ -1100,13 +1117,14 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
 
  public:
   using inner_type = typename LMap::inner_type;
-  using Entry  = typename LMap::Entry;
-  using State  = typename LMap::State;
+  using Entry = typename LMap::Entry;
+  using State = typename LMap::State;
   using Bucket = typename LMap::Bucket;
 
   lmultimap_iterator() {}
-  lmultimap_iterator(const LMap *mapPtr, size_t bId,
-      size_t pos, Bucket *cb, Entry *ePtr, typename std::vector<inner_type>::iterator valueItr)
+  lmultimap_iterator(const LMap *mapPtr, size_t bId, size_t pos, Bucket *cb,
+                     Entry *ePtr,
+                     typename std::vector<inner_type>::iterator valueItr)
       : mapPtr_(mapPtr),
         bucketId_(bId),
         position_(pos),
@@ -1117,8 +1135,12 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
   static lmultimap_iterator lmultimap_begin(const LMap *mapPtr) {
     Bucket *rootPtr = &(const_cast<LMap *>(mapPtr)->buckets_array_[0]);
     Entry *firstEntry = &(rootPtr->getEntry(0));
-    lmultimap_iterator beg(mapPtr, 0, 0, rootPtr, firstEntry, firstEntry->value.begin());
-    if (firstEntry->state == LMap::USED) return beg; else return ++beg;
+    lmultimap_iterator beg(mapPtr, 0, 0, rootPtr, firstEntry,
+                           firstEntry->value.begin());
+    if (firstEntry->state == LMap::USED)
+      return beg;
+    else
+      return ++beg;
   }
 
   static lmultimap_iterator lmultimap_end(const LMap *mapPtr) {
@@ -1126,7 +1148,8 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   static lmultimap_iterator lmultimap_end(size_t numBuckets) {
-    return lmultimap_iterator(nullptr, numBuckets, 0, nullptr, nullptr, typename std::vector<inner_type>::iterator());
+    return lmultimap_iterator(nullptr, numBuckets, 0, nullptr, nullptr,
+                              typename std::vector<inner_type>::iterator());
   }
 
   bool operator==(const lmultimap_iterator &other) const {
@@ -1137,71 +1160,79 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     return !(*this == other);
   }
 
-  T operator*() const { return T(entryPtr_->key, * valueItr_); }
+  T operator*() const { return T(entryPtr_->key, *valueItr_); }
 
-// Returns the key and value of the next value vector entry;
-//     Entry values are stored in a four-level data structure  ---
-//         for each bucket list ... for each bucket in list ...
-//           for each entry in bucket ... for each value in entry's value array
+  // Returns the key and value of the next value vector entry;
+  //     Entry values are stored in a four-level data structure  ---
+  //         for each bucket list ... for each bucket in list ...
+  //           for each entry in bucket ... for each value in entry's value
+  //           array
   lmultimap_iterator &operator++() {
     auto null_iter = std::vector<inner_type>::iterator();
 
-    // if iterator points to an VTYPE, move to next VTYPE; else move to next bucket list
+    // if iterator points to an VTYPE, move to next VTYPE; else move to next
+    // bucket list
     if (valueItr_ != null_iter) {
-       ++ valueItr_;
+      ++valueItr_;
 
-       // if there is another VTYPE in entry's value array, return it
-       if (valueItr_ != entryPtr_->value.end()) return * this;
+      // if there is another VTYPE in entry's value array, return it
+      if (valueItr_ != entryPtr_->value.end()) return *this;
 
-       // ... else move to next entry in bucket
-       ++ position_;
+      // ... else move to next entry in bucket
+      ++position_;
 
-       // if there is another entry in this bucket ...
-       //FIXME
-       if (position_ < constants::kMMapDefaultNumEntriesPerBucket) {
-           entryPtr_ ++;
+      // if there is another entry in this bucket ...
+      // FIXME
+      if (position_ < constants::kMMapDefaultNumEntriesPerBucket) {
+        entryPtr_++;
 
-           // if this entry is used, return begin of its value array
-           // ... else no more entries in this bucket or buckets in this bucket list
-           if (entryPtr_->state == LMap::USED) {
-             valueItr_ = entryPtr_->value.begin(); return * this;
-           }
+        // if this entry is used, return begin of its value array
+        // ... else no more entries in this bucket or buckets in this bucket
+        // list
+        if (entryPtr_->state == LMap::USED) {
+          valueItr_ = entryPtr_->value.begin();
+          return *this;
+        }
 
-       // ... else move to next bucket in this bucket list
-       } else {
-          currBucket_ = currBucket_->next.get();
-          position_ = 0;
+        // ... else move to next bucket in this bucket list
+      } else {
+        currBucket_ = currBucket_->next.get();
+        position_ = 0;
 
-          // if bucket is not empty and first entry is used, return begin of its value array
-          // ... else no more entries in this bucket or buckets in this bucket list
-          if (currBucket_ != nullptr) {
-              entryPtr_ = &currBucket_->getEntry(position_);
-              if (entryPtr_->state == LMap::USED) {
-                valueItr_ = entryPtr_->value.begin(); return * this;
-              }
+        // if bucket is not empty and first entry is used, return begin of its
+        // value array
+        // ... else no more entries in this bucket or buckets in this bucket
+        // list
+        if (currBucket_ != nullptr) {
+          entryPtr_ = &currBucket_->getEntry(position_);
+          if (entryPtr_->state == LMap::USED) {
+            valueItr_ = entryPtr_->value.begin();
+            return *this;
           }
-       }
+        }
+      }
     }
 
     // move to next bucket list
-    ++ bucketId_;
+    ++bucketId_;
     position_ = 0;
 
     // search for a bucket list with a used entry
-    for ( ; bucketId_ < mapPtr_->numBuckets_; ++bucketId_) {
-        currBucket_ = & const_cast<LMap *>(mapPtr_)->buckets_array_[bucketId_];
-        entryPtr_ = & currBucket_->getEntry(position_);
-        if (entryPtr_->state == LMap::USED) {
-          valueItr_ = entryPtr_->value.begin(); return *this;
-        }
+    for (; bucketId_ < mapPtr_->numBuckets_; ++bucketId_) {
+      currBucket_ = &const_cast<LMap *>(mapPtr_)->buckets_array_[bucketId_];
+      entryPtr_ = &currBucket_->getEntry(position_);
+      if (entryPtr_->state == LMap::USED) {
+        valueItr_ = entryPtr_->value.begin();
+        return *this;
+      }
     }
 
     // next is not found, return end iterator
-    mapPtr_     = nullptr;
-    entryPtr_   = nullptr;
+    mapPtr_ = nullptr;
+    entryPtr_ = nullptr;
     currBucket_ = nullptr;
-    valueItr_   = std::vector<inner_type>::iterator();
-    return * this;
+    valueItr_ = std::vector<inner_type>::iterator();
+    return *this;
   }
 
   lmultimap_iterator operator++(int) {
@@ -1212,10 +1243,11 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
 
   class partition_range {
    public:
-    partition_range(const lmultimap_iterator &begin, const lmultimap_iterator &end)
+    partition_range(const lmultimap_iterator &begin,
+                    const lmultimap_iterator &end)
         : begin_(begin), end_(end) {}
     lmultimap_iterator begin() { return begin_; }
-    lmultimap_iterator end()   { return end_;   }
+    lmultimap_iterator end() { return end_; }
 
    private:
     lmultimap_iterator begin_;
@@ -1230,12 +1262,12 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     auto n_buckets = n_spanned_buckets(begin, end);
 
     if (n_buckets && n_parts) {
-      auto part_step = (n_buckets >= n_parts)
-                     ? (n_buckets + n_parts - 1) / n_parts : 1;
+      auto part_step =
+          (n_buckets >= n_parts) ? (n_buckets + n_parts - 1) / n_parts : 1;
       auto map_ptr = begin.mapPtr_;
       auto &buckets = map_ptr->buckets_array_;
-      auto b_end = (end != lmultimap_end(map_ptr))
-                 ? end.bucketId_ : map_ptr->numBuckets_;
+      auto b_end = (end != lmultimap_end(map_ptr)) ? end.bucketId_
+                                                   : map_ptr->numBuckets_;
       auto bi = begin.bucketId_;
       auto pbegin = begin;
 
@@ -1260,7 +1292,7 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
   size_t bucketId_;
   size_t position_;
   Bucket *currBucket_;
-  Entry  *entryPtr_;
+  Entry *entryPtr_;
   typename std::vector<inner_type>::iterator valueItr_;
 
   // returns a pointer to the first entry of a bucket
@@ -1282,7 +1314,6 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
   // returns the index of the first active bucket, starting from the input
   // bucket (included). If not such bucket, it returns the number of buckets.
   static size_t first_used_bucket(const LMap *mapPtr_, size_t bi) {
-
     // scan for the first used entry with the same logic as operator++
     for (; bi < mapPtr_->numBuckets_; ++bi)
       if (first_bucket_entry(mapPtr_, bi).state == LMap::USED) return bi;
@@ -1293,7 +1324,6 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
   // returns the number of buckets spanned by the input range
   static size_t n_spanned_buckets(const lmultimap_iterator &begin,
                                   const lmultimap_iterator &end) {
-
     if (begin != end) {
       auto map_ptr = begin.mapPtr_;
 
@@ -1304,8 +1334,8 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
       if (end != lmultimap_end(map_ptr)) {
         // count one more if end is not on a bucket edge
         return end.bucketId_ - begin.bucketId_ +
-               (end.entryPtr_ != &first_bucket_entry(end.mapPtr_,
-                                                     end.bucketId_));
+               (end.entryPtr_ !=
+                &first_bucket_entry(end.mapPtr_, end.bucketId_));
       }
 
       return map_ptr->numBuckets_ - begin.bucketId_;
@@ -1315,20 +1345,20 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
 };
 
 template <typename LMap, typename T>
-class lmultimap_key_iterator :
-      public std::iterator<std::forward_iterator_tag, T> {
+class lmultimap_key_iterator
+    : public std::iterator<std::forward_iterator_tag, T> {
   template <typename, typename, typename>
   friend class multimap_key_iterator;
 
  public:
   using inner_type = typename LMap::inner_type;
-  using Entry  = typename LMap::Entry;
-  using State  = typename LMap::State;
+  using Entry = typename LMap::Entry;
+  using State = typename LMap::State;
   using Bucket = typename LMap::Bucket;
 
   lmultimap_key_iterator() {}
-  lmultimap_key_iterator(const LMap *mapPtr, size_t bId, size_t pos,
-                         Bucket *cb, Entry *ePtr)
+  lmultimap_key_iterator(const LMap *mapPtr, size_t bId, size_t pos, Bucket *cb,
+                         Entry *ePtr)
       : mapPtr_(mapPtr),
         bucketId_(bId),
         position_(pos),
@@ -1339,7 +1369,10 @@ class lmultimap_key_iterator :
     Bucket *rootPtr = &(const_cast<LMap *>(mapPtr)->buckets_array_[0]);
     Entry *firstEntry = &(rootPtr->getEntry(0));
     lmultimap_key_iterator beg(mapPtr, 0, 0, rootPtr, firstEntry);
-    if (firstEntry->state == LMap::USED) return beg; else return ++beg;
+    if (firstEntry->state == LMap::USED)
+      return beg;
+    else
+      return ++beg;
   }
 
   static lmultimap_key_iterator lmultimap_key_end(const LMap *mapPtr) {
@@ -1360,51 +1393,51 @@ class lmultimap_key_iterator :
 
   T operator*() const { return T(entryPtr_->key, entryPtr_->value); }
 
-// Returns next entry (a pointer to {KEY, VALUE};
-//     Entries are stored in three-level data structure  ---
-//     for each bucket list ... for each bucket in list 
-//     ... for each entry in bucket
+  // Returns next entry (a pointer to {KEY, VALUE};
+  //     Entries are stored in three-level data structure  ---
+  //     for each bucket list ... for each bucket in list
+  //     ... for each entry in bucket
   lmultimap_key_iterator &operator++() {
     // move to next entry in bucket
-    ++ position_;
+    ++position_;
 
     // if there is another entry in this bucket ...
     if (position_ < constants::kMMapDefaultNumEntriesPerBucket) {
-        entryPtr_ ++;
+      entryPtr_++;
 
-        // if this entry is used, return it
-        // ... else no more entries in this bucket or buckets in this bucket list
-        if (entryPtr_->state == LMap::USED) return * this;
+      // if this entry is used, return it
+      // ... else no more entries in this bucket or buckets in this bucket list
+      if (entryPtr_->state == LMap::USED) return *this;
 
-    // ... else move to next bucket in this bucket list
+      // ... else move to next bucket in this bucket list
     } else {
-       currBucket_ = currBucket_->next.get();
-       position_ = 0;
+      currBucket_ = currBucket_->next.get();
+      position_ = 0;
 
-       // if bucket is not empty and first entry is used, return it
-       // ... else no more entries in this bucket or buckets in this bucket list
-       if (currBucket_ != nullptr) {
-           entryPtr_ = &currBucket_->getEntry(position_);
-           if (entryPtr_->state == LMap::USED) return * this;
-       }
+      // if bucket is not empty and first entry is used, return it
+      // ... else no more entries in this bucket or buckets in this bucket list
+      if (currBucket_ != nullptr) {
+        entryPtr_ = &currBucket_->getEntry(position_);
+        if (entryPtr_->state == LMap::USED) return *this;
+      }
     }
 
     // move to next bucket list
-    ++ bucketId_;
+    ++bucketId_;
     position_ = 0;
 
     // search for a bucket list with a used entity
-    for ( ; bucketId_ < mapPtr_->numBuckets_; ++bucketId_) {
-        currBucket_ = & const_cast<LMap *>(mapPtr_)->buckets_array_[bucketId_];
-        entryPtr_ = & currBucket_->getEntry(position_);
-        if (entryPtr_->state == LMap::USED) return * this;
+    for (; bucketId_ < mapPtr_->numBuckets_; ++bucketId_) {
+      currBucket_ = &const_cast<LMap *>(mapPtr_)->buckets_array_[bucketId_];
+      entryPtr_ = &currBucket_->getEntry(position_);
+      if (entryPtr_->state == LMap::USED) return *this;
     }
 
     // next is not found, return end iterator
-    mapPtr_     = nullptr;
-    entryPtr_   = nullptr;
+    mapPtr_ = nullptr;
+    entryPtr_ = nullptr;
     currBucket_ = nullptr;
-    return * this;
+    return *this;
   }
 
   lmultimap_key_iterator operator++(int) {
@@ -1419,7 +1452,7 @@ class lmultimap_key_iterator :
                     const lmultimap_key_iterator &end)
         : begin_(begin), end_(end) {}
     lmultimap_key_iterator begin() { return begin_; }
-    lmultimap_key_iterator end()   { return end_;   }
+    lmultimap_key_iterator end() { return end_; }
 
    private:
     lmultimap_key_iterator begin_;
@@ -1434,12 +1467,12 @@ class lmultimap_key_iterator :
     auto n_buckets = n_spanned_buckets(begin, end);
 
     if (n_buckets && n_parts) {
-      auto part_step = (n_buckets >= n_parts)
-                     ? (n_buckets + n_parts - 1) / n_parts : 1;
+      auto part_step =
+          (n_buckets >= n_parts) ? (n_buckets + n_parts - 1) / n_parts : 1;
       auto map_ptr = begin.mapPtr_;
       auto &buckets = map_ptr->buckets_array_;
-      auto b_end = (end != lmultimap_key_end(map_ptr)) 
-                 ? end.bucketId_ : map_ptr->numBuckets_;
+      auto b_end = (end != lmultimap_key_end(map_ptr)) ? end.bucketId_
+                                                       : map_ptr->numBuckets_;
       auto bi = begin.bucketId_;
       auto pbegin = begin;
 
@@ -1466,7 +1499,7 @@ class lmultimap_key_iterator :
   size_t bucketId_;
   size_t position_;
   Bucket *currBucket_;
-  Entry  *entryPtr_;
+  Entry *entryPtr_;
 
   // returns a pointer to the first entry of a bucket
   static typename LMap::Entry &first_bucket_entry(const LMap *mapPtr_,
@@ -1474,21 +1507,20 @@ class lmultimap_key_iterator :
     return const_cast<LMap *>(mapPtr_)->buckets_array_[bi].getEntry(0);
   }
 
-  // returns an iterator pointing to the beginning 
+  // returns an iterator pointing to the beginning
   // of the first active bucket from the input bucket (included)
   static lmultimap_key_iterator first_in_bucket(const LMap *mapPtr_,
                                                 size_t bi) {
     auto &entry = first_bucket_entry(mapPtr_, bi);
 
-    return lmultimap_key_iterator(mapPtr_, bi, 0,
-                              &const_cast<LMap *>(mapPtr_)->buckets_array_[bi],
-                              &entry);
+    return lmultimap_key_iterator(
+        mapPtr_, bi, 0, &const_cast<LMap *>(mapPtr_)->buckets_array_[bi],
+        &entry);
   }
 
   // returns the index of the first active bucket, starting from the input
   // bucket (included). If not such bucket, it returns the number of buckets.
   static size_t first_used_bucket(const LMap *mapPtr_, size_t bi) {
-
     // scan for the first used entry with the same logic as operator++
     for (; bi < mapPtr_->numBuckets_; ++bi)
       if (first_bucket_entry(mapPtr_, bi).state == LMap::USED) return bi;
@@ -1499,7 +1531,6 @@ class lmultimap_key_iterator :
   // returns the number of buckets spanned by the input range
   static size_t n_spanned_buckets(const lmultimap_key_iterator &begin,
                                   const lmultimap_key_iterator &end) {
-
     if (begin != end) {
       auto map_ptr = begin.mapPtr_;
 
@@ -1510,8 +1541,8 @@ class lmultimap_key_iterator :
       if (end != lmultimap_key_end(map_ptr)) {
         // count one more if end is not on a bucket edge
         return end.bucketId_ - begin.bucketId_ +
-               (end.entryPtr_ != &first_bucket_entry(end.mapPtr_,
-                                                     end.bucketId_));
+               (end.entryPtr_ !=
+                &first_bucket_entry(end.mapPtr_, end.bucketId_));
       }
 
       return map_ptr->numBuckets_ - begin.bucketId_;

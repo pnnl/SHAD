@@ -26,13 +26,13 @@
 #define INCLUDE_SHAD_DATA_STRUCTURES_MULTIMAP_H_
 
 #include <algorithm>
-#include <functional>
-#include <tuple>
-#include <string>
-#include <vector>
-#include <utility>
 #include <fstream>
+#include <functional>
 #include <iostream>
+#include <string>
+#include <tuple>
+#include <utility>
+#include <vector>
 
 #include "shad/data_structures/abstract_data_structure.h"
 #include "shad/data_structures/buffer.h"
@@ -40,7 +40,6 @@
 #include "shad/data_structures/local_multimap.h"
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
-#include "shad/runtime/mappings/gmt/gmt_synchronous_interface.h"
 
 #define PREFIX_SIZE 80
 
@@ -56,17 +55,17 @@ class multimap_iterator;
 /// @tparam VTYPE type of the multimap values.
 /// @tparam KEY_COMPARE key comparison function; default is MemCmp<KTYPE>.
 /// @warning obects of type KTYPE and VTYPE need to be trivially copiable.
-template < typename KTYPE, typename VTYPE, typename KEY_COMPARE = MemCmp<KTYPE> >
-class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPARE> > {
-
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE = MemCmp<KTYPE>>
+class Multimap
+    : public AbstractDataStructure<Multimap<KTYPE, VTYPE, KEY_COMPARE>> {
   template <typename>
   friend class AbstractDataStructure;
   friend class multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE>,
-                            const std::pair<KTYPE, VTYPE>,
-                            std::pair<KTYPE, VTYPE>>;
+                                 const std::pair<KTYPE, VTYPE>,
+                                 std::pair<KTYPE, VTYPE>>;
   friend class multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE>,
-                            const std::pair<KTYPE, VTYPE>,
-                            std::pair<KTYPE, VTYPE>>;
+                                 const std::pair<KTYPE, VTYPE>,
+                                 std::pair<KTYPE, VTYPE>>;
 
  public:
   using value_type = std::pair<KTYPE, VTYPE>;
@@ -77,16 +76,16 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
 
   using iterator =
       multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE>,
-                   const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
+                        const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   using const_iterator =
       multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE>,
-                   const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
+                        const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   using local_iterator =
       lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
-                    const std::pair<KTYPE, VTYPE>>;
+                         const std::pair<KTYPE, VTYPE>>;
   using const_local_iterator =
       lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
-                    const std::pair<KTYPE, VTYPE>>;
+                         const std::pair<KTYPE, VTYPE>>;
 
   struct EntryT {
     EntryT(const KTYPE &k, const VTYPE &v) : key(k), value(v) {}
@@ -126,7 +125,8 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @brief Asynchronously Insert a key-value pair in the multimap.
   /// @warning Asynchronous operations are guaranteed to have completed
   /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.
-  /// @param[in,out] handle Reference to the handle to be used to wait for completion.
+  /// @param[in,out] handle Reference to the handle to be used to wait for
+  /// completion.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the multimap.
   /// @return a pointer to the value if the the key-value was inserted
@@ -148,7 +148,8 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param[in,out] handle Reference to the handle
   /// @param[in] key The key.
   /// @param[in] value The value.
-  void BufferedAsyncInsert(rt::Handle &handle, const KTYPE &key, const VTYPE &value);
+  void BufferedAsyncInsert(rt::Handle &handle, const KTYPE &key,
+                           const VTYPE &value);
 
   /// @brief Finalize method for buffered insertions.
   void WaitForBufferedInsert() {
@@ -162,10 +163,12 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param[in] key the key.
   void Erase(const KTYPE &key);
 
-  /// @brief Asynchronously remove a key and associated values from the multimap.
+  /// @brief Asynchronously remove a key and associated values from the
+  /// multimap.
   /// @warning Asynchronous operations are guaranteed to have completed
   /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.
-  /// @param[in,out] handle Reference to the handle to be used to wait for completion.
+  /// @param[in,out] handle Reference to the handle to be used to wait for
+  /// completion.
   /// @param[in] key the key.
   void AsyncErase(rt::Handle &handle, const KTYPE &key);
 
@@ -178,32 +181,31 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
     rt::executeOnAll(clearLambda, oid_);
   }
 
-  using LookupResult = typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupResult;
-  using LookupRemoteResult = typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupRemoteResult;
+  using LookupResult =
+      typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupResult;
+  using LookupRemoteResult =
+      typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupRemoteResult;
 
   /// @brief Get all the values associated to a key.
   /// @param[in] key the key.
-  /// @param[out] res a pointer to the values if the the key-value was found, otherwise NULL
+  /// @param[out] res a pointer to the values if the the key-value was found,
+  /// otherwise NULL
   /// @return true if the entry is found, otherwise false
   bool Lookup(const KTYPE &key, LookupResult *res);
 
   /// @brief Asynchronous lookup method.
   /// @warning Asynchronous operations are guaranteed to have completed.
   /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.
-  /// @param[in,out] handle Reference to the handle to be used to wait for completion.
+  /// @param[in,out] handle Reference to the handle to be used to wait for
+  /// completion.
   /// @param[in] key the key.
   /// @param[out] res the result of the lookup operation.
   void AsyncLookup(rt::Handle &handle, const KTYPE &key, LookupResult *res);
 
-  /// @brief Read records from multiple files
-  /// @param[in] prefix the file prefix
-  /// @param[in] lb the lower bound postscript
-  /// @param[in] ub the upper bound postscript
-  void readFromFiles(rt::Handle & handle, std::string prefix, uint64_t lb, uint64_t ub);
-
   /// @brief Apply a user-defined function to a key-value pair.
   ///
-  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
   /// @code
   /// void(const KTYPE&, VTYPE&, Args&);
   /// @endcode
@@ -213,11 +215,12 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void Apply(const KTYPE &key, ApplyFunT &&function, Args &... args);
+  void Apply(const KTYPE &key, ApplyFunT &&function, Args &...args);
 
   /// @brief Asynchronously apply a user-defined function to a key-value pair.
   ///
-  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
   /// @code
   /// void(rt::Handle &handle, const KTYPE&, VTYPE&, Args&);
   /// @endcode
@@ -229,11 +232,12 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
   void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
-                  Args &... args);
+                  Args &...args);
 
   /// @brief Apply a user-defined function to each key-value pair.
   ///
-  /// @tparam ApplyFunT User-defined function type.  The function prototype should be:
+  /// @tparam ApplyFunT User-defined function type.  The function prototype
+  /// should be:
   /// @code
   /// void(const KTYPE&, VTYPE&, Args&);
   /// @endcode
@@ -242,11 +246,13 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void ForEachEntry(ApplyFunT &&function, Args &... args);
+  void ForEachEntry(ApplyFunT &&function, Args &...args);
 
-  /// @brief Asynchronously apply a user-defined function to each key-value pair.
+  /// @brief Asynchronously apply a user-defined function to each key-value
+  /// pair.
   ///
-  /// @tparam ApplyFunT User-defined function type.  he function prototype should be:
+  /// @tparam ApplyFunT User-defined function type.  he function prototype
+  /// should be:
   /// @code
   /// void(shad::rt::Handle&, const KTYPE&, VTYPE&, Args&);
   /// @endcode
@@ -256,11 +262,13 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void AsyncForEachEntry(rt::Handle &handle, ApplyFunT &&function, Args &... args);
+  void AsyncForEachEntry(rt::Handle &handle, ApplyFunT &&function,
+                         Args &...args);
 
   /// @brief Apply a user-defined function to each key.
   ///
-  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
   /// @code
   /// void(const KTYPE&, Args&);
   /// @endcode
@@ -269,11 +277,12 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void ForEachKey(ApplyFunT &&function, Args &... args);
+  void ForEachKey(ApplyFunT &&function, Args &...args);
 
   /// @brief Asynchronously apply a user-defined function to each key.
   ///
-  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
   /// @code
   /// void(shad::rt::Handle&, const KTYPE&, Args&);
   /// @endcode
@@ -283,24 +292,28 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param function The function to apply.
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
-  void AsyncForEachKey(rt::Handle &handle, ApplyFunT &&function, Args &... args);
+  void AsyncForEachKey(rt::Handle &handle, ApplyFunT &&function, Args &...args);
 
   void PrintAllEntries() {
-    auto printLambda = [](const ObjectID & oid) {
+    auto printLambda = [](const ObjectID &oid) {
       auto mapPtr = HmapT::GetPtr(oid);
       mapPtr->localMultimap_.PrintAllEntries();
     };
 
-    for (auto loc : rt::allLocalities()) rt::executeAt(loc, printLambda, oid_);
+    for (auto loc : rt::allLocalities()) {
+      rt::executeAt(loc, printLambda, oid_);
+    }
   }
 
   void PrintAllKeys() {
-    auto printLambda = [](const ObjectID & oid) {
+    auto printLambda = [](const ObjectID &oid) {
       auto mapPtr = HmapT::GetPtr(oid);
       mapPtr->localMultimap_.PrintAllKeys();
     };
 
-    for (auto loc : rt::allLocalities()) rt::executeAt(loc, printLambda, oid_);
+    for (auto loc : rt::allLocalities()) {
+      rt::executeAt(loc, printLambda, oid_);
+    }
   }
 
   // FIXME it should be protected
@@ -317,7 +330,9 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   local_iterator local_begin() {
     return local_iterator::lmultimap_begin(&localMultimap_);
   }
-  local_iterator local_end() { return local_iterator::lmultimap_end(&localMultimap_); }
+  local_iterator local_end() {
+    return local_iterator::lmultimap_end(&localMultimap_);
+  }
   const_local_iterator clocal_begin() {
     return const_local_iterator::lmultimap_begin(&localMultimap_);
   }
@@ -337,9 +352,13 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
     BufferedAsyncInsert(h, value.first, value.second);
   }
 
-  void buffered_async_wait(rt::Handle &h) { rt::waitForCompletion(h); }
+  void buffered_async_wait(rt::Handle &h) {
+    rt::waitForCompletion(h);
+  }
 
-  void buffered_async_flush() { WaitForBufferedInsert(); }
+  void buffered_async_flush() {
+    WaitForBufferedInsert();
+  }
 
  private:
   ObjectID oid_;
@@ -357,16 +376,13 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
     KTYPE key;
   };
 
-  struct RFArgs {
-    uint64_t lb;
-    ObjectID oid;
-    char prefix[PREFIX_SIZE];
-  };
-
  protected:
   Multimap(ObjectID oid, const size_t numEntries)
       : oid_(oid),
-        localMultimap_(std::max(numEntries / (constants::kDefaultNumEntriesPerBucket * rt::numLocalities()), 1lu)),
+        localMultimap_(std::max(
+            numEntries /
+                (constants::kDefaultNumEntriesPerBucket * rt::numLocalities()),
+            1lu)),
         buffers_(oid) {}
 };
 
@@ -391,8 +407,9 @@ inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::Size() const {
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline std::pair < typename Multimap<KTYPE, VTYPE, KEY_COMPARE>::iterator, bool >
-Multimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key, const VTYPE &value) {
+inline std::pair<typename Multimap<KTYPE, VTYPE, KEY_COMPARE>::iterator, bool>
+Multimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
+                                            const VTYPE &value) {
   using itr_traits = distributed_iterator_traits<iterator>;
 
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
@@ -410,7 +427,8 @@ Multimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key, const VTYPE &value
           auto &args(std::get<2>(args_));
           auto mapPtr = HmapT::GetPtr(args.oid);
           auto lres = mapPtr->localMultimap_.Insert(args.key, args.value);
-          res_ptr->first = itr_traits::iterator_from_local (std::get<0>(args_), std::get<1>(args_), lres.first);
+          res_ptr->first = itr_traits::iterator_from_local(
+              std::get<0>(args_), std::get<1>(args_), lres.first);
           res_ptr->second = lres.second;
         };
     rt::executeAtWithRet(
@@ -440,16 +458,16 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncInsert(
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::BufferedInsert(const KTYPE &key, const VTYPE &value) {
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::BufferedInsert(
+    const KTYPE &key, const VTYPE &value) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   buffers_.Insert(EntryT(key, value), targetLocality);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::
-     BufferedAsyncInsert(rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
-
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::BufferedAsyncInsert(
+    rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   buffers_.AsyncInsert(handle, EntryT(key, value), targetLocality);
@@ -473,7 +491,8 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Erase(const KTYPE &key) {
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncErase(rt::Handle &handle, const KTYPE &key) {
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncErase(rt::Handle &handle,
+                                                            const KTYPE &key) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
@@ -490,7 +509,8 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncErase(rt::Handle &handle, 
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline bool Multimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE &key, LookupResult *res) {
+inline bool Multimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE &key,
+                                                        LookupResult *res) {
   rt::Handle handle;
   AsyncLookup(handle, key, res);
   waitForCompletion(handle);
@@ -499,78 +519,53 @@ inline bool Multimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE &key, Lookup
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncLookup(
-      rt::Handle & handle, const KTYPE & key, LookupResult * result) {
-
+    rt::Handle &handle, const KTYPE &key, LookupResult *result) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
- 
+
   if (targetLocality == rt::thisLocality()) {
     localMultimap_.AsyncLookup(handle, key, result);
- 
+
   } else {
+    auto lookupLambda = [](const LookupArgs &args, LookupRemoteResult *ret) {
+      auto my_key = args.key;
+      auto my_map = HmapT::GetPtr(args.oid);
 
-    auto lookupLambda = [](const LookupArgs & args, LookupRemoteResult * ret) {
-       auto my_key = args.key;
-       auto my_map = HmapT::GetPtr(args.oid);
+      LookupRemoteResult remote_result;
+      my_map->localMultimap_.LookupFromRemote(my_key, &remote_result);
 
-       LookupRemoteResult remote_result;
-       my_map->localMultimap_.LookupFromRemote(my_key, & remote_result);
-
-       * ret = remote_result;
+      *ret = remote_result;
     };
 
     // executed at remote site, so meaning of remote and local are switched
-    auto lookupFetchLambda = [](rt::Handle & handle, const LookupRemoteResult & args) {
-       rt::dma<VTYPE>(args.localLoc, args.local_elems, args.remote_elems, args.size);
-       free(args.remote_elems);
+    auto lookupFetchLambda = [](rt::Handle &handle,
+                                const LookupRemoteResult &args) {
+      rt::dma<VTYPE>(args.localLoc, args.local_elems, args.remote_elems,
+                     args.size);
+      free(args.remote_elems);
     };
 
     LookupArgs args = {oid_, key};
     LookupRemoteResult remote_result;
-    rt::executeAtWithRet(targetLocality, lookupLambda, args, & remote_result);
+    rt::executeAtWithRet(targetLocality, lookupLambda, args, &remote_result);
 
-    (* result).found = remote_result.found;
-    (* result).size = remote_result.size;
-     
+    (*result).found = remote_result.found;
+    (*result).size = remote_result.size;
+
     if (remote_result.found) {
-        (* result).value.resize(remote_result.size);
-        remote_result.localLoc = rt::thisLocality();
-        remote_result.local_elems = (* result).value.data();
-        rt::asyncExecuteAt(handle, targetLocality, lookupFetchLambda, remote_result);
+      (*result).value.resize(remote_result.size);
+      remote_result.localLoc = rt::thisLocality();
+      remote_result.local_elems = (*result).value.data();
+      rt::asyncExecuteAt(handle, targetLocality, lookupFetchLambda,
+                         remote_result);
     }
   }
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::readFromFiles(
-     rt::Handle & handle, std::string prefix, uint64_t lb, uint64_t ub) {
-
-  auto readFileLambda = [](rt::Handle & handle, const RFArgs & args, size_t it) {
-     std::string line;
-     auto my_map = HmapT::GetPtr(args.oid);
-     std::string filename = args.prefix + std::to_string(args.lb + it);
-     printf("reading file %s\n", filename.c_str());
-
-     std::ifstream file(filename);
-     if (! file.is_open()) { printf("Cannot open file %s\n", filename.c_str()); exit(-1); }
-
-     while (getline(file, line)) {
-       if (line[0] == '#') continue;     // skip comments
-
-       VTYPE record = VTYPE(line);
-       // my_map->AsyncInsert(handle, record.key(), record);
-       my_map->BufferedAsyncInsert(handle, record.key(), record);
-  } };
-
-  RFArgs args = {lb, oid_};
-  memcpy(args.prefix, prefix.c_str(), prefix.size() + 1);
-  rt::asyncForEachOnAll(handle, readFileLambda, args, ub - lb + 1);
-}
-
-
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(ApplyFunT &&function, Args &... args) {
+void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(ApplyFunT &&function,
+                                                       Args &...args) {
   using FunctionTy = void (*)(const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
@@ -581,7 +576,8 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(ApplyFunT &&function, Arg
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&mapPtr->localMultimap_, std::get<1>(args), std::get<2>(args));
+    ArgsTuple argsTuple(&mapPtr->localMultimap_, std::get<1>(args),
+                        std::get<2>(args));
     rt::forEachAt(rt::thisLocality(),
                   LMapT::template ForEachEntryFunWrapper<ArgsTuple, Args...>,
                   argsTuple, mapPtr->localMultimap_.numBuckets_);
@@ -592,8 +588,7 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(ApplyFunT &&function, Arg
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
 void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachEntry(
-    rt::Handle &handle, ApplyFunT &&function, Args &... args) {
-
+    rt::Handle &handle, ApplyFunT &&function, Args &...args) {
   using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
@@ -603,7 +598,8 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachEntry(
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&mapPtr->localMultimap_, std::get<1>(args), std::get<2>(args));
+    ArgsTuple argsTuple(&mapPtr->localMultimap_, std::get<1>(args),
+                        std::get<2>(args));
 
     rt::asyncForEachAt(
         handle, rt::thisLocality(),
@@ -615,7 +611,8 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachEntry(
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachKey(ApplyFunT &&function, Args &... args) {
+void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachKey(ApplyFunT &&function,
+                                                     Args &...args) {
   using FunctionTy = void (*)(const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
@@ -625,7 +622,8 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachKey(ApplyFunT &&function, Args 
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&mapPtr->localMultimap_, std::get<1>(args), std::get<2>(args));
+    ArgsTuple argsTuple(&mapPtr->localMultimap_, std::get<1>(args),
+                        std::get<2>(args));
     rt::forEachAt(rt::thisLocality(),
                   LMapT::template ForEachKeyFunWrapper<ArgsTuple, Args...>,
                   argsTuple, mapPtr->localMultimap_.numBuckets_);
@@ -635,8 +633,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachKey(ApplyFunT &&function, Args 
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(
-    rt::Handle &handle, ApplyFunT &&function, Args &... args) {
+void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(rt::Handle &handle,
+                                                          ApplyFunT &&function,
+                                                          Args &...args) {
   using FunctionTy = void (*)(rt::Handle &, const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
@@ -646,7 +645,8 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(
   feArgs arguments(oid_, fn, std::tuple<Args...>(args...));
   auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     auto mapPtr = HmapT::GetPtr(std::get<0>(args));
-    ArgsTuple argsTuple(&mapPtr->localMultimap_, std::get<1>(args), std::get<2>(args));
+    ArgsTuple argsTuple(&mapPtr->localMultimap_, std::get<1>(args),
+                        std::get<2>(args));
     rt::asyncForEachAt(
         handle, rt::thisLocality(),
         LMapT::template AsyncForEachKeyFunWrapper<ArgsTuple, Args...>,
@@ -657,7 +657,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Apply(const KTYPE &key, ApplyFunT &&function, Args &... args) {
+void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Apply(const KTYPE &key,
+                                                ApplyFunT &&function,
+                                                Args &...args) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
@@ -668,11 +670,13 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Apply(const KTYPE &key, ApplyFunT &&fu
     using FunctionTy = void (*)(const KTYPE &, VTYPE &, Args &...);
     FunctionTy fn = std::forward<decltype(function)>(function);
 
-    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+    using ArgsTuple =
+        std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
     ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
 
     auto feLambda = [](const ArgsTuple &args) {
-      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      constexpr auto Size = std::tuple_size<
+          typename std::decay<decltype(std::get<3>(args))>::type>::value;
       ArgsTuple &tuple = const_cast<ArgsTuple &>(args);
       LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMultimap_);
       LMapT::CallApplyFun(mapPtr, std::get<1>(tuple), std::get<2>(tuple),
@@ -684,8 +688,10 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Apply(const KTYPE &key, ApplyFunT &&fu
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(
-    rt::Handle &handle, const KTYPE &key, ApplyFunT &&function, Args &... args) {
+void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(rt::Handle &handle,
+                                                     const KTYPE &key,
+                                                     ApplyFunT &&function,
+                                                     Args &...args) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
@@ -693,13 +699,16 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(
     localMultimap_.AsyncApply(handle, key, function, args...);
 
   } else {
-    using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
+    using FunctionTy =
+        void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
     FunctionTy fn = std::forward<decltype(function)>(function);
-    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+    using ArgsTuple =
+        std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
 
     ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
     auto feLambda = [](rt::Handle &handle, const ArgsTuple &args) {
-      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      constexpr auto Size = std::tuple_size<
+          typename std::decay<decltype(std::get<3>(args))>::type>::value;
       ArgsTuple &tuple(const_cast<ArgsTuple &>(args));
       LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMultimap_);
       LMapT::AsyncCallApplyFun(handle, mapPtr, std::get<1>(tuple),
@@ -720,11 +729,13 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
   using value_type = NonConstT;
 
   multimap_iterator() {}
-  multimap_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit, T element) {
+  multimap_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit,
+                    T element) {
     data_ = {locID, mapOID, lit, element};
   }
 
-  multimap_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit) {
+  multimap_iterator(uint32_t locID, const OIDT mapOID,
+                    local_iterator_type &lit) {
     auto mapPtr = MapT::GetPtr(mapOID);
     const LMap *lmapPtr = &(mapPtr->localMultimap_);
 
@@ -740,7 +751,9 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
 
     if (static_cast<uint32_t>(rt::thisLocality()) == 0) {
       auto localBegin = local_iterator_type::lmultimap_begin(lmapPtr);
-      if (localBegin != localEnd) { return multimap_iterator(0, mapPtr->oid_, localBegin); }
+      if (localBegin != localEnd) {
+        return multimap_iterator(0, mapPtr->oid_, localBegin);
+      }
       multimap_iterator beg(0, mapPtr->oid_, localEnd, T());
       return ++beg;
     }
@@ -764,7 +777,8 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
   }
 
   static multimap_iterator multimap_end(const MapT *mapPtr) {
-    local_iterator_type lend = local_iterator_type::lmultimap_end(&(mapPtr->localMultimap_));
+    local_iterator_type lend =
+        local_iterator_type::lmultimap_end(&(mapPtr->localMultimap_));
     multimap_iterator end(rt::numLocalities(), OIDT(0), lend, T());
     return end;
   }
@@ -773,7 +787,9 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     return (data_ == other.data_);
   }
 
-  bool operator!=(const multimap_iterator &other) const { return !(*this == other); }
+  bool operator!=(const multimap_iterator &other) const {
+    return !(*this == other);
+  }
 
   T operator*() const { return data_.element_; }
 
@@ -783,19 +799,25 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     if (static_cast<uint32_t>(rt::thisLocality()) == data_.locId_) {
       const LMap *lmapPtr = &(mapPtr->localMultimap_);
       auto lend = local_iterator_type::lmultimap_end(lmapPtr);
-      if (data_.lmapIt_ != lend) { ++(data_.lmapIt_); }
+      if (data_.lmapIt_ != lend) {
+        ++(data_.lmapIt_);
+      }
 
       if (data_.lmapIt_ != lend) {
-         data_.element_ = *(data_.lmapIt_);
-         return *this;
+        data_.element_ = *(data_.lmapIt_);
+        return *this;
 
-      } else {      // find the local begin on next localities
+      } else {  // find the local begin on next localities
         itData itd;
 
         for (uint32_t i = data_.locId_ + 1; i < rt::numLocalities(); ++i) {
-          rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, data_.oid_, &itd);
+          rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, data_.oid_,
+                               &itd);
           // if Data is valid
-          if (itd.locId_ != rt::numLocalities()) { data_ = itd; return *this; }
+          if (itd.locId_ != rt::numLocalities()) {
+            data_ = itd;
+            return *this;
+          }
         }
 
         data_ = itData(rt::numLocalities(), OIDT(0), lend, T());
@@ -827,7 +849,8 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     local_iterator_type end_;
   };
 
-  static local_iterator_range local_range(multimap_iterator &B, multimap_iterator &E) {
+  static local_iterator_range local_range(multimap_iterator &B,
+                                          multimap_iterator &E) {
     auto mapPtr = MapT::GetPtr(B.data_.oid_);
     local_iterator_type lbeg, lend;
     uint32_t thisLocId = static_cast<uint32_t>(rt::thisLocality());
@@ -847,18 +870,26 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     return local_iterator_range(lbeg, lend);
   }
 
-  static rt::localities_range localities(multimap_iterator &B, multimap_iterator &E) {
+  static rt::localities_range localities(multimap_iterator &B,
+                                         multimap_iterator &E) {
     return rt::localities_range(rt::Locality(B.data_.locId_),
-                                rt::Locality(std::min<uint32_t>(rt::numLocalities(), E.data_.locId_ + 1)));
+                                rt::Locality(std::min<uint32_t>(
+                                    rt::numLocalities(), E.data_.locId_ + 1)));
   }
 
-  static multimap_iterator iterator_from_local(multimap_iterator &B, multimap_iterator &E, local_iterator_type itr) {
-    return multimap_iterator(static_cast<uint32_t>(rt::thisLocality()), B.data_.oid_, itr);
+  static multimap_iterator iterator_from_local(multimap_iterator &B,
+                                               multimap_iterator &E,
+                                               local_iterator_type itr) {
+    return multimap_iterator(static_cast<uint32_t>(rt::thisLocality()),
+                             B.data_.oid_, itr);
   }
 
  private:
   struct itData {
-    itData() : oid_(0), lmapIt_(nullptr, 0, 0, nullptr, nullptr, typename std::vector<inner_type>::iterator()) {}
+    itData()
+        : oid_(0),
+          lmapIt_(nullptr, 0, 0, nullptr, nullptr,
+                  typename std::vector<inner_type>::iterator()) {}
     itData(uint32_t locId, OIDT oid, local_iterator_type lmapIt, T element)
         : locId_(locId), oid_(oid), lmapIt_(lmapIt), element_(element) {}
 
@@ -881,7 +912,8 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     auto localEnd = local_iterator_type::lmultimap_end(lmapPtr);
     auto localBegin = local_iterator_type::lmultimap_begin(lmapPtr);
     if (localBegin != localEnd) {
-      *res = itData(static_cast<uint32_t>(rt::thisLocality()), mapOID, localBegin, *localBegin);
+      *res = itData(static_cast<uint32_t>(rt::thisLocality()), mapOID,
+                    localBegin, *localBegin);
     } else {
       *res = itData(rt::numLocalities(), OIDT(0), localEnd, T());
     }
@@ -895,14 +927,18 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     ++cit;
 
     if (cit != localEnd) {
-      *res = itData(static_cast<uint32_t>(rt::thisLocality()), itd.oid_, cit, *cit);
+      *res = itData(static_cast<uint32_t>(rt::thisLocality()), itd.oid_, cit,
+                    *cit);
       return;
     } else {
       itData outitd;
       for (uint32_t i = itd.locId_ + 1; i < rt::numLocalities(); ++i) {
         rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_, &outitd);
         // It Data is valid
-        if (outitd.locId_ != rt::numLocalities()) { *res = outitd; return; }
+        if (outitd.locId_ != rt::numLocalities()) {
+          *res = outitd;
+          return;
+        }
       }
       *res = itData(rt::numLocalities(), OIDT(0), localEnd, T());
     }
