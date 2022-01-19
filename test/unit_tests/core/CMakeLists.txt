@@ -2,6 +2,7 @@ set(tests
   iterator_test
   for_test
   shad_array_test
+  shad_vector_test
   unordered_set_test
   unordered_map_test
   shad_algorithm_test
