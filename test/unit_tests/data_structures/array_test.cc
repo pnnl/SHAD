@@ -122,7 +122,6 @@ TEST_F(ArrayTest, RangedAsyncInsertAndAsyncGet) {
   shad::rt::Handle handle;
   edsPtr->AsyncInsertAt(handle, 0, inputData_.data(), kArraySize);
   shad::rt::waitForCompletion(handle);
-  ;
 
   shad::rt::Handle handle2;
   for (size_t i = 0; i < kArraySize; i++) {
@@ -132,6 +131,36 @@ TEST_F(ArrayTest, RangedAsyncInsertAndAsyncGet) {
 
   for (size_t i = 0; i < kArraySize; i++) {
     ASSERT_EQ(values[i], i + 1);
+  }
+  shad::Array<size_t>::Destroy(edsPtr->GetGlobalID());
+}
+
+TEST_F(ArrayTest, RangedAsyncInsertAndAsyncGetElements) {
+  std::vector<size_t> values(kArraySize);
+
+  auto edsPtr = shad::Array<size_t>::Create(kArraySize, kInitValue);
+  edsPtr->FillPtrs();
+  shad::rt::Handle handle;
+  edsPtr->AsyncInsertAt(handle, 0, inputData_.data(), kArraySize);
+  shad::rt::waitForCompletion(handle);
+
+  shad::rt::Handle handle2;
+  edsPtr->AsyncGetElements(handle2, values.data(), 0, kArraySize);
+  shad::rt::waitForCompletion(handle2);
+
+  for (size_t i = 0; i < kArraySize; i++) {
+    ASSERT_EQ(values[i], i + 1);
+  }
+
+  uint64_t to_insert2 = kArraySize/2;
+  uint64_t idx2 = kArraySize/6;
+  std::vector<size_t> values2(to_insert2);
+
+  edsPtr->AsyncGetElements(handle2, values2.data(), idx2, to_insert2);
+  shad::rt::waitForCompletion(handle2);
+
+  for (size_t i = 0; i < to_insert2; i++) {
+    ASSERT_EQ(values2[i], i + idx2 + 1);
   }
   shad::Array<size_t>::Destroy(edsPtr->GetGlobalID());
 }
