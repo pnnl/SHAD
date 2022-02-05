@@ -319,6 +319,11 @@ class Array : public AbstractDataStructure<Array<T>> {
   template <typename ApplyFunT, typename... Args>
   void AsyncApply(rt::Handle &handle, const size_t pos, ApplyFunT &&function,
                   Args &... args);
+  
+  template <typename ApplyFunT, typename... Args>
+  void AsyncApplyWithRetBuff(rt::Handle &handle, const size_t pos,
+                             ApplyFunT &&function, uint8_t* result,
+                             uint32_t* resultSize, Args &... args);
 
   /// @brief Applies a user-defined function to every element
   /// in the specified range.
@@ -615,6 +620,30 @@ class Array : public AbstractDataStructure<Array<T>> {
     AsyncCallApplyFun(handle, std::get<0>(tuple), std::get<1>(tuple),
                       std::get<2>(tuple), std::get<3>(tuple),
                       std::get<4>(tuple), std::make_index_sequence<Size>{});
+  }
+
+    template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void AsyncCallApplyWRBFun(rt::Handle &handle, ObjectID &oid, size_t pos,
+                                size_t loffset, ApplyFunT function,
+                                std::tuple<Args...> &args, std::index_sequence<is...>,
+                                uint8_t* result, uint32_t* resultSize) {
+    // Get a local instance on the remote node.
+    auto arrayPtr = Array<T>::GetPtr(oid);
+    T &element = arrayPtr->data_[loffset];
+    function(handle, pos, element, std::get<is>(args)..., result, resultSize);
+  }
+
+  template <typename Tuple, typename... Args>
+  static void AsyncApplyWRBFunWrapper(rt::Handle &handle, const Tuple &args,
+                                      uint8_t* result, uint32_t* resultSize) {
+    constexpr auto Size = std::tuple_size<
+        typename std::decay<decltype(std::get<4>(args))>::type>::value;
+
+    Tuple &tuple = const_cast<Tuple &>(args);
+
+    AsyncCallApplyWRBFun(handle, std::get<0>(tuple), std::get<1>(tuple),
+                         std::get<2>(tuple), std::get<3>(tuple),
+                         std::get<4>(tuple), std::make_index_sequence<Size>{}, result, resultSize);
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
@@ -952,6 +981,25 @@ void Array<T>::AsyncApply(rt::Handle &handle, const size_t pos,
 
   rt::asyncExecuteAt(handle, target.first,
                      AsyncApplyFunWrapper<ArgsTuple, Args...>, argsTuple);
+}
+
+template <typename T>
+template <typename ApplyFunT, typename... Args>
+void Array<T>::AsyncApplyWithRetBuff(rt::Handle &handle, const size_t pos,
+                                     ApplyFunT &&function, uint8_t* result,
+                                     uint32_t* resultSize, Args &... args) {
+  auto target = getTargetLocalityFromTargePosition(dataDistribution_, pos);
+
+  using FunctionTy = void (*)(rt::Handle &, size_t, T &, Args & ..., uint8_t*, uint32_t*);
+  FunctionTy fn = std::forward<decltype(function)>(function);
+  using ArgsTuple =
+      std::tuple<ObjectID, size_t, size_t, FunctionTy, std::tuple<Args...>>;
+  ArgsTuple argsTuple{oid_, pos, target.second, fn,
+                      std::tuple<Args...>(args...)};
+
+  rt::asyncExecuteAtWithRetBuff(handle, target.first,
+                     AsyncApplyWRBFunWrapper<ArgsTuple, Args...>, argsTuple,
+                     result, resultSize);
 }
 
 template <typename T>
