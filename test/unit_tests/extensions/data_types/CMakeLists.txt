@@ -1,12 +1,5 @@
 set(tests
-  iterator_test
-  for_test
-  shad_array_test
-  shad_vector_test
-  unordered_set_test
-  unordered_map_test
-  shad_algorithm_test
-  shad_numeric_test
+  data_types_test
 )
 
 foreach(t ${tests})
@@ -16,6 +9,6 @@ foreach(t ${tests})
       ${t} PROPERTIES
       CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
   endif()
-  target_link_libraries(${t} ${SHAD_RUNTIME_LIB} runtime shadtest_main)
+  target_link_libraries(${t} ${SHAD_RUNTIME_LIB}  runtime shadtest_main)
   add_test(NAME ${t} COMMAND ${SHAD_TEST_COMMAND} $<TARGET_FILE:${t}>)
 endforeach(t)
