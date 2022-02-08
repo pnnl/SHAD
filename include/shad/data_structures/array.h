@@ -319,6 +319,11 @@ class Array : public AbstractDataStructure<Array<T>> {
   template <typename ApplyFunT, typename... Args>
   void AsyncApply(rt::Handle &handle, const size_t pos, ApplyFunT &&function,
                   Args &... args);
+  
+  template <typename ApplyFunT, typename... Args>
+  void AsyncApplyWithRetBuff(rt::Handle &handle, const size_t pos,
+                             ApplyFunT &&function, uint8_t* result,
+                             uint32_t* resultSize, Args &... args);
 
   /// @brief Applies a user-defined function to every element
   /// in the specified range.
@@ -458,6 +463,21 @@ class Array : public AbstractDataStructure<Array<T>> {
     data_[std::get<0>(entry)] = std::get<1>(entry);
   }
 
+  constexpr void FillPtrs() {
+    rt::executeOnAll([](const ObjectID &oid) {
+      auto This = Array<T>::GetPtr(oid);
+      rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, T*> &args) {
+          auto This = Array<T>::GetPtr(std::get<0>(args));
+
+          This->ptrs_[(uint32_t)std::get<1>(args)] = std::get<2>(args);
+        },
+        std::make_tuple(This->GetGlobalID(), rt::thisLocality(), This->data_.data()));
+      }, GetGlobalID());
+  }
+
+  void AsyncGetElements(rt::Handle& h, T* local_data,
+                        const uint64_t idx, const uint64_t num_el);
+
  protected:
   Array(ObjectID oid, size_t size, const T &initValue)
       : oid_(oid),
@@ -467,7 +487,8 @@ class Array : public AbstractDataStructure<Array<T>> {
                    : rt::numLocalities() - (size % rt::numLocalities())),
         data_(),
         dataDistribution_(),
-        buffers_(oid) {
+        buffers_(oid),
+        ptrs_(rt::numLocalities()) {
     rt::Locality pivot(pivot_);
     size_t start = 0;
     size_t chunkSize = size / rt::numLocalities();
@@ -498,6 +519,7 @@ class Array : public AbstractDataStructure<Array<T>> {
   std::vector<T> data_;
   std::vector<std::pair<size_t, size_t>> dataDistribution_;
   BuffersVector buffers_;
+  std::vector<T*> ptrs_;
 
   struct InsertAtArgs {
     ObjectID oid;
@@ -598,6 +620,30 @@ class Array : public AbstractDataStructure<Array<T>> {
     AsyncCallApplyFun(handle, std::get<0>(tuple), std::get<1>(tuple),
                       std::get<2>(tuple), std::get<3>(tuple),
                       std::get<4>(tuple), std::make_index_sequence<Size>{});
+  }
+
+    template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void AsyncCallApplyWRBFun(rt::Handle &handle, ObjectID &oid, size_t pos,
+                                size_t loffset, ApplyFunT function,
+                                std::tuple<Args...> &args, std::index_sequence<is...>,
+                                uint8_t* result, uint32_t* resultSize) {
+    // Get a local instance on the remote node.
+    auto arrayPtr = Array<T>::GetPtr(oid);
+    T &element = arrayPtr->data_[loffset];
+    function(handle, pos, element, std::get<is>(args)..., result, resultSize);
+  }
+
+  template <typename Tuple, typename... Args>
+  static void AsyncApplyWRBFunWrapper(rt::Handle &handle, const Tuple &args,
+                                      uint8_t* result, uint32_t* resultSize) {
+    constexpr auto Size = std::tuple_size<
+        typename std::decay<decltype(std::get<4>(args))>::type>::value;
+
+    Tuple &tuple = const_cast<Tuple &>(args);
+
+    AsyncCallApplyWRBFun(handle, std::get<0>(tuple), std::get<1>(tuple),
+                         std::get<2>(tuple), std::get<3>(tuple),
+                         std::get<4>(tuple), std::make_index_sequence<Size>{}, result, resultSize);
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
@@ -939,6 +985,25 @@ void Array<T>::AsyncApply(rt::Handle &handle, const size_t pos,
 
 template <typename T>
 template <typename ApplyFunT, typename... Args>
+void Array<T>::AsyncApplyWithRetBuff(rt::Handle &handle, const size_t pos,
+                                     ApplyFunT &&function, uint8_t* result,
+                                     uint32_t* resultSize, Args &... args) {
+  auto target = getTargetLocalityFromTargePosition(dataDistribution_, pos);
+
+  using FunctionTy = void (*)(rt::Handle &, size_t, T &, Args & ..., uint8_t*, uint32_t*);
+  FunctionTy fn = std::forward<decltype(function)>(function);
+  using ArgsTuple =
+      std::tuple<ObjectID, size_t, size_t, FunctionTy, std::tuple<Args...>>;
+  ArgsTuple argsTuple{oid_, pos, target.second, fn,
+                      std::tuple<Args...>(args...)};
+
+  rt::asyncExecuteAtWithRetBuff(handle, target.first,
+                     AsyncApplyWRBFunWrapper<ArgsTuple, Args...>, argsTuple,
+                     result, resultSize);
+}
+
+template <typename T>
+template <typename ApplyFunT, typename... Args>
 void Array<T>::ForEachInRange(const size_t first, const size_t last,
                               ApplyFunT &&function, Args &... args) {
   using FunctionTy = void (*)(size_t, T &, Args & ...);
@@ -1071,6 +1136,39 @@ void Array<T>::ForEach(ApplyFunT &&function, Args &... args) {
                   argsTuple, arrayPtr->data_.size());
   };
   rt::executeOnAll(feLambda, arguments);
+}
+
+template <typename T>
+void Array<T>::AsyncGetElements(rt::Handle& h, T* local_data,
+                                const uint64_t idx, const uint64_t num_el) {
+
+  size_t tgtPos = 0, firstPos = idx;
+  rt::Locality tgtLoc;
+  size_t remainingValues = num_el;
+  size_t chunkSize = 0;
+  T* tgtAddress;
+
+  while (remainingValues > 0) {
+    if (firstPos < pivot_ * (size_ / rt::numLocalities())) {
+      tgtLoc = rt::Locality(firstPos / (size_ / rt::numLocalities()));
+      tgtPos = firstPos % (size_ / rt::numLocalities());
+      chunkSize =
+          std::min((size_ / rt::numLocalities() - tgtPos), remainingValues);
+    } else {
+      size_t newPos = firstPos - (pivot_ * (size_ / rt::numLocalities()));
+      tgtLoc =
+          rt::Locality(pivot_ + newPos / ((size_ / rt::numLocalities() + 1)));
+      tgtPos = newPos % ((size_ / rt::numLocalities() + 1));
+      chunkSize =
+          std::min((size_ / rt::numLocalities() + 1 - tgtPos), remainingValues);
+    }
+
+    tgtAddress = ptrs_[(uint32_t)tgtLoc] + tgtPos;
+    rt::asyncDma(h, local_data, tgtLoc, tgtAddress, chunkSize);
+    local_data += chunkSize;
+    firstPos += chunkSize;
+    remainingValues -= chunkSize;
+  }
 }
 
 }  // namespace shad
