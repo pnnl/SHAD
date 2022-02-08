@@ -82,6 +82,16 @@ namespace data_types {
   /// @return Null encoded value for uint64_t.
   template <>
   constexpr uint64_t kNullValue<uint64_t> = std::numeric_limits<int64_t>::max();
+
+  /// @brief Encoded null value for time_t (same as long).
+  /// @return Null encoded value for time_t (same as long).
+  template <>
+  constexpr time_t kNullValue<time_t> = std::numeric_limits<time_t>::max();
+
+  /// @brief Encoded null value for double.
+  /// @return Null encoded value for double.
+  template <>
+  constexpr double kNullValue<double> = std::numeric_limits<double>::max();
   
   /// @brief Encode Function
   /// Available specializations:
@@ -172,8 +182,8 @@ namespace data_types {
 }  // namespace data_types
 
 
-// METHODS SPECIALIZATION FOR UINT64 ENC_t
-template<>
+// ENCODE METHODS SPECIALIZATION FOR UINT64 ENC_t
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::UINT>(std::string &str) {
@@ -183,7 +193,7 @@ uint64_t data_types::encode<uint64_t,
   return value;
 }
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::INT>(std::string &str) {
@@ -195,7 +205,7 @@ uint64_t data_types::encode<uint64_t,
   return encval;
 }
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::FLOAT>(std::string &str) {
@@ -207,7 +217,7 @@ uint64_t data_types::encode<uint64_t,
   return encval;
 }
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::DOUBLE>(std::string &str) {
@@ -219,7 +229,7 @@ uint64_t data_types::encode<uint64_t,
   return encval;
 }
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::BOOL>(std::string &str) {
@@ -231,7 +241,7 @@ uint64_t data_types::encode<uint64_t,
 }
 
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::CHARS>(std::string &str) {
@@ -241,7 +251,7 @@ uint64_t data_types::encode<uint64_t,
   return encval;
 }
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::IP_ADDRESS>(std::string &str) {
@@ -263,7 +273,7 @@ uint64_t data_types::encode<uint64_t,
   return value;
 }
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::DATE>(std::string &str) {
@@ -282,7 +292,7 @@ uint64_t data_types::encode<uint64_t,
   return value;
 }
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::USDATE>(std::string &str) {
@@ -301,7 +311,7 @@ uint64_t data_types::encode<uint64_t,
   return value;
 }
 
-template<>
+template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::DATE_TIME>(std::string &str) {
@@ -318,6 +328,297 @@ uint64_t data_types::encode<uint64_t,
   }
   memcpy(&value, &t, sizeof(value));
   return value;
+}
+
+// ENCODE METHODS SPECIALIZATION FOR DOUBLE ENC_t
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::UINT>(std::string &str) {
+  double encval;
+  uint64_t value;
+  try { value = std::stoull(str); }
+  catch(...) { return kNullValue<double>; }
+  memcpy(&encval, &value, sizeof(value));
+  return encval;
+}
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::INT>(std::string &str) {
+  double encval;
+  int64_t value;
+  try { value = stoll(str); }
+  catch(...) { return kNullValue<double>; }
+  memcpy(&encval, &value, sizeof(value));
+  return encval;
+}
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::FLOAT>(std::string &str) {
+  double encval;
+  float value;
+  try { value = stof(str); }
+  catch(...) { return kNullValue<double>; }
+  memcpy(&encval, &value, sizeof(value));
+  return encval;
+}
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::DOUBLE>(std::string &str) {
+  double value;
+  try { value = stod(str); }
+  catch(...) { return kNullValue<double>; }
+  return value;
+}
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::BOOL>(std::string &str) {
+  if (str.size() == 0) return kNullValue<uint64_t>;
+  double encval = 1;
+  if ((str == "F") || (str == "f") || (str == "FALSE") 
+                   || (str == "false") || (str == "0")) encval = 0;
+  return encval;
+}
+
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::CHARS>(std::string &str) {
+  double encval = 0;
+  memset(&encval, '\0', sizeof(encval));
+  memcpy(&encval, str.c_str(), sizeof(encval)-1);
+  return encval;
+}
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::IP_ADDRESS>(std::string &str) {
+  uint64_t val, value = 0;
+  std::string::iterator start = str.begin();
+  for (unsigned i = 0; i < 4; i ++) {
+    std::string::iterator end = std::find(start, str.end(), '.');
+    try {
+      val = std::stoull(std::string(start, end));
+    } catch(...) {
+      return kNullValue<double>;
+    }
+    if (val < 256) {
+      value = (value << 8) + val; start = end + 1;
+    } else {
+      return kNullValue<double>;
+    }
+  }
+  double encval;
+  memcpy(&encval, &value, sizeof(value));
+  return encval;
+}
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::DATE>(std::string &str) {
+  double value = 0;
+  struct tm date{};
+  date.tm_isdst = -1;
+  strptime(str.c_str(), "%Y-%m-%d", &date);
+  time_t t;
+  try {
+    t = mktime(&date);
+  }
+  catch(...) {
+    return kNullValue<double>;
+  }
+  memcpy(&value, &t, sizeof(value));
+  return value;
+}
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::USDATE>(std::string &str) {
+  double value = 0;
+  struct tm date{};
+  date.tm_isdst = -1;
+  strptime(str.c_str(), "%m/%d/%y", &date);
+  time_t t;
+  try {
+    t = mktime(&date);
+  }
+  catch(...) {
+    return kNullValue<uint64_t>;
+  }
+  memcpy(&value, &t, sizeof(value));
+  return value;
+}
+
+template<> inline
+double data_types::encode<double,
+                          std::string,
+                          data_types::DATE_TIME>(std::string &str) {
+  double value = 0;
+  struct tm date{};
+  date.tm_isdst = -1;
+  strptime(str.c_str(), "%Y-%m-%dT%H:%M:%S", &date);
+  time_t t;
+  try {
+    t = mktime(&date);
+  }
+  catch(...) {
+    return kNullValue<uint64_t>;
+  }
+  memcpy(&value, &t, sizeof(value));
+  return value;
+}
+
+// ENCODE METHODS SPECIALIZATION FOR TIME_T ENC_t (same as long)
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::UINT>(std::string &str) {
+  time_t value;
+  try { value = std::stoul(str); }
+  catch(...) { value = kNullValue<time_t>; }
+  return value;
+}
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::INT>(std::string &str) {
+  int64_t value;
+  try { value = stol(str); }
+  catch(...) { return kNullValue<time_t>; }
+  return value;
+}
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::FLOAT>(std::string &str) {
+  time_t encval;
+  float value;
+  try { value = stof(str); }
+  catch(...) { return kNullValue<time_t>; }
+  memcpy(&encval, &value, sizeof(value));
+  return encval;
+}
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::DOUBLE>(std::string &str) {
+  time_t encval;
+  double value;
+  try { value = stod(str); }
+  catch(...) { return kNullValue<time_t>; }
+  memcpy(&encval, &value, sizeof(value));
+  return encval;
+}
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::BOOL>(std::string &str) {
+  if (str.size() == 0) return kNullValue<uint64_t>;
+  time_t encval = 1;
+  if ((str == "F") || (str == "f") || (str == "FALSE") 
+                   || (str == "false") || (str == "0")) encval = 0;
+  return encval;
+}
+
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::CHARS>(std::string &str) {
+  time_t encval = 0;
+  memset(&encval, '\0', sizeof(encval));
+  memcpy(&encval, str.c_str(), sizeof(encval)-1);
+  return encval;
+}
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::IP_ADDRESS>(std::string &str) {
+  time_t val, value = 0;
+  std::string::iterator start = str.begin();
+  for (unsigned i = 0; i < 4; i ++) {
+    std::string::iterator end = std::find(start, str.end(), '.');
+    try {
+      val = std::stoull(std::string(start, end));
+    } catch(...) {
+      return kNullValue<time_t>;
+    }
+    if (val < 256) {
+      value = (value << 8) + val; start = end + 1;
+    } else {
+      return kNullValue<time_t>;
+    }
+  }
+  return value;
+}
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::DATE>(std::string &str) {
+  struct tm date{};
+  date.tm_isdst = -1;
+  strptime(str.c_str(), "%Y-%m-%d", &date);
+  time_t t;
+  try {
+    t = mktime(&date);
+  }
+  catch(...) {
+    return kNullValue<time_t>;
+  }
+  return t;
+}
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::USDATE>(std::string &str) {
+  struct tm date{};
+  date.tm_isdst = -1;
+  strptime(str.c_str(), "%m/%d/%y", &date);
+  time_t t;
+  try {
+    t = mktime(&date);
+  }
+  catch(...) {
+    return kNullValue<time_t>;
+  }
+  return t;
+}
+
+template<> inline
+time_t data_types::encode<time_t,
+                          std::string,
+                          data_types::DATE_TIME>(std::string &str) {
+  struct tm date{};
+  date.tm_isdst = -1;
+  strptime(str.c_str(), "%Y-%m-%dT%H:%M:%S", &date);
+  time_t t;
+  try {
+    t = mktime(&date);
+  }
+  catch(...) {
+    return kNullValue<uint64_t>;
+  }
+  return t;
 }
 
 template <typename ENC_t, typename IN_t>
@@ -349,7 +650,7 @@ ENC_t data_types::encode(IN_t &in, data_types::data_t dt) {
   return data_types::kNullValue<ENC_t>;
 }
 
-template<>
+template<> inline
 std::string data_types::decode<uint64_t,
                                std::string,
                                data_types::UINT>(uint64_t value) {
@@ -357,7 +658,7 @@ std::string data_types::decode<uint64_t,
   return std::to_string(value);
 }
 
-template<>
+template<> inline
 std::string data_types::decode<uint64_t,
                                std::string,
                                data_types::INT>(uint64_t value) {
@@ -367,7 +668,7 @@ std::string data_types::decode<uint64_t,
   return std::to_string(v);
 }
 
-template<>
+template<> inline
 std::string data_types::decode<uint64_t,
                                std::string,
                                data_types::FLOAT>(uint64_t value) {
@@ -377,7 +678,7 @@ std::string data_types::decode<uint64_t,
   return std::to_string(v);
 }
 
-template<>
+template<> inline
 std::string data_types::decode<uint64_t,
                                std::string,
                                data_types::DOUBLE>(uint64_t value) {
@@ -387,7 +688,7 @@ std::string data_types::decode<uint64_t,
   return std::to_string(v);
 }
 
-template<>
+template<> inline
 std::string data_types::decode<uint64_t,
                                std::string,
                                data_types::IP_ADDRESS>(uint64_t value) {
@@ -398,7 +699,7 @@ std::string data_types::decode<uint64_t,
   return ipAddr + std::to_string(octets[0]);
 }
 
-template<>
+template<> inline
 std::string data_types::decode<uint64_t,
                                std::string,
                                data_types::BOOL>(uint64_t value) {
@@ -406,7 +707,7 @@ std::string data_types::decode<uint64_t,
   return std::to_string(value);
 }
 
-template<>
+template<> inline
 std::string data_types::decode<uint64_t,
                                std::string,
                                data_types::DATE>(uint64_t value) {
@@ -416,7 +717,7 @@ std::string data_types::decode<uint64_t,
   return std::string(dateString);
 }
 
-template<>
+template<> inline
 std::string data_types::decode<uint64_t,
                                std::string,
                                data_types::CHARS>(uint64_t value) {
@@ -424,14 +725,10 @@ std::string data_types::decode<uint64_t,
   return std::string(c);
 }
 
-template <>
+template <> inline
 uint64_t data_types::decode<uint64_t, uint64_t>(uint64_t encvalue) {
   return encvalue;
 }
-
-
-
-
 }  // namespace shad
 
 #endif  // INCLUDE_SHAD_EXTENSIONS_DATA_TYPES_DATA_TYPES_H_
