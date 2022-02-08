@@ -68,4 +68,17 @@ TEST_F(DataTypesTest, UintEncodeDecodeTest) {
   auto decFloat = shad::data_types::decode<ENC_t, DEC_t, shad::data_types::FLOAT>(encFloat);
   auto decDouble = shad::data_types::decode<ENC_t, DEC_t, shad::data_types::DOUBLE>(encDouble);
   ASSERT_EQ(decUint, kUintString);
+  ASSERT_EQ(decInt, kIntString);
+  // FIXME
+  // Decode to string of floats and double may use different precision from input string
+  // ASSERT_EQ(decFloat, kFloatString);
+  // ASSERT_EQ(decDouble, kDoubleString);
+  auto defUint = shad::data_types::decode<ENC_t, shad::data_types::UINT>(encUint);
+  auto defInt = shad::data_types::decode<ENC_t, shad::data_types::INT>(encInt);
+  auto defFloat = shad::data_types::decode<ENC_t, shad::data_types::FLOAT>(encFloat);
+  auto defDouble = shad::data_types::decode<ENC_t, shad::data_types::DOUBLE>(encDouble);
+  ASSERT_EQ(defUint, kUintValue);
+  ASSERT_EQ(defInt, kIntValue);
+  ASSERT_EQ(defFloat, kFloatValue);
+  ASSERT_EQ(defDouble, kDoubleValue);
 }
