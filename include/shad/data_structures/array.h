@@ -478,6 +478,41 @@ class Array : public AbstractDataStructure<Array<T>> {
   void AsyncGetElements(rt::Handle& h, T* local_data,
                         const uint64_t idx, const uint64_t num_el);
 
+/// @brief Synchronous exclusive scan method
+///
+/// Typical usage:
+/// @code
+/// auto arrayPtr = shad::Array<size_t>::Create(kArraySize + 1, kInitValue);
+//  arrayPtr->InsertAt(0, 1);
+//
+/// for (size_t i = 1; i < kArraySize; i++) {
+///   arrayPtr->InsertAt(i, 2);
+/// }
+//
+//  arrayPtr->exclusiveScan()
+/// @endcode
+///
+/// On return: A[0] = 0
+//             A[i] = 2 * i - 1, 1 <= i <= kArraySize
+//
+void exclusiveScan();
+
+uint64_t getOffset() {
+  uint32_t loc = static_cast<uint32_t>(rt::thisLocality());
+  return dataDistribution_[loc].first;
+}
+
+uint64_t getNElems()  {
+  uint32_t loc = static_cast<uint32_t>(rt::thisLocality());
+  uint64_t start = dataDistribution_[loc].first;
+  uint64_t end   = dataDistribution_[loc].second;
+  return end - start + 1;
+}
+
+std::vector<T> * getData() {
+  return & data_;
+}
+
  protected:
   Array(ObjectID oid, size_t size, const T &initValue)
       : oid_(oid),
@@ -733,6 +768,29 @@ class Array : public AbstractDataStructure<Array<T>> {
     CallForEachFun(i, std::get<0>(tuple), std::get<1>(tuple),
                    std::get<2>(tuple), std::get<3>(tuple),
                    std::make_index_sequence<Size>{});
+  }
+
+    struct ESR_args_t {
+    ObjectID arrayOID;
+    uint64_t delta;
+  };
+
+  static void exclusiveScanRecursive(rt::Handle & handle, uint64_t pos, int64_t & elem, ESR_args_t & args) {
+    auto arrayPtr = Array<T>::GetPtr(args.arrayOID);
+
+    uint64_t delta = args.delta;
+    uint64_t nelems = arrayPtr->getNElems();
+    std::vector<T> * data = arrayPtr->getData();
+
+    // if not the last set, spawn next scan
+    // ... next delta is this delta + # edges of last vertex in set 
+    if (pos + nelems < arrayPtr->size_) {
+       ESR_args_t  my_args = {args.arrayOID, delta + (* data)[nelems - 1]};
+       arrayPtr->AsyncApply(handle, pos + nelems, exclusiveScanRecursive, my_args);
+    }
+
+    for (uint64_t i = nelems - 1; i > 0; i --) (* data)[i] = (* data)[i - 1] + delta;
+    (* data)[0] = delta;
   }
 };
 
@@ -1169,6 +1227,26 @@ void Array<T>::AsyncGetElements(rt::Handle& h, T* local_data,
     firstPos += chunkSize;
     remainingValues -= chunkSize;
   }
+}
+
+template <typename T>
+void Array<T>::exclusiveScan() {
+ 
+  auto localInclusiveScan = [](rt::Handle & handle, const ObjectID & arrayOID) {
+    auto arrayPtr = Array<T>::GetPtr(arrayOID);
+    uint64_t nelems = arrayPtr->getNElems();
+    std::vector<T> * data = arrayPtr->getData();
+
+    for (uint64_t i = 1; i < nelems; i ++) (* data)[i] += (* data)[i - 1];
+  };
+
+  rt::Handle handle;
+  rt::asyncExecuteOnAll(handle, localInclusiveScan, oid_);
+  waitForCompletion(handle);
+
+  ESR_args_t args = {oid_, 0};
+  this->AsyncApply(handle, 0, Array<T>::exclusiveScanRecursive, args);
+  waitForCompletion(handle);
 }
 
 }  // namespace shad
