@@ -1,5 +1,6 @@
 set(tests
   array_test
+  atomic_test
   hashmap_test
   local_hashmap_test
   one_per_locality_test
