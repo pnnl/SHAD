@@ -96,6 +96,41 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
     return;
   }
 
+  /// @brief Async Atomic Store.
+  ///
+  /// @param[in] desired Non atomic value to be stored.
+  void Store(T desired) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     localInstance_.store(desired);
+     return;
+    }
+    auto StoreFun = [](const std::pair<ObjectID, T> &args) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      ptr->localInstance_.store(args.second);
+    };
+    auto args = std::make_pair(oid_, desired);
+    rt::executeAt(ownerLoc_, StoreFun, args);
+    return;
+  }
+
+  /// @brief Async Atomic Store.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] desired Non atomic value to be stored.
+  void AsyncStore(rt::Handle& h, T desired) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     localInstance_.store(desired);
+     return;
+    }
+    auto StoreFun = [](rt::Handle&, const std::pair<ObjectID, T> &args) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      ptr->localInstance_.store(args.second);
+    };
+    auto args = std::make_pair(oid_, desired);
+    rt::asyncExecuteAt(h, ownerLoc_, StoreFun, args);
+    return;
+  }
+
   /// @brief Fetch Add operation.
   ///
   /// @param[in] add Data to be fetch-added.
@@ -153,6 +188,239 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
     rt::asyncExecuteAt(h, ownerLoc_, AddFun, args);
     return;
   }
+
+  /// @brief Fetch Sub operation.
+  ///
+  /// @param[in] sub Data to be fetch-subbed.
+  /// @return Result of the fect-sub operation.
+  T FetchSub(T sub) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     return localInstance_.fetch_sub(sub);
+    }
+    T ret;
+    auto SubFun = [](const std::pair<ObjectID, T> &args, T *result) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      *result = ptr->localInstance_.fetch_sub(args.second);
+    };
+    auto args = std::make_pair(oid_, sub);
+    rt::executeAtWithRet(ownerLoc_, SubFun, args, &ret);
+    return ret;
+  }
+
+  /// @brief Async Fetch Sub operation.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] sub Data to be fetch-subbed.
+  /// @param[out] res Pointer to the region where the result is
+  /// written; res must point to a valid memory allocation.
+  void AsyncFetchSub(rt::Handle& h, T sub, T* res) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     *res = localInstance_.fetch_sub(sub);
+     return;
+    }
+    auto SubFun = [](rt::Handle&,
+                     const std::pair<ObjectID, T> &args, T *result) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      *result = ptr->localInstance_.fetch_sub(args.second);
+    };
+    auto args = std::make_pair(oid_, sub);
+    rt::asyncExecuteAtWithRet(h, ownerLoc_, SubFun, args, res);
+    return;
+  }
+
+  /// @brief Async Fetch Sub operation, with no return value.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] sub Data to be fetch-subbed.
+  void AsyncFetchSub(rt::Handle& h, T sub) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     localInstance_.fetch_sub(sub);
+     return;
+    }
+    auto SubFun = [](rt::Handle&,
+                     const std::pair<ObjectID, T> &args) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      ptr->localInstance_.fetch_sub(args.second);
+    };
+    auto args = std::make_pair(oid_, sub);
+    rt::asyncExecuteAt(h, ownerLoc_, SubFun, args);
+    return;
+  }
+
+  /// @brief Fetch And operation.
+  ///
+  /// @param[in] operand Data to be fetch-anded.
+  /// @return Result of the fect-and operation.
+  T FetchAnd(T operand) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     return localInstance_.fetch_and(operand);
+    }
+    T ret;
+    auto AndFun = [](const std::pair<ObjectID, T> &args, T *result) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      *result = ptr->localInstance_.fetch_and(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::executeAtWithRet(ownerLoc_, AndFun, args, &ret);
+    return ret;
+  }
+
+  /// @brief Async Fetch And operation.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] operand Data to be fetch-anded.
+  /// @param[out] res Pointer to the region where the result is
+  /// written; res must point to a valid memory allocation.
+  void AsyncFetchAnd(rt::Handle& h, T operand, T* res) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     *res = localInstance_.fetch_and(operand);
+     return;
+    }
+    auto AndFun = [](rt::Handle&,
+                     const std::pair<ObjectID, T> &args, T *result) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      *result = ptr->localInstance_.fetch_and(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::asyncExecuteAtWithRet(h, ownerLoc_, AndFun, args, res);
+    return;
+  }
+
+  /// @brief Async Fetch And operation, with no return value.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] operand Data to be fetch-anded.
+  void AsyncFetchAnd(rt::Handle& h, T operand) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     localInstance_.fetch_and(operand);
+     return;
+    }
+    auto AndFun = [](rt::Handle&,
+                     const std::pair<ObjectID, T> &args) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      ptr->localInstance_.fetch_and(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::asyncExecuteAt(h, ownerLoc_, AndFun, args);
+    return;
+  }
+
+  /// @brief Fetch Or operation.
+  ///
+  /// @param[in] operand Data to be fetch-ored.
+  /// @return Result of the fect-or operation.
+  T FetchOr(T operand) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     return localInstance_.fetch_or(operand);
+    }
+    T ret;
+    auto OrFun = [](const std::pair<ObjectID, T> &args, T *result) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      *result = ptr->localInstance_.fetch_or(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::executeAtWithRet(ownerLoc_, OrFun, args, &ret);
+    return ret;
+  }
+
+  /// @brief Async Fetch Or operation.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] operand Data to be fetch-ored.
+  /// @param[out] res Pointer to the region where the result is
+  /// written; res must point to a valid memory allocation.
+  void AsyncFetchOr(rt::Handle& h, T operand, T* res) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     *res = localInstance_.fetch_or(operand);
+     return;
+    }
+    auto OrFun = [](rt::Handle&,
+                     const std::pair<ObjectID, T> &args, T *result) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      *result = ptr->localInstance_.fetch_or(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::asyncExecuteAtWithRet(h, ownerLoc_, OrFun, args, res);
+    return;
+  }
+
+  /// @brief Async Fetch Or operation, with no return value.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] operand Data to be fetch-ored.
+  void AsyncFetchOr(rt::Handle& h, T operand) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     localInstance_.fetch_or(operand);
+     return;
+    }
+    auto OrFun = [](rt::Handle&,
+                     const std::pair<ObjectID, T> &args) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      ptr->localInstance_.fetch_or(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::asyncExecuteAt(h, ownerLoc_, OrFun, args);
+    return;
+  }
+
+  /// @brief Fetch Xor operation.
+  ///
+  /// @param[in] xor Data to be fetch-xored.
+  /// @return Result of the fect-xor operation.
+  T FetchXor(T operand) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     return localInstance_.fetch_xor(operand);
+    }
+    T ret;
+    auto XorFun = [](const std::pair<ObjectID, T> &args, T *result) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      *result = ptr->localInstance_.fetch_xor(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::executeAtWithRet(ownerLoc_, XorFun, args, &ret);
+    return ret;
+  }
+
+  /// @brief Async Fetch Xor operation.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] xor Data to be fetch-xored.
+  /// @param[out] res Pointer to the region where the result is
+  /// written; res must point to a valid memory allocation.
+  void AsyncFetchXor(rt::Handle& h, T operand, T* res) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     *res = localInstance_.fetch_xor(operand);
+     return;
+    }
+    auto XorFun = [](rt::Handle&,
+                     const std::pair<ObjectID, T> &args, T *result) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      *result = ptr->localInstance_.fetch_xor(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::asyncExecuteAtWithRet(h, ownerLoc_, XorFun, args, res);
+    return;
+  }
+
+  /// @brief Async Fetch Xor operation, with no return value.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] xor Data to be fetch-xored.
+  void AsyncFetchXor(rt::Handle& h, T operand) {
+    if (ownerLoc_ == rt::thisLocality()) {
+     localInstance_.fetch_xor(operand);
+     return;
+    }
+    auto XorFun = [](rt::Handle&,
+                     const std::pair<ObjectID, T> &args) {
+      auto ptr = Atomic<T>::GetPtr(args.first);
+      ptr->localInstance_.fetch_xor(args.second);
+    };
+    auto args = std::make_pair(oid_, operand);
+    rt::asyncExecuteAt(h, ownerLoc_, XorFun, args);
+    return;
+  }
+
  protected:
   /// @brief Constructor.
   template <typename... Args>
