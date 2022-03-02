@@ -541,7 +541,7 @@ std::vector<T> * getData() {
 
       start += chunkSize;
     }
-    if (rt::thisLocality() < pivot)
+    if ((rt::thisLocality() < pivot) & (chunkSize > 0))
       data_.resize(chunkSize, initValue);
     else
       data_.resize(chunkSize + 1, initValue);
@@ -845,6 +845,12 @@ void Array<T>::BufferedInsertAt(const size_t pos, const T &value) {
 template <typename T>
 void Array<T>::InsertAt(const size_t pos, const T *values,
                         const size_t numValues) {
+  if (size_ < rt::numLocalities()) {
+    for (size_t i = 0; i < numValues; ++i) {
+      InsertAt(pos+i, values[i]);
+    }
+    return;
+  }
   size_t tgtPos = 0, firstPos = pos;
   rt::Locality tgtLoc;
   size_t remainingValues = numValues;
@@ -918,6 +924,12 @@ void Array<T>::InsertAt(const size_t pos, const T *values,
 template <typename T>
 void Array<T>::AsyncInsertAt(rt::Handle &handle, const size_t pos,
                              const T *values, const size_t numValues) {
+  if (size_ < rt::numLocalities()) {
+    for (size_t i = 0; i < numValues; ++i) {
+      AsyncInsertAt(handle, pos+i, values[i]);
+    }
+    return;
+  }
   size_t tgtPos = 0, firstPos = pos;
   rt::Locality tgtLoc;
   size_t remainingValues = numValues;
@@ -1064,6 +1076,12 @@ template <typename T>
 template <typename ApplyFunT, typename... Args>
 void Array<T>::ForEachInRange(const size_t first, const size_t last,
                               ApplyFunT &&function, Args &... args) {
+  if (size_ < rt::numLocalities()) {
+    for (size_t i = first; i < last; ++i) {
+      Apply(i, function, std::forward<Args&>(args)...);
+    }
+    return;
+  }
   using FunctionTy = void (*)(size_t, T &, Args & ...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using ArgsTuple =
@@ -1106,6 +1124,12 @@ template <typename ApplyFunT, typename... Args>
 void Array<T>::AsyncForEachInRange(rt::Handle &handle, const size_t first,
                                    const size_t last, ApplyFunT &&function,
                                    Args &... args) {
+  if (size_ < rt::numLocalities()) {
+    for (size_t i = first; i < last; ++i) {
+      AsyncApply(handle, i, function, std::forward<Args&>(args)...);
+    }
+    return;
+  }
   using FunctionTy = void (*)(rt::Handle &, size_t, T &, Args & ...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using ArgsTuple =
@@ -1149,6 +1173,12 @@ template <typename T>
 template <typename ApplyFunT, typename... Args>
 void Array<T>::AsyncForEach(rt::Handle &handle, ApplyFunT &&function,
                             Args &... args) {
+  if (size_ < rt::numLocalities()) {
+    for (size_t i = 0; i < size_; ++i) {
+      AsyncApply(handle, i, function, std::forward<Args&>(args)...);
+    }
+    return;
+  }
   using FunctionTy = void (*)(rt::Handle &, size_t, T &, Args & ...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
@@ -1175,6 +1205,12 @@ void Array<T>::AsyncForEach(rt::Handle &handle, ApplyFunT &&function,
 template <typename T>
 template <typename ApplyFunT, typename... Args>
 void Array<T>::ForEach(ApplyFunT &&function, Args &... args) {
+  if (size_ < rt::numLocalities()) {
+    for (size_t i = 0; i < size_; ++i) {
+      Apply(i, function, std::forward<Args&>(args)...);
+    }
+    return;
+  }
   using FunctionTy = void (*)(size_t, T &, Args & ...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
@@ -1199,7 +1235,12 @@ void Array<T>::ForEach(ApplyFunT &&function, Args &... args) {
 template <typename T>
 void Array<T>::AsyncGetElements(rt::Handle& h, T* local_data,
                                 const uint64_t idx, const uint64_t num_el) {
-
+  if (size_ < rt::numLocalities()) {
+    for (size_t i = idx; i < num_el; ++i) {
+      AsyncAt(h, i, local_data + i);
+    }
+    return;
+  }
   size_t tgtPos = 0, firstPos = idx;
   rt::Locality tgtLoc;
   size_t remainingValues = num_el;
