@@ -140,9 +140,9 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @return an ::iterator to the beginning of the sequence.
   constexpr iterator begin() noexcept {
     if (rt::thisLocality() == rt::Locality(0)) {
-      return iterator{rt::Locality(0), 0, oid_, chunk_.get()};
+      return iterator{rt::Locality(0), 0, this->oid_, chunk_.get()};
     }
-    return iterator{rt::Locality(0), 0, oid_, nullptr};
+    return iterator{rt::Locality(0), 0, this->oid_, nullptr};
   }
 
   /// @brief The iterator to the beginning of the sequence.
@@ -155,7 +155,7 @@ class array : public AbstractDataStructure<array<T, N>> {
     if (N < rt::numLocalities()) {
       rt::Locality last(uint32_t(N - 1));
       pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-      return iterator{std::forward<rt::Locality>(last), 1, oid_, chunk};
+      return iterator{std::forward<rt::Locality>(last), 1, this->oid_, chunk};
     }
 
     difference_type pos = chunk_size();
@@ -163,7 +163,7 @@ class array : public AbstractDataStructure<array<T, N>> {
 
     rt::Locality last(rt::numLocalities() - 1);
     pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-    return iterator{std::forward<rt::Locality>(last), pos, oid_, chunk};
+    return iterator{std::forward<rt::Locality>(last), pos, this->oid_, chunk};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -174,7 +174,7 @@ class array : public AbstractDataStructure<array<T, N>> {
   /// @return a ::const_iterator to the beginning of the sequence.
   constexpr const_iterator cbegin() const noexcept {
     if (rt::thisLocality() == rt::Locality(0)) {
-      return const_iterator{rt::Locality(0), 0, oid_, chunk_.get()};
+      return const_iterator{rt::Locality(0), 0, this->oid_, chunk_.get()};
     }
 
     pointer chunk = nullptr;
@@ -183,8 +183,8 @@ class array : public AbstractDataStructure<array<T, N>> {
                            auto This = array<T, N>::GetPtr(ID);
                            *result = This->chunk_.get();
                          },
-                         GetGlobalID(), &chunk);
-    return const_iterator{rt::Locality(0), 0, oid_, chunk};
+                         this->GetGlobalID(), &chunk);
+    return const_iterator{rt::Locality(0), 0, this->oid_, chunk};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -193,7 +193,7 @@ class array : public AbstractDataStructure<array<T, N>> {
     if (N < rt::numLocalities()) {
       rt::Locality last(uint32_t(N - 1));
       pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-      return const_iterator{std::forward<rt::Locality>(last), 1, oid_, chunk};
+      return const_iterator{std::forward<rt::Locality>(last), 1, this->oid_, chunk};
     }
 
     difference_type pos = chunk_size();
@@ -201,7 +201,7 @@ class array : public AbstractDataStructure<array<T, N>> {
 
     rt::Locality last(rt::numLocalities() - 1);
     pointer chunk = last == rt::thisLocality() ? chunk_.get() : nullptr;
-    return const_iterator{std::forward<rt::Locality>(last), pos, oid_, chunk};
+    return const_iterator{std::forward<rt::Locality>(last), pos, this->oid_, chunk};
   }
 
   /// @}
@@ -240,13 +240,13 @@ class array : public AbstractDataStructure<array<T, N>> {
 
       if (n < chunk) {
         difference_type position(n);
-        return reference{l, position, oid_, nullptr};
+        return reference{l, position, this->oid_, nullptr};
       }
 
       n -= chunk;
     }
     difference_type position(n);
-    return reference{rt::Locality(rt::numLocalities() - 1), position, oid_,
+    return reference{rt::Locality(rt::numLocalities() - 1), position, this->oid_,
                      nullptr};
   }
 
@@ -265,14 +265,14 @@ class array : public AbstractDataStructure<array<T, N>> {
 
       if (n < chunk) {
         difference_type position(n);
-        return const_reference{l, position, oid_, nullptr};
+        return const_reference{l, position, this->oid_, nullptr};
       }
 
       n -= chunk;
     }
     difference_type position(n);
     return const_reference{rt::Locality(rt::numLocalities() - 1), position,
-                           oid_, nullptr};
+                           this->oid_, nullptr};
   }
 
   /// @brief Checked element access operator.
@@ -304,14 +304,6 @@ class array : public AbstractDataStructure<array<T, N>> {
   constexpr const_reference back() const { return *(cend() - 1); }
 
   /// @}
-
-  /// @brief DataStructure identifier getter.
-  ///
-  /// Returns the global object identifier associated to a DataStructure
-  /// instance.
-  ///
-  /// @warning It must be implemented in the inheriting DataStructure.
-  ObjectID GetGlobalID() const { return oid_; }
 
   friend bool operator!=(const array<T, N> &LHS, const array<T, N> &RHS) {
     bool result[rt::numLocalities()];
@@ -408,11 +400,10 @@ class array : public AbstractDataStructure<array<T, N>> {
   }
 
   /// @brief Constructor.
-  explicit array(ObjectID oid) : chunk_{new T[chunk_size()]}, oid_{oid} {}
+  explicit array(ObjectID oid) : chunk_{new T[chunk_size()]}, AbstractDataStructure<array<T, N>>(oid) {}
 
  private:
   std::unique_ptr<T[]> chunk_;
-  ObjectID oid_;
 };
 
 template <typename T, std::size_t N>

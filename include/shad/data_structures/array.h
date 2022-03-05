@@ -59,11 +59,6 @@ class Array : public AbstractDataStructure<Array<T>> {
   using BuffersVector = impl::BuffersVector<std::tuple<size_t, T>, Array<T>>;
   using ShadArrayPtr = typename AbstractDataStructure<Array<T>>::SharedPtr;
 
-  /// @brief Retrieve the Global Identifier.
-  ///
-  /// @return The global identifier associated with the array instance.
-  ObjectID GetGlobalID() const { return oid_; }
-
   /// @brief Return the size of the shad::Array.
   /// @return The size of the shad::Array.
   size_t Size() const noexcept { return size_; }
@@ -515,7 +510,7 @@ std::vector<T> * getData() {
 
  protected:
   Array(ObjectID oid, size_t size, const T &initValue)
-      : oid_(oid),
+      : AbstractDataStructure<Array<T>>(oid),
         size_(size),
         pivot_((size % rt::numLocalities() == 0)
                    ? rt::numLocalities()
@@ -548,7 +543,6 @@ std::vector<T> * getData() {
   }
 
  private:
-  ObjectID oid_;
   size_t size_;
   uint32_t pivot_;
   std::vector<T> data_;
@@ -815,7 +809,7 @@ void Array<T>::InsertAt(const size_t pos, const T &value) {
   if (target.first == rt::thisLocality()) {
     data_[target.second] = value;
   } else {
-    InsertAtArgs args = {oid_, target.second, value};
+    InsertAtArgs args = {this->oid_, target.second, value};
     rt::executeAt(target.first, InsertAtFun, args);
   }
 }
@@ -827,7 +821,7 @@ void Array<T>::AsyncInsertAt(rt::Handle &handle, const size_t pos,
   if (target.first == rt::thisLocality()) {
     data_[target.second] = value;
   } else {
-    InsertAtArgs args = {oid_, target.second, value};
+    InsertAtArgs args = {this->oid_, target.second, value};
     rt::asyncExecuteAt(handle, target.first, AsyncInsertAtFun, args);
   }
 }
@@ -868,12 +862,12 @@ void Array<T>::InsertAt(const size_t pos, const T *values,
     } else {
       chunkSize = constants::min(chunkSize, kMaxChunkSize);
       size_t argsSize =
-          sizeof(oid_) + sizeof(size_t) * 2 + sizeof(T) * chunkSize;
+          sizeof(this->oid_) + sizeof(size_t) * 2 + sizeof(T) * chunkSize;
       std::shared_ptr<uint8_t> args(new uint8_t[argsSize],
                                     std::default_delete<uint8_t[]>());
       uint8_t *argsPtr = args.get();
-      memcpy(argsPtr, &oid_, sizeof(oid_));
-      argsPtr += sizeof(oid_);
+      memcpy(argsPtr, &this->oid_, sizeof(this->oid_));
+      argsPtr += sizeof(this->oid_);
       memcpy(argsPtr, &tgtPos, sizeof(size_t));
       argsPtr += sizeof(size_t);
       memcpy(argsPtr, &chunkSize, sizeof(size_t));
@@ -899,13 +893,13 @@ void Array<T>::InsertAt(const size_t pos, const T *values,
     } else {
       chunkSize = constants::min(chunkSize, kMaxChunkSize);
       size_t argsSize =
-          sizeof(oid_) + sizeof(size_t) * 2 + sizeof(T) * chunkSize;
+          sizeof(this->oid_) + sizeof(size_t) * 2 + sizeof(T) * chunkSize;
       // FIXME(SHAD-125)
       std::shared_ptr<uint8_t> args(new uint8_t[argsSize],
                                     std::default_delete<uint8_t[]>());
       uint8_t *argsPtr = args.get();
-      memcpy(argsPtr, &oid_, sizeof(oid_));
-      argsPtr += sizeof(oid_);
+      memcpy(argsPtr, &this->oid_, sizeof(this->oid_));
+      argsPtr += sizeof(this->oid_);
       memcpy(argsPtr, &tgtPos, sizeof(size_t));
       argsPtr += sizeof(size_t);
       memcpy(argsPtr, &chunkSize, sizeof(size_t));
@@ -955,14 +949,14 @@ void Array<T>::AsyncInsertAt(rt::Handle &handle, const size_t pos,
     } else {
       chunkSize = constants::min(chunkSize, kMaxChunkSize);
       size_t argsSize =
-          sizeof(oid_) + sizeof(size_t) * 2 + sizeof(T) * chunkSize;
+          sizeof(this->oid_) + sizeof(size_t) * 2 + sizeof(T) * chunkSize;
       // FIXME(SHAD-125)
       std::shared_ptr<uint8_t> args(new uint8_t[argsSize],
                                     std::default_delete<uint8_t[]>());
       ;
       uint8_t *argsPtr = args.get();
-      memcpy(argsPtr, &oid_, sizeof(oid_));
-      argsPtr += sizeof(oid_);
+      memcpy(argsPtr, &this->oid_, sizeof(this->oid_));
+      argsPtr += sizeof(this->oid_);
       memcpy(argsPtr, &tgtPos, sizeof(size_t));
       argsPtr += sizeof(size_t);
       memcpy(argsPtr, &chunkSize, sizeof(size_t));
@@ -1001,7 +995,7 @@ T Array<T>::At(const size_t pos) {
   if (target.first == rt::thisLocality()) {
     retValue = data_[target.second];
   } else {
-    AtArgs args{oid_, target.second};
+    AtArgs args{this->oid_, target.second};
     rt::executeAtWithRet(target.first, AtFun, args, &retValue);
   }
   return retValue;
@@ -1013,7 +1007,7 @@ void Array<T>::AsyncAt(rt::Handle &handle, const size_t pos, T *result) {
   if (target.first == rt::thisLocality()) {
     *result = data_[target.second];
   } else {
-    AtArgs args = {oid_, target.second};
+    AtArgs args = {this->oid_, target.second};
     rt::asyncExecuteAtWithRet(handle, target.first, AsyncAtFun, args, result);
   }
 }
@@ -1030,7 +1024,7 @@ void Array<T>::Apply(const size_t pos, ApplyFunT &&function, Args &... args) {
   FunctionTy fn = std::forward<decltype(function)>(function);
   using ArgsTuple =
       std::tuple<ObjectID, size_t, size_t, FunctionTy, std::tuple<Args...>>;
-  ArgsTuple argsTuple{oid_, pos, target.second, fn,
+  ArgsTuple argsTuple{this->oid_, pos, target.second, fn,
                       std::tuple<Args...>(args...)};
 
   rt::executeAt(target.first, ApplyFunWrapper<ArgsTuple, Args...>, argsTuple);
@@ -1046,7 +1040,7 @@ void Array<T>::AsyncApply(rt::Handle &handle, const size_t pos,
   FunctionTy fn = std::forward<decltype(function)>(function);
   using ArgsTuple =
       std::tuple<ObjectID, size_t, size_t, FunctionTy, std::tuple<Args...>>;
-  ArgsTuple argsTuple{oid_, pos, target.second, fn,
+  ArgsTuple argsTuple{this->oid_, pos, target.second, fn,
                       std::tuple<Args...>(args...)};
 
   rt::asyncExecuteAt(handle, target.first,
@@ -1092,7 +1086,7 @@ void Array<T>::ForEachInRange(const size_t first, const size_t last,
   size_t remainingValues = last - first;
   size_t chunkSize = 0;
 
-  ArgsTuple argsTuple{oid_, firstPos, tgtPos, fn, std::tuple<Args...>(args...)};
+  ArgsTuple argsTuple{this->oid_, firstPos, tgtPos, fn, std::tuple<Args...>(args...)};
   while (remainingValues > 0) {
     if (firstPos < pivot_ * (size_ / rt::numLocalities())) {
       tgtLoc = rt::Locality(firstPos / (size_ / rt::numLocalities()));
@@ -1140,7 +1134,7 @@ void Array<T>::AsyncForEachInRange(rt::Handle &handle, const size_t first,
   size_t remainingValues = last - first;
   size_t chunkSize = 0;
   // first it
-  ArgsTuple argsTuple{oid_, firstPos, tgtPos, fn, std::tuple<Args...>(args...)};
+  ArgsTuple argsTuple{this->oid_, firstPos, tgtPos, fn, std::tuple<Args...>(args...)};
 
   while (remainingValues > 0) {
     if (firstPos < pivot_ * (size_ / rt::numLocalities())) {
@@ -1185,7 +1179,7 @@ void Array<T>::AsyncForEach(rt::Handle &handle, ApplyFunT &&function,
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<T *, FunctionTy, size_t, std::tuple<Args...>>;
 
-  feArgs arguments{oid_, fn, std::tuple<Args...>(args...)};
+  feArgs arguments{this->oid_, fn, std::tuple<Args...>(args...)};
 
   auto feLambda = [](rt::Handle &handle, const feArgs &args) {
     auto arrayPtr = Array<T>::GetPtr(std::get<0>(args));
@@ -1217,7 +1211,7 @@ void Array<T>::ForEach(ApplyFunT &&function, Args &... args) {
   using feArgs = std::tuple<ObjectID, FunctionTy, std::tuple<Args...>>;
   using ArgsTuple = std::tuple<T *, FunctionTy, size_t, std::tuple<Args...>>;
 
-  feArgs arguments{oid_, fn, std::tuple<Args...>(args...)};
+  feArgs arguments{this->oid_, fn, std::tuple<Args...>(args...)};
 
   auto feLambda = [](const feArgs &args) {
     auto arrayPtr = Array<T>::GetPtr(std::get<0>(args));
