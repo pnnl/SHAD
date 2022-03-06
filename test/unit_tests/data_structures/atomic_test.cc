@@ -116,6 +116,32 @@ TEST_F(AtomicTest, SyncStore) {
   destroy(ptrs);
 }
 
+TEST_F(AtomicTest, SyncStoreCustom) {
+  auto locs = shad::rt::allLocalities();
+  std::vector<atomicPtr> ptrs(locs.size());
+  size_t cnt = 0;
+  for (auto loc : locs) {
+    ptrs[cnt] = shad::Atomic<int64_t>::Create(1lu, loc);
+    bool done = ptrs[cnt]->Store(kInitValue+cnt, std::plus<int64_t>{});
+    ASSERT_EQ(done, true);
+    ++cnt;
+  }
+  cnt = 0;
+  shad::rt::Handle h;
+  std::vector<int64_t> values(locs.size());
+  for (auto ptr : ptrs) {
+    ptr->AsyncLoad(h, &values[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  for (auto value : values) {
+    ASSERT_EQ(value, kInitValue + cnt + 1);
+    ++cnt;
+  }
+  destroy(ptrs);
+}
+
 TEST_F(AtomicTest, AsyncStore) {
   auto locs = shad::rt::allLocalities();
   std::vector<atomicPtr> ptrs(locs.size());
@@ -137,6 +163,156 @@ TEST_F(AtomicTest, AsyncStore) {
   cnt = 0;
   for (auto value : values) {
     ASSERT_EQ(value, kInitValue + cnt);
+    ++cnt;
+  }
+  destroy(ptrs);
+}
+
+TEST_F(AtomicTest, AsyncStoreCustom) {
+  auto locs = shad::rt::allLocalities();
+  std::vector<atomicPtr> ptrs(locs.size());
+  std::deque<bool> results(locs.size());
+  size_t cnt = 0;
+  shad::rt::Handle h;
+  for (auto loc : locs) {
+    ptrs[cnt] = shad::Atomic<int64_t>::Create(1l, loc);
+    ptrs[cnt]->AsyncStore(h, kInitValue+cnt, std::minus<int64_t>{}, &results[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  std::vector<int64_t> values(locs.size());
+  for (auto ptr : ptrs) {
+    ptr->AsyncLoad(h, &values[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  for (int64_t value : values) {
+    ASSERT_EQ(value, 1l-(kInitValue + cnt));
+    ++cnt;
+  }
+  for (auto r : results) {
+    ASSERT_EQ(r, true);
+  }
+  destroy(ptrs);
+}
+
+struct custom_minus_op {
+  constexpr int64_t operator()( const int64_t& lhs,
+                                const std::pair<int64_t, int64_t>& rhs ) {
+    return lhs - rhs.first - rhs.second;
+  }
+};
+
+TEST_F(AtomicTest, ForceStore) {
+  auto locs = shad::rt::allLocalities();
+  std::vector<atomicPtr> ptrs(locs.size());
+  size_t cnt = 0;
+  for (auto loc : locs) {
+    ptrs[cnt] = shad::Atomic<int64_t>::Create(1l, loc);
+    ptrs[cnt]->ForceStore(std::make_pair(kInitValue, cnt),
+                          custom_minus_op{});
+    ++cnt;
+  }
+  shad::rt::Handle h;
+  cnt = 0;
+  std::vector<int64_t> values(locs.size());
+  for (auto ptr : ptrs) {
+    ptr->AsyncLoad(h, &values[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  for (int64_t value : values) {
+    ASSERT_EQ(value, 1l-kInitValue-cnt);
+    ++cnt;
+  }
+  destroy(ptrs);
+}
+
+TEST_F(AtomicTest, AsyncForceStore) {
+  auto locs = shad::rt::allLocalities();
+  std::vector<atomicPtr> ptrs(locs.size());
+  size_t cnt = 0;
+  shad::rt::Handle h;
+  for (auto loc : locs) {
+    ptrs[cnt] = shad::Atomic<int64_t>::Create(1l, loc);
+    ptrs[cnt]->AsyncForceStore(h, std::make_pair(kInitValue, cnt),
+                               custom_minus_op{});
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  std::vector<int64_t> values(locs.size());
+  for (auto ptr : ptrs) {
+    ptr->AsyncLoad(h, &values[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  for (int64_t value : values) {
+    ASSERT_EQ(value, 1l-kInitValue-cnt);
+    ++cnt;
+  }
+  destroy(ptrs);
+}
+
+
+TEST_F(AtomicTest, ForceFetchStore) {
+  auto locs = shad::rt::allLocalities();
+  std::vector<atomicPtr> ptrs(locs.size());
+  std::vector<int64_t> results(locs.size());
+  int64_t cnt = 0;
+  for (auto loc : locs) {
+    ptrs[cnt] = shad::Atomic<int64_t>::Create(kInitValue+cnt, loc);
+    results[cnt] = ptrs[cnt]->ForceFetchStore(cnt,
+                            [](auto& a, auto& b) {return std::min(a, b);});
+    ++cnt;
+  }
+  
+  shad::rt::Handle h;
+  cnt = 0;
+  std::vector<int64_t> values(locs.size());
+  for (auto ptr : ptrs) {
+    ptr->AsyncLoad(h, &values[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  for (int64_t value : values) {
+    ASSERT_EQ(value, cnt);
+    ASSERT_EQ(results[cnt], kInitValue+cnt);
+    ++cnt;
+  }
+  destroy(ptrs);
+}
+
+TEST_F(AtomicTest, AsyncForceFetchStore) {
+  auto locs = shad::rt::allLocalities();
+  std::vector<atomicPtr> ptrs(locs.size());
+  std::vector<int64_t> results(locs.size());
+  int64_t cnt = 0;
+  shad::rt::Handle h;
+  for (auto loc : locs) {
+    ptrs[cnt] = shad::Atomic<int64_t>::Create(cnt, loc);
+    ptrs[cnt]->AsyncForceFetchStore(h, kInitValue + cnt,
+                                   [](auto& a, auto& b) {return std::max(a, b);},
+                                   &results[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  std::vector<int64_t> values(locs.size());
+  for (auto ptr : ptrs) {
+    ptr->AsyncLoad(h, &values[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  for (int64_t value : values) {
+    ASSERT_EQ(value, kInitValue+cnt);
+    ASSERT_EQ(results[cnt], cnt);
     ++cnt;
   }
   destroy(ptrs);
@@ -501,4 +677,40 @@ TEST_F(AtomicTest, FetchXorTests) {
   exp_loaded = expected.load();
   ASSERT_EQ(loaded, exp_loaded);
   shad::Atomic<int64_t>::Destroy(ptr->GetGlobalID());
+}
+
+TEST_F(AtomicTest, CASTest) {
+  auto locs = shad::rt::allLocalities();
+  auto it = locs.begin();
+  std::advance(it, shad::rt::numLocalities()/2);
+  shad::rt::Locality tgt = *it;
+  auto ptr = shad::Atomic<float>::Create(kInitValue, tgt);
+  bool ret = ptr->CompareExchange(kInitValue, kInitValue*2);
+  auto fetched = ptr->Load();
+  ASSERT_EQ(fetched, kInitValue*2);
+  ASSERT_EQ(ret, true);
+  ret = ptr->CompareExchange(kInitValue, 0);
+  fetched = ptr->Load();
+  ASSERT_EQ(fetched, kInitValue*2);
+  ASSERT_EQ(ret, false);
+}
+
+TEST_F(AtomicTest, AsyncCASTest) {
+  auto locs = shad::rt::allLocalities();
+  auto it = locs.begin();
+  std::advance(it, shad::rt::numLocalities()/2);
+  shad::rt::Locality tgt = *it;
+  auto ptr = shad::Atomic<float>::Create(kInitValue, tgt);
+  shad::rt::Handle h;
+  bool ret;
+  ptr->AsyncCompareExchange(h, kInitValue, kInitValue*2, &ret);
+  shad::rt::waitForCompletion(h);
+  auto fetched = ptr->Load();
+  ASSERT_EQ(fetched, kInitValue*2);
+  ASSERT_EQ(ret, true);
+  ptr->AsyncCompareExchange(h, kInitValue, 0, &ret);
+  shad::rt::waitForCompletion(h);
+  fetched = ptr->Load();
+  ASSERT_EQ(fetched, kInitValue*2);
+  ASSERT_EQ(ret, false);
 }
