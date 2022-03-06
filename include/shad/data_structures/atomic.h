@@ -179,6 +179,48 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
     rt::executeAt(ownerLoc_, StoreFun, args);
   }
 
+
+  /// @brief Async Atomic Fetch-Store. Attempts at atomically storing
+  ///                            the results of binop unitil succesful.
+  ///
+  /// @tparam ArgT Type of rhs for the BinaryOp operator.
+  /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const ArgT& rhs).
+  /// @param[in,out] h The handle to be used to wait for completion.  
+  /// @param[in] desired_arg Non atomic rhs value for binop.
+  /// @param[in] binop Binary operator. lhs is atomic's value, rhs is desired_arg.
+  /// @return The value fetched when Store was successful.
+  template <typename ArgT, typename BinaryOp>
+  T ForceFetchStore(ArgT desired_arg, BinaryOp binop) {
+    if (ownerLoc_ == rt::thisLocality()) {
+      auto old_value = localInstance_.load();
+      T desired = binop(old_value, desired_arg);
+      while(!atomic_compare_exchange_weak(&localInstance_,
+                                          &old_value, desired)) {
+        old_value = localInstance_.load();
+        desired = binop(old_value, desired_arg);
+      }
+      return old_value;
+    }
+    using StoreArgs = std::tuple<ObjectID, ArgT, BinaryOp>;
+    auto StoreFun = [](const StoreArgs &args, T*res) {
+      auto ptr = Atomic<T>::GetPtr(std::get<0>(args));
+      auto old_value = ptr->localInstance_.load();
+      auto desired_arg = std::get<1>(args);
+      auto binop = std::get<2>(args);
+      T desired = binop(old_value, desired_arg);
+      while(!atomic_compare_exchange_weak(&ptr->localInstance_,
+                                          &old_value, desired)) {
+        old_value = ptr->localInstance_.load();
+        desired = binop(old_value, desired_arg);
+      }
+      *res = old_value;
+    };
+    StoreArgs args(oid_, desired_arg, binop);
+    T res;
+    rt::executeAtWithRet(ownerLoc_, StoreFun, args, &res);
+    return res;
+  }
+
   /// @brief Async Atomic Store.
   ///
   /// @param[in,out] h The handle to be used to wait for completion.
@@ -264,6 +306,49 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
     };
     StoreArgs args(oid_, desired_arg, binop);
     rt::asyncExecuteAt(h, ownerLoc_, StoreFun, args);
+  }
+
+  /// @brief Async Atomic Fetch-Store. Attempts at atomically storing
+  ///                            the results of binop unitil succesful.
+  ///
+  /// @tparam ArgT Type of rhs for the BinaryOp operator.
+  /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const ArgT& rhs).
+  /// @param[in,out] h The handle to be used to wait for completion.  
+  /// @param[in] desired_arg Non atomic rhs value for binop.
+  /// @param[in] binop Binary operator. lhs is atomic's value, rhs is desired_arg.
+  /// @param[out] res Pointer to the region where the result is
+  /// written; res must point to a valid memory allocation.
+  /// Result is the value fetched when Store was successful
+  template <typename ArgT, typename BinaryOp>
+  void AsyncForceFetchStore(rt::Handle &h, ArgT desired_arg,
+                            BinaryOp binop, T* res) {
+    if (ownerLoc_ == rt::thisLocality()) {
+      auto old_value = localInstance_.load();
+      T desired = binop(old_value, desired_arg);
+      while(!atomic_compare_exchange_weak(&localInstance_,
+                                          &old_value, desired)) {
+        old_value = localInstance_.load();
+        desired = binop(old_value, desired_arg);
+      }
+      *res = old_value;
+      return;
+    }
+    using StoreArgs = std::tuple<ObjectID, ArgT, BinaryOp>;
+    auto StoreFun = [](rt::Handle&, const StoreArgs &args, T* res) {
+      auto ptr = Atomic<T>::GetPtr(std::get<0>(args));
+      auto old_value = ptr->localInstance_.load();
+      auto desired_arg = std::get<1>(args);
+      auto binop = std::get<2>(args);
+      T desired = binop(old_value, desired_arg);
+      while(!atomic_compare_exchange_weak(&ptr->localInstance_,
+                                          &old_value, desired)) {
+        old_value = ptr->localInstance_.load();
+        desired = binop(old_value, desired_arg);
+      }
+      *res = old_value;
+    };
+    StoreArgs args(oid_, desired_arg, binop);
+    rt::asyncExecuteAtWithRet(h, ownerLoc_, StoreFun, args, res);
   }
 
   /// @brief Compare and exchange operation.
