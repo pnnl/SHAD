@@ -115,19 +115,20 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
 
   /// @brief Atomic Store. Attempts at atomically storing the results of binop.
   ///
-  /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const T& rhs).
+  /// @tparam ArgT Type of rhs for the BinaryOp operator.
+  /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const ArgT& rhs).
   /// @param[in] desired_arg Non atomic rhs value for binop.
   /// @param[in] binop Binary operator. lhs is atomic's value, rhs is desired_arg.
   /// @return true if the store was successful, false otherwise.
-  template <typename BinaryOp>
-  bool Store(T desired_arg, BinaryOp binop) {
+  template <typename ArgT, typename BinaryOp>
+  bool Store(ArgT desired_arg, BinaryOp binop) {
     if (ownerLoc_ == rt::thisLocality()) {
       auto old_value = localInstance_.load();
       T desired = binop(old_value, desired_arg);
       return atomic_compare_exchange_strong(&localInstance_,
                                             &old_value, desired);
     }
-    using StoreArgs = std::tuple<ObjectID, T, BinaryOp>;
+    using StoreArgs = std::tuple<ObjectID, ArgT, BinaryOp>;
     auto StoreFun = [](const StoreArgs &args, bool *res) {
       auto ptr = Atomic<T>::GetPtr(std::get<0>(args));
       auto old_value = ptr->localInstance_.load();
@@ -162,6 +163,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
 
   /// @brief Async Atomic Store. Attempts at atomically storing the results of binop.
   ///
+  /// @tparam ArgT Type of rhs for the BinaryOp operator.
   /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const T& rhs).
   /// @param[in,out] h The handle to be used to wait for completion.
   /// @param[in] desired_arg Non atomic rhs value for binop.
@@ -169,8 +171,8 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   /// @param[out] res Pointer to the region where the result is
   /// written; res must point to a valid memory allocation. 
   /// *res is true if the store operation was successful, false otherwise.
-  template <typename BinaryOp>
-  void AsyncStore(rt::Handle& h, T desired_arg, BinaryOp binop, bool* res) {
+  template <typename ArgT, typename BinaryOp>
+  void AsyncStore(rt::Handle& h, ArgT desired_arg, BinaryOp binop, bool* res) {
     if (ownerLoc_ == rt::thisLocality()) {
       auto old_value = localInstance_.load();
       T desired = binop(old_value, desired_arg);
@@ -178,7 +180,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
                                             &old_value, desired);
       return;
     }
-    using StoreArgs = std::tuple<ObjectID, T, BinaryOp>;
+    using StoreArgs = std::tuple<ObjectID, ArgT, BinaryOp>;
     auto StoreFun = [](rt::Handle&, const StoreArgs &args, bool *res) {
       auto ptr = Atomic<T>::GetPtr(std::get<0>(args));
       auto old_value = ptr->localInstance_.load();
