@@ -198,6 +198,66 @@ TEST_F(AtomicTest, AsyncStoreCustom) {
   destroy(ptrs);
 }
 
+struct custom_minus_op {
+  constexpr int64_t operator()( const int64_t& lhs,
+                                const std::pair<int64_t, int64_t>& rhs ) {
+    return lhs - rhs.first - rhs.second;
+  }
+};
+
+TEST_F(AtomicTest, ForceStore) {
+  auto locs = shad::rt::allLocalities();
+  std::vector<atomicPtr> ptrs(locs.size());
+  size_t cnt = 0;
+  for (auto loc : locs) {
+    ptrs[cnt] = shad::Atomic<int64_t>::Create(1l, loc);
+    ptrs[cnt]->ForceStore(std::make_pair(kInitValue, cnt),
+                          custom_minus_op{});
+    ++cnt;
+  }
+  shad::rt::Handle h;
+  cnt = 0;
+  std::vector<int64_t> values(locs.size());
+  for (auto ptr : ptrs) {
+    ptr->AsyncLoad(h, &values[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  for (int64_t value : values) {
+    ASSERT_EQ(value, 1l-kInitValue-cnt);
+    ++cnt;
+  }
+  destroy(ptrs);
+}
+
+TEST_F(AtomicTest, AsyncForceStore) {
+  auto locs = shad::rt::allLocalities();
+  std::vector<atomicPtr> ptrs(locs.size());
+  size_t cnt = 0;
+  shad::rt::Handle h;
+  for (auto loc : locs) {
+    ptrs[cnt] = shad::Atomic<int64_t>::Create(1l, loc);
+    ptrs[cnt]->AsyncForceStore(h, std::make_pair(kInitValue, cnt),
+                               custom_minus_op{});
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  std::vector<int64_t> values(locs.size());
+  for (auto ptr : ptrs) {
+    ptr->AsyncLoad(h, &values[cnt]);
+    ++cnt;
+  }
+  shad::rt::waitForCompletion(h);
+  cnt = 0;
+  for (int64_t value : values) {
+    ASSERT_EQ(value, 1l-kInitValue-cnt);
+    ++cnt;
+  }
+  destroy(ptrs);
+}
+
 TEST_F(AtomicTest, SyncFetchAdd) {
   auto locs = shad::rt::allLocalities();
   std::vector<atomicPtr> ptrs(locs.size());
