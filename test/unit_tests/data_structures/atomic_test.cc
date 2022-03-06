@@ -502,3 +502,39 @@ TEST_F(AtomicTest, FetchXorTests) {
   ASSERT_EQ(loaded, exp_loaded);
   shad::Atomic<int64_t>::Destroy(ptr->GetGlobalID());
 }
+
+TEST_F(AtomicTest, CASTest) {
+  auto locs = shad::rt::allLocalities();
+  auto it = locs.begin();
+  std::advance(it, shad::rt::numLocalities()/2);
+  shad::rt::Locality tgt = *it;
+  auto ptr = shad::Atomic<int64_t>::Create(kInitValue, tgt);
+  bool ret = ptr->CompareExchange(kInitValue, kInitValue*2);
+  auto fetched = ptr->Load();
+  ASSERT_EQ(fetched, kInitValue*2);
+  ASSERT_EQ(ret, true);
+  ret = ptr->CompareExchange(kInitValue, 0);
+  fetched = ptr->Load();
+  ASSERT_EQ(fetched, kInitValue*2);
+  ASSERT_EQ(ret, false);
+}
+
+TEST_F(AtomicTest, AsyncCASTest) {
+  auto locs = shad::rt::allLocalities();
+  auto it = locs.begin();
+  std::advance(it, shad::rt::numLocalities()/2);
+  shad::rt::Locality tgt = *it;
+  auto ptr = shad::Atomic<int64_t>::Create(kInitValue, tgt);
+  shad::rt::Handle h;
+  bool ret;
+  ptr->AsyncCompareExchange(h, kInitValue, kInitValue*2, &ret);
+  shad::rt::waitForCompletion(h);
+  auto fetched = ptr->Load();
+  ASSERT_EQ(fetched, kInitValue*2);
+  ASSERT_EQ(ret, true);
+  ptr->AsyncCompareExchange(h, kInitValue, 0, &ret);
+  shad::rt::waitForCompletion(h);
+  fetched = ptr->Load();
+  ASSERT_EQ(fetched, kInitValue*2);
+  ASSERT_EQ(ret, false);
+}

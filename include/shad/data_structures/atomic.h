@@ -131,6 +131,55 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
     return;
   }
 
+  /// @brief Compare and exchange operation.
+  ///
+  /// @param[in] expected Value expected to be found in the atomic object.
+  /// @param[in] desired Value to store in the atomic object if it is as expected.
+  /// @return true if the atomic object was equal to expected, false otherwise.
+  bool CompareExchange(T expected, T desired) {
+    if (ownerLoc_ == rt::thisLocality()) {
+      return atomic_compare_exchange_strong(&localInstance_,
+                                           &expected, desired );
+    }
+    bool ret;
+    using CasArgs = std::tuple<ObjectID, T, T>;
+    auto CasFun = [](const CasArgs &args, bool *result) {
+      auto ptr = Atomic<T>::GetPtr(std::get<0>(args));
+      T expected = std::get<1>(args);
+      *result = atomic_compare_exchange_strong(&(ptr->localInstance_),
+                                               &expected,
+                                               std::get<2>(args));
+    };
+    CasArgs args(oid_, expected, desired);
+    rt::executeAtWithRet(ownerLoc_, CasFun, args, &ret);
+    return ret;
+  }
+
+  /// @brief Compare and exchange operation.
+  ///
+  /// @param[in,out] h The handle to be used to wait for completion.
+  /// @param[in] expected Value expected to be found in the atomic object.
+  /// @param[in] desired Value to store in the atomic object if it is as expected.
+  /// @param[out] res Pointer to the region where the result is
+  /// written; res must point to a valid memory allocation. 
+  /// *res is true if the atomic object was equal to expected, false otherwise.
+  void AsyncCompareExchange(rt::Handle &h, T expected, T desired, bool* res) {
+    if (ownerLoc_ == rt::thisLocality()) {
+      *res = atomic_compare_exchange_strong(&localInstance_,
+                                            &expected, desired);
+    }
+    using CasArgs = std::tuple<ObjectID, T, T>;
+    auto CasFun = [](rt::Handle&, const CasArgs &args, bool *result) {
+      auto ptr = Atomic<T>::GetPtr(std::get<0>(args));
+      T expected = std::get<1>(args);
+      *result = atomic_compare_exchange_strong(&(ptr->localInstance_),
+                                               &expected,
+                                               std::get<2>(args));
+    };
+    CasArgs args(oid_, expected, desired);
+    rt::asyncExecuteAtWithRet(h, ownerLoc_, CasFun, args, res);
+  }
+
   /// @brief Fetch Add operation.
   ///
   /// @param[in] add Data to be fetch-added.
