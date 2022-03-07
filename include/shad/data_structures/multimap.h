@@ -111,6 +111,13 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @return The global identifier associated with the multimap instance.
   ObjectID GetGlobalID() const { return oid_; }
 
+  /// @brief Getter of the local local multimap.
+  ///
+  /// @return The pointer to the local multimap instance.
+  LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> * GetLocalMultimap() {
+    return &localMultimap_;
+  };
+
   /// @brief Overall size of the multimap (number of entries).
   /// @warning Calling the size method may result in one-to-all
   /// communication among localities to retrieve consistent information.

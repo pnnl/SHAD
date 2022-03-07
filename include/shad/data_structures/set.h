@@ -83,6 +83,13 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   /// @return The global identifier associated with the set instance.
   ObjectID GetGlobalID() const { return oid_; }
 
+  /// @brief Getter of the local set.
+  ///
+  /// @return The pointer to the local set instance.
+  LocalSet<T, ELEM_COMPARE> * GetLocalSet() {
+    return & localSet_;
+  };
+
   /// @brief Overall size of the set (number of elements).
   /// @warning Calling the size method may result in one-to-all
   /// communication among localities to retrieve consinstent information.
