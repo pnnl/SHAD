@@ -187,7 +187,7 @@ class LocalMultimap {
   ///
   /// @param[in] key The key.
   /// @param[out] local_result The result of the lookup operation.
-  void LookupFromRemote(KTYPE &key, LookupRemoteResult *remote_result);
+  void LookupFromRemote(const KTYPE &key, LookupRemoteResult *remote_result);
 
   /// @brief Apply a user-defined function to every element of an entry's value
   /// array.
@@ -223,6 +223,28 @@ class LocalMultimap {
   template <typename ApplyFunT, typename... Args>
   void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
                   Args &...args);
+ 
+  /// @brief Asynchronously apply a user-defined function to a key-value pair.
+  /// @tparam ApplyFunT User-defined function type.  The function prototype
+  /// should be:
+  /// @code
+  /// void(rt::Handle &handle, const KTYPE&, std::vector<VTYPE>&, Args&,
+  ///      uint8_t*, uint32_t*);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in,out] handle Reference to the handle.
+  /// @param[in] key The key.
+  /// @param function The function to apply.
+  /// @param[out] result Pointer to the region where the result is
+  /// written; result must point to a valid memory allocation.
+  /// @param[out] resultSize Pointer to the region where the result size is
+  /// written; resultSize must point to a valid memory allocation. 
+  /// @param args The function arguments.
+  template <typename ApplyFunT, typename... Args>
+  void AsyncApplyWithRetBuff(rt::Handle &handle, const KTYPE &key,
+                             ApplyFunT &&function, uint8_t* result,
+                             uint32_t* resultSize, Args &...args);
 
   /// @brief Apply a user-defined function to each key-value pair.
   /// @tparam ApplyFunT User-defined function type.  The function prototype
@@ -602,6 +624,38 @@ class LocalMultimap {
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void AsyncCallApplyWithRetBuffFun(
+      rt::Handle &handle, LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
+      const KTYPE &key, ApplyFunT function, std::tuple<Args...> &args,
+      std::index_sequence<is...>, uint8_t* result, uint32_t* resultSize) {
+    size_t bucketIdx = shad::hash<KTYPE>{}(key) % mapPtr->numBuckets_;
+    Bucket *bucket = &(mapPtr->buckets_array_[bucketIdx]);
+
+    while (bucket != nullptr) {
+      for (size_t i = 0; i < bucket->BucketSize(); ++i) {
+        Entry *entry = &bucket->getEntry(i);
+
+        // Stop at the first empty entry.
+        if (entry->state == EMPTY) break;
+
+        // Yield on pending entries.
+        while (entry->state == PENDING_INSERT) rt::impl::yield();
+
+        // Entry is USED.
+        if (mapPtr->KeyComp_(&entry->key, &key) == 0) {
+          while (entry->state == PENDING_INSERT) rt::impl::yield();
+          function(handle, key, entry->value,
+                   std::get<is>(args)..., result, resultSize);
+          return;
+        }
+      }
+
+      bucket = bucket->next.get();
+    }
+    return;
+  }
+
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
   static void CallApplyFun(LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
                            const KTYPE &key, ApplyFunT function,
                            std::tuple<Args...> &args,
@@ -641,6 +695,20 @@ class LocalMultimap {
     AsyncCallApplyFun(handle, std::get<0>(tuple), std::get<1>(tuple),
                       std::get<2>(tuple), std::get<3>(tuple),
                       std::make_index_sequence<Size>{});
+  }
+
+  template <typename Tuple, typename... Args>
+  static void AsyncApplyWRBFunWrapper(rt::Handle &handle, const Tuple &args,
+                                      uint8_t* result, uint32_t* resultSize) {
+    constexpr auto Size = std::tuple_size<
+        typename std::decay<decltype(std::get<3>(args))>::type>::value;
+    Tuple &tuple = const_cast<Tuple &>(args);
+
+    AsyncCallApplyWithRetBuffFun(handle, std::get<0>(tuple),
+                                 std::get<1>(tuple),
+                                 std::get<2>(tuple), std::get<3>(tuple),
+                                 std::make_index_sequence<Size>{},
+                                 result, resultSize);
   }
 };
 
@@ -705,7 +773,7 @@ bool LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE &key,
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupFromRemote(
-    KTYPE &key, LookupRemoteResult *result) {
+    const KTYPE &key, LookupRemoteResult *result) {
   size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
   Bucket *bucket = &(buckets_array_[bucketIdx]);
   // concurrent inserts okay; concurrent delete not okay
@@ -959,7 +1027,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(
     ApplyFunT &&function, Args &...args) {
-  using FunctionTy = void (*)(const KTYPE &, VTYPE &, Args &...);
+  using FunctionTy = void (*)(const KTYPE &, std::vector<VTYPE> &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
   using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
@@ -973,7 +1041,8 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachEntry(
     rt::Handle &handle, ApplyFunT &&function, Args &...args) {
-  using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &,
+                              std::vector<VTYPE> &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
   using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
@@ -1002,7 +1071,8 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 template <typename ApplyFunT, typename... Args>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(
     rt::Handle &handle, ApplyFunT &&function, Args &...args) {
-  using FunctionTy = void (*)(rt::Handle &, const KTYPE &, Args &...);
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &,
+                              std::vector<VTYPE> &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
   using ArgsTuple = std::tuple<LMapPtr, FunctionTy, std::tuple<Args...>>;
@@ -1019,7 +1089,8 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(rt::Handle &handle,
                                                           const KTYPE &key,
                                                           ApplyFunT &&function,
                                                           Args &...args) {
-  using FunctionTy = void (*)(rt::Handle &, const KTYPE &, VTYPE &, Args &...);
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &,
+                              std::vector<VTYPE> &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
   using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
   using ArgsTuple =
@@ -1028,6 +1099,26 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(rt::Handle &handle,
   ArgsTuple argsTuple(this, key, fn, std::tuple<Args...>(args...));
   rt::asyncExecuteAt(handle, rt::thisLocality(),
                      AsyncApplyFunWrapper<ArgsTuple, Args...>, argsTuple);
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename ApplyFunT, typename... Args>
+void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::
+AsyncApplyWithRetBuff(rt::Handle &handle, const KTYPE &key,
+                      ApplyFunT &&function, uint8_t* result,
+                      uint32_t* resultSize, Args &...args) {
+  using FunctionTy = void (*)(rt::Handle &, const KTYPE &,
+                              std::vector<VTYPE> &, Args &...,
+                              uint8_t*, uint32_t*);
+  FunctionTy fn = std::forward<decltype(function)>(function);
+  using LMapPtr = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *;
+  using ArgsTuple =
+      std::tuple<LMapPtr, const KTYPE, FunctionTy, std::tuple<Args...>>;
+
+  ArgsTuple argsTuple(this, key, fn, std::tuple<Args...>(args...));
+  rt::asyncExecuteAtWithRetBuff(handle, rt::thisLocality(),
+                     AsyncApplyWRBFunWrapper<ArgsTuple, Args...>, argsTuple,
+                     result, resultSize);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
@@ -1052,8 +1143,9 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
         size_ += 1;
         entry->state = USED;
         release_inserter(bucketIdx);
-        return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
-                              true);
+        iterator itr(this, bucketIdx, i, bucket, entry,
+                     entry->value.begin());
+        return std::make_pair(itr, true);
       }
 
       // Wait for some other thread to finish with this entry
@@ -1070,8 +1162,9 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
         size_ += 1;
         entry->state = USED;
         release_inserter(bucketIdx);
-        return std::make_pair(iterator(this, bucketIdx, i, bucket, entry),
-                              true);
+        iterator itr(this, bucketIdx, i, bucket, entry,
+                     entry->value.begin());
+        return std::make_pair(itr, true);
       }
     }  // Inner for loop
 

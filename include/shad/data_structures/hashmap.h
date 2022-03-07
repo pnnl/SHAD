@@ -107,6 +107,13 @@ class Hashmap : public AbstractDataStructure<
   /// @return The global identifier associated with the hashmap instance.
   ObjectID GetGlobalID() const { return oid_; }
 
+  /// @brief Getter of the local hasmap.
+  ///
+  /// @return The pointer to the local hashmap instance.
+  LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> * GetLocalHashmap() {
+    return & localMap_;
+  };
+
   /// @brief Overall size of the hashmap (number of entries).
   /// @warning Calling the size method may result in one-to-all
   /// communication among localities to retrieve consinstent information.

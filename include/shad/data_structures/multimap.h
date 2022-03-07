@@ -111,6 +111,13 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @return The global identifier associated with the multimap instance.
   ObjectID GetGlobalID() const { return oid_; }
 
+  /// @brief Getter of the local local multimap.
+  ///
+  /// @return The pointer to the local multimap instance.
+  LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> * GetLocalMultimap() {
+    return &localMultimap_;
+  };
+
   /// @brief Overall size of the multimap (number of entries).
   /// @warning Calling the size method may result in one-to-all
   /// communication among localities to retrieve consistent information.
@@ -227,7 +234,7 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   ///
   /// @tparam ApplyFunT User-defined function type. The function prototype should be:
   /// @code
-  /// void(rt::Handle &handle, const KTYPE&, std::vector<VTYPE> &, Args&);
+  /// void(const KTYPE&, std::vector<VTYPE>&, Args&);
   /// @endcode
   /// @tparam ...Args Types of the function arguments.
   ///
@@ -237,6 +244,28 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @param args The function arguments.
   template <typename ApplyFunT, typename... Args>
   void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function, Args &... args);
+
+  /// @brief Asynchronously apply a user-defined function to a key-value pair.
+  /// @tparam ApplyFunT User-defined function type.  The function prototype
+  /// should be:
+  /// @code
+  /// void(rt::Handle &handle, const KTYPE&, std::vector<VTYPE>&, Args&,
+  ///      uint8_t*, uint32_t*);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in,out] handle Reference to the handle.
+  /// @param[in] key The key.
+  /// @param function The function to apply.
+  /// @param[out] result Pointer to the region where the result is
+  /// written; result must point to a valid memory allocation.
+  /// @param[out] resultSize Pointer to the region where the result size is
+  /// written; resultSize must point to a valid memory allocation. 
+  /// @param args The function arguments.
+  template <typename ApplyFunT, typename... Args>
+  void AsyncApplyWithRetBuff(rt::Handle &handle, const KTYPE &key,
+                             ApplyFunT &&function, uint8_t* result,
+                             uint32_t* resultSize, Args &... args);
 
   /// @brief Apply a user-defined function to each key-value pair.
   ///
@@ -732,6 +761,41 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(
                                std::make_index_sequence<Size>{});
     };
     rt::asyncExecuteAt(handle, targetLocality, feLambda, arguments);
+  }
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename ApplyFunT, typename... Args>
+void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApplyWithRetBuff(
+                              rt::Handle &handle, const KTYPE &key,
+                              ApplyFunT &&function, uint8_t* result,
+                              uint32_t* resultSize, Args &... args) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+
+  if (targetLocality == rt::thisLocality()) {
+    localMultimap_.AsyncApplyWithRetBuff(handle, key,
+                                         function, result,
+                                         resultSize, args...);
+  } else {
+    using FunctionTy = void (*)(rt::Handle &, const KTYPE &,
+                                std::vector<VTYPE> &, Args &..., uint8_t*, uint32_t*);
+    FunctionTy fn = std::forward<decltype(function)>(function);
+    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+
+    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+    auto feLambda = [](rt::Handle &handle, const ArgsTuple &args,
+                       uint8_t* result, uint32_t* resultSize) {
+      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      ArgsTuple &tuple(const_cast<ArgsTuple &>(args));
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMultimap_);
+      LMapT::AsyncCallApplyWithRetBuffFun(handle, mapPtr, std::get<1>(tuple),
+                                          std::get<2>(tuple), std::get<3>(tuple),
+                                          std::make_index_sequence<Size>{},
+                                          result, resultSize);
+    };
+    rt::asyncExecuteAtWithRetBuff(handle, targetLocality, feLambda,
+                                    arguments, result, resultSize);
   }
 }
 
