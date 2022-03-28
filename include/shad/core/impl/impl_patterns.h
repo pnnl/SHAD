@@ -92,6 +92,21 @@ S distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   auto localities = itr_traits::localities(first, last);
   auto res = init_sol;
+#ifdef HAVE_HPX
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    auto d_args = std::make_tuple(shad::rt::lambda_wrapper<std::decay_t<MapF>>(
+                                      std::forward<MapF>(map_kernel)),
+                                  first, last, res, args...);
+    rt::executeAtWithRet(
+        locality,
+        [](const typeof(d_args)& d_args, S* result) {
+          *result = apply_from<1>(::std::get<0>(d_args),
+                                  ::std::forward<typeof(d_args)>(d_args));
+        },
+        d_args, &res);
+  }
+#else
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
     auto d_args = std::make_tuple(map_kernel, first, last, res, args...);
@@ -103,6 +118,7 @@ S distributed_folding_map(ForwardIt first, ForwardIt last, MapF&& map_kernel,
         },
         d_args, &res);
   }
+#endif
   return res;
 }
 
@@ -112,6 +128,21 @@ void distributed_folding_map_void(ForwardIt first, ForwardIt last,
                                   MapF&& map_kernel, Args&&... args) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   auto localities = itr_traits::localities(first, last);
+#ifdef HAVE_HPX
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    auto d_args = std::make_tuple(shad::rt::lambda_wrapper<std::decay_t<MapF>>(
+                                      std::forward<MapF>(map_kernel)),
+                                  first, last, args...);
+    rt::executeAt(
+        locality,
+        [](const typeof(d_args)& d_args) {
+          apply_from<1>(::std::get<0>(d_args),
+                        ::std::forward<typeof(d_args)>(d_args));
+        },
+        d_args);
+  }
+#else
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
     auto d_args = std::make_tuple(map_kernel, first, last, args...);
@@ -123,6 +154,7 @@ void distributed_folding_map_void(ForwardIt first, ForwardIt last,
         },
         d_args);
   }
+#endif
 }
 
 // distributed_folding_map variant testing for early termination
@@ -134,6 +166,22 @@ S distributed_folding_map_early_termination(ForwardIt first, ForwardIt last,
   using itr_traits = distributed_iterator_traits<ForwardIt>;
   auto localities = itr_traits::localities(first, last);
   auto res = init_sol;
+#ifdef HAVE_HPX
+  for (auto locality = localities.begin(), end = localities.end();
+       locality != end; ++locality) {
+    auto d_args = std::make_tuple(shad::rt::lambda_wrapper<std::decay_t<MapF>>(
+                                      std::forward<MapF>(map_kernel)),
+                                  first, last, res, args...);
+    rt::executeAtWithRet(
+        locality,
+        [](const typeof(d_args)& d_args, S* result) {
+          *result = apply_from<1>(::std::get<0>(d_args),
+                                  ::std::forward<typeof(d_args)>(d_args));
+        },
+        d_args, &res);
+    if (halt(res)) return res;
+  }
+#else
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality) {
     auto d_args = std::make_tuple(map_kernel, first, last, res, args...);
@@ -146,6 +194,8 @@ S distributed_folding_map_early_termination(ForwardIt first, ForwardIt last,
         d_args, &res);
     if (halt(res)) return res;
   }
+#endif
+
   return res;
 }
 
@@ -205,7 +255,13 @@ distributed_map_init(
   auto localities = itr_traits::localities(first, last);
   size_t i = 0;
   rt::Handle h;
+#ifdef HAVE_HPX
+  auto d_args = std::make_tuple(shad::rt::lambda_wrapper<std::decay_t<MapF>>(
+                                    std::forward<MapF>(map_kernel)),
+                                first, last, args...);
+#else
   auto d_args = std::make_tuple(map_kernel, first, last, args...);
+#endif 
   optional_vector<mapped_t> opt_res(localities.size(), init);
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality, ++i) {
@@ -255,7 +311,13 @@ void distributed_map_void(ForwardIt first, ForwardIt last, MapF&& map_kernel,
   auto localities = itr_traits::localities(first, last);
   size_t i = 0;
   rt::Handle h;
+#ifdef HAVE_HPX
+  auto d_args = std::make_tuple(shad::rt::lambda_wrapper<std::decay_t<MapF>>(
+                                    std::forward<MapF>(map_kernel)),
+                                first, last, args...);
+#else
   auto d_args = std::make_tuple(map_kernel, first, last, args...);
+#endif
   for (auto locality = localities.begin(), end = localities.end();
        locality != end; ++locality, ++i) {
     rt::asyncExecuteAt(
@@ -301,7 +363,15 @@ local_map_init(
   std::vector<mapped_t> map_res(parts.size(), init);
 
   if (parts.size()) {
+#ifdef HAVE_HPX
+    auto map_args =
+        std::make_tuple(parts.data(),
+                        shad::rt::lambda_wrapper<std::decay_t<MapF>>(
+                            std::forward<MapF>(map_kernel)),
+                        map_res.data());
+#else
     auto map_args = std::make_tuple(parts.data(), map_kernel, map_res.data());
+#endif
     shad::rt::forEachAt(
         rt::thisLocality(),
         [](const typeof(map_args)& map_args, size_t iter) {
@@ -339,7 +409,13 @@ void local_map_void(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
       first, last, rt::impl::getConcurrency());
 
   if (parts.size()) {
+#ifdef HAVE_HPX
+    auto map_args = std::make_tuple(
+        parts.data(), shad::rt::lambda_wrapper<std::decay_t<MapF>>(
+                          std::forward<MapF>(map_kernel)));
+#else
     auto map_args = std::make_tuple(parts.data(), map_kernel);
+#endif
     shad::rt::forEachAt(
         rt::thisLocality(),
         [](const typeof(map_args)& map_args, size_t iter) {
@@ -361,7 +437,15 @@ void local_map_void_offset(ForwardIt first, ForwardIt last, MapF&& map_kernel) {
       first, last, rt::impl::getConcurrency());
 
   if (parts.size()) {
+#ifdef HAVE_HPX
+    auto map_args =
+        std::make_tuple(parts.data(),
+                        shad::rt::lambda_wrapper<std::decay_t<MapF>>(
+                            std::forward<MapF>(map_kernel)),
+                        first);
+#else
     auto map_args = std::make_tuple(parts.data(), map_kernel, first);
+#endif
     shad::rt::forEachAt(
         rt::thisLocality(),
         [](const typeof(map_args)& map_args, size_t iter) {

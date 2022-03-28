@@ -10,6 +10,10 @@ if (GMT_ROOT)
   set(runtime_prefixes ${runtime_prefixes} gmt)
   set(gmt_sources gmt_mapping/gmt_main.cc)
 endif()
+if (HPX_ROOT)
+  set(runtime_prefixes ${runtime_prefixes} hpx)
+  set(hpx_sources hpx_mapping/hpx_main.cc)
+endif()
 
 if (HAVE_CPP_SIMPLE)
   set(sources
@@ -20,6 +24,9 @@ elseif (HAVE_TBB)
 elseif (HAVE_GMT)
   set(sources
     gmt_mapping/gmt_main.cc)
+elseif (HAVE_HPX)
+  set(sources
+    hpx_mapping/hpx_main.cc)
 endif()
 
 
@@ -50,7 +57,11 @@ foreach(rp ${runtime_prefixes})
                              ${${uprp}_INCLUDE_DIRS}
                              $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                              $<INSTALL_INTERFACE:include>)
-  target_link_libraries(${rp}_runtime PUBLIC ${${uprp}_LIBRARIES})
+  if (HAVE_HPX)
+    target_link_libraries(${rp}_runtime PUBLIC HPX::hpx)
+  else()
+    target_link_libraries(${rp}_runtime PUBLIC ${${uprp}_LIBRARIES})
+  endif()
   target_compile_definitions(${rp}_runtime PUBLIC HAVE_${uprp}=1)
   install(TARGETS ${rp}_runtime
           EXPORT ${rp}_runtime_export
@@ -75,5 +86,9 @@ elseif (HAVE_GMT)
   target_include_directories(runtime PUBLIC ${GMT_INCLUDE_DIRS})
   target_compile_definitions(runtime PUBLIC HAVE_GMT=1)
   target_link_libraries(runtime PUBLIC ${GMT_LIBRARIES})
+elseif (HAVE_HPX)
+  target_include_directories(runtime PUBLIC ${HPX_INCLUDE_DIRS})
+  target_compile_definitions(runtime PUBLIC HAVE_HPX=1)
+  target_link_libraries(runtime PUBLIC HPX::hpx)
 endif()
 install(TARGETS runtime ARCHIVE DESTINATION lib)

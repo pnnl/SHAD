@@ -29,6 +29,9 @@
 #include <memory>
 
 #include "shad/runtime/runtime.h"
+#ifdef HAVE_HPX
+#include "hpx/serialization.hpp"
+#endif
 
 namespace shad {
 
@@ -59,6 +62,9 @@ class insert_iterator
   insert_iterator(Container& container, Iterator iterator)
       : global_id_(container.global_id()), iterator_(iterator) {}
 
+#ifdef HAVE_HPX
+  insert_iterator() = default;
+#endif
   /// @brief The assignment operator.
   ///
   /// The assignment operator inserts a value (through buffering) and advance
@@ -114,6 +120,10 @@ class buffered_insert_iterator : public insert_iterator<Container> {
   buffered_insert_iterator(Container& container, Iterator iterator)
       : base_t(container, iterator) {}
 
+#ifdef HAVE_HPX
+  buffered_insert_iterator() = default;
+#endif
+
   /// @brief The assignment operator.
   ///
   /// The assignment operator inserts a value (through buffering) and advance
@@ -151,6 +161,17 @@ class buffered_insert_iterator : public insert_iterator<Container> {
   buffered_insert_iterator& operator*() { return *this; }
   buffered_insert_iterator& operator++() { return *this; }
   buffered_insert_iterator& operator++(int) { return *this; }
+
+ #ifdef HAVE_HPX
+ private:
+  friend class hpx::serialization::access;
+
+  template <typename Archive>
+  void serialize(Archive& ar, unsigned)
+  {
+      ar & handle_;
+  }
+#endif 
 
  private:
   rt::Handle handle_;
