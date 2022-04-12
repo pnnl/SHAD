@@ -1261,7 +1261,7 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
   //           for each entry in bucket ... for each value in entry's value
   //           array
   lmultimap_iterator &operator++() {
-    auto null_iter = std::vector<inner_type>::iterator();
+    auto null_iter = typename std::vector<inner_type>::iterator();
 
     // if iterator points to an VTYPE, move to next VTYPE; else move to next
     // bucket list
@@ -1324,7 +1324,7 @@ class lmultimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
     mapPtr_ = nullptr;
     entryPtr_ = nullptr;
     currBucket_ = nullptr;
-    valueItr_ = std::vector<inner_type>::iterator();
+    valueItr_ = typename std::vector<inner_type>::iterator();
     return *this;
   }
 
