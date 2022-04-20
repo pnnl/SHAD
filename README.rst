@@ -222,7 +222,9 @@ SHAD Team
 
 - `Vito Giovanni Castellana <vitogiovanni.castellana@pnnl.gov>`_
 - `Marco Minutoli <marco.minutoli@pnnl.gov>`_
-- `Maurizio Drocco <maurizio.drocco@pnnl.gov>`_
+- `John Feo <john.feo@pnnl.gov>`_
+- `Maurizio Drocco`_
+- `Nanmiao Wu`_
 
 Disclamer Notice
 ================
