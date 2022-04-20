@@ -102,8 +102,8 @@ class vector : public AbstractDataStructure<vector<T>> {
           if (This->chunk_size() != Other->chunk_size())
             This->chunk_ = std::unique_ptr<T[]>{new T[Other->chunk_size()]};
           This->p_ = Other->p_;
-          
-          std::copy(Other->chunk_, Other->chunk_ + chunk_size(), This->chunk_);
+
+          std::copy(Other->chunk_, Other->chunk_ + This->chunk_size(), This->chunk_);
         },
         std::make_pair(this->oid_, O.oid_));
 
@@ -120,7 +120,7 @@ class vector : public AbstractDataStructure<vector<T>> {
           auto This = vector<T>::GetPtr(std::get<0>(args));
           auto value = std::get<1>(args);
 
-          std::fill(This->chunk_.get(), This->chunk_.get() + chunk_size(), value);
+          std::fill(This->chunk_.get(), This->chunk_.get() + This->chunk_size(), value);
         },
         std::make_pair(this->oid_, v));
   }
@@ -578,6 +578,7 @@ class alignas(64) vector<T>::vector_iterator {
  public:
   using reference = typename vector<T>::template VectorRef<U>;
   using pointer = typename vector<T>::pointer;
+  using const_pointer = typename vector<T>::const_pointer;
   using difference_type = std::ptrdiff_t;
   using value_type = typename vector<T>::value_type;
   using iterator_category = std::random_access_iterator_tag;
@@ -588,7 +589,7 @@ class alignas(64) vector<T>::vector_iterator {
 
   /// @brief Constructor.
   vector_iterator(rt::Locality &&l, difference_type offset, ObjectID oid,
-                 pointer const *ptrs, difference_type const *p_)
+                 pointer const * ptrs, difference_type const *p_)
       : locality_(l), offset_(offset), oid_(oid), ptrs_(ptrs), p_(p_) {}
 
   /// @brief Default constructor.
@@ -799,7 +800,7 @@ class alignas(64) vector<T>::vector_iterator {
 
     // First block:
     const std::uint32_t begin_l = begin.locality_;
-    const auto start_block_size = begin.p_[begin_l + 1] - begin.p_[begin_l];
+    auto start_block_size = begin.p_[begin_l + 1] - begin.p_[begin_l];
     if (begin.locality_ == end.locality_)
       start_block_size = end.offset_;
     result.push_back(std::make_pair(begin.locality_,
@@ -832,8 +833,8 @@ class alignas(64) vector<T>::vector_iterator {
       return E;
 
     return vector_iterator(rt::thisLocality(),
-                          std::distance(B.get_local_chunk(), itr), B.oid_,
-                          B.get_local_chunk(), B.p_);
+                           std::distance(B.get_local_chunk(), itr), B.oid_,
+                           B.ptrs_,  B.p_);
   }
 
  protected:
