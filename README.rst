@@ -1,10 +1,14 @@
 SHAD
 ****
 
-.. image:: https://travis-ci.org/pnnl/SHAD.svg?branch=master
-    :target: https://travis-ci.org/pnnl/SHAD
-.. image:: https://api.codacy.com/project/badge/Grade/d353a0bb182a47da80e5711c4e39ca0c
-    :target: https://www.codacy.com/app/mminutoli/SHAD?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pnnl/SHAD&amp;utm_campaign=Badge_Grade
+.. 
+    image:: https://travis-ci.org/pnnl/SHAD.svg?branch=master
+..
+    target: https://travis-ci.org/pnnl/SHAD
+..
+    image:: https://api.codacy.com/project/badge/Grade/d353a0bb182a47da80e5711c4e39ca0c
+..
+    target: https://www.codacy.com/app/mminutoli/SHAD?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pnnl/SHAD&amp;utm_campaign=Badge_Grade
 .. image:: https://img.shields.io/badge/license-APACHE2-blue.svg
     :target: https://raw.githubusercontent.com/pnnl/SHAD/master/LICENSE.md
 .. image:: https://img.shields.io/github/tag/pnnl/SHAD.svg
