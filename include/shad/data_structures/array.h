@@ -89,7 +89,7 @@ class Array : public AbstractDataStructure<Array<T>> {
   /// @return The global identifier associated with the array instance.
   ObjectID GetGlobalID() const { return oid_; }
 
-  /// @brief Return the size of the shad::Array.Array<T>::array_iterator
+  /// @brief Return the size of the shad::Array.
   /// @return The size of the shad::Array.
   size_t Size() const noexcept { return size_; }
 
@@ -1718,7 +1718,6 @@ class alignas(64) Array<T>::array_iterator {
     rt::Locality last = size_ < rt::numLocalities()
                             ? rt::Locality(uint32_t(size_ - 1))
                             : rt::Locality(rt::numLocalities() - 1);
-    // size_t chunk = chunk_size(size_, locality_);
     offset_ = -1;
     if (n + offset_ >= chunk && rt::numLocalities() > 1 && locality_ != last) {
       ++locality_;
