@@ -1711,26 +1711,43 @@ class alignas(64) Array<T>::array_iterator {
   }
 
   array_iterator &operator+=(difference_type n) {
-    if (n == 0) return *this;
-
-    if (n < 0) return operator-=(-n);
-    size_t chunk = chunk_size(size_, locality_);
-    rt::Locality last = size_ < rt::numLocalities()
-                            ? rt::Locality(uint32_t(size_ - 1))
-                            : rt::Locality(rt::numLocalities() - 1);
-    offset_ = -1;
-    if (n + offset_ >= chunk && rt::numLocalities() > 1 && locality_ != last) {
-      ++locality_;
-      n -= chunk - offset_;
-      offset_ = 0;
-      for (auto end = last; locality_ < end; ++locality_) {
-        chunk = chunk_size(size_, locality_);
-        if (n < chunk) break;
-        n -= chunk;
-      }
+    if (n == 0) {
+      return *this;
     }
-
-    offset_ += n;
+    if (n <  0) {
+      return operator-=(-n);
+    }
+    rt::Locality last = size_ < rt::numLocalities()
+                              ? rt::Locality(uint32_t(size_ - 1))
+                                : rt::Locality(rt::numLocalities() - 1);
+    if (rt::numLocalities() <= 1) {
+      // no other locality to move to
+      offset_ += n; return *this;
+    }
+    if (locality_ == last) {
+      // no other locality to move to
+      offset_ += n; return *this;
+    }
+    size_t chunk = chunk_size(size_, locality_);
+    if (n + offset_ < chunk) {
+      // new iterator is on this locale
+      offset_ += n;
+      return *this;
+    }
+    // move to next locale
+    ++locality_;
+    // increment still to be recovered
+    n -= chunk - offset_;
+    for (; locality_ < last; ++locality_) {
+      chunk = chunk_size(size_, locality_);
+      if (n < chunk) {
+        // new iterator is on this locale
+        break;
+      }
+      // increment still to be recovered
+      n -= chunk;
+    }
+    offset_ = n;
     return *this;
   }
 
@@ -1839,7 +1856,7 @@ class alignas(64) Array<T>::array_iterator {
     typename array_iterator::difference_type chunk = chunk_size(B.size_, rt::thisLocality());
     typename Array<T>::pointer end{arrayPtr->data_.data() + chunk};
     if (E.locality_ == rt::thisLocality()) {
-      end = arrayPtr->data_.data() + E.offset_;
+      end = arrayPtr->data_.data() + E.offset_ + 1;
     }
     return local_iterator_range(begin, end);
   }
@@ -1883,7 +1900,7 @@ class alignas(64) Array<T>::array_iterator {
     auto arrayPtr = Array<T>::GetPtr(B.oid_);
     return array_iterator(rt::thisLocality(),
                           std::distance(arrayPtr->data_.data(), itr), B.oid_,
-                          arrayPtr->data_.data());
+                          arrayPtr->data_.data(), B.size_);
   }
 
  private:
