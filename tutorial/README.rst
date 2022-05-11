@@ -2,10 +2,7 @@ Programming of Parallel Distributed Systems Made Easy with the SHAD C++ Library
 ****
 June 27 2022
 ****
-Vito Giovanni Castellana
-Marco Minutoli
-Nanmiao Wu
-John Feo
+Vito Giovanni Castellana, Marco Minutoli, Nanmiao Wu, John Feo
 ****
 Tentative Agenda
 ****
