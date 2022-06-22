@@ -3,7 +3,6 @@ A Docker cluster for tutorials on SHAD
 **************************************
 
 .. code-block:: shell
-   # if docker compose is not available use docker-compose
    $ docker compose build
    $ docker compose up -d --scale node=4
    $ bash ./gen_machines_list.sh
