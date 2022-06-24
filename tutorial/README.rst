@@ -3,6 +3,7 @@ Programming of Parallel Distributed Systems Made Easy with the SHAD C++ Library
 June 27 2022, 14:00 - 17:30 EDT
 ****
 Vito Giovanni Castellana, Marco Minutoli, Nanmiao Wu, John Feo
+****
 | In this tutorial, we first overview the design of the SHAD library, depicting its main components: runtime systems abstractions for tasking; parallel and distributed data-structures; STL-compliant interfaces and algorithms.  The tutorial features interactive hands-on sessions, with coding exercises covering the different components of the software, from the tasking API up to the STL algorithms and Data Structures layers. Finally, we demonstrate how SHAD is used to develop complex applications, at scale.
 ****
 Agenda
