@@ -1856,7 +1856,7 @@ class alignas(64) Array<T>::array_iterator {
     typename array_iterator::difference_type chunk = chunk_size(B.size_, rt::thisLocality());
     typename Array<T>::pointer end{arrayPtr->data_.data() + chunk};
     if (E.locality_ == rt::thisLocality()) {
-      end = arrayPtr->data_.data() + E.offset_ + 1;
+      end = arrayPtr->data_.data() + E.offset_;
     }
     return local_iterator_range(begin, end);
   }
