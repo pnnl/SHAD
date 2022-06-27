@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 
   shad::array<uint64_t, 128> counters;
 
-  const size_t numberOfPoints = 1e10;
+  const size_t numberOfPoints = 1e4;
   const size_t numberOfPointsPerSim = numberOfPoints / counters.size();
 
   shad::generate(

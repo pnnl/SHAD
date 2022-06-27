@@ -14,5 +14,5 @@ The container prompt should appear:
 
 .. code-block:: shell
 
-   $ mpiexec -n 4 -pernode --hostfile machines hostname
-   $ mpiexec -n 4 -pernode --hostfile machines ./SHAD-build/examples/pi/pi --gmt_num_workers 4
+   $ mpiexec -n 4 -pernode --hostfile ~/machines hostname
+   $ mpiexec -n 4 -pernode --hostfile ~/machines ~/SHAD-build/examples/pi/pi --gmt_num_workers 4 --gmt_num_helpers 1
