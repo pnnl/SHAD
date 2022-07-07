@@ -110,6 +110,9 @@ class Array : public AbstractDataStructure<Array<T>> {
   /// @brief The iterator to the beginning of the sequence.
   /// @return an ::iterator to the beginning of the sequence.
   constexpr iterator begin() noexcept {
+    if (size_ < rt::numLocalities()) {
+      return iterator{rt::Locality(pivot_), 0, oid_, nullptr, 0};
+    }
     if (rt::thisLocality() == rt::Locality(0)) {
       return iterator{rt::Locality(0), 0, oid_, data_.data(), size_};
     }
@@ -123,13 +126,12 @@ class Array : public AbstractDataStructure<Array<T>> {
   /// @brief The iterator to the end of the sequence.
   /// @return an ::iterator to the end of the sequence.
   constexpr iterator end() noexcept {
+    rt::Locality last(rt::numLocalities() - 1);
     if (size_ < rt::numLocalities()) {
-      rt::Locality last(uint32_t(size_ - 1));
       pointer chunk = last == rt::thisLocality() ? data_.data() : nullptr;
       return iterator{std::forward<rt::Locality>(last), 1, oid_, chunk, size_};
     }
-
-    rt::Locality last(rt::numLocalities() - 1);
+   
     difference_type pos = iterator::chunk_size(size_, last);
     pointer chunk = last == rt::thisLocality() ? data_.data() : nullptr;
     return iterator{std::forward<rt::Locality>(last), pos, oid_, chunk, size_};
@@ -142,6 +144,9 @@ class Array : public AbstractDataStructure<Array<T>> {
   /// @brief The iterator to the beginning of the sequence.
   /// @return a ::const_iterator to the beginning of the sequence.
   constexpr const_iterator cbegin() const noexcept {
+    if (size_ < rt::numLocalities()) {
+      return const_iterator{rt::Locality(pivot_), 0, oid_, nullptr, 0};
+    }
     if (rt::thisLocality() == rt::Locality(0)) {
       return const_iterator{rt::Locality(0), 0, oid_, data_.data(). size_};
     }
@@ -159,15 +164,12 @@ class Array : public AbstractDataStructure<Array<T>> {
   /// @brief The iterator to the end of the sequence.
   /// @return a ::const_iterator to the end of the sequence.
   constexpr const_iterator cend() const noexcept {
+    rt::Locality last(rt::numLocalities() - 1);
     if (size_ < rt::numLocalities()) {
-      rt::Locality last(uint32_t(size_ - 1));
       pointer chunk = last == rt::thisLocality() ? data_.data() : nullptr;
       return const_iterator{std::forward<rt::Locality>(last), 1, oid_, chunk, size_};
     }
-
-    rt::Locality last(rt::numLocalities() - 1);
     difference_type pos = iterator::chunk_size(size_, last);
-    // if (iterator::pivot_locality(size_) != rt::Locality(0)) --pos;
     pointer chunk = last == rt::thisLocality() ? data_.data() : nullptr;
     return const_iterator{std::forward<rt::Locality>(last), pos, oid_, chunk, size_};
   }
@@ -620,26 +622,44 @@ std::vector<T> * getData() {
         buffers_(oid),
         ptrs_(rt::numLocalities()) {
     rt::Locality pivot(pivot_);
+
     size_t start = 0;
     size_t chunkSize = size / rt::numLocalities();
     auto localities = rt::allLocalities();
 
-    for (auto &locality : localities) {
-      if (locality < pivot) {
-        dataDistribution_.emplace_back(
-            std::make_pair(start, start + chunkSize - 1));
-      } else {
-        dataDistribution_.emplace_back(
-            std::make_pair(start, start + chunkSize));
-        ++start;
-      }
+    if (chunkSize == 0) {
+      for (auto &locality : localities) {
+        if (locality < pivot) {
+          dataDistribution_.emplace_back(
+              std::make_pair(std::numeric_limits<size_t>::max(),
+                             std::numeric_limits<size_t>::max()));
+        } else {
+          dataDistribution_.emplace_back(
+              std::make_pair(start, start + chunkSize));
+          ++start;
+        }
 
-      start += chunkSize;
+        start += chunkSize;
+      }
+    } else {
+      for (auto &locality : localities) {
+        if (locality < pivot) {
+          dataDistribution_.emplace_back(
+              std::make_pair(start, start + chunkSize - 1));
+        } else {
+          dataDistribution_.emplace_back(
+              std::make_pair(start, start + chunkSize));
+          ++start;
+        }
+
+        start += chunkSize;
+      }
     }
-    if ((rt::thisLocality() < pivot) & (chunkSize > 0))
+    if ((rt::thisLocality() < pivot) & (chunkSize > 0)) {
       data_.resize(chunkSize, initValue);
-    else
+    } else {
       data_.resize(chunkSize + 1, initValue);
+    }
   }
 
  private:
@@ -892,12 +912,15 @@ std::vector<T> * getData() {
 static std::pair<rt::Locality, size_t> getTargetLocalityFromTargePosition(
     const std::vector<std::pair<size_t, size_t>> &dataDistribution,
     size_t position) {
+  auto it = dataDistribution.begin();
+  for (; it!= dataDistribution.end(); ++it) {
+    if (it->first != std::numeric_limits<size_t>::max()) break;
+  }
   auto itr = std::lower_bound(
-      dataDistribution.begin(), dataDistribution.end(), position,
+      it, dataDistribution.end(), position,
       [](const std::pair<size_t, size_t> &lhs, const size_t position) -> bool {
         return lhs.second < position;
       });
-
   rt::Locality dest(std::distance(dataDistribution.begin(), itr));
   size_t off = position - itr->first;
   return std::make_pair(dest, off);
@@ -1671,7 +1694,7 @@ class alignas(64) Array<T>::array_iterator {
 
   array_iterator &operator++() {
     if (size_ < rt::numLocalities()) {
-      if (static_cast<uint32_t>(locality_) == (size_ - 1)) {
+      if (static_cast<uint32_t>(locality_) == (rt::numLocalities() - 1)) {
         ++offset_;
       } else {
         ++locality_;
@@ -1846,8 +1869,9 @@ class alignas(64) Array<T>::array_iterator {
     auto arrayPtr = Array<T>::GetPtr(B.oid_);
     typename Array<T>::pointer begin{arrayPtr->data_.data()};
 
-    if (rt::thisLocality() < B.locality_ || rt::thisLocality() > E.locality_)
+    if (rt::thisLocality() < B.locality_ || rt::thisLocality() > E.locality_) {
       return local_iterator_range(begin, begin);
+    }
 
     if (B.locality_ == rt::thisLocality()) {
       begin += B.offset_;
@@ -1856,7 +1880,7 @@ class alignas(64) Array<T>::array_iterator {
     typename array_iterator::difference_type chunk = chunk_size(B.size_, rt::thisLocality());
     typename Array<T>::pointer end{arrayPtr->data_.data() + chunk};
     if (E.locality_ == rt::thisLocality()) {
-      end = arrayPtr->data_.data() + E.offset_ + 1;
+      end = arrayPtr->data_.data() + E.offset_ ;
     }
     return local_iterator_range(begin, end);
   }
