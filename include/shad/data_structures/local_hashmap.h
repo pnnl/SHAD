@@ -752,7 +752,7 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
               }
               // STATUS:
               // toDelete found and status is PENDING_INSERT
-              // lastEntry found and status is PEInsertNDING_INSERT
+              // lastEntry found and status is PENDING_INSERT
               // need to find prevEntry
 
               if (!__sync_bool_compare_and_swap(&prevEntry->state, USED,

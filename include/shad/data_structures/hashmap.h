@@ -438,7 +438,6 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
     auto insertLambda =
         [](const std::tuple<iterator, iterator, InsertArgs> &args_,
            std::pair<iterator, bool> *res_ptr) {
-          std::cout << "not there!" << std::endl;
           auto &args(std::get<2>(args_));
           auto mapPtr = HmapT::GetPtr(args.oid);
           auto lres = mapPtr->localMap_.Insert(args.key, args.value);
@@ -848,7 +847,6 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   T operator*() const { return data_.element_; }
 
   map_iterator &operator++() {
-    printf("+++here0\n");
     auto mapPtr = MapT::GetPtr(data_.oid_);
     if (static_cast<uint32_t>(rt::thisLocality()) == data_.locId_) {
       const LMap *lmapPtr = &(mapPtr->localMap_);
@@ -867,20 +865,15 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
                                &itd);
           if (itd.locId_ != rt::numLocalities()) {
             // It Data is valid
-            printf("+++data valid\n");
             data_ = itd;
-            printf("+++==========data valid\n");
             return *this;
           }
         }
-        printf("+++end, data not valid\n");
         data_ = itData(rt::numLocalities(), OIDT(0), lend, T());
         return *this;
       }
     }
-    printf("+++here1\n");
     itData itd;
-    printf("--\nfind remote\n");
     rt::executeAtWithRet(rt::Locality(data_.locId_), getRemoteIt, data_, &itd);
     data_ = itd;
     return *this;
@@ -954,11 +947,9 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     auto localEnd = local_iterator_type::lmap_end(lmapPtr);
     auto localBegin = local_iterator_type::lmap_begin(lmapPtr);
     if (localBegin != localEnd) {
-      std::cout << "--------non empty\n";
       *res = itData(static_cast<uint32_t>(rt::thisLocality()), mapOID,
                     localBegin, *localBegin);
     } else {
-      std::cout << "---empty\n";
       *res = itData(rt::numLocalities(), OIDT(0), localEnd, T());
     }
   }
@@ -979,7 +970,6 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
         rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_, &outitd);
         if (outitd.locId_ != rt::numLocalities()) {
           // It Data is valid
-          printf("+++data valid\n");
           *res = outitd;
           return;
         }
