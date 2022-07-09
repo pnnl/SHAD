@@ -31,7 +31,7 @@
 
 class LocalHashmapTest : public ::testing::Test {
  public:
-  LocalHashmapTest() : hmap(kNumBuckets) {}
+  LocalHashmapTest() {}
   void SetUp() {}
   void TearDown() {}
   static const uint64_t kToInsert = 4096;
@@ -55,7 +55,6 @@ class LocalHashmapTest : public ::testing::Test {
   };
 
   typedef shad::LocalHashmap<Key, Value> HashmapType;
-  HashmapType hmap;
   static void FillKey(Key *keys, uint64_t key_seed) {
     for (uint64_t i = 0; i < kKeysPerEntry; ++i) {
       keys->key[i] = (key_seed + i);
@@ -181,7 +180,7 @@ TEST_F(LocalHashmapTest, InsertLookupTest) {
 }
 
 TEST_F(LocalHashmapTest, InsertReturnTest) {
-  HashmapType set(kNumBuckets);
+  HashmapType hmap(kNumBuckets);
   uint64_t i;
 
   // successful inserts
