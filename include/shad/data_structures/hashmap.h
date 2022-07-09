@@ -123,9 +123,19 @@ class Hashmap : public AbstractDataStructure<
   /// @brief Insert a key-value pair in the hashmap.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashmap.
-  /// @return an iterator either to the inserted value or to the previously
-  /// inserted value that prevented the insertion.
+  /// @return an iterator to the inserted value and true if value was inserted.
   std::pair<iterator, bool> Insert(const KTYPE &key, const VTYPE &value);
+  
+  /// @brief Insert a key-value pair in the hashmap,
+  /// with a custom inserter.
+  /// @param[in] insfun inserter function or functor. 
+  /// Look at the default inserter for an example.
+  /// @param[in] key the key.
+  /// @param[in] value the value to copy into the hashmap.
+  /// @return an iterator to the inserted value and true if value was inserted.
+  template <typename FUNTYPE>
+  std::pair<iterator, bool> Insert(FUNTYPE &insfun,
+                                   const KTYPE &key, const VTYPE &value);
 
   /// @brief Asynchronously Insert a key-value pair in the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -134,9 +144,21 @@ class Hashmap : public AbstractDataStructure<
   /// to be used to wait for completion.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashMap.
-  /// @return a pointer to the value if the the key-value was inserted
-  ///        or a pointer to a previously inserted value.
   void AsyncInsert(rt::Handle &handle, const KTYPE &key, const VTYPE &value);
+  
+  /// @brief Asynchronously Insert a key-value pair in the hashmap,
+  /// with a custom inserter.
+  /// @warning Asynchronous operations are guaranteed to have completed
+  /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.
+  /// @param[in] insfun inserter function or functor. 
+  /// Look at the default inserter for an example.
+  /// @param[in,out] handle Reference to the handle
+  /// to be used to wait for completion.
+  /// @param[in] key the key.
+  /// @param[in] value the value to copy into the hashMap.
+  template <typename FUNTYPE>
+  void AsyncInsert(rt::Handle &handle, FUNTYPE &insfun,
+                   const KTYPE &key, const VTYPE &value);
 
   /// @brief Buffered Insert method.
   /// Inserts a key-value pair, using aggregation buffers.
@@ -355,6 +377,14 @@ class Hashmap : public AbstractDataStructure<
     KTYPE key;
     VTYPE value;
   };
+  
+  template <typename FUNTYPE>
+  struct InserterArgs {
+    ObjectID oid;
+    KTYPE key;
+    VTYPE value;
+    FUNTYPE insfun;
+  };
 
   struct LookupArgs {
     ObjectID oid;
@@ -408,6 +438,7 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
     auto insertLambda =
         [](const std::tuple<iterator, iterator, InsertArgs> &args_,
            std::pair<iterator, bool> *res_ptr) {
+          std::cout << "not there!" << std::endl;
           auto &args(std::get<2>(args_));
           auto mapPtr = HmapT::GetPtr(args.oid);
           auto lres = mapPtr->localMap_.Insert(args.key, args.value);
@@ -418,6 +449,43 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
     rt::executeAtWithRet(
         targetLocality, insertLambda,
         std::make_tuple(begin(), end(), InsertArgs{oid_, key, value}), &res);
+  }
+  return res;
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename FUNTYPE>
+inline std::pair<
+    typename Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::iterator, bool>
+Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(FUNTYPE &insfun,
+                                                          const KTYPE &key,
+                                                          const VTYPE &value) {
+  using itr_traits = distributed_iterator_traits<iterator>;
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+  std::pair<iterator, bool> res;
+
+  if (targetLocality == rt::thisLocality()) {
+    auto lres = localMap_.Insert(insfun, key, value);
+    res.first = itr_traits::iterator_from_local(begin(), end(), lres.first);
+    res.second = lres.second;
+  } else {
+    auto insertLambda =
+        [](const std::tuple<iterator, iterator, InserterArgs<FUNTYPE>> &args_,
+           std::pair<iterator, bool> *res_ptr) {
+          auto &args(std::get<2>(args_));
+          auto mapPtr = HmapT::GetPtr(args.oid);
+          auto insf = args.insfun;
+          auto lres = mapPtr->localMap_.Insert(insf, args.key, args.value);
+          res_ptr->first = itr_traits::iterator_from_local(
+              std::get<0>(args_), std::get<1>(args_), lres.first);
+          res_ptr->second = lres.second;
+        };
+    rt::executeAtWithRet(
+        targetLocality, insertLambda,
+        std::make_tuple(begin(), end(),
+                        InserterArgs<FUNTYPE>{oid_, key, value, insfun}), &res);
   }
   return res;
 }
@@ -437,6 +505,29 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
       mapPtr->localMap_.AsyncInsert(handle, args.key, args.value);
     };
     InsertArgs args = {oid_, key, value};
+    rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
+  }
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename FUNTYPE>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
+    rt::Handle &handle, FUNTYPE &insfun,
+    const KTYPE &key, const VTYPE &value) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+
+  if (targetLocality == rt::thisLocality()) {
+    localMap_.AsyncInsert(handle, insfun, key, value);
+  } else {
+    auto insertLambda = [](rt::Handle &handle,
+                           const InserterArgs<FUNTYPE> &args) {
+      auto mapPtr = HmapT::GetPtr(args.oid);
+      auto insf = args.insfun;
+      mapPtr->localMap_.AsyncInsert(handle, insf, args.key, args.value);
+    };
+    InserterArgs<FUNTYPE> args = {oid_, key, value, insfun};
     rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
   }
 }
@@ -757,6 +848,7 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
   T operator*() const { return data_.element_; }
 
   map_iterator &operator++() {
+    printf("+++here0\n");
     auto mapPtr = MapT::GetPtr(data_.oid_);
     if (static_cast<uint32_t>(rt::thisLocality()) == data_.locId_) {
       const LMap *lmapPtr = &(mapPtr->localMap_);
@@ -775,15 +867,20 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
                                &itd);
           if (itd.locId_ != rt::numLocalities()) {
             // It Data is valid
+            printf("+++data valid\n");
             data_ = itd;
+            printf("+++==========data valid\n");
             return *this;
           }
         }
+        printf("+++end, data not valid\n");
         data_ = itData(rt::numLocalities(), OIDT(0), lend, T());
         return *this;
       }
     }
+    printf("+++here1\n");
     itData itd;
+    printf("--\nfind remote\n");
     rt::executeAtWithRet(rt::Locality(data_.locId_), getRemoteIt, data_, &itd);
     data_ = itd;
     return *this;
@@ -857,9 +954,11 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
     auto localEnd = local_iterator_type::lmap_end(lmapPtr);
     auto localBegin = local_iterator_type::lmap_begin(lmapPtr);
     if (localBegin != localEnd) {
+      std::cout << "--------non empty\n";
       *res = itData(static_cast<uint32_t>(rt::thisLocality()), mapOID,
                     localBegin, *localBegin);
     } else {
+      std::cout << "---empty\n";
       *res = itData(rt::numLocalities(), OIDT(0), localEnd, T());
     }
   }
@@ -880,6 +979,7 @@ class map_iterator : public std::iterator<std::forward_iterator_tag, T> {
         rt::executeAtWithRet(rt::Locality(i), getLocBeginIt, itd.oid_, &outitd);
         if (outitd.locId_ != rt::numLocalities()) {
           // It Data is valid
+          printf("+++data valid\n");
           *res = outitd;
           return;
         }
