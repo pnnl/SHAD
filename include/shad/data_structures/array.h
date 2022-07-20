@@ -1493,7 +1493,7 @@ class Array<T>::BaseArrayRef {
 template <typename T>
 template <typename U>
 class alignas(64) Array<T>::ArrayRef
-    : public Array<T>::template BaseArrayRef<U> {
+    : public BaseArrayRef<U> {
  public:
   using value_type = U;
   using pointer = typename Array<T>::pointer;
@@ -1501,28 +1501,28 @@ class alignas(64) Array<T>::ArrayRef
   using ObjectID = typename Array<T>::ObjectID;
 
   ArrayRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
-      : Array<T>::template BaseArrayRef<U>(l, p, oid, chunk) {}
+      : BaseArrayRef<U>(l, p, oid, chunk) {}
 
-  ArrayRef(const ArrayRef &O) : Array<T>::template BaseArrayRef<U>(O) {}
+  ArrayRef(const ArrayRef &O) : BaseArrayRef<U>(O) {}
 
-  ArrayRef(ArrayRef &&O) : Array<T>::template BaseArrayRef<U>(O) {}
+  ArrayRef(ArrayRef &&O) : BaseArrayRef<U>(O) {}
 
   ArrayRef &operator=(const ArrayRef &O) {
-    Array<T>::template BaseArrayRef<U>::operator=(O);
+    BaseArrayRef<U>::operator=(O);
     return *this;
   }
 
   ArrayRef &operator=(ArrayRef &&O) {
-    Array<T>::template BaseArrayRef<U>::operator=(O);
+    BaseArrayRef<U>::operator=(O);
     return *this;
   }
 
   operator value_type() const {  // NOLINT
-    return Array<T>::template BaseArrayRef<U>::get();
+    return BaseArrayRef<U>::get();
   }
 
   bool operator==(const ArrayRef &&v) const {
-    return Array<T>::template BaseArrayRef<U>::operator==(v);
+    return BaseArrayRef<U>::operator==(v);
   }
 
   ArrayRef &operator=(const T &v) {
@@ -1565,7 +1565,7 @@ class alignas(64) Array<T>::ArrayRef
 template <typename T>
 template <typename U>
 class alignas(64) Array<T>::ArrayRef<const U>
-    : public Array<T>::template BaseArrayRef<U> {
+    : public BaseArrayRef<U> {
  public:
   using value_type = const U;
   using pointer = typename Array<T>::pointer;
@@ -1573,28 +1573,28 @@ class alignas(64) Array<T>::ArrayRef<const U>
   using ObjectID = typename Array<T>::ObjectID;
 
   ArrayRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
-      : Array<T>::template BaseArrayRef<U>(l, p, oid, chunk) {}
+      : BaseArrayRef<U>(l, p, oid, chunk) {}
 
-  ArrayRef(const ArrayRef &O) : Array<T>::template BaseArrayRef<U>(O) {}
+  ArrayRef(const ArrayRef &O) : BaseArrayRef<U>(O) {}
 
-  ArrayRef(ArrayRef &&O) : Array<T>::template BaseArrayRef<U>(O) {}
+  ArrayRef(ArrayRef &&O) : BaseArrayRef<U>(O) {}
 
   bool operator==(const ArrayRef &&v) const {
-    return Array<T>::template BaseArrayRef<U>::operator==(v);
+    return BaseArrayRef<U>::operator==(v);
   }
 
   ArrayRef &operator=(const ArrayRef &O) {
-    Array<T>::template BaseArrayRef<U>::operator=(O);
+    BaseArrayRef<U>::operator=(O);
     return *this;
   }
 
   ArrayRef &operator=(ArrayRef &&O) {
-    Array<T>::template BaseArrayRef<U>::operator=(O);
+    BaseArrayRef<U>::operator=(O);
     return *this;
   }
 
   operator value_type() const {  // NOLINT
-    return Array<T>::template BaseArrayRef<U>::get();
+    return BaseArrayRef<U>::get();
   }
 
   friend std::ostream &operator<<(std::ostream &stream, const ArrayRef i) {
@@ -1607,7 +1607,7 @@ template <typename T>
 template <typename U>
 class alignas(64) Array<T>::array_iterator {
  public:
-  using reference = typename Array<T>::template ArrayRef<U>;
+  using reference = ArrayRef<U>;
   using pointer = typename Array<T>::pointer;
   using difference_type = std::ptrdiff_t;
   using value_type = typename Array<T>::value_type;
