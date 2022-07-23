@@ -319,11 +319,13 @@ class Hashmap : public AbstractDataStructure<
   template <typename ApplyFunT, typename... Args>
   void AsyncForEachKey(rt::Handle &handle, ApplyFunT &&function,
                        Args &... args);
-
+  
+  /// @brief Print all the entries in the hashmap.
+  /// @warning std::ostream & operator<< must be defined for both
+  /// KTYPE and VTYPE
   void PrintAllEntries() {
     auto printLambda = [](const ObjectID &oid) {
       auto mapPtr = HmapT::GetPtr(oid);
-      std::cout << "---- Locality: " << rt::thisLocality() << std::endl;
       mapPtr->localMap_.PrintAllEntries();
     };
     rt::executeOnAll(printLambda, oid_);

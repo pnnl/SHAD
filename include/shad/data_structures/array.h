@@ -610,6 +610,25 @@ std::vector<T> * getData() {
   return & data_;
 }
 
+/// @brief Print all the entries in the array.
+/// @warning std::ostream & operator<< must be defined for T.
+void PrintAllElements() {
+  auto printLambda = [](const std::pair<ObjectID, size_t>& args,
+                        size_t *offs) {
+    auto arPtr = shad::Array<T>::GetPtr(std::get<0>(args));
+    size_t pos = std::get<1>(args);
+    for (auto el : arPtr->data_) {
+      std::cout << pos << ": " << el << std::endl;
+      ++pos;
+    }
+    *offs = pos;
+  };
+  size_t pos = 0;
+  for (auto loc : rt::allLocalities()) {
+    rt::executeAtWithRet(loc, printLambda, std::make_pair(oid_, pos), &pos);
+  }
+}
+
  protected:
   Array(ObjectID oid, size_t size, const T &initValue)
       : oid_(oid),
