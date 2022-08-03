@@ -387,6 +387,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
     if (ownerLoc_ == rt::thisLocality()) {
       *res = atomic_compare_exchange_strong(&localInstance_,
                                             &expected, desired);
+      return;
     }
     using CasArgs = std::tuple<ObjectID, T, T>;
     auto CasFun = [](rt::Handle&, const CasArgs &args, bool *result) {
