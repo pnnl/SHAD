@@ -645,7 +645,7 @@ class alignas(64) vector<T>::vector_iterator {
   }
 
   vector_iterator &operator++() {
-    std::uint32_t l = locality_;
+    uint32_t l = (uint32_t) locality_;
     const auto g_offset = p_[l] + offset_ + 1;
     if (g_offset < p_[l + 1])
       ++offset_;
@@ -675,7 +675,7 @@ class alignas(64) vector<T>::vector_iterator {
     if (offset_ > 0)
       --offset_;
     else {
-      std::uint32_t l = locality_;
+      uint32_t l = (uint32_t) locality_;
       const difference_type g_offset = p_[l] - 1;
       if (g_offset < 0) {
         locality_ = rt::Locality(0);
@@ -699,7 +699,7 @@ class alignas(64) vector<T>::vector_iterator {
   }
 
   vector_iterator &operator+=(difference_type n) {
-    const std::uint32_t l = locality_;
+    const uint32_t l = (uint32_t) locality_;
     const auto g_offset = p_[l] + offset_ + n;
     if (p_[l] <= g_offset && g_offset < p_[l + 1])
       offset_ += n;
