@@ -38,8 +38,9 @@ library. SHAD is designed as a software stack, composed of three main layers:
   SHAD components, and/or other extensions; SHAD currently include graph
   data-structures and algorithms.
   
-SHAD is written in C++, and requires compiler support for (at least) C++ 11.  To
-enable all of the SHAD's features, please review its `Install Dependencies`_ and
+SHAD is written in C++, and requires compiler support for (at least) C++ 11. 
+When building with GCC, version >=8 is required. To enable all of the SHAD's
+features, please review its `Install Dependencies`_ and
 `Runtime Systems`_ requirements.
 
 How to cite SHAD
