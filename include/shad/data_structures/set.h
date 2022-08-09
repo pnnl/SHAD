@@ -207,10 +207,11 @@ class Set : public AbstractDataStructure<Set<T, ELEM_COMPARE>> {
   void PrintAllElements() {
     auto printLambda = [](const ObjectID& oid) {
       auto setPtr = SetT::GetPtr(oid);
-      std::cout << "---- Locality: " << rt::thisLocality() << std::endl;
       setPtr->localSet_.PrintAllElements();
     };
-    rt::executeOnAll(printLambda, oid_);
+    for (auto loc : rt::allLocalities()) {
+      rt::executeAt(loc, printLambda, oid_);
+    }
   }
 
   // FIXME it should be protected

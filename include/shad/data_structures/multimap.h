@@ -327,7 +327,9 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
       mapPtr->localMultimap_.PrintAllEntries();
     };
 
-    for (auto loc : rt::allLocalities()) rt::executeAt(loc, printLambda, oid_);
+    for (auto loc : rt::allLocalities()) {
+      rt::executeAt(loc, printLambda, oid_);
+    }
   }
 
   void PrintAllKeys() {

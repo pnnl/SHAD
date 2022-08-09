@@ -328,7 +328,9 @@ class Hashmap : public AbstractDataStructure<
       auto mapPtr = HmapT::GetPtr(oid);
       mapPtr->localMap_.PrintAllEntries();
     };
-    rt::executeOnAll(printLambda, oid_);
+    for (auto loc : rt::allLocalities()) {
+      rt::executeAt(loc, printLambda, oid_);
+    }
   }
 
   // FIXME it should be protected
