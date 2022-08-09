@@ -90,9 +90,12 @@ struct RuntimeInternalsTrait<tbb_tag> {
   static void Finalize() {}
 
   static size_t Concurrency() {
-    return tbb::tbb_thread::hardware_concurrency();
+    return std::thread::hardware_concurrency();
   }
-  static void Yield() { tbb::this_tbb_thread::yield(); }
+
+  static void Yield() {
+    std::this_thread::yield();
+  }
 
   static uint32_t ThisLocality() { return 0; }
   static uint32_t NullLocality() { return -1; }
