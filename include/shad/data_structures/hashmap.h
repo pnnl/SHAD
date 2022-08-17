@@ -123,9 +123,19 @@ class Hashmap : public AbstractDataStructure<
   /// @brief Insert a key-value pair in the hashmap.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashmap.
-  /// @return an iterator either to the inserted value or to the previously
-  /// inserted value that prevented the insertion.
+  /// @return an iterator to the inserted value and true if value was inserted.
   std::pair<iterator, bool> Insert(const KTYPE &key, const VTYPE &value);
+  
+  /// @brief Insert a key-value pair in the hashmap,
+  /// with a custom inserter.
+  /// @param[in] insfun inserter function or functor. 
+  /// Look at the default inserter for an example.
+  /// @param[in] key the key.
+  /// @param[in] value the value to copy into the hashmap.
+  /// @return an iterator to the inserted value and true if value was inserted.
+  template <typename FUNTYPE>
+  std::pair<iterator, bool> Insert(FUNTYPE &insfun,
+                                   const KTYPE &key, const VTYPE &value);
 
   /// @brief Asynchronously Insert a key-value pair in the hashmap.
   /// @warning Asynchronous operations are guaranteed to have completed
@@ -134,9 +144,21 @@ class Hashmap : public AbstractDataStructure<
   /// to be used to wait for completion.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashMap.
-  /// @return a pointer to the value if the the key-value was inserted
-  ///        or a pointer to a previously inserted value.
   void AsyncInsert(rt::Handle &handle, const KTYPE &key, const VTYPE &value);
+  
+  /// @brief Asynchronously Insert a key-value pair in the hashmap,
+  /// with a custom inserter.
+  /// @warning Asynchronous operations are guaranteed to have completed
+  /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.
+  /// @param[in] insfun inserter function or functor. 
+  /// Look at the default inserter for an example.
+  /// @param[in,out] handle Reference to the handle
+  /// to be used to wait for completion.
+  /// @param[in] key the key.
+  /// @param[in] value the value to copy into the hashMap.
+  template <typename FUNTYPE>
+  void AsyncInsert(rt::Handle &handle, FUNTYPE &insfun,
+                   const KTYPE &key, const VTYPE &value);
 
   /// @brief Buffered Insert method.
   /// Inserts a key-value pair, using aggregation buffers.
@@ -297,14 +319,18 @@ class Hashmap : public AbstractDataStructure<
   template <typename ApplyFunT, typename... Args>
   void AsyncForEachKey(rt::Handle &handle, ApplyFunT &&function,
                        Args &... args);
-
+  
+  /// @brief Print all the entries in the hashmap.
+  /// @warning std::ostream & operator<< must be defined for both
+  /// KTYPE and VTYPE
   void PrintAllEntries() {
     auto printLambda = [](const ObjectID &oid) {
       auto mapPtr = HmapT::GetPtr(oid);
-      std::cout << "---- Locality: " << rt::thisLocality() << std::endl;
       mapPtr->localMap_.PrintAllEntries();
     };
-    rt::executeOnAll(printLambda, oid_);
+    for (auto loc : rt::allLocalities()) {
+      rt::executeAt(loc, printLambda, oid_);
+    }
   }
 
   // FIXME it should be protected
@@ -354,6 +380,14 @@ class Hashmap : public AbstractDataStructure<
     ObjectID oid;
     KTYPE key;
     VTYPE value;
+  };
+  
+  template <typename FUNTYPE>
+  struct InserterArgs {
+    ObjectID oid;
+    KTYPE key;
+    VTYPE value;
+    FUNTYPE insfun;
   };
 
   struct LookupArgs {
@@ -424,6 +458,43 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key,
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERT_POLICY>
+template <typename FUNTYPE>
+inline std::pair<
+    typename Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::iterator, bool>
+Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(FUNTYPE &insfun,
+                                                          const KTYPE &key,
+                                                          const VTYPE &value) {
+  using itr_traits = distributed_iterator_traits<iterator>;
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+  std::pair<iterator, bool> res;
+
+  if (targetLocality == rt::thisLocality()) {
+    auto lres = localMap_.Insert(insfun, key, value);
+    res.first = itr_traits::iterator_from_local(begin(), end(), lres.first);
+    res.second = lres.second;
+  } else {
+    auto insertLambda =
+        [](const std::tuple<iterator, iterator, InserterArgs<FUNTYPE>> &args_,
+           std::pair<iterator, bool> *res_ptr) {
+          auto &args(std::get<2>(args_));
+          auto mapPtr = HmapT::GetPtr(args.oid);
+          auto insf = args.insfun;
+          auto lres = mapPtr->localMap_.Insert(insf, args.key, args.value);
+          res_ptr->first = itr_traits::iterator_from_local(
+              std::get<0>(args_), std::get<1>(args_), lres.first);
+          res_ptr->second = lres.second;
+        };
+    rt::executeAtWithRet(
+        targetLocality, insertLambda,
+        std::make_tuple(begin(), end(),
+                        InserterArgs<FUNTYPE>{oid_, key, value, insfun}), &res);
+  }
+  return res;
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
 inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
     rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
@@ -437,6 +508,29 @@ inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
       mapPtr->localMap_.AsyncInsert(handle, args.key, args.value);
     };
     InsertArgs args = {oid_, key, value};
+    rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
+  }
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERT_POLICY>
+template <typename FUNTYPE>
+inline void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
+    rt::Handle &handle, FUNTYPE &insfun,
+    const KTYPE &key, const VTYPE &value) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+
+  if (targetLocality == rt::thisLocality()) {
+    localMap_.AsyncInsert(handle, insfun, key, value);
+  } else {
+    auto insertLambda = [](rt::Handle &handle,
+                           const InserterArgs<FUNTYPE> &args) {
+      auto mapPtr = HmapT::GetPtr(args.oid);
+      auto insf = args.insfun;
+      mapPtr->localMap_.AsyncInsert(handle, insf, args.key, args.value);
+    };
+    InserterArgs<FUNTYPE> args = {oid_, key, value, insfun};
     rt::asyncExecuteAt(handle, targetLocality, insertLambda, args);
   }
 }

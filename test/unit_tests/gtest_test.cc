@@ -75,8 +75,6 @@ class RemoteFailureChecker {
   const TestPartResultArray *const results_;
   const TestPartResult::Type type_;
   const std::string substr_;
-
-  GTEST_DISALLOW_COPY_AND_ASSIGN_(RemoteFailureChecker);
 };
 
 }  // namespace internal

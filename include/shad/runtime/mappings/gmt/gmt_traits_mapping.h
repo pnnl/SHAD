@@ -62,8 +62,10 @@ struct HandleTrait<gmt_tag> {
   static HandleTy CreateNewHandle() { return gmt_get_handle(); }
 
   static void WaitFor(ParameterTy &H) {
+  #ifdef ENABLE_SHAD_DBG_PRINT
     if (H == NullValue())
       std::cout << "WARNING: Called wait on a NULL handle" << std::endl;
+  #endif // ENABLE_SHAD_DBG_PRINT
     gmt_wait_handle(H);
     H = NullValue();
   }
