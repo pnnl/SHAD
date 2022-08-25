@@ -328,7 +328,7 @@ class LocalMultimap {
     }
 
     iterator cbeg(this, 0, 0, &buckets_array_[0], firstEntry,
-                  std::vector<inner_type>::iterator());
+                  typename std::vector<inner_type>::iterator());
     return ++cbeg;
   }
 
