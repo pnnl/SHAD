@@ -200,14 +200,14 @@ template <typename T>
 void MPIReducer<InF, OutF>::CallReduce(MPI_Op op, const size_t count) {
   if (op == MPI_SUM) {
     auto alg = [](std::vector<T>& redv)->T {
-      return std::accumulate(redv.begin(), redv.end(), T{}, std::plus<T>{});
+      return std::accumulate(redv.begin(), redv.end(), T{0}, std::plus<T>{});
     };
     DoMPIReduce<T, typeof(alg)>(alg, count);
     return;
   }
   if (op == MPI_PROD) {
     auto alg = [](std::vector<T>& redv)->T {
-      return std::accumulate(redv.begin(), redv.end(), T{}, std::multiplies<T>{});
+      return std::accumulate(redv.begin(), redv.end(), T{1}, std::multiplies<T>{});
     };
     DoMPIReduce<T, typeof(alg)>(alg, count);
     return;
