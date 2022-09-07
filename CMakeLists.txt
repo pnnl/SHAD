@@ -107,6 +107,11 @@ configure_file(
   ${SHAD_MAIN_INCLUDE_DIR}/shad/config/test-config.h.in
   ${SHAD_INCLUDE_DIR}/shad/config/test-config.h)
 
+if (SHAD_RUNTIME_SYSTEM STREQUAL "GMT")
+  find_package(MPI REQUIRED)
+  include_directories(${MPI_INCLUDE_PATH})
+endif()
+
 include_directories(${SHAD_MAIN_INCLUDE_DIR} ${SHAD_INCLUDE_DIR})
 
 configure_file(
