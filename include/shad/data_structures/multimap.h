@@ -404,7 +404,7 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
  protected:
   Multimap(ObjectID oid, const size_t numEntries)
       : oid_(oid),
-        localMultimap_(std::max(numEntries / (constants::kDefaultNumEntriesPerBucket * rt::numLocalities()), 1lu)),
+        localMultimap_(std::max(numEntries / (constants::kMMapDefaultNumEntriesPerBucket * rt::numLocalities()), 1lu)),
         buffers_(oid) {}
 };
 
