@@ -341,6 +341,37 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
     for (auto loc : rt::allLocalities()) rt::executeAt(loc, printLambda, oid_);
   }
 
+  /// @brief Remove duplicate elements from each value.  The routine first sorts
+  /// the value and then removes duplicates.
+  inline void Unique() { 
+    auto uniqueLambda = [](const KTYPE & key, std::vector<VTYPE> & value,
+                          ObjectID & oid) {
+      auto mapPtr = HmapT::GetPtr(oid);
+      uint64_t orig_size = value.size();
+      std::sort(value.begin(), value.end());
+      value.erase(std::unique(value.begin(), value.end()), value.end()); 
+      uint64_t new_size = value.size();
+      mapPtr->localMultimap_.size_ -= (orig_size - new_size);
+    };
+    HmapT::GetPtr(oid_)->ForEachEntry(uniqueLambda, oid_);
+  }
+
+  /// @brief Asynchronously remove duplicate elements from each value.
+  ///  The routine first sorts the value and then removes duplicates.
+  /// @param[in,out] handle Reference to the handle.
+  inline void AsyncUnique(rt::Handle &handle,) { 
+    auto uniqueLambda = [](rt::Handle &, const KTYPE & key, 
+                           std::vector<VTYPE> & value, ObjectID & oid) {
+      auto mapPtr = HmapT::GetPtr(oid);
+      uint64_t orig_size = value.size();
+      std::sort(value.begin(), value.end());
+      value.erase(std::unique(value.begin(), value.end()), value.end()); 
+      uint64_t new_size = value.size();
+      mapPtr->localMultimap_.size_ -= (orig_size - new_size);
+    };
+    HmapT::GetPtr(oid_)->AsyncForEachEntry(handle, uniqueLambda, oid_);
+  }
+
   // FIXME it should be protected
   void BufferEntryInsert(const EntryT &entry) {
     localMultimap_.Insert(entry.key, entry.value);
