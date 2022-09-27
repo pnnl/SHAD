@@ -359,7 +359,7 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @brief Asynchronously remove duplicate elements from each value.
   ///  The routine first sorts the value and then removes duplicates.
   /// @param[in,out] handle Reference to the handle.
-  inline void AsyncUnique(rt::Handle &handle,) { 
+  inline void AsyncUnique(rt::Handle &handle) { 
     auto uniqueLambda = [](rt::Handle &, const KTYPE & key, 
                            std::vector<VTYPE> & value, ObjectID & oid) {
       auto mapPtr = HmapT::GetPtr(oid);
