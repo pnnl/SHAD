@@ -1,0 +1,18 @@
+services:
+  head:
+    build: .
+    image: shad_node
+    ports:
+      - "2022:22"
+    volumes:
+      - home_volume:/home/tutorial/
+    links:
+      - node
+
+  node:
+    image: shad_node
+    volumes:
+      - home_volume:/home/tutorial/
+
+volumes:
+  home_volume: {}

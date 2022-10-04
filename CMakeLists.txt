@@ -155,6 +155,7 @@ if (SHAD_ENABLE_DOXYGEN)
   add_subdirectory(docs)
 endif()
 add_subdirectory(examples)
+add_subdirectory(tutorial)
 
 install(DIRECTORY ${SHAD_MAIN_INCLUDE_DIR}/shad
   DESTINATION include
