@@ -37,8 +37,8 @@ namespace impl {
 /// @brief Distributed vector without resizing capabilities.
 /// TODO change the descriptions
 /// The C++ standard defines the ::vector as a dynamically
-/// resizeable sequence of objects.  A ::vector should be a contiguous container (as
-/// defined in the C++ standard).  According to that definition, contiguous
+/// resizeable sequence of objects.  A ::vector should be a contiguous container
+/// (as defined in the C++ standard).  According to that definition, contiguous
 /// containers requires contiguous iterators.  The definition of contiguous
 /// iterators implies contiguous memory allocation for the sequence, and it
 /// cannot be guaranteed in many distributed settings.  Therefore, ::vector
@@ -88,7 +88,6 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @}
 
  public:
-
   /// @brief The copy assignment operator.
   ///
   /// @param O The right-hand side of the operator.
@@ -103,7 +102,8 @@ class vector : public AbstractDataStructure<vector<T>> {
             This->chunk_ = std::unique_ptr<T[]>{new T[Other->chunk_size()]};
           This->p_ = Other->p_;
 
-          std::copy(Other->chunk_, Other->chunk_ + This->chunk_size(), This->chunk_);
+          std::copy(Other->chunk_, Other->chunk_ + This->chunk_size(),
+                    This->chunk_);
         },
         std::make_pair(this->oid_, O.oid_));
 
@@ -120,7 +120,8 @@ class vector : public AbstractDataStructure<vector<T>> {
           auto This = vector<T>::GetPtr(std::get<0>(args));
           auto value = std::get<1>(args);
 
-          std::fill(This->chunk_.get(), This->chunk_.get() + This->chunk_size(), value);
+          std::fill(This->chunk_.get(), This->chunk_.get() + This->chunk_size(),
+                    value);
         },
         std::make_pair(this->oid_, v));
   }
@@ -162,7 +163,8 @@ class vector : public AbstractDataStructure<vector<T>> {
 
     rt::Locality last(end_l);
 
-    return iterator{std::forward<rt::Locality>(last), pos, oid_, ptrs_.data(), p_.data()};
+    return iterator{std::forward<rt::Locality>(last), pos, oid_, ptrs_.data(),
+                    p_.data()};
   }
 
   /// @brief The iterator to the end of the sequence.
@@ -184,7 +186,8 @@ class vector : public AbstractDataStructure<vector<T>> {
 
     rt::Locality last(end_l);
 
-    return const_iterator{std::forward<rt::Locality>(last), pos, oid_, ptrs_.data(), p_.data()};
+    return const_iterator{std::forward<rt::Locality>(last), pos, oid_,
+                          ptrs_.data(), p_.data()};
   }
 
   /// @}
@@ -212,14 +215,16 @@ class vector : public AbstractDataStructure<vector<T>> {
   /// @return a ::reference to the n-th element in the vector.
   constexpr reference operator[](size_type n) {
     const std::uint32_t l = locate_index(n);
-    return reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, ptrs_[l]};
+    return reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_,
+                     ptrs_[l]};
   }
 
   /// @brief Unchecked element access operator.
   /// @return a ::const_reference to the n-th element in the vector.
   constexpr const_reference operator[](size_type n) const {
     const auto l = locate_index(n);
-    return const_reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_, ptrs_[l]};
+    return const_reference{rt::Locality{l}, difference_type{n - p_[l]}, oid_,
+                           ptrs_[l]};
   }
 
   /// @brief Checked element access operator.
@@ -273,11 +278,11 @@ class vector : public AbstractDataStructure<vector<T>> {
             auto RHS = vector<T>::GetPtr(std::get<1>(IDs));
 
             *result = LHS->size() != RHS->size();
-            
+
             if (!*result) {
               if (LHS->p_ == RHS->p_)
-                *result = !std::equal(LHS->chunk_, LHS->chunk_ + LHS->chunk_size(),
-                                    RHS->chunk_);
+                *result = !std::equal(
+                    LHS->chunk_, LHS->chunk_ + LHS->chunk_size(), RHS->chunk_);
               else
                 throw std::logic_error("Not yet implemented!");
             }
@@ -288,7 +293,8 @@ class vector : public AbstractDataStructure<vector<T>> {
 
     rt::waitForCompletion(H);
 
-    for (std::uint32_t i = 1; i < rt::numLocalities(); ++i) result[0] |= result[i];
+    for (std::uint32_t i = 1; i < rt::numLocalities(); ++i)
+      result[0] |= result[i];
 
     return result[0];
   }
@@ -307,7 +313,7 @@ class vector : public AbstractDataStructure<vector<T>> {
 
             if (LHS->p_ != RHS->p_)
               throw std::logic_error("Not yet implemented!");
-            
+
             *result = std::lexicographical_compare(
                 LHS->chunk_, LHS->chunk_ + LHS->chunk_size(), RHS->chunk_,
                 RHS->chunk_ + RHS->chunk_size(), std::greater_equal<T>());
@@ -358,21 +364,25 @@ class vector : public AbstractDataStructure<vector<T>> {
   }
 
   constexpr void fill_ptrs() {
-    rt::executeOnAll([](const ObjectID &oid) {
-      auto This = vector<T>::GetPtr(oid);
-      rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, pointer> &args) {
-          auto This = vector<T>::GetPtr(std::get<0>(args));
+    rt::executeOnAll(
+        [](const ObjectID &oid) {
+          auto This = vector<T>::GetPtr(oid);
+          rt::executeOnAll(
+              [](const std::tuple<ObjectID, rt::Locality, pointer> &args) {
+                auto This = vector<T>::GetPtr(std::get<0>(args));
 
-          This->ptrs_[to_int(std::get<1>(args))] = std::get<2>(args);
+                This->ptrs_[to_int(std::get<1>(args))] = std::get<2>(args);
+              },
+              std::make_tuple(This->GetGlobalID(), rt::thisLocality(),
+                              This->chunk_.get()));
         },
-        std::make_tuple(This->GetGlobalID(), rt::thisLocality(), This->chunk_.get()));
-      }, GetGlobalID());
+        GetGlobalID());
   }
 
  protected:
-
   template <typename Iter, typename Int>
-  static constexpr difference_type lowerbound_index(Iter begin, Iter end, Int v) {
+  static constexpr difference_type lowerbound_index(Iter begin, Iter end,
+                                                    Int v) {
     return std::distance(begin + 1, std::lower_bound(begin, end, v + 1));
   }
 
@@ -381,7 +391,7 @@ class vector : public AbstractDataStructure<vector<T>> {
   }
 
   constexpr size_type chunk_size() const {
-      return p_[to_int(rt::thisLocality()) + 1] - p_[to_int(rt::thisLocality())];
+    return p_[to_int(rt::thisLocality()) + 1] - p_[to_int(rt::thisLocality())];
   }
 
   /// @brief Constructor.
@@ -395,166 +405,153 @@ class vector : public AbstractDataStructure<vector<T>> {
   }
 
  private:
+  // Iterators
+  template <typename U>
+  class BaseVectorRef {
+   public:
+    using value_type = U;
 
+    ObjectID oid_;
+    pointer chunk_;
+    difference_type pos_;
+    rt::Locality loc_;
+
+    BaseVectorRef(rt::Locality l, difference_type p, ObjectID oid,
+                  pointer chunk)
+        : oid_(oid), chunk_(chunk), pos_(p), loc_(l) {}
+
+    BaseVectorRef(const BaseVectorRef &O)
+        : oid_(O.oid_), chunk_(O.chunk_), pos_(O.pos_), loc_(O.loc_) {}
+
+    BaseVectorRef(BaseVectorRef &&O)
+        : oid_(std::move(O.oid_)),
+          chunk_(std::move(O.chunk_)),
+          pos_(std::move(O.pos_)),
+          loc_(std::move(O.loc_)) {}
+
+    BaseVectorRef &operator=(const BaseVectorRef &O) {
+      oid_ = O.oid_;
+      chunk_ = O.chunk_;
+      pos_ = O.pos_;
+      loc_ = O.loc_;
+      return *this;
+    }
+
+    BaseVectorRef &operator=(BaseVectorRef &&O) {
+      oid_ = std::move(O.oid_);
+      chunk_ = std::move(O.chunk_);
+      pos_ = std::move(O.pos_);
+      loc_ = std::move(O.loc_);
+      return *this;
+    }
+
+    bool operator==(const BaseVectorRef &O) const {
+      if (oid_ == O.oid_ && pos_ == O.pos_ && loc_ == O.loc_) return true;
+      return this->get() == O.get();
+    }
+
+    value_type get() const {
+      if (this->loc_ == rt::thisLocality()) return chunk_[pos_];
+
+      value_type result;
+      rt::dma(&result, loc_, chunk_ + pos_, 1);
+      return result;
+    }
+  };
+
+  template <typename U>
+  class alignas(64) VectorRef : public BaseVectorRef<U> {
+   public:
+    using value_type = U;
+
+    VectorRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
+        : BaseVectorRef<U>(l, p, oid, chunk) {}
+
+    VectorRef(const VectorRef &O) : BaseVectorRef<U>(O) {}
+
+    VectorRef(VectorRef &&O) : BaseVectorRef<U>(O) {}
+
+    VectorRef &operator=(const VectorRef &O) {
+      BaseVectorRef<U>::operator=(O);
+      return *this;
+    }
+
+    VectorRef &operator=(VectorRef &&O) {
+      BaseVectorRef<U>::operator=(O);
+      return *this;
+    }
+
+    operator value_type() const {  // NOLINT
+      return BaseVectorRef<U>::get();
+    }
+
+    bool operator==(const VectorRef &&v) const {
+      return BaseVectorRef<U>::operator==(v);
+    }
+
+    VectorRef &operator=(const T &v) {
+      bool local = this->loc_ == rt::thisLocality();
+      if (local) {
+        this->chunk_[this->pos_] = v;
+        return *this;
+      }
+
+      rt::dma(this->loc_, this->chunk_ + this->pos_, &v, 1);
+
+      return *this;
+    }
+
+    friend std::ostream &operator<<(std::ostream &stream, const VectorRef i) {
+      stream << i.loc_ << " " << i.pos_ << " " << i.get();
+      return stream;
+    }
+  };
+
+  template <typename U>
+  class alignas(64) VectorRef<const U> : public BaseVectorRef<U> {
+   public:
+    using value_type = const U;
+
+    VectorRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
+        : BaseVectorRef<U>(l, p, oid, chunk) {}
+
+    VectorRef(const VectorRef &O) : BaseVectorRef<U>(O) {}
+
+    VectorRef(VectorRef &&O) : BaseVectorRef<U>(O) {}
+
+    bool operator==(const VectorRef &&v) const {
+      return BaseVectorRef<U>::operator==(v);
+    }
+
+    VectorRef &operator=(const VectorRef &O) {
+      BaseVectorRef<U>::operator=(O);
+      return *this;
+    }
+
+    VectorRef &operator=(VectorRef &&O) {
+      BaseVectorRef<U>::operator=(O);
+      return *this;
+    }
+
+    operator value_type() const {  // NOLINT
+      return BaseVectorRef<U>::get();
+    }
+
+    friend std::ostream &operator<<(std::ostream &stream, const VectorRef i) {
+      stream << i.loc_ << " " << i.pos_;
+      return stream;
+    }
+  };
+
+ private:
   static constexpr std::uint32_t to_int(rt::Locality l) {
-      return static_cast<std::uint32_t>(l);
+    return static_cast<std::uint32_t>(l);
   }
 
   std::vector<difference_type> p_;
   std::unique_ptr<T[]> chunk_;
   ObjectID oid_;
   std::vector<pointer> ptrs_;
-};
-
-template <typename T>
-template <typename U>
-class vector<T>::BaseVectorRef {
- public:
-  using value_type = U;
-  using ObjectID = typename vector<T>::ObjectID;
-  using difference_type = typename vector<T>::difference_type;
-  using pointer = typename vector<T>::pointer;
-
-  ObjectID oid_;
-  pointer chunk_;
-  difference_type pos_;
-  rt::Locality loc_;
-
-  BaseVectorRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
-      : oid_(oid), chunk_(chunk), pos_(p), loc_(l) {}
-
-  BaseVectorRef(const BaseVectorRef &O)
-      : oid_(O.oid_), chunk_(O.chunk_), pos_(O.pos_), loc_(O.loc_) {}
-
-  BaseVectorRef(BaseVectorRef &&O)
-      : oid_(std::move(O.oid_)),
-        chunk_(std::move(O.chunk_)),
-        pos_(std::move(O.pos_)),
-        loc_(std::move(O.loc_)) {}
-
-  BaseVectorRef &operator=(const BaseVectorRef &O) {
-    oid_ = O.oid_;
-    chunk_ = O.chunk_;
-    pos_ = O.pos_;
-    loc_ = O.loc_;
-    return *this;
-  }
-
-  BaseVectorRef &operator=(BaseVectorRef &&O) {
-    oid_ = std::move(O.oid_);
-    chunk_ = std::move(O.chunk_);
-    pos_ = std::move(O.pos_);
-    loc_ = std::move(O.loc_);
-    return *this;
-  }
-
-  bool operator==(const BaseVectorRef &O) const {
-    if (oid_ == O.oid_ && pos_ == O.pos_ && loc_ == O.loc_) return true;
-    return this->get() == O.get();
-  }
-
-  value_type get() const {
-    if (this->loc_ == rt::thisLocality())
-      return chunk_[pos_];
-
-    value_type result;
-    rt::dma(&result, loc_, chunk_ + pos_, 1);
-    return result;
-  }
-};
-
-template <typename T>
-template <typename U>
-class alignas(64) vector<T>::VectorRef
-    : public vector<T>::template BaseVectorRef<U> {
- public:
-  using value_type = U;
-  using pointer = typename vector<T>::pointer;
-  using difference_type = typename vector<T>::difference_type;
-  using ObjectID = typename vector<T>::ObjectID;
-
-  VectorRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
-      : vector<T>::template BaseVectorRef<U>(l, p, oid, chunk) {}
-
-  VectorRef(const VectorRef &O) : vector<T>::template BaseVectorRef<U>(O) {}
-
-  VectorRef(VectorRef &&O) : vector<T>::template BaseVectorRef<U>(O) {}
-
-  VectorRef &operator=(const VectorRef &O) {
-    vector<T>::template BaseVectorRef<U>::operator=(O);
-    return *this;
-  }
-
-  VectorRef &operator=(VectorRef &&O) {
-    vector<T>::template BaseVectorRef<U>::operator=(O);
-    return *this;
-  }
-
-  operator value_type() const {  // NOLINT
-    return vector<T>::template BaseVectorRef<U>::get();
-  }
-
-  bool operator==(const VectorRef &&v) const {
-    return vector<T>::template BaseVectorRef<U>::operator==(v);
-  }
-
-  VectorRef &operator=(const T &v) {
-    bool local = this->loc_ == rt::thisLocality();
-    if (local) {
-      this->chunk_[this->pos_] = v;
-      return *this;
-    }
-
-    rt::dma(this->loc_, this->chunk_ + this->pos_, &v, 1);
-
-    return *this;
-  }
-
-  friend std::ostream &operator<<(std::ostream &stream, const VectorRef i) {
-    stream << i.loc_ << " " << i.pos_ << " " << i.get();
-    return stream;
-  }
-};
-
-template <typename T>
-template <typename U>
-class alignas(64) vector<T>::VectorRef<const U>
-    : public vector<T>::template BaseVectorRef<U> {
- public:
-  using value_type = const U;
-  using pointer = typename vector<T>::pointer;
-  using difference_type = typename vector<T>::difference_type;
-  using ObjectID = typename vector<T>::ObjectID;
-
-  VectorRef(rt::Locality l, difference_type p, ObjectID oid, pointer chunk)
-      : vector<T>::template BaseVectorRef<U>(l, p, oid, chunk) {}
-
-  VectorRef(const VectorRef &O) : vector<T>::template BaseVectorRef<U>(O) {}
-
-  VectorRef(VectorRef &&O) : vector<T>::template BaseVectorRef<U>(O) {}
-
-  bool operator==(const VectorRef &&v) const {
-    return vector<T>::template BaseVectorRef<U>::operator==(v);
-  }
-
-  VectorRef &operator=(const VectorRef &O) {
-    vector<T>::template BaseVectorRef<U>::operator=(O);
-    return *this;
-  }
-
-  VectorRef &operator=(VectorRef &&O) {
-    vector<T>::template BaseVectorRef<U>::operator=(O);
-    return *this;
-  }
-
-  operator value_type() const {  // NOLINT
-    return vector<T>::template BaseVectorRef<U>::get();
-  }
-
-  friend std::ostream &operator<<(std::ostream &stream, const VectorRef i) {
-    stream << i.loc_ << " " << i.pos_;
-    return stream;
-  }
 };
 
 template <typename T>
@@ -589,12 +586,13 @@ class alignas(64) vector<T>::vector_iterator {
 
   /// @brief Constructor.
   vector_iterator(rt::Locality &&l, difference_type offset, ObjectID oid,
-                 pointer const * ptrs, difference_type const *p_)
+                  pointer const *ptrs, difference_type const *p_)
       : locality_(l), offset_(offset), oid_(oid), ptrs_(ptrs), p_(p_) {}
 
   /// @brief Default constructor.
   vector_iterator()
-      : vector_iterator(rt::Locality(0), -1, ObjectID::kNullID, nullptr, nullptr) {}
+      : vector_iterator(rt::Locality(0), -1, ObjectID::kNullID, nullptr,
+                        nullptr) {}
 
   /// @brief Copy constructor.
   vector_iterator(const vector_iterator &O)
@@ -645,19 +643,17 @@ class alignas(64) vector<T>::vector_iterator {
   }
 
   vector_iterator &operator++() {
-    uint32_t l = (uint32_t) locality_;
+    uint32_t l = (uint32_t)locality_;
     const auto g_offset = p_[l] + offset_ + 1;
     if (g_offset < p_[l + 1])
       ++offset_;
     else {
       const auto num_l = rt::numLocalities();
-      while (l < num_l && g_offset >= p_[l + 1])
-        l++;
+      while (l < num_l && g_offset >= p_[l + 1]) l++;
       if (l == num_l) {
         locality_ = rt::Locality(num_l - 1);
         offset_ = p_[num_l] - p_[num_l - 1];
-      }
-      else {
+      } else {
         locality_ = rt::Locality(l);
         offset_ = 0;
       }
@@ -675,20 +671,18 @@ class alignas(64) vector<T>::vector_iterator {
     if (offset_ > 0)
       --offset_;
     else {
-      uint32_t l = (uint32_t) locality_;
+      uint32_t l = (uint32_t)locality_;
       const difference_type g_offset = p_[l] - 1;
       if (g_offset < 0) {
         locality_ = rt::Locality(0);
         offset_ = -1;
-      }
-      else {
-        while(g_offset < p_[l - 1])
-          l--;
+      } else {
+        while (g_offset < p_[l - 1]) l--;
         locality_ = rt::Locality(l - 1);
         offset_ = p_[l] - p_[l - 1] - 1;
       }
     }
-    
+
     return *this;
   }
 
@@ -699,7 +693,7 @@ class alignas(64) vector<T>::vector_iterator {
   }
 
   vector_iterator &operator+=(difference_type n) {
-    const uint32_t l = (uint32_t) locality_;
+    const uint32_t l = (uint32_t)locality_;
     const auto g_offset = p_[l] + offset_ + n;
     if (p_[l] <= g_offset && g_offset < p_[l + 1])
       offset_ += n;
@@ -709,12 +703,10 @@ class alignas(64) vector<T>::vector_iterator {
       if (l < 0) {
         locality_ = rt::Locality(0);
         offset_ = -1;
-      }
-      else if (l >= num_l) {
+      } else if (l >= num_l) {
         locality_ = rt::Locality(num_l - 1);
         offset_ = p_[num_l] - p_[num_l - 1];
-      }
-      else {
+      } else {
         locality_ = rt::Locality(l);
         offset_ = g_offset - p_[l];
       }
@@ -723,9 +715,7 @@ class alignas(64) vector<T>::vector_iterator {
     return *this;
   }
 
-  vector_iterator &operator-=(difference_type n) {
-    return operator+=(-n);
-  }
+  vector_iterator &operator-=(difference_type n) { return operator+=(-n); }
 
   vector_iterator operator+(difference_type n) {
     vector_iterator tmp(*this);
@@ -778,12 +768,12 @@ class alignas(64) vector<T>::vector_iterator {
   static local_iterator_range local_range(vector_iterator &B,
                                           vector_iterator &E) {
     auto begin{B.get_local_chunk()};
-    
-    if (B.oid_ != E.oid_ || rt::thisLocality() < B.locality_ || rt::thisLocality() > E.locality_)
+
+    if (B.oid_ != E.oid_ || rt::thisLocality() < B.locality_ ||
+        rt::thisLocality() > E.locality_)
       return local_iterator_range(begin, begin);
 
-    if (B.locality_ == rt::thisLocality())
-      begin += B.offset_;
+    if (B.locality_ == rt::thisLocality()) begin += B.offset_;
 
     const std::uint32_t l = rt::thisLocality();
     const auto chunk = B.p_[l + 1] - B.p_[l];
@@ -794,21 +784,20 @@ class alignas(64) vector<T>::vector_iterator {
     return local_iterator_range(begin, end);
   }
 
-  static distribution_range
-      distribution(vector_iterator &begin, vector_iterator &end) {
+  static distribution_range distribution(vector_iterator &begin,
+                                         vector_iterator &end) {
     distribution_range result;
 
     // First block:
     const std::uint32_t begin_l = begin.locality_;
     auto start_block_size = begin.p_[begin_l + 1] - begin.p_[begin_l];
-    if (begin.locality_ == end.locality_)
-      start_block_size = end.offset_;
-    result.push_back(std::make_pair(begin.locality_,
-                                    start_block_size - begin.offset_));
+    if (begin.locality_ == end.locality_) start_block_size = end.offset_;
+    result.push_back(
+        std::make_pair(begin.locality_, start_block_size - begin.offset_));
 
     // Middle blocks:
-    for (auto locality = begin.locality_ + 1;
-         locality < end.locality_; ++locality) {
+    for (auto locality = begin.locality_ + 1; locality < end.locality_;
+         ++locality) {
       const std::uint32_t mid_l = locality;
       const auto inner_block_size = begin.p_[mid_l + 1] - begin.p_[mid_l];
       result.push_back(std::make_pair(locality, inner_block_size));
@@ -821,20 +810,22 @@ class alignas(64) vector<T>::vector_iterator {
     return result;
   }
 
-  static rt::localities_range localities(vector_iterator &B, vector_iterator &E) {
+  static rt::localities_range localities(vector_iterator &B,
+                                         vector_iterator &E) {
     return rt::localities_range(
-        B.locality_, rt::Locality(static_cast<uint32_t>(E.locality_) + (E.offset_ != 0 ? 1 : 0)));
+        B.locality_, rt::Locality(static_cast<uint32_t>(E.locality_) +
+                                  (E.offset_ != 0 ? 1 : 0)));
   }
 
   static vector_iterator iterator_from_local(vector_iterator &B,
-                                            vector_iterator &E,
-                                            local_iterator_type itr) {
+                                             vector_iterator &E,
+                                             local_iterator_type itr) {
     if (rt::thisLocality() < B.locality_ || rt::thisLocality() > E.locality_)
       return E;
 
     return vector_iterator(rt::thisLocality(),
                            std::distance(B.get_local_chunk(), itr), B.oid_,
-                           B.ptrs_,  B.p_);
+                           B.ptrs_, B.p_);
   }
 
  protected:
@@ -842,16 +833,13 @@ class alignas(64) vector<T>::vector_iterator {
     return p_[to_int(locality_)] + offset_;
   }
 
-  constexpr pointer get_chunk() const {
-    return ptrs_[to_int(locality_)];
-  }
+  constexpr pointer get_chunk() const { return ptrs_[to_int(locality_)]; }
 
   constexpr pointer get_local_chunk() const {
     return ptrs_[to_int(rt::thisLocality())];
   }
 
  private:
-
   rt::Locality locality_;
   ObjectID oid_;
   difference_type offset_;
@@ -864,8 +852,8 @@ class alignas(64) vector<T>::vector_iterator {
 /// @brief Fixed size distributed vector.
 ///
 /// Section XX.X.X.X of the C++ standard defines the ::vector as a dynamically
-/// resizeable sequence of objects.  A ::vector should be a contiguous container (as
-/// defined in section XX.X.X).  According to that definition, contiguous
+/// resizeable sequence of objects.  A ::vector should be a contiguous container
+/// (as defined in section XX.X.X).  According to that definition, contiguous
 /// containers requires contiguous iterators.  The definition of contiguous
 /// iterators implies contiguous memory allocation for the sequence, and it
 /// cannot be guaranteed in many distributed settings.  Therefore, ::vector
@@ -903,7 +891,7 @@ class vector {
 
  public:
   /// @brief Constructor.
-  explicit vector(size_type N = 0) { 
+  explicit vector(size_type N = 0) {
     ptr = vector_t::Create(N);
     ptr->fill_ptrs();
   }
