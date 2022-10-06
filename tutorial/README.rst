@@ -1,4 +1,4 @@
-Programming of Parallel Distributed Systems Made Easy with the SHAD C++ Library
+Boosting Productivity and Applications Performance on Parallel Distributed Systems with the SHAD C++ Library
 ****
 October 8 2022, 14:15 - 17:45 CDT
 ****
