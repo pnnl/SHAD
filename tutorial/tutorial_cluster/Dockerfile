@@ -4,6 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
+    apt-get install -y vim && \
     apt-get install -y openssh-server sudo build-essential libopenmpi-dev git wget
 
 RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
@@ -38,7 +39,7 @@ RUN cmake -S SHAD -B SHAD-build -DCMAKE_BUILD_TYPE=Release -DSHAD_RUNTIME_SYSTEM
     cmake --install SHAD-build
 
 RUN chmod -R 600 /home/tutorial/.ssh/* && \
-    chown -R tutorial:tutorial /home/tutorial/.ssh
+    chown -R tutorial:tutorial *
 
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
