@@ -47,7 +47,7 @@ namespace shad {
 /// @warning Subclasses SUBC of AbstractDataStructure MUST implement the
 /// constructor SUBC(ObjectID oid, Args ... args) and the GetGlobalID() method.
 ///
-/// The inheriting class constructor can accept aribitrary memcpyable arguments
+/// The inheriting class constructor can accept arbitrary memcpyable arguments
 /// (args): the create method of AbstractDataStructure can be called from the
 /// subclass using the same arguments (args) of the constructor.  It is
 /// recommended to implement the constructor as private/protected.
@@ -116,7 +116,7 @@ class AbstractDataStructure {
   /// retrieve a valid shared_ptr via the GetPtr operation.
   ///
   /// @param oid The global identifier of the DataStructure instance.
-  /// @return A shared_ptr to the DataStructure instance associared to oid.
+  /// @return A shared_ptr to the DataStructure instance associated to oid.
   static SharedPtr GetPtr(ObjectID oid) {
     return Catalog::Instance()->GetPtr(oid);
   }

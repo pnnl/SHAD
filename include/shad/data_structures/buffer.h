@@ -54,7 +54,7 @@ namespace impl {
 
 /// @brief The Buffer utility.
 ///
-/// Buffer used to agregate data transfers in insertion methods.
+/// Buffer used to aggregate data transfers in insertion methods.
 /// It is associated to a DataStructure instance, through its
 /// global object identifier, and to the Locality target of the
 /// data transfers.
