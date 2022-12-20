@@ -570,16 +570,16 @@ class LocalHashmap {
       for (size_t i = 0; i < bucket->BucketSize(); ++i) {
         Entry *entry = &bucket->getEntry(i);
 
-        // Stop at the first empty entry.
-        if (entry->state == EMPTY) break;
-
-        // Yield on pending entries.
-        while (entry->state == PENDING_INSERT) rt::impl::yield();
-
+        // Stop at the first empty or pending insert entries.
+        if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+          break;
+        }
         // Entry is USED.
         if (mapPtr->KeyComp_(&entry->key, &key) == 0) {
           // wait for updates before returning
-          while (entry->state == PENDING_UPDATE) rt::impl::yield();
+          while (entry->state == PENDING_UPDATE) {
+            rt::impl::yield();
+          }
           function(handle, key, entry->value, std::get<is>(args)...);
           return;
         }
@@ -602,16 +602,16 @@ class LocalHashmap {
       for (size_t i = 0; i < bucket->BucketSize(); ++i) {
         Entry *entry = &bucket->getEntry(i);
 
-        // Stop at the first empty entry.
-        if (entry->state == EMPTY) break;
-
-        // Yield on pending entries.
-        while (entry->state == PENDING_INSERT) rt::impl::yield();
-
+        // Stop at the first empty or pending insert entry.
+        if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+          break;
+        }
         // Entry is USED.
         if (mapPtr->KeyComp_(&entry->key, &key) == 0) {
           // wait for updates before returning
-          while (entry->state == PENDING_UPDATE) rt::impl::yield();
+          while (entry->state == PENDING_UPDATE) {
+            rt::impl::yield();
+          }
           function(key, entry->value, std::get<is>(args)...);
           return;
         }
@@ -645,16 +645,17 @@ VTYPE *LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Lookup(
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
       Entry *entry = &bucket->getEntry(i);
 
-      // Stop at the first empty entry.
-      if (entry->state == EMPTY) break;
-
-      // Yield on pending entries.
-      while (entry->state == PENDING_INSERT) rt::impl::yield();
+      // Stop at the first empty or pending insert entry.
+      if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+        break;
+      }
 
       // Entry is USED.
       if (KeyComp_(&entry->key, &key) == 0) {
         // wait for updates before returning
-        while (entry->state == PENDING_UPDATE) rt::impl::yield();
+        while (entry->state == PENDING_UPDATE) {
+          rt::impl::yield();
+        }
         result = &entry->value;
       }
     }

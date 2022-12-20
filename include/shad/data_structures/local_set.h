@@ -368,9 +368,9 @@ bool LocalSet<T, ELEM_COMPARE>::Find(const T& element) {
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
       Entry* entry = &bucket->getEntry(i);
       // Stop at the first empty entry.
-      if (entry->state == EMPTY) return false;
-      // Yield on pending entries.
-      while (entry->state == PENDING_INSERT) rt::impl::yield();
+      if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+        return false;
+      }
       // Entry is USED.
       if (ElemComp_(&entry->element, &element) == 0) {
         return true;
