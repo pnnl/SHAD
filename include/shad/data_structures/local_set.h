@@ -112,7 +112,7 @@ class LocalSet {
   void Clear() {
     size_ = 0;
     buckets_array_.clear();
-    //     buckets_array_(numBuckets_);
+    buckets_array_ = std::vector<Bucket>(numBuckets_);
   }
 
   /// @brief Clear the content of the set.
