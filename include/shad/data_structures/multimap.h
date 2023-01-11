@@ -124,10 +124,10 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @return the size of the multimap.
   size_t Size() const;
 
-  /// @brief Number of keys of the multimap.
+  /// @brief Number of keys in the multimap.
   /// @warning Calling this method may result in one-to-all
   /// communication among localities to retrieve consistent information.
-  /// @return the size of the multimap.
+  /// @return the number of keys in the multimap.
   size_t NumberKeys() const;
 
   /// @brief Insert a key-value pair in the multimap.
@@ -441,12 +441,12 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::Size() const {
-  size_t size = localMultimap_.size_;
+  size_t size = localMultimap_.size_.load();
   size_t remoteSize;
 
   auto sizeLambda = [](const ObjectID &oid, size_t *res) {
     auto mapPtr = HmapT::GetPtr(oid);
-    *res = mapPtr->localMultimap_.size_;
+    *res = mapPtr->localMultimap_.size_.load();
   };
 
   for (auto tgtLoc : rt::allLocalities()) {
@@ -461,12 +461,12 @@ inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::Size() const {
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::NumberKeys() const {
-  size_t size = localMultimap_.numberKeys_;
+  size_t size = localMultimap_.numberKeys_.load();
   size_t remoteKeys;
 
   auto sizeLambda = [](const ObjectID &oid, size_t *res) {
     auto mapPtr = HmapT::GetPtr(oid);
-    *res = mapPtr->localMultimap_.numberKeys_;
+    *res = mapPtr->localMultimap_.numberKeys_.load();
   };
 
   for (auto tgtLoc : rt::allLocalities()) {

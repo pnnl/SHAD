@@ -93,7 +93,8 @@ class LocalMultimap {
         buckets_array_(numInitBuckets),
         deleter_array_(numInitBuckets),
         inserter_array_(numInitBuckets),
-        size_(0) {
+        size_(0),
+        numberKeys_(0) {
     for (uint64_t i = 0; i < numInitBuckets; i++) {
       deleter_array_[i] = 0;
       inserter_array_[i] = 0;
@@ -103,6 +104,10 @@ class LocalMultimap {
   /// @brief Size of the multimap (number of entries).
   /// @return the size of the multimap.
   size_t Size() const { return size_.load(); }
+
+  /// @brief Number of keys in the multimap.
+  /// @return the number of keys in the multimap.
+  size_t NumberKeys() const { return numberKeys_.load(); };
 
   /// @brief Insert a key-value pair in the multimap.
   /// @param[in] key the key.
@@ -142,6 +147,7 @@ class LocalMultimap {
   void Clear() {
     size_ = 0;
     buckets_array_.clear();
+    numberKeys_ = 0;
     buckets_array_ = std::vector<Bucket>(numBuckets_);
     for (uint64_t i = 0; i < numBuckets_; i++) {
       deleter_array_[i] = 0;
@@ -449,6 +455,7 @@ class LocalMultimap {
   KeyCompare KeyComp_;
   size_t numBuckets_;
   std::atomic<size_t> size_;
+  std::atomic<size_t> numberKeys_;
   std::vector<Bucket> buckets_array_;
   std::vector<std::atomic<uint32_t>> deleter_array_;
   std::vector<std::atomic<uint32_t>> inserter_array_;
@@ -866,6 +873,7 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Erase(const KTYPE &key) {
 
       // Key found
       size_ -= entry->value.size();
+      numberKeys_ -= 1;
 
       // find last USED entry in this bucket and swap with this entry
       //    entry     == entry being deleted
@@ -961,6 +969,7 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
         entry->value.push_back(value);
 
         size_ += 1;
+        numberKeys_ += 1;
         entry->state = USED;
         release_inserter(bucketIdx);
         return std::make_pair(
@@ -1141,6 +1150,7 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key,
         entry->value.push_back(value);
 
         size_ += 1;
+        numberKeys_ += 1;
         entry->state = USED;
         release_inserter(bucketIdx);
         iterator itr(this, bucketIdx, i, bucket, entry,
