@@ -577,8 +577,8 @@ class LocalHashmap {
         // Entry is USED.
         if (mapPtr->KeyComp_(&entry->key, &key) == 0) {
           // wait for updates before returning
-          while (entry->state == PENDING_UPDATE) {
-            rt::impl::yield();
+          if (entry->state == PENDING_UPDATE) {
+            return;
           }
           function(handle, key, entry->value, std::get<is>(args)...);
           return;
@@ -609,8 +609,8 @@ class LocalHashmap {
         // Entry is USED.
         if (mapPtr->KeyComp_(&entry->key, &key) == 0) {
           // wait for updates before returning
-          while (entry->state == PENDING_UPDATE) {
-            rt::impl::yield();
+          if (entry->state == PENDING_UPDATE) {
+            return;
           }
           function(key, entry->value, std::get<is>(args)...);
           return;
