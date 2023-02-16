@@ -575,6 +575,10 @@ class Array : public AbstractDataStructure<Array<T>> {
   void AsyncGetElements(rt::Handle& h, T* local_data,
                         const uint64_t idx, const uint64_t num_el);
 
+
+  void AsyncPutElements(rt::Handle& h, T* local_data,
+                        const uint64_t idx, const uint64_t num_el);
+
 /// @brief Synchronous exclusive scan method
 ///
 /// Typical usage:
@@ -1401,6 +1405,43 @@ void Array<T>::AsyncGetElements(rt::Handle& h, T* local_data,
 
     tgtAddress = ptrs_[(uint32_t)tgtLoc] + tgtPos;
     rt::asyncDma(h, local_data, tgtLoc, tgtAddress, chunkSize);
+    local_data += chunkSize;
+    firstPos += chunkSize;
+    remainingValues -= chunkSize;
+  }
+}
+
+
+template <typename T>
+void Array<T>::AsyncPutElements(rt::Handle& h, T* local_data,
+                                const uint64_t idx, const uint64_t num_el) {
+  if (size_ < rt::numLocalities()) {
+    AsyncInsertAt(h, idx, local_data, num_el);
+    return;
+  }
+  size_t tgtPos = 0, firstPos = idx;
+  rt::Locality tgtLoc;
+  size_t remainingValues = num_el;
+  size_t chunkSize = 0;
+  T* tgtAddress;
+
+  while (remainingValues > 0) {
+    if (firstPos < pivot_ * (size_ / rt::numLocalities())) {
+      tgtLoc = rt::Locality(firstPos / (size_ / rt::numLocalities()));
+      tgtPos = firstPos % (size_ / rt::numLocalities());
+      chunkSize =
+          std::min((size_ / rt::numLocalities() - tgtPos), remainingValues);
+    } else {
+      size_t newPos = firstPos - (pivot_ * (size_ / rt::numLocalities()));
+      tgtLoc =
+          rt::Locality(pivot_ + newPos / ((size_ / rt::numLocalities() + 1)));
+      tgtPos = newPos % ((size_ / rt::numLocalities() + 1));
+      chunkSize =
+          std::min((size_ / rt::numLocalities() + 1 - tgtPos), remainingValues);
+    }
+
+    tgtAddress = ptrs_[(uint32_t)tgtLoc] + tgtPos;
+    rt::asyncDma(h, tgtLoc, tgtAddress, local_data, chunkSize);
     local_data += chunkSize;
     firstPos += chunkSize;
     remainingValues -= chunkSize;
