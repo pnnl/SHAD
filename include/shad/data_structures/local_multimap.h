@@ -200,7 +200,7 @@ class LocalMultimap {
   /// @tparam ApplyFunT User-defined function type. The function prototype
   /// should be:
   /// @code
-  /// void(const KTYPE&, VTYPE&, Args&);
+  /// void(const KTYPE&, std::vector<VTYPE> &, Args&);
   /// @endcode
   /// @tparam ...Args Types of the function arguments.
   ///
@@ -211,14 +211,14 @@ class LocalMultimap {
   void Apply(const KTYPE &key, ApplyFunT &&function, Args &...args) {
     LookupResult result;
     Lookup(key, &result);
-    for (auto x : result.value) function(key, x, args...);
+    function(key, result.value, args...);
   }
 
   /// @brief Asynchronously apply a user-defined function to a key-value pair.
   /// @tparam ApplyFunT User-defined function type.  The function prototype
   /// should be:
   /// @code
-  /// void(rt::Handle &handle, const KTYPE&, VTYPE&, Args&);
+  /// void(rt::Handle &handle, std::vector<VTYPE> &, VTYPE&, Args&);
   /// @endcode
   /// @tparam ...Args Types of the function arguments.
   ///
