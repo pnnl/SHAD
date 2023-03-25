@@ -245,6 +245,37 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   template <typename ApplyFunT, typename... Args>
   void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function, Args &... args);
 
+  /// @brief Apply a user-defined function to a key-value pair.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @code
+  /// void(const KTYPE&, std::vector<VTYPE> &, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param key The key.
+  /// @param function The function to apply.
+  /// @param args The function arguments.
+  template <typename ApplyFunT, typename... Args>
+  void BlockingApply(const KTYPE &key, ApplyFunT &&function, Args &... args);
+
+
+  /// @brief Asynchronously apply a user-defined function to a key-value pair.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @code
+  /// void(rt::Handle &h, const KTYPE&, std::vector<VTYPE>&, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in,out] handle Reference to the handle.
+  /// @param key The key.
+  /// @param function The function to apply.
+  /// @param args The function arguments.
+  template <typename ApplyFunT, typename... Args>
+  void AsyncBlockingApply(rt::Handle &handle, const KTYPE &key,
+                          ApplyFunT &&function, Args &... args);
+
   /// @brief Asynchronously apply a user-defined function to a key-value pair.
   /// @tparam ApplyFunT User-defined function type.  The function prototype
   /// should be:
@@ -790,6 +821,63 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(
       ArgsTuple &tuple(const_cast<ArgsTuple &>(args));
       LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMultimap_);
       LMapT::AsyncCallApplyFun(handle, mapPtr, std::get<1>(tuple),
+                               std::get<2>(tuple), std::get<3>(tuple),
+                               std::make_index_sequence<Size>{});
+    };
+    rt::asyncExecuteAt(handle, targetLocality, feLambda, arguments);
+  }
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename ApplyFunT, typename... Args>
+void Multimap<KTYPE, VTYPE, KEY_COMPARE>::BlockingApply(const KTYPE &key,
+                                                        ApplyFunT &&function, Args &... args) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+
+  if (targetLocality == rt::thisLocality()) {
+    localMultimap_.BlockingApply(key, function, args...);
+
+  } else {
+    using FunctionTy = void (*)(const KTYPE &, std::vector<VTYPE> &, Args &...);
+    FunctionTy fn = std::forward<decltype(function)>(function);
+
+    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+
+    auto feLambda = [](const ArgsTuple &args) {
+      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      ArgsTuple &tuple = const_cast<ArgsTuple &>(args);
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMultimap_);
+      //map_ptr->BlockingApply(key, function, std::get<is>(args)...);
+      LMapT::CallBlockingApplyFun(mapPtr, std::get<1>(tuple), std::get<2>(tuple),
+                          std::get<3>(tuple), std::make_index_sequence<Size>{});
+    };
+    rt::executeAt(targetLocality, feLambda, arguments);
+  }
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename ApplyFunT, typename... Args>
+void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncBlockingApply(
+    rt::Handle &handle, const KTYPE &key, ApplyFunT &&function, Args &... args) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+
+  if (targetLocality == rt::thisLocality()) {
+    localMultimap_.AsyncBlockingApply(handle, key, function, args...);
+
+  } else {
+    using FunctionTy = void (*)(rt::Handle &, const KTYPE &, std::vector<VTYPE> &, Args &...);
+    FunctionTy fn = std::forward<decltype(function)>(function);
+    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+
+    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+    auto feLambda = [](rt::Handle &handle, const ArgsTuple &args) {
+      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      ArgsTuple &tuple(const_cast<ArgsTuple &>(args));
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMultimap_);
+      LMapT::CallAsyncBlockingApplyFun(handle, mapPtr, std::get<1>(tuple),
                                std::get<2>(tuple), std::get<3>(tuple),
                                std::make_index_sequence<Size>{});
     };

@@ -229,6 +229,38 @@ class LocalMultimap {
   template <typename ApplyFunT, typename... Args>
   void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
                   Args &...args);
+
+ /// @brief Apply a user-defined function to every element of an entry's value
+  /// array. Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
+  /// @code
+  /// void(const KTYPE&, std::vector<VTYPE> &, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in] key The key.
+  /// @param function The function to apply.
+  /// @param args The function arguments.
+  template <typename ApplyFunT, typename... Args>
+  void BlockingApply(const KTYPE &key, ApplyFunT &&function, Args &...args);
+
+  /// @brief Asynchronously apply a user-defined function to a key-value pair.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type.  The function prototype
+  /// should be:
+  /// @code
+  /// void(rt::Handle &handle, std::vector<VTYPE> &, VTYPE&, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in,out] handle Reference to the handle.
+  /// @param[in] key The key.
+  /// @param function The function to apply.
+  /// @param args The function arguments.
+  template <typename ApplyFunT, typename... Args>
+  void AsyncBlockingApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
+                          Args &...args);
  
   /// @brief Asynchronously apply a user-defined function to a key-value pair.
   /// @tparam ApplyFunT User-defined function type.  The function prototype
@@ -693,6 +725,14 @@ class LocalMultimap {
     return;
   }
 
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void CallBlockingApplyFun(LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
+                           const KTYPE &key, ApplyFunT function,
+                           std::tuple<Args...> &args,
+                           std::index_sequence<is...>) {
+    mapPtr->BlockingApply(key, function, std::get<is>(args)...);
+  }
+
   template <typename Tuple, typename... Args>
   static void AsyncApplyFunWrapper(rt::Handle &handle, const Tuple &args) {
     constexpr auto Size = std::tuple_size<
@@ -702,6 +742,16 @@ class LocalMultimap {
     AsyncCallApplyFun(handle, std::get<0>(tuple), std::get<1>(tuple),
                       std::get<2>(tuple), std::get<3>(tuple),
                       std::make_index_sequence<Size>{});
+  }
+
+
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static void CallAsyncBlockingApplyFun(rt::Handle &h,
+                                        LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> *mapPtr,
+                                        const KTYPE &key, ApplyFunT function,
+                                        std::tuple<Args...> &args,
+                                        std::index_sequence<is...>) {
+    mapPtr->AsyncBlockingApply(h, key, function, std::get<is>(args)...);
   }
 
   template <typename Tuple, typename... Args>
@@ -1211,6 +1261,87 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncInsert(
   };
 
   rt::asyncExecuteAt(handle, rt::thisLocality(), insertLambda, args);
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename ApplyFunT, typename... Args>
+void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::BlockingApply(const KTYPE &key,
+                                                             ApplyFunT &&function,
+                                                             Args &...args) {
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
+  allow_inserter(bucketIdx);
+  // loop over linked buckets
+  while (bucket != nullptr) {
+    // loop over entries in this bucket
+    for (size_t i = 0; i < bucket->BucketSize(); ++i) {
+      Entry *entry = &bucket->getEntry(i);
+
+      // Stop at the first empty or pending insert entry.
+      if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+        break;
+      }
+
+      // if key matches this entry's key, apply function; else continue inner for
+      // loop
+      if (KeyComp_(&entry->key, &key) == 0) {
+        // tagging as pending insert
+        while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_INSERT)) {
+          rt::impl::yield();
+        }
+        function(key, entry->value, args...);
+        entry->state = USED;
+        release_inserter(bucketIdx);
+        return;
+      }
+    }  // Inner for loop
+
+    // move to next bucket
+    bucket = bucket->next.get();
+  }  // Outer for loop
+  release_inserter(bucketIdx);
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename ApplyFunT, typename... Args>
+void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncBlockingApply(rt::Handle &h,
+                                                                  const KTYPE &key,
+                                                                  ApplyFunT &&function,
+                                                                  Args &...args) {
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
+  allow_inserter(bucketIdx);
+  // loop over linked buckets
+  while (bucket != nullptr) {
+    // loop over entries in this bucket
+    for (size_t i = 0; i < bucket->BucketSize(); ++i) {
+      Entry *entry = &bucket->getEntry(i);
+
+      // Stop at the first empty or pending insert entry.
+      if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+        break;
+      }
+
+      // if key matches this entry's key, apply function; else continue inner for
+      // loop
+      if (KeyComp_(&entry->key, &key) == 0) {
+        // tagging as pending insert
+        while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_INSERT)) {
+          rt::impl::yield();
+        }
+        function(h, key, entry->value, args...);
+        entry->state = USED;
+        release_inserter(bucketIdx);
+        return;
+      }
+    }  // Inner for loop
+
+    // move to next bucket
+    bucket = bucket->next.get();
+  }  // Outer for loop
+  release_inserter(bucketIdx);
 }
 
 template <typename LMap, typename T>
