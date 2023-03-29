@@ -443,7 +443,7 @@ class LocalMultimap {
                                         : 1;
 
   typedef KEY_COMPARE KeyCompare;
-  enum State { EMPTY, USED, PENDING_INSERT };
+  enum State { EMPTY, USED, PENDING_INSERT, PENDING_UPDATE};
 
   struct Entry {
     KTYPE key;
@@ -1286,8 +1286,11 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::BlockingApply(const KTYPE &key,
       // loop
       if (KeyComp_(&entry->key, &key) == 0) {
         // tagging as pending insert
+        // while (entry->state == PENDING_INSERT) {
+        //   rt::impl::yield();
+        // }
         while (!__sync_bool_compare_and_swap(&entry->state, USED,
-                                             PENDING_INSERT)) {
+                                             PENDING_UPDATE)) {
           rt::impl::yield();
         }
         function(key, entry->value, args...);
@@ -1328,7 +1331,7 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncBlockingApply(rt::Handle &h,
       if (KeyComp_(&entry->key, &key) == 0) {
         // tagging as pending insert
         while (!__sync_bool_compare_and_swap(&entry->state, USED,
-                                             PENDING_INSERT)) {
+                                             PENDING_UPDATE)) {
           rt::impl::yield();
         }
         function(h, key, entry->value, args...);
