@@ -378,11 +378,8 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
     auto uniqueLambda = [](const KTYPE & key, std::vector<VTYPE> & value,
                           ObjectID & oid) {
       auto mapPtr = HmapT::GetPtr(oid);
-      uint64_t orig_size = value.size();
       std::sort(value.begin(), value.end());
       value.erase(std::unique(value.begin(), value.end()), value.end()); 
-      uint64_t new_size = value.size();
-      mapPtr->localMultimap_.size_ -= (orig_size - new_size);
     };
     HmapT::GetPtr(oid_)->ForEachEntry(uniqueLambda, oid_);
   }
@@ -394,11 +391,8 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
     auto uniqueLambda = [](rt::Handle &, const KTYPE & key, 
                            std::vector<VTYPE> & value, ObjectID & oid) {
       auto mapPtr = HmapT::GetPtr(oid);
-      uint64_t orig_size = value.size();
       std::sort(value.begin(), value.end());
       value.erase(std::unique(value.begin(), value.end()), value.end()); 
-      uint64_t new_size = value.size();
-      mapPtr->localMultimap_.size_ -= (orig_size - new_size);
     };
     HmapT::GetPtr(oid_)->AsyncForEachEntry(handle, uniqueLambda, oid_);
   }
@@ -472,19 +466,15 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::Size() const {
-  size_t size = localMultimap_.size_.load();
-  size_t remoteSize;
+  size_t remoteSize, size = 0;
 
-  auto sizeLambda = [](const ObjectID &oid, size_t *res) {
-    auto mapPtr = HmapT::GetPtr(oid);
-    *res = mapPtr->localMultimap_.size_.load();
+  auto sizeLambda = [](const ObjectID & oid, size_t * res) {
+    * res = HmapT::GetPtr(oid)->GetLocalMultimap()->Size();
   };
 
   for (auto tgtLoc : rt::allLocalities()) {
-    if (tgtLoc != rt::thisLocality()) {
-      rt::executeAtWithRet(tgtLoc, sizeLambda, oid_, &remoteSize);
+      rt::executeAtWithRet(tgtLoc, sizeLambda, oid_, & remoteSize);
       size += remoteSize;
-    }
   }
 
   return size;
