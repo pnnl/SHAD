@@ -40,7 +40,6 @@
 #include "shad/data_structures/local_multimap.h"
 #include "shad/distributed_iterator_traits.h"
 #include "shad/runtime/runtime.h"
-#include "shad/runtime/mappings/gmt/gmt_synchronous_interface.h"
 
 #define PREFIX_SIZE 80
 
