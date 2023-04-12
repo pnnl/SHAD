@@ -849,6 +849,7 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupFromRemote(
         result->found = false;
         result->size = 0;
         release_inserter(bucketIdx);
+        return;
       }
 
       // Wait for some other thread to finish with this entry
