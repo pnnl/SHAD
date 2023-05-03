@@ -916,16 +916,13 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Erase(const KTYPE &key) {
     // loop over entries in this bucket
     for (size_t i = 0; i < bucket->BucketSize(); ++i) {
       Entry *entry = &bucket->getEntry(i);
-
       // Reached first unused entry, key not found, return
       if (entry->state == EMPTY) {
-        release_deleter(bucketIdx);
-        return;
+        break;
       }
 
       // If key does not match this entry's key, continue inner for loop
       if (KeyComp_(&entry->key, &key) != 0) continue;
-
       // Key found
       numberKeys_ -= 1;
 
@@ -989,6 +986,7 @@ void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::Erase(const KTYPE &key) {
       bucket = bucket->next.get();
     }
   }  // First outer for loop
+  release_deleter(bucketIdx);
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
