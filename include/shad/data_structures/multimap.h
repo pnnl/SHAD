@@ -123,6 +123,15 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @return the size of the multimap.
   size_t Size() const;
 
+  /// @brief Target Locality of a specific key.
+  /// @param[in] key the key.
+  /// @return the Target Locality.
+  rt::Locality TargetLocality(const KTYPE &key) {
+    size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+    rt::Locality tgtLocality(targetId);
+    return tgtLocality;
+  }
+
   /// @brief Number of keys in the multimap.
   /// @warning Calling this method may result in one-to-all
   /// communication among localities to retrieve consistent information.
@@ -258,6 +267,21 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   template <typename ApplyFunT, typename... Args>
   void BlockingApply(const KTYPE &key, ApplyFunT &&function, Args &... args);
 
+  /// @brief Tries to apply a user-defined function to a key-value pair.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @code
+  /// void(const KTYPE&, std::vector<VTYPE> &, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param key The key.
+  /// @param function The function to apply.
+  /// @param args The function arguments.
+  /// @return SUCCESS if the function has been successfully applied, 
+  /// NOT_FOUND if the key is not found, FAILED otherwise.
+  template <typename ApplyFunT, typename... Args>
+  typename LMapT::ApplyResult TryBlockingApply(const KTYPE &key, ApplyFunT &&function, Args &... args);
 
   /// @brief Asynchronously apply a user-defined function to a key-value pair.
   /// Thread safe wrt other operations.
@@ -843,6 +867,35 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::BlockingApply(const KTYPE &key,
                           std::get<3>(tuple), std::make_index_sequence<Size>{});
     };
     rt::executeAt(targetLocality, feLambda, arguments);
+  }
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename ApplyFunT, typename... Args>
+typename Multimap<KTYPE, VTYPE, KEY_COMPARE>::LMapT::ApplyResult
+Multimap<KTYPE, VTYPE, KEY_COMPARE>::TryBlockingApply(const KTYPE &key,
+                                                           ApplyFunT &&function, Args &... args) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+  if (targetLocality == rt::thisLocality()) {
+    return localMultimap_.TryBlockingApply(key, function, args...);
+
+  } else {
+    using FunctionTy = void (*)(const KTYPE &, std::vector<VTYPE> &, Args &...);
+    FunctionTy fn = std::forward<decltype(function)>(function);
+    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+
+    auto feLambda = [](const ArgsTuple &args, bool* res) {
+      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      ArgsTuple &tuple = const_cast<ArgsTuple &>(args);
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMultimap_);
+      *res = LMapT::CallTryBlockingApplyFun(mapPtr, std::get<1>(tuple), std::get<2>(tuple),
+                          std::get<3>(tuple), std::make_index_sequence<Size>{});
+    };
+    typename LMapT::ApplyResult res;
+    rt::executeAtWithRet(targetLocality, feLambda, arguments, &res);
+    return res;
   }
 }
 
