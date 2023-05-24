@@ -55,6 +55,14 @@ struct Overwriter {
     *lhs = std::move(rhs);
     return true;
   }
+  bool operator()(rt::Handle&, T *const lhs, const T &rhs, bool) {
+    *lhs = std::move(rhs);
+    return true;
+  }
+  static bool Insert(rt::Handle&, T *const lhs, const T &rhs, bool) {
+    *lhs = std::move(rhs);
+    return true;
+  }
 };
 
 template <typename T>
@@ -67,6 +75,20 @@ struct Updater {
     return false;
   }
   static bool Insert(T *const lhs, const T &rhs, bool same_key) {
+    if (!same_key) {
+      *lhs = std::move(rhs);
+      return true;
+    }
+    return false;
+  }
+  bool operator()(rt::Handle&, T *const lhs, const T &rhs, bool same_key) {
+    if (!same_key) {
+      *lhs = std::move(rhs);
+      return true;
+    }
+    return false;
+  }
+  static bool Insert(rt::Handle&, T *const lhs, const T &rhs, bool same_key) {
     if (!same_key) {
       *lhs = std::move(rhs);
       return true;
@@ -717,7 +739,7 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
           throw std::logic_error(
               "A problem occured with"
               "the map erase operation");
-        return;
+        break;
       }
       while (entry->state == PENDING_INSERT) {
         rt::impl::yield();
@@ -729,7 +751,6 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
                                           PENDING_INSERT)) {
           // entry has already been deleted by another operation
           Erase(key);
-          return;
         }
         // 3. The entry to remove has been found,
         // and its status set to PENDING_INSERT
@@ -758,7 +779,7 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
 
               if (!__sync_bool_compare_and_swap(&prevEntry->state, USED,
                                                 PENDING_INSERT)) {
-                printEntryState(2, toDelete, lastEntry, prevEntry);
+                // printEntryState(2, toDelete, lastEntry, prevEntry);
                 rt::impl::yield();
                 lastEntry->state = EMPTY;
                 toDelete->state = USED;
@@ -849,7 +870,11 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Erase(
     if (bucket->next != nullptr) {
       bucket = bucket->next.get();
     } else {
-      return;
+      VTYPE v;
+      if (Lookup(key, &v)) {
+        Erase(key);
+      }
+      break;
     }
   }
 }
@@ -945,14 +970,51 @@ template <typename FUNTYPE>
 void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncInsert(
     rt::Handle &handle, FUNTYPE &insfun,
     const KTYPE &key, const VTYPE &value) {
-  using LMapPtr = LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *;
-  auto args = std::tuple<LMapPtr, KTYPE, VTYPE, FUNTYPE>(this, key, value, insfun);
-  auto insertLambda = [](rt::Handle &,
-                         const std::tuple<LMapPtr, KTYPE, VTYPE, FUNTYPE> &t) {
-    auto ins = std::get<3>(t);
-    (std::get<0>(t))->Insert(ins, std::get<1>(t), std::get<2>(t));
-  };
-  rt::asyncExecuteAt(handle, rt::thisLocality(), insertLambda, args);
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
+
+  // Forever or until we find an insertion point.
+  for (;;) {
+    for (size_t i = 0; i < bucket->BucketSize(); ++i) {
+      Entry *entry = &bucket->getEntry(i);
+      if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
+        // First time insertion.
+        entry->key = std::move(key);
+        bool inserted = insfun(handle, &entry->value, value, false);
+        size_ += 1;
+        entry->state = USED;
+        return;
+      } else {
+        // Update of an existing entry
+        while (entry->state == PENDING_INSERT) rt::impl::yield();
+
+        if (KeyComp_(&entry->key, &key) == 0) {
+          while (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                               PENDING_UPDATE))
+            rt::impl::yield();
+
+          auto inserted = insfun(handle, &entry->value, value, true);
+          entry->state = USED;
+          return;
+        }
+      }
+    }
+
+    if (bucket->next == nullptr) {
+      // We need to allocate a new buffer
+      if (__sync_bool_compare_and_swap(&bucket->isNextAllocated, false, true)) {
+        // Allocate the bucket
+        std::shared_ptr<Bucket> newBucket(
+            new Bucket(constants::kDefaultNumEntriesPerBucket));
+        bucket->next.swap(newBucket);
+      } else {
+        // Wait for the allocation to happen
+        while (bucket->next == nullptr) rt::impl::yield();
+      }
+    }
+
+    bucket = bucket->next.get();
+  }
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
