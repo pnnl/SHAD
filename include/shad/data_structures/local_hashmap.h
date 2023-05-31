@@ -296,6 +296,26 @@ class LocalHashmap {
   void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
                   Args &... args);
 
+  enum ApplyResult { FAILED, SUCCESS, NOT_FOUND };
+
+  /// @brief Tries to apply a user-defined function to an entry's value.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
+  /// @code
+  /// void(const KTYPE&, VTYPE&, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in] key The key.
+  /// @param function The function to apply.
+  /// @param args The function arguments.
+  /// @return SUCCESS if the function has been successfully applied, 
+  /// NOT_FOUND if the key is not found, FAILED otherwise.
+  template <typename ApplyFunT, typename... Args>
+  LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult
+  TryBlockingApply(const KTYPE &key, ApplyFunT &&function, Args &...args);
+
   /// @brief Apply a user-defined function to each key-value pair.
   ///
   /// @tparam ApplyFunT User-defined function type.  The function prototype
@@ -577,6 +597,15 @@ class LocalHashmap {
     AsyncCallForEachKeyFun(handle, i, std::get<0>(tuple), std::get<1>(tuple),
                            std::get<2>(tuple),
                            std::make_index_sequence<Size>{});
+  }
+
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult 
+  CallTryBlockingApplyFun(LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+                           const KTYPE &key, ApplyFunT function,
+                           std::tuple<Args...> &args,
+                           std::index_sequence<is...>) {
+    return mapPtr->TryBlockingApply(key, function, std::get<is>(args)...);
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
@@ -1118,6 +1147,42 @@ void LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::AsyncApply(
   ArgsTuple argsTuple(this, key, fn, std::tuple<Args...>(args...));
   rt::asyncExecuteAt(handle, rt::thisLocality(),
                      AsyncApplyFunWrapper<ArgsTuple, Args...>, argsTuple);
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult 
+LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::TryBlockingApply(
+                                                  const KTYPE &key,
+                                                  ApplyFunT &&function,
+                                                  Args &...args) {
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
+  while (bucket != nullptr) {
+    for (size_t i = 0; i < bucket->BucketSize(); ++i) {
+      Entry *entry = &bucket->getEntry(i);
+
+      // Stop at the first empty or pending insert entry.
+      if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+        break;
+      }
+
+      // Entry is USED.
+      if (KeyComp_(&entry->key, &key) == 0) {
+        // try to tag as pending update
+        if (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_UPDATE)) {
+          return ApplyResult::FAILED;
+        }
+        function(key, entry->value, args...);
+        entry->state = USED;
+        return ApplyResult::SUCCESS;
+      }
+    }
+    bucket = bucket->next.get();
+  }
+  return ApplyResult::NOT_FOUND;
 }
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,

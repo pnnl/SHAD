@@ -886,7 +886,7 @@ Multimap<KTYPE, VTYPE, KEY_COMPARE>::TryBlockingApply(const KTYPE &key,
     using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
     ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
 
-    auto feLambda = [](const ArgsTuple &args, bool* res) {
+    auto feLambda = [](const ArgsTuple &args, typename LMapT::ApplyResult* res) {
       constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
       ArgsTuple &tuple = const_cast<ArgsTuple &>(args);
       LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMultimap_);

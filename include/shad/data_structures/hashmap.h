@@ -120,6 +120,15 @@ class Hashmap : public AbstractDataStructure<
   /// @return the size of the hashmap.
   size_t Size() const;
 
+  /// @brief Target Locality of a specific key.
+  /// @param[in] key the key.
+  /// @return the Target Locality.
+  rt::Locality TargetLocality(const KTYPE &key) {
+    size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+    rt::Locality tgtLocality(targetId);
+    return tgtLocality;
+  }
+
   /// @brief Insert a key-value pair in the hashmap.
   /// @param[in] key the key.
   /// @param[in] value the value to copy into the hashmap.
@@ -258,6 +267,24 @@ class Hashmap : public AbstractDataStructure<
   template <typename ApplyFunT, typename... Args>
   void AsyncApply(rt::Handle &handle, const KTYPE &key, ApplyFunT &&function,
                   Args &... args);
+
+  /// @brief Tries to apply a user-defined function to a key-value pair.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @code
+  /// void(const KTYPE&, std::vector<VTYPE> &, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param key The key.
+  /// @param function The function to apply.
+  /// @param args The function arguments.
+  /// @return SUCCESS if the function has been successfully applied, 
+  /// NOT_FOUND if the key is not found, FAILED otherwise.
+  template <typename ApplyFunT, typename... Args>
+  typename LMapT::ApplyResult TryBlockingApply(const KTYPE &key,
+                                               ApplyFunT &&function,
+                                               Args &... args);
 
   /// @brief Apply a user-defined function to each key-value pair.
   ///
@@ -782,6 +809,36 @@ void Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncApply(
                                std::make_index_sequence<Size>{});
     };
     rt::asyncExecuteAt(handle, targetLocality, feLambda, arguments);
+  }
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+typename Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::LMapT::ApplyResult
+Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::TryBlockingApply(const KTYPE &key,
+                                                               ApplyFunT &&function, Args &... args) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+  if (targetLocality == rt::thisLocality()) {
+    return localMap_.TryBlockingApply(key, function, args...);
+
+  } else {
+    using FunctionTy = void (*)(const KTYPE &, VTYPE &, Args &...);
+    FunctionTy fn = std::forward<decltype(function)>(function);
+    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+
+    auto feLambda = [](const ArgsTuple &args, typename LMapT::ApplyResult* res) {
+      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      ArgsTuple &tuple = const_cast<ArgsTuple &>(args);
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMap_);
+      *res = LMapT::CallTryBlockingApplyFun(mapPtr, std::get<1>(tuple), std::get<2>(tuple),
+                          std::get<3>(tuple), std::make_index_sequence<Size>{});
+    };
+    typename LMapT::ApplyResult res;
+    rt::executeAtWithRet(targetLocality, feLambda, arguments, &res);
+    return res;
   }
 }
 
