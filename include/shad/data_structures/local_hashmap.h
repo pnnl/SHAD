@@ -316,6 +316,49 @@ class LocalHashmap {
   LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult
   TryBlockingApply(const KTYPE &key, ApplyFunT &&function, Args &...args);
 
+  /// @brief Tries to apply a user-defined function to an entry's value.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
+  /// @code
+  /// void(const KTYPE&, VTYPE&, uint8_t*, size_t*, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in] key The key.
+  /// @param function The function to apply.
+  /// @param[out] ResultBuffer Pointer to the result buffer.
+  /// @param[out] ResultSize Size (in bytes) of data written in the buffer.
+  /// @param args The function arguments.
+  /// @return SUCCESS if the function has been successfully applied, 
+  /// NOT_FOUND if the key is not found, FAILED otherwise.
+  template <typename ApplyFunT, typename... Args>
+  LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult
+  TryBlockingApplyWithRetBuff(const KTYPE &key, ApplyFunT &&function,
+                              uint8_t* resultBuffer, uint32_t* resultSize,
+                              Args &...args);
+
+  /// @brief Tries to apply a user-defined function to an entry's value.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
+  /// @code
+  /// void(const KTYPE&, VTYPE&, RetT*, Args&);
+  /// @endcode
+  /// @tparam RetT Return Data Type
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in] key The key.
+  /// @param function The function to apply.
+  /// @param[out] retPtr Pointer to the result.
+  /// @param args The function arguments.
+  /// @return SUCCESS if the function has been successfully applied, 
+  /// NOT_FOUND if the key is not found, FAILED otherwise.
+  template <typename ApplyFunT, typename RetT, typename... Args>
+  LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult
+  TryBlockingApplyWithRet(const KTYPE &key, ApplyFunT &&function,
+                          RetT* retPtr, Args &...args);
+
   /// @brief Apply a user-defined function to each key-value pair.
   ///
   /// @tparam ApplyFunT User-defined function type.  The function prototype
@@ -606,6 +649,29 @@ class LocalHashmap {
                            std::tuple<Args...> &args,
                            std::index_sequence<is...>) {
     return mapPtr->TryBlockingApply(key, function, std::get<is>(args)...);
+  }
+
+  template <typename ApplyFunT, typename... Args, std::size_t... is>
+  static LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult 
+  CallTryBlockingApplyWithRetBuffFun(LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+                           const KTYPE &key, ApplyFunT function,
+                           uint8_t* buff,
+                           uint32_t * size,
+                           std::tuple<Args...> &args,
+                           std::index_sequence<is...>) {
+    return mapPtr->TryBlockingApplyWithRetBuff(key, function,
+                                               buff, size,
+                                               std::get<is>(args)...);
+  }
+
+  template <typename ApplyFunT, typename RetT, typename... Args, std::size_t... is>
+  static LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult 
+  CallTryBlockingApplyWithRetFun(LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER> *mapPtr,
+                           const KTYPE &key, ApplyFunT function,
+                           RetT* retPtr,
+                           std::tuple<Args...> &args,
+                           std::index_sequence<is...>) {
+    return mapPtr->TryBlockingApplyWithRet(key, function, retPtr, std::get<is>(args)...);
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
@@ -1184,6 +1250,82 @@ LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::TryBlockingApply(
   }
   return ApplyResult::NOT_FOUND;
 }
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult 
+LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::TryBlockingApplyWithRetBuff(
+                                                  const KTYPE &key,
+                                                  ApplyFunT &&function,
+                                                  uint8_t* resultBuffer,
+                                                  uint32_t* resultSize,
+                                                  Args &...args) {
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
+  while (bucket != nullptr) {
+    for (size_t i = 0; i < bucket->BucketSize(); ++i) {
+      Entry *entry = &bucket->getEntry(i);
+
+      // Stop at the first empty or pending insert entry.
+      if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+        break;
+      }
+
+      // Entry is USED.
+      if (KeyComp_(&entry->key, &key) == 0) {
+        // try to tag as pending update
+        if (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_UPDATE)) {
+          return ApplyResult::FAILED;
+        }
+        function(key, entry->value, resultBuffer, resultSize, args...);
+        entry->state = USED;
+        return ApplyResult::SUCCESS;
+      }
+    }
+    bucket = bucket->next.get();
+  }
+  return ApplyResult::NOT_FOUND;
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename RetT, typename... Args>
+typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::ApplyResult 
+LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::TryBlockingApplyWithRet(
+                                                  const KTYPE &key,
+                                                  ApplyFunT &&function,
+                                                  RetT* resultPtr,
+                                                  Args &...args) {
+  size_t bucketIdx = shad::hash<KTYPE>{}(key) % numBuckets_;
+  Bucket *bucket = &(buckets_array_[bucketIdx]);
+  while (bucket != nullptr) {
+    for (size_t i = 0; i < bucket->BucketSize(); ++i) {
+      Entry *entry = &bucket->getEntry(i);
+
+      // Stop at the first empty or pending insert entry.
+      if ((entry->state == EMPTY) or (entry->state == PENDING_INSERT)) {
+        break;
+      }
+
+      // Entry is USED.
+      if (KeyComp_(&entry->key, &key) == 0) {
+        // try to tag as pending update
+        if (!__sync_bool_compare_and_swap(&entry->state, USED,
+                                             PENDING_UPDATE)) {
+          return ApplyResult::FAILED;
+        }
+        function(key, entry->value, resultPtr, args...);
+        entry->state = USED;
+        return ApplyResult::SUCCESS;
+      }
+    }
+    bucket = bucket->next.get();
+  }
+  return ApplyResult::NOT_FOUND;
+}
+
 
 template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
           typename INSERTER>

@@ -286,6 +286,52 @@ class Hashmap : public AbstractDataStructure<
                                                ApplyFunT &&function,
                                                Args &... args);
 
+
+  /// @brief Tries to apply a user-defined function to a key-value pair.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype should be:
+  /// @code
+  /// void(const KTYPE&, std::vector<VTYPE> &, Args&);
+  /// @endcode
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param key The key.
+  /// @param function The function to apply.
+  /// @param[out] ResultBuffer Pointer to the result buffer.
+  /// @param[out] ResultSize Size (in bytes) of data written in the buffer.
+  /// @param args The function arguments.
+  /// @return SUCCESS if the function has been successfully applied, 
+  /// NOT_FOUND if the key is not found, FAILED otherwise.
+  /// @warning Result buffer size MUST be increased by sizeof(LMapT::ApplyResult)
+  template <typename ApplyFunT, typename... Args>
+  typename LMapT::ApplyResult TryBlockingApplyWithRetBuff(const KTYPE &key,
+                                                          ApplyFunT &&function,
+                                                          uint8_t* resultBuffer,
+                                                          uint32_t* resultSize,
+                                                          Args &...args);
+
+  /// @brief Tries to apply a user-defined function to an entry's value.
+  /// Thread safe wrt other operations.
+  /// @tparam ApplyFunT User-defined function type. The function prototype
+  /// should be:
+  /// @code
+  /// void(const KTYPE&, VTYPE&, RetT*, Args&);
+  /// @endcode
+  /// @tparam RetT Return Data Type
+  /// @tparam ...Args Types of the function arguments.
+  ///
+  /// @param[in] key The key.
+  /// @param function The function to apply.
+  /// @param[out] retPtr Pointer to the result.
+  /// @param args The function arguments.
+  /// @return SUCCESS if the function has been successfully applied, 
+  /// NOT_FOUND if the key is not found, FAILED otherwise.
+  template <typename ApplyFunT, typename RetT, typename... Args>
+  typename LMapT::ApplyResult TryBlockingApplyWithRet(const KTYPE &key,
+                                                      ApplyFunT &&function,
+                                                      RetT* resultPtr,
+                                                      Args &...args);
+
   /// @brief Apply a user-defined function to each key-value pair.
   ///
   /// @tparam ApplyFunT User-defined function type.  The function prototype
@@ -839,6 +885,83 @@ Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::TryBlockingApply(const KTYPE &key,
     typename LMapT::ApplyResult res;
     rt::executeAtWithRet(targetLocality, feLambda, arguments, &res);
     return res;
+  }
+}
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename... Args>
+typename Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::LMapT::ApplyResult
+Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::TryBlockingApplyWithRetBuff(const KTYPE &key,
+                                                                          ApplyFunT &&function,
+                                                                          uint8_t* resultBuffer,
+                                                                          uint32_t* resultSize,
+                                                                          Args &... args) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+  if (targetLocality == rt::thisLocality()) {
+    return localMap_.TryBlockingApplyWithRetBuff(key, function,
+                                                 resultBuffer, resultSize, args...);
+
+  } else {
+    using FunctionTy = void (*)(const KTYPE &, VTYPE &, uint8_t*,
+                                uint32_t*,  Args &...);
+    FunctionTy fn = std::forward<decltype(function)>(function);
+    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+
+    auto feLambda = [](const ArgsTuple &args, uint8_t* buff, uint32_t* size) {
+      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      ArgsTuple &tuple = const_cast<ArgsTuple &>(args);
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMap_);
+      auto res = LMapT::CallTryBlockingApplyWithRetBuffFun(mapPtr, std::get<1>(tuple), std::get<2>(tuple),
+                          buff, size,
+                          std::get<3>(tuple), std::make_index_sequence<Size>{});
+      uint32_t oldsize = *size;
+      memcpy(buff+oldsize, &res, sizeof(typename LMapT::ApplyResult));
+      *size = oldsize + sizeof(typename LMapT::ApplyResult);
+    };
+    typename LMapT::ApplyResult res;
+    uint32_t buffSize;
+    rt::executeAtWithRetBuff(targetLocality, feLambda, arguments, resultBuffer, &buffSize);
+    buffSize -= sizeof(typename LMapT::ApplyResult);
+    res = *((typename LMapT::ApplyResult*)(resultBuffer+buffSize));
+    *resultSize = buffSize;
+    return res;
+  }
+}
+
+
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE,
+          typename INSERTER>
+template <typename ApplyFunT, typename RetT, typename... Args>
+typename Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::LMapT::ApplyResult
+Hashmap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::
+TryBlockingApplyWithRet(const KTYPE &key, ApplyFunT &&function,
+                        RetT* resultPtr, Args &... args) {
+  size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
+  rt::Locality targetLocality(targetId);
+  if (targetLocality == rt::thisLocality()) {
+    return localMap_.TryBlockingApplyWithRet(key, function, resultPtr, args...);
+  } else {
+    using FunctionTy = void (*)(const KTYPE &, VTYPE &, RetT*, Args &...);
+    FunctionTy fn = std::forward<decltype(function)>(function);
+    using ArgsTuple = std::tuple<ObjectID, const KTYPE, FunctionTy, std::tuple<Args...>>;
+    ArgsTuple arguments(oid_, key, fn, std::tuple<Args...>(args...));
+    using feArgsT = std::pair<typename LMapT::ApplyResult, RetT>;
+    feArgsT res;
+    auto feLambda = [](const ArgsTuple &args, feArgsT* res) {
+      constexpr auto Size = std::tuple_size<typename std::decay<decltype(std::get<3>(args))>::type>::value;
+      ArgsTuple &tuple = const_cast<ArgsTuple &>(args);
+      LMapT *mapPtr = &(HmapT::GetPtr(std::get<0>(tuple))->localMap_);
+      feArgsT result;
+      result.first = LMapT::CallTryBlockingApplyWithRetFun(mapPtr, std::get<1>(tuple), std::get<2>(tuple), &(result.second),
+                          std::get<3>(tuple), std::make_index_sequence<Size>{});
+      *res = result;
+    };
+    rt::executeAtWithRet(targetLocality, feLambda, arguments, &res);
+    *resultPtr = res.second;
+    return res.first;
   }
 }
 
