@@ -918,8 +918,8 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::PrintAllEntries() {
   for (auto itr = begin(); itr != end(); ++itr) {
     auto key = (*itr).first;
-    std::cout << std::get<0>(key) << " " << std::get<1>(key);
-    std::cout << "\n";
+    auto value = (*itr).second;
+    std::cout << "[" << key << "]: " << value << std::endl;
   }
 }
 
@@ -927,10 +927,7 @@ template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
 void LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::PrintAllKeys() {
   for (auto itr = key_begin(); itr != key_end(); ++itr) {
     auto key = (*itr).first;
-    auto value = (*itr).second;
-    std::cout << value.size() << " " << std::get<0>(key) << " "
-              << std::get<1>(key);
-    std::cout << "\n";
+    std::cout << key << std::endl;
   }
 }
 
