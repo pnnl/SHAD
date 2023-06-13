@@ -182,7 +182,7 @@ class Hashmap : public AbstractDataStructure<
   /// @warning asynchronous buffered insertions are finalized only after
   /// calling the rt::waitForCompletion(rt::Handle &handle) method AND
   /// the WaitForBufferedInsert() method, in this order.
-  /// @param[in,out] handle Reference to the handle
+  /// @param[in,out] handle Reference to the handle.
   /// @param[in] key The key.
   /// @param[in] value The value.
   void BufferedAsyncInsert(rt::Handle &handle, const KTYPE &key,
@@ -196,6 +196,17 @@ class Hashmap : public AbstractDataStructure<
     };
     rt::executeOnAll(flushLambda_, oid_);
   }
+
+  /// @brief Async variant of finalize method for buffered insertions.
+  /// @param[in,out] handle Reference to the handle.
+  void AsyncWaitForBufferedInsert(rt::Handle& h) {
+    auto flushLambda_ = [](rt::Handle& h, const ObjectID &oid) {
+      auto ptr = HmapT::GetPtr(oid);
+      ptr->buffers_.AsyncFlushAll(h);
+    };
+    rt::asyncExecuteOnAll(h, flushLambda_, oid_);
+  }
+
   /// @brief Remove a key-value pair from the hashmap.
   /// @param[in] key the key.
   void Erase(const KTYPE &key);
