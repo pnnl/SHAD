@@ -345,7 +345,23 @@ class Vector : public AbstractDataStructure<Vector<T, Allocator>> {
                              const value_type &value);
 
   /// @brief Finalize method for buffered insertions.
-  void WaitForBufferedInsert() { buffers_.FlushAll(); }
+  void WaitForBufferedInsert() {
+    auto flushLambda_ = [](const ObjectID &oid) {
+      auto ptr = Vector<T>::GetPtr(oid);
+      ptr->buffers_.FlushAll();
+    };
+    rt::executeOnAll(flushLambda_, oid_);
+  }
+
+  /// @brief Async variant of finalize method for buffered insertions.
+  /// @param[in,out] handle Reference to the handle.
+  void AsyncWaitForBufferedInsert(rt::Handle& h) {
+    auto flushLambda_ = [](rt::Handle& h, const ObjectID &oid) {
+      auto ptr = Vector<T>::GetPtr(oid);
+      ptr->buffers_.AsyncFlushAll(h);
+    };
+    rt::asyncExecuteOnAll(h, flushLambda_, oid_);
+  }
 
   /// @}
 
