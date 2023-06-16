@@ -228,8 +228,9 @@ class Hashmap : public AbstractDataStructure<
     rt::executeOnAll(clearLambda, oid_);
   }
 
-  using LookupResult =
-      typename LocalHashmap<KTYPE, VTYPE, KEY_COMPARE>::LookupResult;
+  using LookupResult = typename LocalHashmap<KTYPE, VTYPE,
+                                             KEY_COMPARE,
+                                             INSERT_POLICY>::LookupResult;
 
   /// @brief Get the value associated to a key.
   /// @param[in] key the key.
