@@ -144,7 +144,6 @@ class MultimapTest : public ::testing::Test {
     Key keys;
     FillKey(&keys, key_seed);
     m0->AsyncLookup(handle, keys, lr);
-    // m0->Lookup(keys, values);
   }
 
 
