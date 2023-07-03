@@ -7,7 +7,9 @@ set(tests
   set_test
   local_set_test
   vector_test
-)
+  multimap_test
+  local_multimap_test
+) 
 
 foreach(t ${tests})
   add_executable(${t} ${t}.cc)
