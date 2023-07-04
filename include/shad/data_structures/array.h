@@ -1900,7 +1900,8 @@ class alignas(64) Array<T>::array_iterator {
     size_t chunk = 0;
 
     for (auto l = locality_, end = O.locality_; l <= end; ++l) {
-      distance += chunk_size(size_, l);
+      chunk = chunk_size(size_, l);
+      distance += chunk;
     }
 
     distance -= this->offset_;
