@@ -64,6 +64,7 @@ class AbstractDataStructure {
   /// @brief Default constructor
   AbstractDataStructure() = default;
 
+
   /// @brief Create method.
   ///
   /// Creates a global instance of DataStructure, and associates to it a unique
@@ -85,7 +86,9 @@ class AbstractDataStructure {
     ObjectID id = catalogRef->GetNextID();
     std::tuple<ObjectID, Args...> tuple(id, args...);
     rt::executeOnAll(CreateFunWrapper<ObjectID, Args...>, tuple);
-    return catalogRef->GetPtr(id);
+    auto ret= catalogRef->GetPtr(id);
+    ret->DataStructurePointerCommunication();
+    return ret;
   }
 
   /// @brief Destroy method.
@@ -150,6 +153,8 @@ class AbstractDataStructure {
     CreateFunInnerWrapper(std::move(args), std::index_sequence_for<Args...>());
   }
 
+  void DataStructurePointerCommunication(){}
+  
   class Catalog {
    public:
     void Insert(const ObjectID &oid, const SharedPtr ce) {
@@ -196,6 +201,7 @@ class AbstractDataStructure {
     }
 
    private:
+
     Catalog() : register_(rt::numLocalities()), oidCache_(), registerLock_() {}
 
     /// The Type storing the counter to obtain new DataStructure object IDs.
