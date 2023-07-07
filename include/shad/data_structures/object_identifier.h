@@ -56,7 +56,11 @@ class ObjectIdentifier {
   static constexpr uint8_t kIdentifierBitsize = 48u;
 
   /// @brief Constructor.
+#ifdef HAVE_HPX
+  explicit constexpr ObjectIdentifier(uint64_t id = 0) : id_(id) {}
+#else
   explicit constexpr ObjectIdentifier(uint64_t id) : id_(id) {}
+#endif
 
   /// @brief Constructor.
   /// @param[in] locality The locality identifier part.

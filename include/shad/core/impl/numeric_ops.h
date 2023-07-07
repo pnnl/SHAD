@@ -63,7 +63,25 @@ void iota(ForwardIterator first, ForwardIterator last, const T& value) {
 template <class InputIt, class T, class BinaryOperation>
 T accumulate(InputIt first, InputIt last, T init, BinaryOperation op) {
   using itr_traits = distributed_iterator_traits<InputIt>;
-
+#ifdef HAVE_HPX
+  auto new_op = shad::rt::lambda_wrapper(op);
+  return distributed_folding_map(
+      // range
+      first, last,
+      // kernel
+      [](InputIt first, InputIt last, T res,
+         shad::rt::lambda_wrapper<typeof(new_op)> new_op) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        res = std::accumulate(lrange.begin(), lrange.end(), res, new_op);
+        // update the partial solution
+        return res;
+      },
+      // initial solution
+      init,
+      // map arguments
+      new_op);
+#else
   return distributed_folding_map(
       // range
       first, last,
@@ -79,6 +97,7 @@ T accumulate(InputIt first, InputIt last, T init, BinaryOperation op) {
       init,
       // map arguments
       op);
+#endif
 }
 
 template <class InputIt1, class InputIt2, class T>

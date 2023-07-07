@@ -34,6 +34,9 @@
 #elif defined HAVE_GMT
 #include "shad/runtime/mappings/gmt/gmt_asynchronous_interface.h"
 #include "shad/runtime/mappings/gmt/gmt_synchronous_interface.h"
+#elif defined HAVE_HPX
+#include "shad/runtime/mappings/hpx/hpx_asynchronous_interface.h"
+#include "shad/runtime/mappings/hpx/hpx_synchronous_interface.h"
 #else
 #error Unsupported Runtime System
 #endif
