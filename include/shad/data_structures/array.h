@@ -701,6 +701,18 @@ void PrintAllElements() {
     }
   }
 
+   constexpr void DataStructurePointerCommunication() {
+    rt::executeOnAll([](const ObjectID &oid) {
+      auto This = Array<T>::GetPtr(oid);
+      rt::executeOnAll([](const std::tuple<ObjectID, rt::Locality, T*> &args) {
+          auto This = Array<T>::GetPtr(std::get<0>(args));
+
+          This->ptrs_[(uint32_t)std::get<1>(args)] = std::get<2>(args);
+        },
+        std::make_tuple(This->GetGlobalID(), rt::thisLocality(), This->data_.data()));
+      }, GetGlobalID());
+  }
+
  private:
   ObjectID oid_;
   size_t size_;
@@ -947,6 +959,9 @@ void PrintAllElements() {
     (* data)[0] = delta;
   }
 };
+
+template <>
+constexpr void Array<bool>::DataStructurePointerCommunication() {}
 
 static std::pair<rt::Locality, size_t> getTargetLocalityFromTargePosition(
     const std::vector<std::pair<size_t, size_t>> &dataDistribution,
