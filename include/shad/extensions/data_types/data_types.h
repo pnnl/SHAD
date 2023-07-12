@@ -28,6 +28,7 @@
 #include <ctime>
 
 #include <algorithm>
+#include <charconv>
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -187,9 +188,13 @@ template<> inline
 uint64_t data_types::encode<uint64_t,
                             std::string,
                             data_types::UINT>(std::string &str) {
-  uint64_t value;
-  try { value = std::stoull(str); }
-  catch(...) { value = kNullValue<uint64_t>; }
+  uint64_t value = kNullValue<uint64_t>;
+  auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+  if (ec != std::errc()) {
+    value = kNullValue<uint64_t>;
+  }
+  // try { value = std::stoull(str); }
+  // catch(...) { value = kNullValue<uint64_t>; }
   return value;
 }
 
@@ -199,8 +204,10 @@ uint64_t data_types::encode<uint64_t,
                             data_types::INT>(std::string &str) {
   uint64_t encval;
   int64_t value;
-  try { value = stoll(str); }
-  catch(...) { return kNullValue<uint64_t>; }
+  auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+  if (ec != std::errc()) {
+    return kNullValue<uint64_t>;
+  }
   memcpy(&encval, &value, sizeof(value));
   return encval;
 }
@@ -223,6 +230,7 @@ uint64_t data_types::encode<uint64_t,
                             data_types::DOUBLE>(std::string &str) {
   uint64_t encval;
   double value;
+  // auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
   try { value = stod(str); }
   catch(...) { return kNullValue<uint64_t>; }
   memcpy(&encval, &value, sizeof(value));
@@ -338,8 +346,10 @@ double data_types::encode<double,
                           data_types::UINT>(std::string &str) {
   double encval;
   uint64_t value;
-  try { value = std::stoull(str); }
-  catch(...) { return kNullValue<double>; }
+  auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+  if (ec != std::errc()) {
+    return kNullValue<uint64_t>;
+  }
   memcpy(&encval, &value, sizeof(value));
   return encval;
 }
@@ -350,8 +360,10 @@ double data_types::encode<double,
                           data_types::INT>(std::string &str) {
   double encval;
   int64_t value;
-  try { value = stoll(str); }
-  catch(...) { return kNullValue<double>; }
+  auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+  if (ec != std::errc()) {
+    return kNullValue<uint64_t>;
+  }
   memcpy(&encval, &value, sizeof(value));
   return encval;
 }
@@ -487,8 +499,10 @@ time_t data_types::encode<time_t,
                           std::string,
                           data_types::UINT>(std::string &str) {
   time_t value;
-  try { value = std::stoul(str); }
-  catch(...) { value = kNullValue<time_t>; }
+  auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+  if (ec != std::errc()) {
+    return kNullValue<uint64_t>;
+  }
   return value;
 }
 
@@ -497,8 +511,10 @@ time_t data_types::encode<time_t,
                           std::string,
                           data_types::INT>(std::string &str) {
   int64_t value;
-  try { value = stol(str); }
-  catch(...) { return kNullValue<time_t>; }
+  auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+  if (ec != std::errc()) {
+    return kNullValue<uint64_t>;
+  }
   return value;
 }
 
