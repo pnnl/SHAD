@@ -68,37 +68,6 @@ struct Overwriter {
   }
 };
 
-// template <typename T>
-// struct Updater {
-//   bool operator()(T *const lhs, const T &rhs, bool same_key) {
-//     if (!same_key) {
-//       *lhs = std::move(rhs);
-//       return true;
-//     }
-//     return false;
-//   }
-//   static bool Insert(T *const lhs, const T &rhs, bool same_key) {
-//     if (!same_key) {
-//       *lhs = std::move(rhs);
-//       return true;
-//     }
-//     return false;
-//   }
-//   bool operator()(rt::Handle&, T *const lhs, const T &rhs, bool same_key) {
-//     if (!same_key) {
-//       *lhs = std::move(rhs);
-//       return true;
-//     }
-//     return false;
-//   }
-//   static bool Insert(rt::Handle&, T *const lhs, const T &rhs, bool same_key) {
-//     if (!same_key) {
-//       *lhs = std::move(rhs);
-//       return true;
-//     }
-//     return false;
-//   }
-// };
 
 /// @brief The LocalMultimap data structure.
 ///
@@ -1112,7 +1081,6 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(FUNTYPE &insfun,const
       if (__sync_bool_compare_and_swap(&entry->state, EMPTY, PENDING_INSERT)) {
         entry->key = std::move(key);
        bool inserted = insfun(&entry->value, value, false);
-        // entry->value.push_back(value);
         numberKeys_ += 1;
         entry->state = USED;
         release_inserter(bucketIdx);
@@ -1131,7 +1099,6 @@ LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERTER>::Insert(FUNTYPE &insfun,const
                                              PENDING_INSERT)) {
           rt::impl::yield();
         }
-       // entry->value.push_back(value);
         bool inserted = insfun(&entry->value, value, false);
         entry->state = USED;
         release_inserter(bucketIdx);
