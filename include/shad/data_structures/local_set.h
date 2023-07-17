@@ -246,7 +246,7 @@ class LocalSet {
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
   static void AsyncCallForEachElementFun(rt::Handle& handle, const size_t i,
-                                         LocalSet<T>* setPtr,
+                                         LocalSet<T, ELEM_COMPARE>* setPtr,
                                          ApplyFunT function,
                                          std::tuple<Args...>& args,
                                          std::index_sequence<is...>) {
@@ -280,7 +280,7 @@ class LocalSet {
   }
 
   template <typename ApplyFunT, typename... Args, std::size_t... is>
-  static void CallForEachElementFun(const size_t i, LocalSet<T>* setPtr,
+  static void CallForEachElementFun(const size_t i, LocalSet<T, ELEM_COMPARE>* setPtr,
                                     ApplyFunT function,
                                     std::tuple<Args...>& args,
                                     std::index_sequence<is...>) {
