@@ -37,7 +37,7 @@ namespace impl {
 /// @brief Distributed vector without resizing capabilities.
 /// TODO change the descriptions
 /// The C++ standard defines the ::vector as a dynamically
-/// resizeable sequence of objects.  A ::vector should be a contiguous container
+/// resizable sequence of objects.  A ::vector should be a contiguous container
 /// (as defined in the C++ standard).  According to that definition, contiguous
 /// containers requires contiguous iterators.  The definition of contiguous
 /// iterators implies contiguous memory allocation for the sequence, and it
@@ -852,7 +852,7 @@ class alignas(64) vector<T>::vector_iterator {
 /// @brief Fixed size distributed vector.
 ///
 /// Section XX.X.X.X of the C++ standard defines the ::vector as a dynamically
-/// resizeable sequence of objects.  A ::vector should be a contiguous container
+/// resizable sequence of objects.  A ::vector should be a contiguous container
 /// (as defined in section XX.X.X).  According to that definition, contiguous
 /// containers requires contiguous iterators.  The definition of contiguous
 /// iterators implies contiguous memory allocation for the sequence, and it

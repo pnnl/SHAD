@@ -50,7 +50,7 @@ namespace shad {
 ///   if (!MemCmp()(&value1, &value2)) {
 ///     // they are equal so do something
 ///   } else {
-///     // do sothing different
+///     // do something different
 ///   }
 /// }
 /// @endcode
@@ -82,7 +82,7 @@ class MemCmp {
 ///   if (!MemCmp()(&value1, &value2)) {
 ///     // they are equal so do something
 ///   } else {
-///     // do sothing different
+///     // do something different
 ///   }
 /// }
 /// @endcode

@@ -49,7 +49,7 @@ class map_iterator;
 /// @tparam KTYPE type of the hashmap keys.
 /// @tparam VTYPE type of the hashmap values.
 /// @tparam KEY_COMPARE key comparison function; default is MemCmp<KTYPE>.
-/// @warning obects of type KTYPE and VTYPE need to be trivially copiable.
+/// @warning objects of type KTYPE and VTYPE need to be trivially copyable.
 /// @tparam INSERT_POLICY insertion policy; default is overwrite
 /// (i.e. insertions overwrite previous values
 ///  associated to the same key, if any).
@@ -95,7 +95,7 @@ class Hashmap : public AbstractDataStructure<
 
   /// @brief Create method.
   ///
-  /// Creates a newhashmap instance.
+  /// Creates a new hashmap instance.
   /// @param numEntries Expected number of entries.
   /// @return A shared pointer to the newly created hashmap instance.
 #ifdef DOXYGEN_IS_RUNNING
@@ -107,7 +107,7 @@ class Hashmap : public AbstractDataStructure<
   /// @return The global identifier associated with the hashmap instance.
   ObjectID GetGlobalID() const { return oid_; }
 
-  /// @brief Getter of the local hasmap.
+  /// @brief Getter of the local hashmap.
   ///
   /// @return The pointer to the local hashmap instance.
   LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> * GetLocalHashmap() {
@@ -116,7 +116,7 @@ class Hashmap : public AbstractDataStructure<
 
   /// @brief Overall size of the hashmap (number of entries).
   /// @warning Calling the size method may result in one-to-all
-  /// communication among localities to retrieve consinstent information.
+  /// communication among localities to retrieve consistent information.
   /// @return the size of the hashmap.
   size_t Size() const;
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2007, Intel Copr.
+// Copyright (c) 2007, Intel Corp.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
