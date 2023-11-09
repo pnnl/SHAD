@@ -59,7 +59,7 @@ namespace data_types {
     BOOL,        // bool, binds by default to bool
     DATE,        // date in "%y-%m-%d" format, binds by default to time_t
     USDATE,      // date in "%m/%d/%y" format, binds by default to time_t
-    DATE_TIME,   // date in "%y-%m-%dT%H:%M:%S" format,
+    DATE_TIME,   // date in "%y-%m-%d %H:%M:%S" format,
                  // binds by default to time_t
     IP_ADDRESS,  // IPv4, binds by default to data_types::ipv4_t
     LIST_UINT,   // Sequence of unsigneds, support currently limited
@@ -326,7 +326,7 @@ uint64_t data_types::encode<uint64_t,
   uint64_t value = 0;
   struct tm date{};
   date.tm_isdst = -1;
-  strptime(str.c_str(), "%Y-%m-%dT%H:%M:%S", &date);
+  strptime(str.c_str(), "%Y-%m-%d %H:%M:%S", &date);
   time_t t;
   try {
     t = mktime(&date);
@@ -481,7 +481,7 @@ double data_types::encode<double,
   double value = 0;
   struct tm date{};
   date.tm_isdst = -1;
-  strptime(str.c_str(), "%Y-%m-%dT%H:%M:%S", &date);
+  strptime(str.c_str(), "%Y-%m-%d %H:%M:%S", &date);
   time_t t;
   try {
     t = mktime(&date);
@@ -626,7 +626,7 @@ time_t data_types::encode<time_t,
                           data_types::DATE_TIME>(std::string &str) {
   struct tm date{};
   date.tm_isdst = -1;
-  strptime(str.c_str(), "%Y-%m-%dT%H:%M:%S", &date);
+  strptime(str.c_str(), "%Y-%m-%d %H:%M:%S", &date);
   time_t t;
   try {
     t = mktime(&date);
