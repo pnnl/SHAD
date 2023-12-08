@@ -1,13 +1,5 @@
 //===------------------------------------------------------------*- C++ -*-===//
 //
-//                            The AGILE Workflows
-//
-//===----------------------------------------------------------------------===//
-// ** Pre-Copyright Notice
-//
-// This computer software was prepared by Battelle Memorial Institute,
-//===------------------------------------------------------------*- C++ -*-===//
-//
 //                                     SHAD
 //
 //      The Scalable High-performance Algorithms and Data Structure Library
@@ -156,7 +148,7 @@ class Replicated_Hashmap : public shad::AbstractDataStructure<
   friend class shad::AbstractDataStructure;
 
   ObjectID oid_;
-  shad::LocalHashmap<KTYPE, VTYPE> localMap_;
+  shad::LocalHashmap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> localMap_;
 
   struct InsertArgs {
     ObjectID oid;
