@@ -55,36 +55,36 @@ class multimap_iterator;
 /// @tparam VTYPE type of the multimap values.
 /// @tparam KEY_COMPARE key comparison function; default is MemCmp<KTYPE>.
 /// @warning obects of type KTYPE and VTYPE need to be trivially copiable.
-template < typename KTYPE, typename VTYPE, typename KEY_COMPARE = MemCmp<KTYPE> >
-class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPARE> > {
+template < typename KTYPE, typename VTYPE, typename KEY_COMPARE = MemCmp<KTYPE>, typename INSERT_POLICY = Overwriter<VTYPE> >
+class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> > {
 
   template <typename>
   friend class AbstractDataStructure;
-  friend class multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE>,
+  friend class multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                             const std::pair<KTYPE, VTYPE>,
                             std::pair<KTYPE, VTYPE>>;
-  friend class multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE>,
+  friend class multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                             const std::pair<KTYPE, VTYPE>,
                             std::pair<KTYPE, VTYPE>>;
 
  public:
   using value_type = std::pair<KTYPE, VTYPE>;
-  using HmapT = Multimap<KTYPE, VTYPE, KEY_COMPARE>;
-  using LMapT = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>;
+  using HmapT = Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
+  using LMapT = LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>;
   using ObjectID = typename AbstractDataStructure<HmapT>::ObjectID;
   using ShadMultimapPtr = typename AbstractDataStructure<HmapT>::SharedPtr;
 
   using iterator =
-      multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE>,
+      multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                    const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   using const_iterator =
-      multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE>,
+      multimap_iterator<Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                    const std::pair<KTYPE, VTYPE>, std::pair<KTYPE, VTYPE>>;
   using local_iterator =
-      lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
+      lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                     const std::pair<KTYPE, VTYPE>>;
   using const_local_iterator =
-      lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>,
+      lmultimap_iterator<LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>,
                     const std::pair<KTYPE, VTYPE>>;
 
   struct EntryT {
@@ -113,7 +113,7 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
   /// @brief Getter of the local local multimap.
   ///
   /// @return The pointer to the local multimap instance.
-  LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> * GetLocalMultimap() {
+  LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> * GetLocalMultimap() {
     return &localMultimap_;
   };
 
@@ -210,8 +210,8 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
     rt::executeOnAll(clearLambda, oid_);
   }
 
-  using LookupResult = typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupResult;
-  using LookupRemoteResult = typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE>::LookupRemoteResult;
+  using LookupResult = typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::LookupResult;
+  using LookupRemoteResult = typename LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::LookupRemoteResult;
 
   /// @brief Get all the values associated to a key.
   /// @param[in] key the key.
@@ -471,7 +471,7 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
 
  private:
   ObjectID oid_;
-  LocalMultimap<KTYPE, VTYPE, KEY_COMPARE> localMultimap_;
+  LocalMultimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY> localMultimap_;
   BuffersVector buffers_;
 
   struct InsertArgs {
@@ -498,8 +498,8 @@ class Multimap : public AbstractDataStructure< Multimap<KTYPE, VTYPE, KEY_COMPAR
         buffers_(oid) {}
 };
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::Size() const {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Size() const {
   size_t remoteSize, size = 0;
 
   auto sizeLambda = [](const ObjectID & oid, size_t * res) {
@@ -514,8 +514,8 @@ inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::Size() const {
   return size;
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::NumberKeys() const {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY >
+inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::NumberKeys() const {
   size_t size = localMultimap_.numberKeys_.load();
   size_t remoteKeys;
 
@@ -534,9 +534,9 @@ inline size_t Multimap<KTYPE, VTYPE, KEY_COMPARE>::NumberKeys() const {
   return size;
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline std::pair < typename Multimap<KTYPE, VTYPE, KEY_COMPARE>::iterator, bool >
-Multimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key, const VTYPE &value) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline std::pair < typename Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::iterator, bool >
+Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Insert(const KTYPE &key, const VTYPE &value) {
   using itr_traits = distributed_iterator_traits<iterator>;
 
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
@@ -565,8 +565,8 @@ Multimap<KTYPE, VTYPE, KEY_COMPARE>::Insert(const KTYPE &key, const VTYPE &value
   return res;
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncInsert(
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncInsert(
     rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
@@ -583,15 +583,15 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncInsert(
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::BufferedInsert(const KTYPE &key, const VTYPE &value) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BufferedInsert(const KTYPE &key, const VTYPE &value) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
   buffers_.Insert(EntryT(key, value), targetLocality);
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::
      BufferedAsyncInsert(rt::Handle &handle, const KTYPE &key, const VTYPE &value) {
 
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
@@ -599,8 +599,8 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::
   buffers_.AsyncInsert(handle, EntryT(key, value), targetLocality);
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Erase(const KTYPE &key) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Erase(const KTYPE &key) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
@@ -616,8 +616,8 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Erase(const KTYPE &key) {
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncErase(rt::Handle &handle, const KTYPE &key) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncErase(rt::Handle &handle, const KTYPE &key) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
@@ -633,16 +633,16 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncErase(rt::Handle &handle, 
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline bool Multimap<KTYPE, VTYPE, KEY_COMPARE>::Lookup(const KTYPE &key, LookupResult *res) {
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline bool Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Lookup(const KTYPE &key, LookupResult *res) {
   rt::Handle handle;
   AsyncLookup(handle, key, res);
   waitForCompletion(handle);
   return res->found;
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncLookup(
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncLookup(
       rt::Handle & handle, const KTYPE & key, LookupResult * result) {
 
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
@@ -685,8 +685,8 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncLookup(
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
-inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::readFromFiles(
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
+inline void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::readFromFiles(
      rt::Handle & handle, std::string prefix, uint64_t lb, uint64_t ub) {
 
   auto readFileLambda = [](rt::Handle & handle, const RFArgs & args, size_t it) {
@@ -711,9 +711,9 @@ inline void Multimap<KTYPE, VTYPE, KEY_COMPARE>::readFromFiles(
   rt::asyncForEachOnAll(handle, readFileLambda, args, ub - lb + 1);
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(ApplyFunT &&function, Args &... args) {
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::ForEachEntry(ApplyFunT &&function, Args &... args) {
   using FunctionTy = void (*)(const KTYPE &, std::vector<VTYPE> &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
@@ -731,9 +731,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachEntry(ApplyFunT &&function, Arg
   rt::executeOnAll(feLambda, arguments);
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachEntry(
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncForEachEntry(
     rt::Handle &handle, ApplyFunT &&function, Args &... args) {
 
   using FunctionTy = void (*)(rt::Handle &, const KTYPE &, std::vector<VTYPE> &, Args &...);
@@ -755,9 +755,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachEntry(
   rt::asyncExecuteOnAll(handle, feLambda, arguments);
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachKey(ApplyFunT &&function, Args &... args) {
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::ForEachKey(ApplyFunT &&function, Args &... args) {
   using FunctionTy = void (*)(const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
 
@@ -775,9 +775,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::ForEachKey(ApplyFunT &&function, Args 
   rt::executeOnAll(feLambda, arguments);
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncForEachKey(
     rt::Handle &handle, ApplyFunT &&function, Args &... args) {
   using FunctionTy = void (*)(rt::Handle &, const KTYPE &, Args &...);
   FunctionTy fn = std::forward<decltype(function)>(function);
@@ -797,9 +797,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncForEachKey(
   rt::asyncExecuteOnAll(handle, feLambda, arguments);
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Apply(const KTYPE &key, ApplyFunT &&function, Args &... args) {
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::Apply(const KTYPE &key, ApplyFunT &&function, Args &... args) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
 
@@ -824,9 +824,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::Apply(const KTYPE &key, ApplyFunT &&fu
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncApply(
     rt::Handle &handle, const KTYPE &key, ApplyFunT &&function, Args &... args) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
@@ -852,9 +852,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApply(
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::BlockingApply(const KTYPE &key,
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::BlockingApply(const KTYPE &key,
                                                         ApplyFunT &&function, Args &... args) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
@@ -881,10 +881,10 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::BlockingApply(const KTYPE &key,
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-typename Multimap<KTYPE, VTYPE, KEY_COMPARE>::LMapT::ApplyResult
-Multimap<KTYPE, VTYPE, KEY_COMPARE>::TryBlockingApply(const KTYPE &key,
+typename Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::LMapT::ApplyResult
+Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::TryBlockingApply(const KTYPE &key,
                                                            ApplyFunT &&function, Args &... args) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
@@ -910,9 +910,9 @@ Multimap<KTYPE, VTYPE, KEY_COMPARE>::TryBlockingApply(const KTYPE &key,
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncBlockingApply(
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncBlockingApply(
     rt::Handle &handle, const KTYPE &key, ApplyFunT &&function, Args &... args) {
   size_t targetId = shad::hash<KTYPE>{}(key) % rt::numLocalities();
   rt::Locality targetLocality(targetId);
@@ -938,9 +938,9 @@ void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncBlockingApply(
   }
 }
 
-template <typename KTYPE, typename VTYPE, typename KEY_COMPARE>
+template <typename KTYPE, typename VTYPE, typename KEY_COMPARE, typename INSERT_POLICY>
 template <typename ApplyFunT, typename... Args>
-void Multimap<KTYPE, VTYPE, KEY_COMPARE>::AsyncApplyWithRetBuff(
+void Multimap<KTYPE, VTYPE, KEY_COMPARE, INSERT_POLICY>::AsyncApplyWithRetBuff(
                               rt::Handle &handle, const KTYPE &key,
                               ApplyFunT &&function, uint8_t* result,
                               uint32_t* resultSize, Args &... args) {
@@ -984,7 +984,7 @@ class multimap_iterator : public std::iterator<std::forward_iterator_tag, T> {
 
   multimap_iterator() {}
   multimap_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit, T element) {
-    data_ = {locID, mapOID, lit, element};
+    data_ = {locID, mapOID, lit, element };
   }
 
   multimap_iterator(uint32_t locID, const OIDT mapOID, local_iterator_type &lit) {
