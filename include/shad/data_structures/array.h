@@ -323,7 +323,7 @@ class Array : public AbstractDataStructure<Array<T>> {
 
   /// @brief Lookup Method.
   ///
-  /// Retireve an element at a given position.
+  /// Retrieve an element at a given position.
   ///
   /// Typical usage:
   /// @code
@@ -340,7 +340,7 @@ class Array : public AbstractDataStructure<Array<T>> {
 
   /// @brief Asynchronous Lookup Method.
   ///
-  /// Retireve an element at a given position asynchronously.
+  /// Retrieve an element at a given position asynchronously.
   ///
   /// @warning Asynchronous operations are guaranteed to have completed
   /// only after calling the rt::waitForCompletion(rt::Handle &handle) method.

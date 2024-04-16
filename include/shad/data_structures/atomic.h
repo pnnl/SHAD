@@ -36,7 +36,7 @@ namespace shad {
 ///
 /// @warning Writes are not propagated across the system.
 ///
-/// @tparam T The typen of the objects that will be instantiated.
+/// @tparam T The type of the objects that will be instantiated.
 template <typename T>
 class Atomic : public AbstractDataStructure<Atomic<T>> {
  public:
@@ -57,7 +57,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   static SharedPtr Create(Args... args);
 #endif
 
-  /// @brief Retieve the Global Identifier.
+  /// @brief Retrieve the Global Identifier.
   ///
   /// @return The global identifier associated with the array instance.
   ObjectID GetGlobalID() const { return oid_; }
@@ -144,7 +144,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   }
 
   /// @brief Atomic Store. Attempts at atomically storing the results of binop
-  ///                      unitil succesful.
+  ///                      until successful.
   ///
   /// @tparam ArgT Type of rhs for the BinaryOp operator.
   /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const ArgT& rhs).
@@ -181,7 +181,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
 
 
   /// @brief Async Atomic Fetch-Store. Attempts at atomically storing
-  ///                            the results of binop unitil succesful.
+  ///                            the results of binop until successful.
   ///
   /// @tparam ArgT Type of rhs for the BinaryOp operator.
   /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const ArgT& rhs).
@@ -272,7 +272,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   }
 
   /// @brief Async Atomic Store. Attempts at atomically storing
-  ///                            the results of binop unitil succesful.
+  ///                            the results of binop until successful.
   ///
   /// @tparam ArgT Type of rhs for the BinaryOp operator.
   /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const ArgT& rhs).
@@ -309,7 +309,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   }
 
   /// @brief Async Atomic Fetch-Store. Attempts at atomically storing
-  ///                            the results of binop unitil succesful.
+  ///                            the results of binop until successful.
   ///
   /// @tparam ArgT Type of rhs for the BinaryOp operator.
   /// @tparam BinaryOp User-defined binary operator T (const T& lhs, const ArgT& rhs).
@@ -404,7 +404,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   /// @brief Fetch Add operation.
   ///
   /// @param[in] add Data to be fetch-added.
-  /// @return Result of the fect-add operation.
+  /// @return Result of the fetch-add operation.
   T FetchAdd(T add) {
     if (ownerLoc_ == rt::thisLocality()) {
      return localInstance_.fetch_add(add);
@@ -462,7 +462,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   /// @brief Fetch Sub operation.
   ///
   /// @param[in] sub Data to be fetch-subbed.
-  /// @return Result of the fect-sub operation.
+  /// @return Result of the fetch-sub operation.
   T FetchSub(T sub) {
     if (ownerLoc_ == rt::thisLocality()) {
      return localInstance_.fetch_sub(sub);
@@ -520,7 +520,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   /// @brief Fetch And operation.
   ///
   /// @param[in] operand Data to be fetch-anded.
-  /// @return Result of the fect-and operation.
+  /// @return Result of the fetch-and operation.
   T FetchAnd(T operand) {
     if (ownerLoc_ == rt::thisLocality()) {
      return localInstance_.fetch_and(operand);
@@ -578,7 +578,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   /// @brief Fetch Or operation.
   ///
   /// @param[in] operand Data to be fetch-ored.
-  /// @return Result of the fect-or operation.
+  /// @return Result of the fetch-or operation.
   T FetchOr(T operand) {
     if (ownerLoc_ == rt::thisLocality()) {
      return localInstance_.fetch_or(operand);
@@ -636,7 +636,7 @@ class Atomic : public AbstractDataStructure<Atomic<T>> {
   /// @brief Fetch Xor operation.
   ///
   /// @param[in] xor Data to be fetch-xored.
-  /// @return Result of the fect-xor operation.
+  /// @return Result of the fetch-xor operation.
   T FetchXor(T operand) {
     if (ownerLoc_ == rt::thisLocality()) {
      return localInstance_.fetch_xor(operand);
