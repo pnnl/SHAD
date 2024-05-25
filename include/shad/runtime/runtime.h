@@ -49,7 +49,55 @@
 namespace shad {
 
 namespace rt {
+#ifdef HAVE_HPX
+/// @brief lambda_wrapper.
+///
+/// The lambda_wrapper can be used to wrap lambda function. Three assumptions 
+/// are made. First, it is assumed taht the compiler will represent the lambda
+/// function properly, for example, we could use sizeof(F) to decide the length
+/// of byte. Second, it is assumed that the bytes buffer can work as the lambda
+/// by reinterpret_cast<*F>. Third, it is assumed that this method only works
+/// for capture with bitwise copyable types. For example, if capture a
+/// std::string, it will not work.
+template <typename F>
+struct lambda_wrapper {
+  lambda_wrapper() = default;
 
+  lambda_wrapper(F const &f) {
+    std::memcpy(buffer, reinterpret_cast<void const *>(&f), sizeof(F));
+  }
+
+  template <typename... Ts>
+  auto operator()(Ts &&...ts) {
+    return (*reinterpret_cast<F *>(buffer))(std::forward<Ts>(ts)...);
+  }
+
+  template <typename... Ts>
+  auto operator()(Ts &&...ts) const {
+    return (*reinterpret_cast<F const *>(buffer))(std::forward<Ts>(ts)...);
+  }
+
+  std::uint8_t buffer[sizeof(F)];
+};
+
+template <typename R, typename... Ts>
+struct lambda_wrapper<R(*)(Ts...)>
+{
+  lambda_wrapper() = default;
+
+  lambda_wrapper(R(*f)(Ts...)) 
+    : func(f)
+  {
+  }
+
+  template <typename... Args>
+  auto operator()(Args &&...ts) const {
+    return func(std::forward<Args>(ts)...);
+  }
+
+  R (*func)(Ts...);
+};
+#endif
 /// @brief Lock.
 ///
 /// The Lock can be used to lock a non-threadsafe objects.

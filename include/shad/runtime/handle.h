@@ -31,6 +31,7 @@
 #include "shad/runtime/mapping_traits.h"
 #include "shad/runtime/mappings/available_traits_mappings.h"
 
+
 namespace shad {
 
 namespace rt {
@@ -87,8 +88,24 @@ class Handle {
   /// @brief Null Test.
   /// @return true if the Handle is null, false otherwise.
   bool IsNull() const {
+#ifdef HAVE_HPX
+    return impl::HandleTrait<TargetSystemTag>::Equal(
+        id_, impl::HandleTrait<TargetSystemTag>::NullValue());
+#else
     return id_ == impl::HandleTrait<TargetSystemTag>::NullValue();
+#endif
   }
+
+ #ifdef HAVE_HPX
+ private:
+  friend class hpx::serialization::access;
+
+  template <typename Archive>
+  void serialize(Archive& ar, unsigned)
+  {
+      ar & id_;
+  }
+#endif 
 
  private:
   friend void waitForCompletion(Handle &handle);

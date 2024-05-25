@@ -51,6 +51,9 @@ class DefaultEdgeIndexStorage {
  public:
   struct EmptyAttr {};
   using SrcAttributesT = EmptyAttr;
+#ifdef HAVE_HPX
+  DefaultEdgeIndexStorage() = default;
+#endif
   explicit DefaultEdgeIndexStorage(const size_t numVertices)
       : edgeList_(std::max(numVertices / constants::kDefaultNumEntriesPerBucket,
                            1lu)) {}
@@ -59,6 +62,9 @@ class DefaultEdgeIndexStorage {
                            1lu)) {}
   static constexpr size_t kEdgeListChunkSize_ = 3072 / sizeof(DestT);
   struct LocalEdgeListChunk {
+#ifdef HAVE_HPX
+    LocalEdgeListChunk() = default;
+#endif
     LocalEdgeListChunk(size_t _numDest, bool _ow, DestT* _dest)
         : numDest(_numDest), overwrite(_ow) {
       memcpy(destinations.data(), _dest,

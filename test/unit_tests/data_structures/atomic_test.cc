@@ -266,11 +266,17 @@ TEST_F(AtomicTest, ForceFetchStore) {
   int64_t cnt = 0;
   for (auto loc : locs) {
     ptrs[cnt] = shad::Atomic<int64_t>::Create(kInitValue+cnt, loc);
-    results[cnt] = ptrs[cnt]->ForceFetchStore(cnt,
-                            [](auto& a, auto& b) {return std::min(a, b);});
+    results[cnt] = ptrs[cnt]->ForceFetchStore(
+        cnt,
+#ifdef HAVE_HPX
+        shad::rt::lambda_wrapper(
+            [](auto& a, auto& b) { return std::min(a, b); }));
+#else
+        [](auto& a, auto& b) { return std::min(a, b); });
+#endif
     ++cnt;
   }
-  
+
   shad::rt::Handle h;
   cnt = 0;
   std::vector<int64_t> values(locs.size());
@@ -286,6 +292,7 @@ TEST_F(AtomicTest, ForceFetchStore) {
     ++cnt;
   }
   destroy(ptrs);
+
 }
 
 TEST_F(AtomicTest, AsyncForceFetchStore) {
@@ -296,9 +303,15 @@ TEST_F(AtomicTest, AsyncForceFetchStore) {
   shad::rt::Handle h;
   for (auto loc : locs) {
     ptrs[cnt] = shad::Atomic<int64_t>::Create(cnt, loc);
-    ptrs[cnt]->AsyncForceFetchStore(h, kInitValue + cnt,
-                                   [](auto& a, auto& b) {return std::max(a, b);},
-                                   &results[cnt]);
+    ptrs[cnt]->AsyncForceFetchStore(
+        h, kInitValue + cnt,
+#ifdef HAVE_HPX
+        shad::rt::lambda_wrapper(
+            [](auto& a, auto& b) { return std::max(a, b); }),
+#else
+        [](auto& a, auto& b) { return std::max(a, b); },
+#endif
+        &results[cnt]);
     ++cnt;
   }
   shad::rt::waitForCompletion(h);

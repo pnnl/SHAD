@@ -413,7 +413,32 @@ template <typename ForwardIt, typename Generator>
 void generate(distributed_parallel_tag&& policy, ForwardIt first,
               ForwardIt last, Generator generator) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
+#ifdef HAVE_HPX
+  auto new_generator = shad::rt::lambda_wrapper(generator);
 
+  // distributed map
+  distributed_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last,
+         shad::rt::lambda_wrapper<typeof(new_generator)> new_generator) {
+        using local_iterator_t = typename itr_traits::local_iterator_type;
+
+        // local map
+        auto lrange = itr_traits::local_range(first, last);
+
+        local_map_void(
+            // range
+            lrange.begin(), lrange.end(),
+            // kernel
+            [&](local_iterator_t b, local_iterator_t e) {
+              std::generate(b, e, new_generator);
+            });
+      },
+      // map arguments
+      new_generator);
+#else
   // distributed map
   distributed_map_void(
       // range
@@ -435,13 +460,28 @@ void generate(distributed_parallel_tag&& policy, ForwardIt first,
       },
       // map arguments
       generator);
+#endif
 }
 
 template <typename ForwardIt, typename Generator>
 void generate(distributed_sequential_tag&& policy, ForwardIt first,
               ForwardIt last, Generator generator) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-
+#ifdef HAVE_HPX
+  auto new_generator = shad::rt::lambda_wrapper(generator);
+  distributed_folding_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last,
+         shad::rt::lambda_wrapper<typeof(new_generator)> new_generator) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        std::generate(lrange.begin(), lrange.end(), new_generator);
+      },
+      // map arguments
+      new_generator);
+#else
   distributed_folding_map_void(
       // range
       first, last,
@@ -453,6 +493,7 @@ void generate(distributed_sequential_tag&& policy, ForwardIt first,
       },
       // map arguments
       generator);
+#endif
 }
 
 template <typename ForwardIt, typename T>
@@ -507,7 +548,31 @@ template <typename ForwardIt, typename UnaryPredicate, typename T>
 void replace_if(distributed_parallel_tag&& policy, ForwardIt first,
                 ForwardIt last, UnaryPredicate p, const T& new_value) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
+#ifdef HAVE_HPX
+  auto new_p = shad::rt::lambda_wrapper(p);
+  // distributed map
+  distributed_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last,
+         shad::rt::lambda_wrapper<typeof(new_p)> new_p, const T& new_value) {
+        using local_iterator_t = typename itr_traits::local_iterator_type;
 
+        // local map
+        auto lrange = itr_traits::local_range(first, last);
+
+        local_map_void(
+            // range
+            lrange.begin(), lrange.end(),
+            // kernel
+            [&](local_iterator_t b, local_iterator_t e) {
+              std::replace_if(b, e, new_p, new_value);
+            });
+      },
+      // map arguments
+      new_p, new_value);
+#else
   // distributed map
   distributed_map_void(
       // range
@@ -530,13 +595,28 @@ void replace_if(distributed_parallel_tag&& policy, ForwardIt first,
       },
       // map arguments
       p, new_value);
+#endif
 }
 
 template <typename ForwardIt, typename UnaryPredicate, typename T>
 void replace_if(distributed_sequential_tag&& policy, ForwardIt first,
                 ForwardIt last, UnaryPredicate p, const T& new_value) {
   using itr_traits = distributed_iterator_traits<ForwardIt>;
-
+#ifdef HAVE_HPX
+  auto new_p = shad::rt::lambda_wrapper(p);
+  distributed_folding_map_void(
+      // range
+      first, last,
+      // kernel
+      [](ForwardIt first, ForwardIt last,
+         shad::rt::lambda_wrapper<typeof(new_p)> new_p, const T& new_value) {
+        // local processing
+        auto lrange = itr_traits::local_range(first, last);
+        std::replace_if(lrange.begin(), lrange.end(), new_p, new_value);
+      },
+      // map arguments
+      new_p, new_value);
+#else
   distributed_folding_map_void(
       // range
       first, last,
@@ -549,6 +629,7 @@ void replace_if(distributed_sequential_tag&& policy, ForwardIt first,
       },
       // map arguments
       p, new_value);
+#endif
 }
 
 }  // namespace impl

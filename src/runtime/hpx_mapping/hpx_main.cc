@@ -22,18 +22,20 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
-#define INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
+#include <hpx/hpx_init.hpp>
+namespace shad {
 
-#if defined HAVE_CPP_SIMPLE
-#include "shad/runtime/mappings/cpp_simple/cpp_simple_traits_mapping.h"
-#elif defined HAVE_TBB
-#include "shad/runtime/mappings/tbb/tbb_traits_mapping.h"
-#elif defined HAVE_GMT
-#include "shad/runtime/mappings/gmt/gmt_traits_mapping.h"
-#elif defined HAVE_HPX
-#include "shad/runtime/mappings/hpx/hpx_traits_mapping.h"
-#include "hpx/serialization.hpp"
-#endif
+extern int main(int argc, char *argv[]);
 
-#endif  // INCLUDE_SHAD_RUNTIME_MAPPINGS_AVAILABLE_TRAITS_MAPPINGS_H_
+}  // namespace shad
+
+int hpx_main(int argc, char *argv[]) { 
+    int result = shad::main(argc, argv);
+    hpx::finalize();
+    return result;
+}
+
+int main(int argc, char *argv[]) { 
+  return hpx::init(argc, argv);
+}
+
