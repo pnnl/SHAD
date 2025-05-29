@@ -1,1 +1,1 @@
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pnnl/SHAD/tree/ipdps_2025_tutorial/tutorial/ipdps_25.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pnnl/SHAD/blob/ipdps_2025_tutorial/tutorial/ipdps_25.ipynb)
