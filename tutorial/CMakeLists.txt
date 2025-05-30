@@ -1,3 +1,2 @@
 add_subdirectory(01_Intro_and_Runtime)
-#add_subdirectory(02_DS_Ext_and_Utils)
-#add_subdirectory(03_Iterators_and_Algorithms)
+add_subdirectory(02_Iterators_and_Algorithms)
