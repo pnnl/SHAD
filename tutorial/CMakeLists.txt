@@ -1,2 +1,4 @@
 add_subdirectory(01_Intro_and_Runtime)
 add_subdirectory(02_Iterators_and_Algorithms)
+add_subdirectory(Extra01_Custom_Data_Structures)
+add_subdirectory(Extra02_SHAD_Extensions)
