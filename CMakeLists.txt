@@ -46,6 +46,12 @@ endif()
 
 project(SHAD ${cmake_3_0_PROJ_VERSION} ${cmake_3_0_LANGUAGES} C CXX)
 
+##### HWLOC #####
+include(FindPkgConfig REQUIRED)
+pkg_check_modules(hwloc REQUIRED IMPORTED_TARGET hwloc)
+link_libraries(PkgConfig::hwloc)
+#################
+
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "No build type selected, default to Debug")
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type (default Debug)" FORCE)
@@ -73,7 +79,7 @@ endif()
 # Build options:
 option(SHAD_ENABLE_CPPLINT "Enable the linting of source code" ON)
 option(SHAD_ENABLE_DOXYGEN "Use doxygen to generate the shad API documentation" OFF)
-option(SHAD_ENABLE_UNIT_TEST "Enable the compilation of Unit Tests" ON)
+option(SHAD_ENABLE_UNIT_TEST "Enable the compilation of Unit Tests" OFF)
 option(SHAD_ENABLE_PERFORMANCE_TEST "Enable the compilation of the Performance Tests" OFF)
 
 set(
