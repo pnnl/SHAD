@@ -39,11 +39,6 @@ foreach(rp ${runtime_prefixes})
     target_link_libraries(${rp}_runtime PUBLIC ${GPERFTOOLS_LIBRARIES})
   endif()
   string(TOUPPER "${rp}" uprp)
-  configure_file(
-    ${SHAD_MAIN_SRC_DIR}/pkgconfig/shad_${rp}.pc.in
-    ${SHAD_BINARY_DIR}/pkgconfig/shad_${rp}.pc @ONLY)
-  install(FILES ${SHAD_BINARY_DIR}/pkgconfig/shad_${rp}.pc
-          DESTINATION pkgconfig)
   
   target_include_directories(${rp}_runtime
                              PUBLIC 

@@ -113,13 +113,24 @@ configure_file(
   ${SHAD_MAIN_INCLUDE_DIR}/shad/config/test-config.h.in
   ${SHAD_INCLUDE_DIR}/shad/config/test-config.h)
 
+set(RUNTIME_PKGS "")
+# set(RUNTIME_LIBRARIES "cpp_simple")
 if (SHAD_RUNTIME_SYSTEM STREQUAL "GMT")
+  set(RUNTIME_PKGS ${RUNTIME_PKGS} "gmt")
   find_package(MPI REQUIRED)
   include_directories(${MPI_INCLUDE_PATH})
+endif()
+if (SHAD_RUNTIME_SYSTEM STREQUAL "TBB")
+  set(RUNTIME_PKGS ${RUNTIME_PKGS} "tbb")
 endif()
 
 include_directories(${SHAD_MAIN_INCLUDE_DIR} ${SHAD_INCLUDE_DIR})
 
+string(REPLACE ";" " " PKG_REQUIRES "${RUNTIME_PKGS}")
+set(RUNTIME_LIBRARIES "-lcpp_simple_runtime")
+foreach(dep IN LISTS RUNTIME_PKGS)
+  string(APPEND RUNTIME_LIBRARIES " -l${dep}_runtime")
+endforeach()
 configure_file(
   ${SHAD_MAIN_SRC_DIR}/pkgconfig/shad.pc.in
   ${SHAD_BINARY_DIR}/pkgconfig/shad.pc @ONLY)
