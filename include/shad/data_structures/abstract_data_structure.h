@@ -154,6 +154,8 @@ class AbstractDataStructure {
   }
   void DataStructurePointerCommunication(){}
 
+  void DataStructurePointerCommunication(){}
+  
   class Catalog {
    public:
     void Insert(const ObjectID &oid, const SharedPtr ce) {
